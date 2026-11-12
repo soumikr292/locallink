@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">LocalLink</string>
+    <string name="title_activity_main">LocalLink</string>
+    <string name="package_name">com.locallink.marketplace</string>
+    <string name="custom_url_scheme">com.locallink.marketplace</string>
+</resources>

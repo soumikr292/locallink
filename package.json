@@ -1,0 +1,41 @@
+{
+  "name": "locallink",
+  "version": "1.0.0",
+  "description": "LocalLink - HyperLocal Marketplace & Admin Control Hub",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "cd backend && nodemon server.js",
+    "seed": "node backend/scripts/seedData.js",
+    "cloud:init": "node backend/scripts/initCloudDb.js",
+    "test-db": "node backend/test-db.js",
+    "app:assets": "node scripts/generate-assets.js && npx capacitor-assets generate",
+    "app:build": "node scripts/build-mobile.js",
+    "app:sync": "node scripts/build-mobile.js && npx cap sync",
+    "app:android": "node scripts/build-mobile.js && npx cap sync android && npx cap open android",
+    "app:ios": "node scripts/build-mobile.js && npx cap sync ios && npx cap open ios",
+    "app:keystore": "node scripts/setup-keystore.js"
+  },
+  "keywords": [
+    "marketplace",
+    "admin",
+    "locallink",
+    "hyperlocal"
+  ],
+  "author": "LocalLink Team",
+  "license": "ISC",
+  "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/geolocation": "^8.2.4",
+    "@capacitor/ios": "^8.6.0",
+    "@capacitor/network": "^8.0.1",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.4"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "^8.6.0"
+  }
+}

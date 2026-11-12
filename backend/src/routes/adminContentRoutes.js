@@ -1,0 +1,11 @@
+const express = require('express');
+const { authenticateToken, requireAdmin } = require('../middleware/authMiddleware');
+const { list, create, update, remove } = require('../controllers/adminContentController');
+const router = express.Router();
+router.use(authenticateToken, requireAdmin);
+router.get('/:type', list);
+router.post('/:type', create);
+router.put('/:type/:id', update);
+router.patch('/:type/:id', update);
+router.delete('/:type/:id', remove);
+module.exports = router;

@@ -1,0 +1,15 @@
+node_modules
+backend/node_modules
+backend/.env
+backend/certs
+www
+android
+ios
+.git
+.DS_Store
+*.log
+*.apk
+*.aab
+*.jks
+*.keystore
+release-keystore.properties

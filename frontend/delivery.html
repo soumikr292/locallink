@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>LocalLink - Pro Delivery Rider Console</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#059669">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <script src="js/build-env.js"></script>
+  <script src="js/app-bridge.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Leaflet.js for Live GPS Navigation & Map Tracking -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    
+    /* Leaflet dark theme adjustments */
+    .leaflet-container {
+      background: #090d16 !important;
+      font-family: inherit;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 font-sans text-slate-100 flex justify-center items-center min-h-screen sm:p-4 selection:bg-emerald-500 selection:text-slate-950">
+
+  <!-- Mobile App Frame Container for Rider Console (Full-screen on Phone, Mockup on Desktop) -->
+  <div class="w-full sm:max-w-md h-screen sm:h-[95vh] bg-slate-900 border-0 sm:border border-slate-800 sm:rounded-3xl flex flex-col justify-between overflow-hidden shadow-2xl relative">
+    
+    <!-- Top App Header -->
+    <header class="p-3.5 sm:p-4 bg-slate-950 border-b border-slate-800 flex justify-between items-center z-10 flex-shrink-0 ll-safe-top">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-tr from-emerald-600 to-teal-400 rounded-2xl flex items-center justify-center text-slate-950 font-black shadow-lg shadow-emerald-950/50 flex-shrink-0">
+          <i class="fa-solid fa-motorcycle text-base sm:text-lg"></i>
+        </div>
+        <div class="min-w-0">
+          <h2 id="riderHeaderName" class="font-bold text-white text-sm truncate">Kamal Hossain</h2>
+          <p id="riderStatusIndicator" class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1.5 cursor-pointer" onclick="toggleOnlineStatus()">
+            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+            <span id="riderStatusText">Active Rider (Online)</span>
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <button type="button" data-ll-role-trigger="true" onclick="window.LocalLinkApp.openRoleSwitcher()" class="px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 border border-emerald-500/40 text-emerald-300 rounded-xl text-[10px] font-bold flex items-center gap-1 transition-all" title="Switch Role">
+          <span id="llHeaderConnectionDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Role</span>
+        </button>
+        <div class="text-right bg-slate-900 px-2.5 py-1 rounded-xl border border-slate-800">
+          <span class="text-[8px] text-slate-400 uppercase tracking-wider block font-bold">Payout</span>
+          <span id="headerTodayPayout" class="text-xs font-black text-emerald-400">₹ 960</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dynamic Screen Content Area -->
+    <main class="flex-1 p-4 overflow-y-auto space-y-4">
+      
+      <!-- ============================================== -->
+      <!-- 1. ORDERS / DISPATCH TAB                       -->
+      <!-- ============================================== -->
+      <div id="tab-orders" class="rider-tab space-y-4">
+        
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold text-xs text-slate-400 uppercase tracking-wider">Active Delivery Dispatch</h3>
+          <span id="activeDispatchBadge" class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded-lg border border-emerald-500/20">
+            1 Assigned
+          </span>
+        </div>
+
+        <!-- Active Order Card Container -->
+        <div id="activeDeliveryCardContainer">
+          <div class="p-6 text-center text-slate-500 bg-slate-950 rounded-2xl border border-slate-800 text-xs">
+            <i class="fa-solid fa-spinner fa-spin text-xl text-emerald-500 mb-2 block"></i>
+            Loading active delivery dispatch...
+          </div>
+        </div>
+
+        <!-- Available Pool Orders -->
+        <div class="space-y-2.5 pt-2">
+          <div class="flex justify-between items-center">
+            <h4 class="font-bold text-xs text-slate-400 uppercase tracking-wider">Nearby Available Requests</h4>
+            <button onclick="loadAvailableOrders()" class="text-[11px] text-emerald-400 hover:underline font-bold">
+              <i class="fa-solid fa-rotate-right mr-1"></i> Refresh
+            </button>
+          </div>
+
+          <div id="availablePoolContainer" class="space-y-2">
+            <div class="p-4 text-center text-slate-500 bg-slate-950 rounded-xl border border-slate-800 text-xs">
+              Loading nearby requests...
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================== -->
+      <!-- 2. LIVE MAP TRACKING TAB                       -->
+      <!-- ============================================== -->
+      <div id="tab-map" class="rider-tab hidden space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold text-xs text-slate-400 uppercase tracking-wider">Live GPS Route & Navigation</h3>
+          <span class="px-2 py-0.5 bg-sky-950 text-sky-400 text-[10px] font-bold rounded border border-sky-800 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-ping"></span> Live GPS
+          </span>
+        </div>
+
+        <!-- Actual Working Leaflet Map Box -->
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-2.5 space-y-3 shadow-xl">
+          <div id="riderLiveMap" class="w-full h-64 rounded-xl border border-slate-800 overflow-hidden relative z-0"></div>
+
+          <!-- Live Route ETA Info -->
+          <div class="flex justify-between items-center text-xs bg-slate-900 p-3 rounded-xl border border-slate-800">
+            <div>
+              <p class="text-slate-400 text-[10px]">Estimated Arrival (ETA)</p>
+              <p id="mapEstimatedArrival" class="font-bold text-white text-sm">12 Minutes (1.8 km)</p>
+            </div>
+            <button onclick="openExternalGoogleMaps()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs flex items-center gap-1 shadow-md transition-all">
+              <i class="fa-solid fa-diamond-turn-right"></i>
+              <span>Google Maps</span>
+            </button>
+          </div>
+
+          <!-- Real GPS Sync & Movement Simulator -->
+          <div class="p-2.5 bg-slate-900/60 rounded-xl border border-slate-800/80 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="pr-2">
+              <p class="font-bold text-slate-300 text-[11px]">Live Rider GPS Control</p>
+              <p class="text-[10px] text-slate-500">Sync real phone GPS or step forward for live demo</p>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button onclick="syncRealDeviceGps()" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-[11px] whitespace-nowrap shadow transition-all">
+                <i class="fa-solid fa-crosshairs mr-1"></i> Phone GPS
+              </button>
+              <button onclick="simulateRiderStep()" class="px-2.5 py-1.5 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-lg text-[11px] whitespace-nowrap shadow transition-all">
+                <i class="fa-solid fa-play mr-1"></i> Step
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- 3. EARNINGS TAB                                -->
+      <!-- ============================================== -->
+      <div id="tab-earnings" class="rider-tab hidden space-y-4">
+        <h3 class="font-bold text-xs text-slate-400 uppercase tracking-wider">Earnings & Payout Breakdown</h3>
+        
+        <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-3 shadow-xl">
+          <p class="text-xs text-slate-400 font-semibold">Total Weekly Earnings</p>
+          <h2 id="earnWeeklyTotal" class="text-3xl font-black text-emerald-400">₹ 4,850</h2>
+          
+          <div class="pt-3 border-t border-slate-900 grid grid-cols-2 gap-4 text-xs">
+            <div>
+              <p class="text-slate-400 text-[10px]">Completed Trips</p>
+              <p id="earnCompletedCount" class="font-bold text-white text-sm mt-0.5">48 Orders</p>
+            </div>
+            <div>
+              <p class="text-slate-400 text-[10px]">Bonus Earned</p>
+              <p id="earnBonusTotal" class="font-bold text-emerald-400 text-sm mt-0.5">₹ 400</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Trips Breakdown -->
+        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3 shadow-xl">
+          <h4 class="font-bold text-xs text-slate-300">Recent Completed Trips</h4>
+          <div id="earningsTripHistoryContainer" class="space-y-2 text-xs">
+            <div class="p-3 text-center text-slate-500">Loading trip earnings...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- 4. PROFILE TAB                                 -->
+      <!-- ============================================== -->
+      <div id="tab-profile" class="rider-tab hidden space-y-4">
+        <h3 class="font-bold text-xs text-slate-400 uppercase tracking-wider">Rider Verification & Info</h3>
+        
+        <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-3 text-xs shadow-xl">
+          <div class="flex items-center gap-3 pb-3 border-b border-slate-900">
+            <div id="profileInitials" class="w-12 h-12 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-2xl flex items-center justify-center font-black text-slate-950 text-base shadow-inner">
+              LL
+            </div>
+            <div class="min-w-0 flex-1">
+              <h4 id="profileName" class="font-bold text-white text-sm truncate">Delivery Partner</h4>
+              <p class="text-emerald-400 text-[10px] font-semibold flex items-center gap-1">
+                <i class="fa-solid fa-circle-check"></i> Verified Delivery Partner
+              </p>
+            </div>
+          </div>
+          
+          <p class="text-slate-300"><strong>Vehicle:</strong> <span id="profileVehicle" class="text-white">Not configured</span></p>
+          <p class="text-slate-300"><strong>Phone:</strong> <span id="profilePhone" class="text-white">-</span></p>
+          <p class="text-slate-300"><strong>Rating:</strong> <span class="text-amber-400 font-bold">⭐ 4.9 / 5.0</span></p>
+          <p class="text-slate-300"><strong>Assigned Hub:</strong> <span class="text-emerald-400 font-semibold">Rajpur Sonarpur Hub</span></p>
+
+          <div class="pt-3 border-t border-slate-900 flex justify-between items-center">
+            <span class="text-slate-400 font-bold">Duty Status</span>
+            <button id="btnDutyToggle" onclick="toggleOnlineStatus()" class="px-3 py-1 bg-emerald-600 text-white rounded-lg font-bold text-xs">
+              Go Offline
+            </button>
+          </div>
+          <div class="pt-3 border-t border-slate-900 flex flex-wrap gap-2 justify-between items-center">
+            <button type="button" onclick="openRiderAuthModal('signin')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-bold text-xs transition-colors">
+              <i class="fa-solid fa-user-gear mr-1 text-emerald-400"></i> Switch Rider
+            </button>
+            <button type="button" onclick="logoutRider()" class="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg font-bold text-xs transition-colors">
+              <i class="fa-solid fa-right-from-bracket mr-1"></i> Sign Out
+            </button>
+          </div>
+        </div>
+
+        <!-- Cross Portal Access -->
+        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-2.5 text-xs shadow-xl">
+          <h4 class="font-bold text-slate-300">Marketplace Portals</h4>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="customer.html" onclick="window.LocalLinkApp.goToRole('customer');return false;" class="p-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 rounded-xl flex items-center gap-2 text-slate-300 font-bold transition-all">
+              <i class="fa-solid fa-bag-shopping text-emerald-400"></i>
+              <span>Customer Store</span>
+            </a>
+            <a href="seller.html" onclick="window.LocalLinkApp.goToRole('seller');return false;" class="p-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500 rounded-xl flex items-center gap-2 text-slate-300 font-bold transition-all">
+              <i class="fa-solid fa-store text-amber-400"></i>
+              <span>Seller Hub</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Bottom Mobile Navigation Bar -->
+    <footer class="p-2 bg-slate-950 border-t border-slate-800 flex justify-around text-xs z-10 flex-shrink-0 ll-safe-bottom">
+      <button id="nav-orders" onclick="switchRiderTab('orders')" class="rider-nav-btn text-emerald-400 bg-emerald-500/10 font-bold flex flex-col items-center gap-1 py-2 px-3 rounded-xl transition-all">
+        <i class="fa-solid fa-motorcycle text-sm"></i>
+        <span>Orders</span>
+      </button>
+      <button id="nav-map" onclick="switchRiderTab('map')" class="rider-nav-btn text-slate-400 flex flex-col items-center gap-1 py-2 px-3 rounded-xl transition-all">
+        <i class="fa-solid fa-map text-sm"></i>
+        <span>Live Map</span>
+      </button>
+      <button id="nav-earnings" onclick="switchRiderTab('earnings')" class="rider-nav-btn text-slate-400 flex flex-col items-center gap-1 py-2 px-3 rounded-xl transition-all">
+        <i class="fa-solid fa-wallet text-sm"></i>
+        <span>Earnings</span>
+      </button>
+      <button id="nav-profile" onclick="switchRiderTab('profile')" class="rider-nav-btn text-slate-400 flex flex-col items-center gap-1 py-2 px-3 rounded-xl transition-all">
+        <i class="fa-solid fa-user text-sm"></i>
+        <span>Profile</span>
+      </button>
+    </footer>
+
+  </div>
+
+  <!-- Rider Authentication & Onboarding Modal -->
+  <div id="riderAuthModal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4 my-auto">
+      <div class="flex items-start justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-tr from-emerald-600 to-teal-400 rounded-2xl flex items-center justify-center text-slate-950 font-black shadow-lg">
+            <i class="fa-solid fa-motorcycle"></i>
+          </div>
+          <div>
+            <h3 class="font-black text-white text-base">LocalLink Rider Hub</h3>
+            <p class="text-[11px] text-slate-400">Sign in or register as a neighborhood delivery partner</p>
+          </div>
+        </div>
+        <button type="button" onclick="window.LocalLinkApp && window.LocalLinkApp.openRoleSwitcher ? window.LocalLinkApp.openRoleSwitcher() : closeRiderAuthModal()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-[10px] font-bold flex items-center gap-1 transition-colors" title="Switch App Role">
+          <i class="fa-solid fa-layer-group text-emerald-400"></i>
+          <span>Roles</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-bold">
+        <button type="button" id="riderAuthTabSignin" onclick="switchRiderAuthMode('signin')" class="py-2 rounded-lg bg-emerald-600 text-slate-950 transition-all">Sign In</button>
+        <button type="button" id="riderAuthTabRegister" onclick="switchRiderAuthMode('register')" class="py-2 rounded-lg text-slate-400 hover:text-white transition-all">New Rider</button>
+      </div>
+
+      <form id="riderSignInForm" onsubmit="handleRiderLogin(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-[11px] text-slate-400 font-bold mb-1">Email or Phone Number</label>
+          <input id="riderLoginIdentifier" type="text" required placeholder="rider@example.com or +91..." class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl text-white outline-none">
+        </div>
+        <div>
+          <label class="block text-[11px] text-slate-400 font-bold mb-1">Password</label>
+          <input id="riderLoginPassword" type="password" required placeholder="••••••••" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl text-white outline-none">
+        </div>
+        <button id="btnRiderSignIn" type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl text-xs shadow-lg transition-all">
+          <i class="fa-solid fa-right-to-bracket mr-1"></i> Sign In to Dispatch
+        </button>
+      </form>
+
+      <form id="riderRegisterForm" onsubmit="handleRiderRegister(event)" class="hidden space-y-2.5 text-xs">
+        <div>
+          <label class="block text-[11px] text-slate-400 font-bold mb-1">Full Name</label>
+          <input id="riderRegName" type="text" required placeholder="Your full name" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl text-white outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] text-slate-400 font-bold mb-1">Email</label>
+            <input id="riderRegEmail" type="email" required placeholder="you@mail.com" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl text-white outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-400 font-bold mb-1">Phone</label>
+            <input id="riderRegPhone" type="tel" required placeholder="+91 98..." class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl text-white outline-none">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] text-slate-400 font-bold mb-1">Vehicle Type</label>
+            <select id="riderRegVehicleType" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl text-white outline-none">
+              <option value="scooter">Scooter</option>
+              <option value="motorcycle">Motorcycle</option>
+              <option value="bicycle">Bicycle / EV</option>
+              <option value="car">Compact Car</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-400 font-bold mb-1">Vehicle Number</label>
+            <input id="riderRegVehicleNumber" type="text" placeholder="WB-74-X-1234" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl text-white outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="block text-[11px] text-slate-400 font-bold mb-1">Password (min 6 chars)</label>
+          <input id="riderRegPassword" type="password" minlength="6" required placeholder="Create password" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl text-white outline-none">
+        </div>
+        <button id="btnRiderRegister" type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl text-xs shadow-lg transition-all">
+          <i class="fa-solid fa-user-plus mr-1"></i> Create Rider Account
+        </button>
+      </form>
+
+      <div class="pt-3 border-t border-slate-800 space-y-2">
+        <button id="btnRiderDemoLogin" type="button" onclick="loginDemoRider()" class="w-full py-2.5 bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/40 text-sky-300 font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all">
+          <i class="fa-solid fa-bolt text-sky-400"></i>
+          <span>Try Demo Rider Account (Kamal Hossain)</span>
+        </button>
+        <div class="flex items-center justify-between text-[11px] text-slate-500">
+          <a href="customer.html" onclick="window.LocalLinkApp && window.LocalLinkApp.goToRole ? (window.LocalLinkApp.goToRole('customer'), false) : true" class="hover:text-emerald-400 font-semibold">Back to Storefront</a>
+          <a href="privacy-policy.html" class="hover:text-slate-300">Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Toast Feedback -->
+  <div id="toast" class="fixed bottom-20 right-3 sm:right-5 z-50 bg-slate-900 border border-emerald-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+    <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+    <span id="toastMessage">Success</span>
+  </div>
+
+  <!-- JavaScript Application Logic -->
+  <script>
+    const getApiBase = () => (window.LocalLinkApp ? window.LocalLinkApp.getApiBase() : "http://localhost:5001");
+
+    let activeDeliveryData = null;
+    let riderMap = null;
+    let riderMarker = null;
+    let pickupMarker = null;
+    let dropMarker = null;
+    let routeLine = null;
+    let currentRiderLat = 22.4420;
+    let currentRiderLng = 88.3990;
+    let isRiderOnline = true;
+
+    // Toast Notification helper
+    function showToast(message, type = "success") {
+      const toast = document.getElementById("toast");
+      const text = document.getElementById("toastMessage");
+      const icon = document.getElementById("toastIcon");
+
+      if (type === "error") {
+        toast.className = "fixed bottom-20 right-3 sm:right-5 z-50 bg-slate-900 border border-rose-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs transform translate-y-0 opacity-100 transition-all duration-300";
+        icon.className = "fa-solid fa-circle-exclamation text-rose-400 text-sm";
+      } else {
+        toast.className = "fixed bottom-20 right-3 sm:right-5 z-50 bg-slate-900 border border-emerald-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs transform translate-y-0 opacity-100 transition-all duration-300";
+        icon.className = "fa-solid fa-circle-check text-emerald-400 text-sm";
+      }
+      text.textContent = message;
+
+      setTimeout(() => {
+        toast.className = "fixed bottom-20 right-3 sm:right-5 z-50 bg-slate-900 border border-emerald-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none";
+      }, 3500);
+    }
+
+    // Authenticated API Fetch Wrapper
+    async function apiRequest(endpoint, options = {}) {
+      const token = localStorage.getItem("locallinkRiderToken");
+      const headers = {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(options.headers || {})
+      };
+
+      try {
+        const response = await fetch(`${getApiBase()}${endpoint}`, {
+          ...options,
+          headers
+        });
+
+        const rawText = await response.text();
+        let data = {};
+        try {
+          data = rawText ? JSON.parse(rawText) : {};
+        } catch (_) {
+          throw new Error(`Server returned non-JSON response (${response.status})`);
+        }
+
+        if (!response.ok) {
+          if ((response.status === 401 || response.status === 403) && !endpoint.includes("/auth/")) {
+            localStorage.removeItem("locallinkRiderToken");
+            localStorage.removeItem("locallinkRiderUser");
+            openRiderAuthModal("signin");
+          }
+          throw new Error(data.message || data.error || `Request failed (${response.status})`);
+        }
+
+        return data;
+      } catch (err) {
+        showToast(err.message || "Network error", "error");
+        throw err;
+      }
+    }
+
+    // Screen Tab Switcher
+    function switchRiderTab(tabId) {
+      const tabs = document.querySelectorAll('.rider-tab');
+      tabs.forEach(tab => tab.classList.add('hidden'));
+
+      const links = document.querySelectorAll('.rider-nav-btn');
+      links.forEach(link => {
+        link.classList.remove('text-emerald-400', 'bg-emerald-500/10');
+        link.classList.add('text-slate-400');
+      });
+
+      const targetTab = document.getElementById('tab-' + tabId);
+      if (targetTab) {
+        targetTab.classList.remove('hidden');
+      }
+
+      const activeLink = document.getElementById('nav-' + tabId);
+      if (activeLink) {
+        activeLink.classList.remove('text-slate-400');
+        activeLink.classList.add('text-emerald-400', 'bg-emerald-500/10');
+      }
+
+      if (tabId === 'map') {
+        setTimeout(initOrRefreshLiveMap, 200);
+      } else if (tabId === 'earnings') {
+        loadEarningsTab();
+      } else if (tabId === 'profile') {
+        loadProfileTab();
+      } else if (tabId === 'orders') {
+        loadActiveDelivery();
+        loadAvailableOrders();
+      }
+    }
+
+    // Initialize Console on Load
+    window.addEventListener("DOMContentLoaded", async () => {
+      const ok = await initializeRiderSession();
+      if (ok) {
+        await Promise.allSettled([
+          loadProfileTab(),
+          loadActiveDelivery(),
+          loadAvailableOrders()
+        ]);
+      }
+    });
+
+    function openRiderAuthModal(mode = "signin") {
+      const modal = document.getElementById("riderAuthModal");
+      if (modal) modal.classList.remove("hidden");
+      switchRiderAuthMode(mode);
+    }
+
+    function closeRiderAuthModal() {
+      const modal = document.getElementById("riderAuthModal");
+      if (modal) modal.classList.add("hidden");
+    }
+
+    function switchRiderAuthMode(mode) {
+      const formIn = document.getElementById("riderSignInForm");
+      const formReg = document.getElementById("riderRegisterForm");
+      const tabIn = document.getElementById("riderAuthTabSignin");
+      const tabReg = document.getElementById("riderAuthTabRegister");
+      if (!formIn || !formReg) return;
+
+      if (mode === "register") {
+        formIn.classList.add("hidden");
+        formReg.classList.remove("hidden");
+        tabReg.className = "py-2 rounded-lg bg-emerald-600 text-slate-950 transition-all";
+        tabIn.className = "py-2 rounded-lg text-slate-400 hover:text-white transition-all";
+      } else {
+        formReg.classList.add("hidden");
+        formIn.classList.remove("hidden");
+        tabIn.className = "py-2 rounded-lg bg-emerald-600 text-slate-950 transition-all";
+        tabReg.className = "py-2 rounded-lg text-slate-400 hover:text-white transition-all";
+      }
+    }
+
+    function applyRiderUserHeader(user) {
+      const name = (user && user.name) ? user.name : "Rider";
+      const headerEl = document.getElementById("riderHeaderName");
+      if (headerEl) headerEl.textContent = name;
+      const initialsEl = document.getElementById("profileInitials");
+      if (initialsEl) {
+        initialsEl.textContent = name.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("") || "LL";
+      }
+    }
+
+    async function completeRiderAuth(res, toastMsg) {
+      if (!res || !res.success || !res.data || !res.data.token) return;
+      localStorage.setItem("locallinkRiderToken", res.data.token);
+      if (res.data.user) {
+        localStorage.setItem("locallinkRiderUser", JSON.stringify(res.data.user));
+        applyRiderUserHeader(res.data.user);
+      }
+      closeRiderAuthModal();
+      showToast(toastMsg || "Signed in to Rider Dispatch!");
+      await Promise.allSettled([
+        loadProfileTab(),
+        loadActiveDelivery(),
+        loadAvailableOrders()
+      ]);
+    }
+
+    async function handleRiderLogin(e) {
+      e.preventDefault();
+      const identifier = document.getElementById("riderLoginIdentifier").value.trim();
+      const password = document.getElementById("riderLoginPassword").value;
+      const btn = document.getElementById("btnRiderSignIn");
+      const orig = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Signing in...`;
+      try {
+        const res = await apiRequest("/api/rider/auth/login", {
+          method: "POST",
+          body: JSON.stringify({ email: identifier, phone: identifier, password })
+        });
+        await completeRiderAuth(res, `Welcome back, ${res.data.user?.name || "Rider"}!`);
+      } catch (err) {
+        // toast already shown by apiRequest
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+      }
+    }
+
+    async function handleRiderRegister(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnRiderRegister");
+      const orig = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Creating...`;
+      try {
+        const res = await apiRequest("/api/rider/auth/register", {
+          method: "POST",
+          body: JSON.stringify({
+            name: document.getElementById("riderRegName").value.trim(),
+            email: document.getElementById("riderRegEmail").value.trim(),
+            phone: document.getElementById("riderRegPhone").value.trim(),
+            vehicleType: document.getElementById("riderRegVehicleType").value,
+            vehicleNumber: document.getElementById("riderRegVehicleNumber").value.trim() || "WB-74-NEW",
+            password: document.getElementById("riderRegPassword").value
+          })
+        });
+        await completeRiderAuth(res, "Rider account created & verified!");
+      } catch (err) {
+        // toast already shown by apiRequest
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+      }
+    }
+
+    async function loginDemoRider() {
+      const btn = document.getElementById("btnRiderDemoLogin");
+      const orig = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Connecting Demo Rider...</span>`;
+      try {
+        const res = await apiRequest("/api/rider/auth/login", {
+          method: "POST",
+          body: JSON.stringify({
+            email: "kamal@locallink.com",
+            password: "rider123",
+            demo: true
+          })
+        });
+        await completeRiderAuth(res, "Demo Rider Mode: Signed in as Kamal Hossain");
+      } catch (err) {
+        // toast already shown by apiRequest
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+      }
+    }
+
+    function logoutRider() {
+      localStorage.removeItem("locallinkRiderToken");
+      localStorage.removeItem("locallinkRiderUser");
+      const headerEl = document.getElementById("riderHeaderName");
+      if (headerEl) headerEl.textContent = "Sign In Required";
+      const container = document.getElementById("activeDeliveryCardContainer");
+      if (container) {
+        container.innerHTML = `<div class="p-6 text-center text-slate-400 bg-slate-950 rounded-2xl border border-slate-800 text-xs space-y-2"><p class="font-bold text-white">Signed Out</p><button onclick="openRiderAuthModal('signin')" class="px-4 py-2 bg-emerald-600 text-slate-950 rounded-xl font-black">Sign In to Dispatch</button></div>`;
+      }
+      openRiderAuthModal("signin");
+      showToast("Signed out of Rider Console");
+    }
+
+    async function initializeRiderSession() {
+      const token = localStorage.getItem("locallinkRiderToken");
+      if (!token) {
+        const headerEl = document.getElementById("riderHeaderName");
+        if (headerEl) headerEl.textContent = "Sign In Required";
+        const activeCont = document.getElementById("activeDeliveryCardContainer");
+        if (activeCont) {
+          activeCont.innerHTML = `<div class="p-6 text-center text-slate-400 bg-slate-950 rounded-2xl border border-slate-800 text-xs space-y-2"><p class="font-bold text-white">Sign in required for Rider Dispatch</p><button onclick="openRiderAuthModal('signin')" class="px-4 py-2 bg-emerald-600 text-slate-950 rounded-xl font-black">Open Rider Login</button></div>`;
+        }
+        const poolCont = document.getElementById("availablePoolContainer");
+        if (poolCont) {
+          poolCont.innerHTML = `<div class="p-4 text-center text-slate-500 bg-slate-950 rounded-xl border border-slate-800 text-xs">Authenticate as a delivery partner to claim nearby deliveries.</div>`;
+        }
+        openRiderAuthModal("signin");
+        return false;
+      }
+      try {
+        const cached = localStorage.getItem("locallinkRiderUser");
+        if (cached) applyRiderUserHeader(JSON.parse(cached));
+      } catch (_) {}
+      return true;
+    }
+
+    // ==============================================
+    // 1. ORDERS / DISPATCH MANAGEMENT
+    // ==============================================
+    async function loadActiveDelivery() {
+      const container = document.getElementById("activeDeliveryCardContainer");
+      try {
+        const res = await apiRequest("/api/rider/active-delivery");
+        if (!res || !res.success) return;
+
+        activeDeliveryData = res.data;
+
+        if (!activeDeliveryData) {
+          container.innerHTML = `
+            <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl text-center space-y-2 shadow-xl">
+              <i class="fa-solid fa-box-open text-3xl text-slate-600 block"></i>
+              <p class="font-bold text-white text-xs">No Active Delivery Assigned</p>
+              <p class="text-[11px] text-slate-400">Select an available order from the nearby pool below to start delivery.</p>
+            </div>
+          `;
+          document.getElementById("activeDispatchBadge").textContent = "0 Assigned";
+          document.getElementById("activeDispatchBadge").className = "px-2.5 py-1 bg-slate-800 text-slate-400 text-[10px] font-bold rounded-lg";
+          return;
+        }
+
+        document.getElementById("activeDispatchBadge").textContent = "1 Assigned";
+        document.getElementById("activeDispatchBadge").className = "px-2.5 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded-lg border border-emerald-500/20";
+
+        const isPickedUp = activeDeliveryData.deliveryStatus === "out_for_delivery";
+
+        container.innerHTML = `
+          <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3 shadow-xl">
+            <div class="flex justify-between items-start text-xs border-b border-slate-900 pb-3">
+              <div>
+                <span class="font-bold text-white text-sm">Order #${activeDeliveryData.orderNumber || ('LL-' + activeDeliveryData.orderId)}</span>
+                <p class="text-slate-400 text-[11px] mt-0.5">${activeDeliveryData.pickupAddress.split(",")[0]} &rarr; ${activeDeliveryData.customerAddress.split(",")[0]}</p>
+              </div>
+              <span class="px-2.5 py-1 font-bold rounded-full text-[10px] ${
+                isPickedUp ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+              }">
+                ${isPickedUp ? 'Out for Delivery' : 'Pickup Pending'}
+              </span>
+            </div>
+
+            <div class="space-y-2 text-xs text-slate-300 bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+              <p class="flex items-center gap-2">
+                <i class="fa-solid fa-store text-emerald-400 w-4"></i>
+                <span><strong>Pickup:</strong> ${activeDeliveryData.pickupAddress}</span>
+              </p>
+              <p class="flex items-center gap-2">
+                <i class="fa-solid fa-location-dot text-rose-500 w-4"></i>
+                <span><strong>Drop:</strong> ${activeDeliveryData.customerAddress} (${activeDeliveryData.customerName})</span>
+              </p>
+              <p class="flex items-center gap-2">
+                <i class="fa-solid fa-indian-rupee-sign text-amber-400 w-4"></i>
+                <span><strong>Delivery Fee:</strong> ₹${activeDeliveryData.deliveryFee || 80} (${activeDeliveryData.paymentStatus === 'paid' ? 'Online Paid' : 'Cash on Delivery'})</span>
+              </p>
+              ${activeDeliveryData.items && activeDeliveryData.items.length > 0 ? `
+                <p class="text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                  <strong>Items:</strong> ${activeDeliveryData.items.map(i => `${i.name} (x${i.quantity})`).join(", ")}
+                </p>
+              ` : ''}
+            </div>
+
+            <div class="pt-1 flex gap-2">
+              ${!isPickedUp ? `
+                <button onclick="confirmPickup(${activeDeliveryData.deliveryId})" class="flex-1 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-xl text-xs shadow-lg shadow-emerald-950/40 transition-all flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-check"></i>
+                  <span>Confirm Pickup</span>
+                </button>
+              ` : `
+                <button onclick="promptDeliveryCompletion(${activeDeliveryData.deliveryId})" class="flex-1 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-circle-check"></i>
+                  <span>Complete Delivery (Verify OTP)</span>
+                </button>
+              `}
+              
+              <button onclick="callCustomer('${activeDeliveryData.customerPhone || '9876543211'}')" class="px-3.5 py-2.5 bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 rounded-xl text-xs transition-all" title="Call Customer">
+                <i class="fa-solid fa-phone"></i>
+              </button>
+
+              <button onclick="switchRiderTab('map')" class="px-3.5 py-2.5 bg-slate-900 hover:bg-slate-800 text-sky-400 border border-slate-800 rounded-xl text-xs transition-all" title="View Live Map">
+                <i class="fa-solid fa-map-location-dot"></i>
+              </button>
+            </div>
+          </div>
+        `;
+
+      } catch (e) {
+        container.innerHTML = `<div class="p-4 text-center text-rose-400 text-xs">Error loading active delivery</div>`;
+      }
+    }
+
+    async function loadAvailableOrders() {
+      const container = document.getElementById("availablePoolContainer");
+      try {
+        const res = await apiRequest("/api/rider/available-orders");
+        if (!res || !res.success) return;
+
+        const orders = res.data.orders || [];
+
+        if (orders.length === 0) {
+          container.innerHTML = `
+            <div class="p-4 text-center text-slate-500 bg-slate-950 rounded-xl border border-slate-800 text-xs">
+              No nearby pool requests right now. New customer orders will pop up here.
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = orders.map(ord => `
+          <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl flex justify-between items-center text-xs">
+            <div>
+              <p class="font-bold text-white">${ord.pickup.split(",")[0]} &rarr; ${ord.drop.split(",")[0]}</p>
+              <p class="text-slate-400 text-[10px] mt-0.5">Distance: ${ord.distanceKm} km | Fee: <strong class="text-emerald-400">₹${ord.deliveryFee}</strong></p>
+            </div>
+            <button onclick="acceptOrder(${ord.deliveryId})" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-md transition-all text-xs">
+              Accept
+            </button>
+          </div>
+        `).join("");
+
+      } catch (e) {
+        container.innerHTML = `<div class="p-3 text-center text-rose-400 text-xs">Failed to load pool orders</div>`;
+      }
+    }
+
+    async function confirmPickup(deliveryId) {
+      try {
+        const res = await apiRequest(`/api/rider/status/${deliveryId}`, {
+          method: "POST",
+          body: JSON.stringify({ status: "out_for_delivery" })
+        });
+        if (res && res.success) {
+          showToast(res.message || "Pickup confirmed! Live GPS navigation active.");
+          await loadActiveDelivery();
+          switchRiderTab('map');
+        }
+      } catch (e) {
+        showToast(e.message, "error");
+      }
+    }
+
+    async function promptDeliveryCompletion(deliveryId) {
+      const enteredOtp = prompt("Ask customer for the 4-digit Delivery OTP (Demo OTP: 8942):");
+      if (!enteredOtp || !enteredOtp.trim()) return;
+
+      try {
+        const res = await apiRequest(`/api/rider/status/${deliveryId}`, {
+          method: "POST",
+          body: JSON.stringify({ status: "delivered", otp: enteredOtp.trim() })
+        });
+        if (res && res.success) {
+          showToast("Order successfully delivered! Payout ₹80 added to your account.");
+          await loadActiveDelivery();
+          await loadAvailableOrders();
+          loadEarningsTab();
+        }
+      } catch (e) {
+        showToast(e.message, "error");
+      }
+    }
+
+    async function acceptOrder(deliveryId) {
+      try {
+        const res = await apiRequest(`/api/rider/accept/${deliveryId}`, {
+          method: "POST"
+        });
+        if (res && res.success) {
+          showToast(res.message || "Order accepted!");
+          await loadActiveDelivery();
+          await loadAvailableOrders();
+        }
+      } catch (e) {
+        showToast(e.message, "error");
+      }
+    }
+
+    function callCustomer(phone) {
+      alert(`Calling customer at: ${phone}\n(Connecting via LocalLink encrypted rider mask line...)`);
+    }
+
+    // ==============================================
+    // 2. ACTUAL WORKING LIVE MAP & GPS ROUTING
+    // ==============================================
+    function initOrRefreshLiveMap() {
+      const mapContainer = document.getElementById("riderLiveMap");
+      if (!mapContainer) return;
+
+      const pickupLat = activeDeliveryData?.pickupCoords?.lat || 22.4390;
+      const pickupLng = activeDeliveryData?.pickupCoords?.lng || 88.3965;
+      const dropLat = activeDeliveryData?.dropCoords?.lat || 22.4460;
+      const dropLng = activeDeliveryData?.dropCoords?.lng || 88.4020;
+
+      // Default center is rider's current coordinates
+      const centerLat = currentRiderLat;
+      const centerLng = currentRiderLng;
+
+      if (!riderMap) {
+        riderMap = L.map('riderLiveMap', {
+          zoomControl: true,
+          attributionControl: false
+        }).setView([centerLat, centerLng], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19
+        }).addTo(riderMap);
+      } else {
+        riderMap.invalidateSize();
+      }
+
+      // 1. Pickup Shop Marker (Green Store)
+      if (pickupMarker) riderMap.removeLayer(pickupMarker);
+      const storeHtml = `
+        <div style="background:#059669; color:#fff; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.5); border:2px solid #fff;">
+          <i class="fa-solid fa-store" style="font-size:13px;"></i>
+        </div>
+      `;
+      pickupMarker = L.marker([pickupLat, pickupLng], {
+        icon: L.divIcon({ html: storeHtml, className: '', iconSize: [32, 32], iconAnchor: [16, 16] })
+      }).addTo(riderMap).bindPopup("<b>Pickup Stall:</b><br>" + (activeDeliveryData?.pickupAddress || "Sonarpur Stall #14"));
+
+      // 2. Customer Drop Marker (Rose Home)
+      if (dropMarker) riderMap.removeLayer(dropMarker);
+      const dropHtml = `
+        <div style="background:#e11d48; color:#fff; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.5); border:2px solid #fff;">
+          <i class="fa-solid fa-house" style="font-size:13px;"></i>
+        </div>
+      `;
+      dropMarker = L.marker([dropLat, dropLng], {
+        icon: L.divIcon({ html: dropHtml, className: '', iconSize: [32, 32], iconAnchor: [16, 16] })
+      }).addTo(riderMap).bindPopup("<b>Customer Drop:</b><br>" + (activeDeliveryData?.customerAddress || "Rajpur Block C"));
+
+      // 3. Live Rider GPS Marker (Sky Blue Motorcycle)
+      if (riderMarker) riderMap.removeLayer(riderMarker);
+      const riderHtml = `
+        <div style="background:#0284c7; color:#fff; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 0 16px rgba(2,132,199,0.8); border:2px solid #fff;">
+          <i class="fa-solid fa-motorcycle" style="font-size:16px;"></i>
+        </div>
+      `;
+      riderMarker = L.marker([currentRiderLat, currentRiderLng], {
+        icon: L.divIcon({ html: riderHtml, className: '', iconSize: [36, 36], iconAnchor: [18, 18] })
+      }).addTo(riderMap).bindPopup("<b>Kamal Hossain (Rider)</b><br>Live GPS Location");
+
+      // 4. Draw Polyline Route connecting Pickup -> Rider -> Drop
+      if (routeLine) riderMap.removeLayer(routeLine);
+      const routePoints = [
+        [pickupLat, pickupLng],
+        [currentRiderLat, currentRiderLng],
+        [dropLat, dropLng]
+      ];
+      routeLine = L.polyline(routePoints, {
+        color: '#10b981',
+        weight: 4,
+        opacity: 0.85,
+        dashArray: '6, 8'
+      }).addTo(riderMap);
+
+      riderMap.fitBounds(routePoints, { padding: [35, 35] });
+    }
+
+    // Sync real phone GPS (Capacitor Geolocation / Web Geolocation)
+    async function syncRealDeviceGps() {
+      if (!window.LocalLinkApp || typeof window.LocalLinkApp.getCurrentPosition !== "function") {
+        showToast("Device GPS not supported", "error");
+        return;
+      }
+      showToast("Reading live phone GPS...");
+      try {
+        const pos = await window.LocalLinkApp.getCurrentPosition();
+        currentRiderLat = Number(pos.coords.latitude);
+        currentRiderLng = Number(pos.coords.longitude);
+
+        const targetLat = activeDeliveryData?.dropCoords?.lat || 22.4460;
+        const targetLng = activeDeliveryData?.dropCoords?.lng || 88.4020;
+
+        if (riderMarker && riderMap) {
+          riderMarker.setLatLng([currentRiderLat, currentRiderLng]);
+          riderMap.setView([currentRiderLat, currentRiderLng], 14);
+          if (routeLine) {
+            const pickupLat = activeDeliveryData?.pickupCoords?.lat || 22.4390;
+            const pickupLng = activeDeliveryData?.pickupCoords?.lng || 88.3965;
+            routeLine.setLatLngs([
+              [pickupLat, pickupLng],
+              [currentRiderLat, currentRiderLng],
+              [targetLat, targetLng]
+            ]);
+          }
+        }
+
+        await apiRequest("/api/rider/location", {
+          method: "POST",
+          body: JSON.stringify({
+            latitude: currentRiderLat,
+            longitude: currentRiderLng,
+            deliveryId: activeDeliveryData?.deliveryId || null
+          })
+        });
+        showToast(`Phone GPS synced (${currentRiderLat.toFixed(4)}, ${currentRiderLng.toFixed(4)})!`);
+      } catch (err) {
+        showToast("Phone GPS unavailable: " + (err.message || "Permission denied"), "error");
+      }
+    }
+
+    // Step Rider closer to customer drop location for demonstration
+    async function simulateRiderStep() {
+      const targetLat = activeDeliveryData?.dropCoords?.lat || 22.4460;
+      const targetLng = activeDeliveryData?.dropCoords?.lng || 88.4020;
+
+      // Move 25% closer
+      currentRiderLat = currentRiderLat + (targetLat - currentRiderLat) * 0.25;
+      currentRiderLng = currentRiderLng + (targetLng - currentRiderLng) * 0.25;
+
+      if (riderMarker && riderMap) {
+        riderMarker.setLatLng([currentRiderLat, currentRiderLng]);
+        if (routeLine) {
+          const pickupLat = activeDeliveryData?.pickupCoords?.lat || 22.4390;
+          const pickupLng = activeDeliveryData?.pickupCoords?.lng || 88.3965;
+          routeLine.setLatLngs([
+            [pickupLat, pickupLng],
+            [currentRiderLat, currentRiderLng],
+            [targetLat, targetLng]
+          ]);
+        }
+      }
+
+      // Send updated GPS to backend so customer map updates in real time!
+      try {
+        await apiRequest("/api/rider/location", {
+          method: "POST",
+          body: JSON.stringify({
+            latitude: currentRiderLat,
+            longitude: currentRiderLng,
+            deliveryId: activeDeliveryData?.deliveryId || null
+          })
+        });
+        showToast("GPS updated: Rider moving towards customer!");
+      } catch (e) {
+        console.warn("GPS update notice:", e);
+      }
+    }
+
+    function openExternalGoogleMaps() {
+      const dropLat = activeDeliveryData?.dropCoords?.lat || 22.4460;
+      const dropLng = activeDeliveryData?.dropCoords?.lng || 88.4020;
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${dropLat},${dropLng}`, "_blank");
+    }
+
+    // ==============================================
+    // 3. EARNINGS & 4. PROFILE
+    // ==============================================
+    async function loadEarningsTab() {
+      try {
+        const res = await apiRequest("/api/rider/earnings");
+        if (!res || !res.success) return;
+
+        const data = res.data;
+        document.getElementById("earnWeeklyTotal").textContent = `₹ ${Number(data.weeklyEarnings || 4850).toLocaleString("en-IN")}`;
+        document.getElementById("earnCompletedCount").textContent = `${data.completedTrips || 48} Orders`;
+        document.getElementById("earnBonusTotal").textContent = `₹ ${data.bonusEarned || 400}`;
+
+        const container = document.getElementById("earningsTripHistoryContainer");
+        const list = data.history || [];
+        if (list.length === 0) {
+          container.innerHTML = `<div class="p-4 text-center text-slate-500">No trips recorded yet.</div>`;
+          return;
+        }
+
+        container.innerHTML = list.map(item => `
+          <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between items-center text-xs">
+            <div>
+              <p class="font-bold text-white">${item.orderNumber || 'Order Trip'}</p>
+              <p class="text-[10px] text-slate-400">${item.destination} &bull; ${item.distanceKm} km</p>
+            </div>
+            <div class="text-right">
+              <span class="font-black text-emerald-400 text-sm">+₹${item.fee}</span>
+              <p class="text-[9px] text-slate-500">Credited</p>
+            </div>
+          </div>
+        `).join("");
+
+      } catch (e) {
+        console.error("Earnings load error:", e);
+      }
+    }
+
+    async function loadProfileTab() {
+      try {
+        const res = await apiRequest("/api/rider/profile");
+        if (!res || !res.success) return;
+
+        const p = res.data;
+        applyRiderUserHeader(p);
+        document.getElementById("profileName").textContent = p.name;
+        document.getElementById("profileVehicle").textContent = `${p.vehicleType} (${p.vehicleNumber})`;
+        document.getElementById("profilePhone").textContent = p.phone || "-";
+        document.getElementById("headerTodayPayout").textContent = `₹ ${p.todayPayout ?? 0}`;
+
+      } catch (e) {
+        console.error("Profile load error:", e);
+      }
+    }
+
+    function toggleOnlineStatus() {
+      isRiderOnline = !isRiderOnline;
+      const text = document.getElementById("riderStatusText");
+      const dot = document.querySelector("#riderStatusIndicator span");
+      const btn = document.getElementById("btnDutyToggle");
+
+      if (isRiderOnline) {
+        text.textContent = "Active Rider (Online)";
+        dot.className = "w-2 h-2 bg-emerald-500 rounded-full animate-pulse";
+        if (btn) btn.textContent = "Go Offline";
+        if (btn) btn.className = "px-3 py-1 bg-emerald-600 text-white rounded-lg font-bold text-xs";
+        showToast("You are now ONLINE and receiving delivery dispatches!");
+      } else {
+        text.textContent = "Offline (Duty Paused)";
+        dot.className = "w-2 h-2 bg-slate-500 rounded-full";
+        if (btn) btn.textContent = "Go Online";
+        if (btn) btn.className = "px-3 py-1 bg-slate-700 text-white rounded-lg font-bold text-xs";
+        showToast("Duty paused. You are now OFFLINE.");
+      }
+    }
+  </script>
+</body>
+</html>

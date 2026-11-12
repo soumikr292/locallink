@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>LocalLink - Ultimate Pro Vendor Hub</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#059669">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <script src="js/build-env.js"></script>
+  <script src="js/app-bridge.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="bg-slate-900 font-sans text-slate-100 flex h-screen overflow-hidden selection:bg-emerald-500 selection:text-slate-950">
+
+  <!-- Mobile Sidebar Backdrop -->
+  <div id="sellerSidebarBackdrop" onclick="toggleSellerSidebar(false)" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 hidden lg:hidden"></div>
+
+  <!-- =============================== -->
+  <!-- 1. SIDEBAR NAVIGATION (Responsive Drawer on Mobile) -->
+  <!-- =============================== -->
+  <aside id="sellerSidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-slate-950 border-r border-slate-800 flex flex-col justify-between p-4 overflow-y-auto flex-shrink-0 transform -translate-x-full lg:static lg:translate-x-0 transition-transform duration-200 ll-safe-top ll-safe-bottom">
+    <div>
+      <!-- Brand Logo -->
+      <div class="flex items-center justify-between gap-3 mb-6 px-2">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-tr from-emerald-600 to-teal-400 rounded-xl flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-emerald-500/20">
+            <i class="fa-solid fa-store"></i>
+          </div>
+          <div>
+            <h1 class="text-lg font-bold tracking-tight text-white">LocalLink</h1>
+            <p class="text-[10px] text-emerald-400 font-semibold uppercase tracking-wider">Enterprise Vendor Suite</p>
+          </div>
+        </div>
+        <button type="button" onclick="toggleSellerSidebar(false)" class="lg:hidden p-2 text-slate-400 hover:text-white rounded-lg">
+          <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="space-y-1 text-xs font-medium">
+        <button id="link-dashboard" onclick="switchTab('dashboard')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-950/50 transition-all">
+          <i class="fa-solid fa-chart-pie w-4"></i> Store Dashboard
+        </button>
+        <button id="link-photo-upload" onclick="switchTab('photo-upload')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
+          <i class="fa-solid fa-camera-retro w-4 text-emerald-400"></i> Daily Real Photo Upload (Fish/Veg)
+        </button>
+        <button id="link-inventory" onclick="switchTab('inventory')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
+          <i class="fa-solid fa-boxes-stacked w-4"></i> Products & Inventory (Grocery)
+        </button>
+        <button id="link-orders" onclick="switchTab('orders')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
+          <i class="fa-solid fa-truck-ramp-box w-4"></i> Incoming Orders
+          <span id="badge-orders-count" class="ml-auto hidden px-2 py-0.5 bg-amber-500 text-slate-950 rounded-full text-[10px] font-black">0</span>
+        </button>
+        <button id="link-bargain" onclick="switchTab('bargain')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
+          <i class="fa-solid fa-robot w-4 text-purple-400"></i> AI Bargain Rules
+        </button>
+        <button id="link-earnings" onclick="switchTab('earnings')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
+          <i class="fa-solid fa-wallet w-4 text-blue-400"></i> Payouts & Earnings
+        </button>
+        <button id="link-reviews" onclick="switchTab('reviews')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
+          <i class="fa-solid fa-star w-4 text-amber-400"></i> Ratings & Buyer Photos
+        </button>
+        <button id="link-settings" onclick="switchTab('settings')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
+          <i class="fa-solid fa-gears w-4"></i> Store Settings
+        </button>
+      </nav>
+    </div>
+
+    <!-- Active Vendor Footer Card with Picture -->
+    <div class="mt-4 p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-[11px] flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 overflow-hidden">
+        <img id="sidebarShopAvatarImg" src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=100&auto=format&fit=crop&q=80" 
+             alt="Stall Logo" class="w-8 h-8 rounded-lg object-cover border border-emerald-500/50 flex-shrink-0">
+        <div class="overflow-hidden">
+          <p id="sidebarShopName" class="font-bold text-white truncate">Loading Stall...</p>
+          <p id="sidebarShopLocation" class="text-emerald-400 text-[10px] truncate">Rajpur Sonarpur Market</p>
+        </div>
+      </div>
+      <button onclick="handleLogout()" title="Log Out" class="text-rose-400 hover:text-rose-300 p-1.5 hover:bg-rose-950/40 rounded-lg transition-all flex-shrink-0">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- =============================== -->
+  <!-- 2. MAIN CONTENT AREA -->
+  <!-- =============================== -->
+  <main class="flex-1 flex flex-col h-screen overflow-y-auto bg-slate-900">
+    
+    <!-- Top Navbar -->
+    <header class="bg-slate-950/90 backdrop-blur-md border-b border-slate-800 px-4 sm:px-8 py-3 sm:py-4 flex justify-between items-center sticky top-0 z-20 gap-2 ll-safe-top">
+      <div class="flex items-center gap-3 min-w-0">
+        <button type="button" onclick="toggleSellerSidebar(true)" class="lg:hidden p-2 bg-slate-900 border border-slate-800 rounded-xl text-slate-200 hover:bg-slate-800 flex-shrink-0" title="Open Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="min-w-0">
+          <h2 class="text-base sm:text-xl font-bold text-white tracking-tight truncate">Vendor Suite</h2>
+          <p class="text-[10px] sm:text-xs text-slate-400 truncate hidden sm:block">Manage daily live catalog, grocery inventory, and automated pricing</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+        <!-- Portal Navigation Shortcuts (Native Safe) -->
+        <a href="customer.html" onclick="window.LocalLinkApp.goToRole('customer');return false;" class="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl transition-all" title="View Customer Marketplace">
+          <i class="fa-solid fa-bag-shopping text-emerald-400"></i>
+          <span>Customer Store</span>
+        </a>
+        <a href="delivery.html" onclick="window.LocalLinkApp.goToRole('rider');return false;" class="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl transition-all" title="View Rider Console">
+          <i class="fa-solid fa-motorcycle text-sky-400"></i>
+          <span>Rider Console</span>
+        </a>
+
+        <!-- Role Switcher Pill (Visible on Mobile + Desktop) -->
+        <button type="button" data-ll-role-trigger="true" onclick="window.LocalLinkApp.openRoleSwitcher()" class="px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 border border-emerald-500/40 text-emerald-300 rounded-xl text-[11px] font-bold flex items-center gap-1.5 transition-all" title="Switch Role (Customer / Seller / Rider / Admin)">
+          <span id="llHeaderConnectionDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <i class="fa-solid fa-layer-group"></i>
+          <span class="hidden sm:inline">Switch Role</span>
+        </button>
+
+        <!-- Seller Profile & Picture Pill -->
+        <button onclick="switchTab('settings')" class="flex items-center gap-2 pl-1 pr-2 sm:pr-3 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-xs font-bold text-slate-200 transition-all" title="View Store Profile & Settings">
+          <img id="navSellerAvatarImg" src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="w-7 h-7 rounded-lg object-cover border border-emerald-500/50">
+          <span id="navSellerNameText" class="hidden md:inline truncate max-w-[100px]">Ratan Fresh</span>
+        </button>
+
+        <!-- Live Status Pill -->
+        <span id="storeStatusBadge" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-950/70 border border-emerald-800 text-emerald-300 text-xs font-bold rounded-full">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Store Open</span>
+        </span>
+
+        <!-- Quick Upload Live Morning Photo Button -->
+        <button onclick="switchTab('photo-upload')" class="px-3 sm:px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-950/50 flex items-center gap-1.5 transition-all">
+          <i class="fa-solid fa-camera"></i>
+          <span class="hidden md:inline">Upload Live Morning Photo</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Dynamic Content Tabs Container -->
+    <div class="p-6 sm:p-8 space-y-6 max-w-7xl mx-auto w-full">
+      
+      <!-- ============================================== -->
+      <!-- 📊 TAB 1: STORE DASHBOARD                     -->
+      <!-- ============================================== -->
+      <div id="dashboard" class="tab-content space-y-6">
+        
+        <!-- Primary 4 KPI Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center">
+              <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Today's Sales</p>
+              <i class="fa-solid fa-indian-rupee-sign text-emerald-400"></i>
+            </div>
+            <h3 id="dashTodaySales" class="text-2xl font-black text-emerald-400 mt-2">₹ 0</h3>
+            <p class="text-[11px] text-slate-500 mt-1">Paid customer orders today</p>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center">
+              <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Pending Orders</p>
+              <i class="fa-solid fa-box text-amber-400"></i>
+            </div>
+            <h3 id="dashPendingOrders" class="text-2xl font-black text-amber-400 mt-2">0 Orders</h3>
+            <p class="text-[11px] text-slate-500 mt-1">Awaiting packing or pickup</p>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center">
+              <p class="text-xs font-bold uppercase tracking-wider text-slate-400">AI Bargain Deals</p>
+              <i class="fa-solid fa-robot text-purple-400"></i>
+            </div>
+            <h3 id="dashBargainDeals" class="text-2xl font-black text-purple-400 mt-2">0 Configured</h3>
+            <p class="text-[11px] text-slate-500 mt-1">Active automated negotiation rules</p>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center">
+              <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Store Rating</p>
+              <i class="fa-solid fa-star text-amber-400"></i>
+            </div>
+            <h3 id="dashStoreRating" class="text-2xl font-black text-blue-400 mt-2">
+              <i class="fa-solid fa-star text-amber-400 text-lg"></i> 5.0 / 5.0
+            </h3>
+            <p id="dashReviewCount" class="text-[11px] text-slate-500 mt-1">Based on buyer feedback</p>
+          </div>
+        </div>
+
+        <!-- Secondary Financial Overview Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <div class="bg-slate-950/70 border border-slate-800 p-5 rounded-2xl flex items-center justify-between">
+            <div>
+              <p class="text-xs text-slate-400 font-semibold">Net Earnings Balance</p>
+              <p id="dashNetEarnings" class="text-xl font-bold text-white mt-1">₹ 0</p>
+            </div>
+            <button onclick="switchTab('earnings')" class="px-3 py-1.5 bg-blue-600/30 text-blue-400 border border-blue-500/30 text-xs font-bold rounded-xl hover:bg-blue-600 hover:text-white transition-all">
+              Withdraw
+            </button>
+          </div>
+
+          <div class="bg-slate-950/70 border border-slate-800 p-5 rounded-2xl flex items-center justify-between">
+            <div>
+              <p class="text-xs text-slate-400 font-semibold">Active Catalog Items</p>
+              <p id="dashActiveProducts" class="text-xl font-bold text-white mt-1">0 Products</p>
+            </div>
+            <button onclick="switchTab('inventory')" class="px-3 py-1.5 bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs font-bold rounded-xl hover:bg-emerald-600 hover:text-white transition-all">
+              Manage
+            </button>
+          </div>
+
+          <div class="bg-slate-950/70 border border-slate-800 p-5 rounded-2xl flex items-center justify-between">
+            <div>
+              <p class="text-xs text-slate-400 font-semibold">Completed Payouts</p>
+              <p id="dashCompletedPayouts" class="text-xl font-bold text-white mt-1">₹ 0</p>
+            </div>
+            <button onclick="switchTab('earnings')" class="px-3 py-1.5 bg-slate-800 text-slate-300 text-xs font-bold rounded-xl hover:bg-slate-700 transition-all">
+              History
+            </button>
+          </div>
+        </div>
+
+        <!-- Recent Activity & Orders Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Recent Incoming Orders Box -->
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-sm text-white flex items-center gap-2">
+                <i class="fa-solid fa-receipt text-emerald-400"></i>
+                <span>Recent Incoming Orders</span>
+              </h4>
+              <button onclick="switchTab('orders')" class="text-xs text-emerald-400 hover:underline font-bold">
+                View All Orders &rarr;
+              </button>
+            </div>
+            <div id="dashRecentOrdersList" class="space-y-3 text-xs">
+              <div class="p-4 text-center text-slate-500">Loading recent orders...</div>
+            </div>
+          </div>
+
+          <!-- Top Selling Products Box -->
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-sm text-white flex items-center gap-2">
+                <i class="fa-solid fa-trophy text-amber-400"></i>
+                <span>Top Selling Marketplace Items</span>
+              </h4>
+              <button onclick="switchTab('inventory')" class="text-xs text-emerald-400 hover:underline font-bold">
+                Inventory &rarr;
+              </button>
+            </div>
+            <div id="dashTopProductsList" class="space-y-3 text-xs">
+              <div class="p-4 text-center text-slate-500">Loading top items...</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ============================================== -->
+      <!-- 📸 TAB 2: DAILY REAL PHOTO UPLOAD (FISH / VEG) -->
+      <!-- ============================================== -->
+      <div id="photo-upload" class="tab-content hidden space-y-6">
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-6 shadow-xl">
+          <div>
+            <h3 class="font-bold text-lg text-white">
+              <i class="fa-solid fa-camera-retro text-emerald-400 mr-2"></i>
+              Daily Real-Time Photo Upload (Fish & Vegetables Only)
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">
+              Upload fresh morning photos of raw fish, vegetables, or fruits so local buyers can inspect quality before ordering.
+            </p>
+          </div>
+
+          <!-- Publish Fresh Catch Form -->
+          <form id="livePhotoForm" onsubmit="handlePublishLivePhoto(event)" class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+            <h4 class="font-bold text-sm text-emerald-400">Publish Today's Fresh Catch / Harvest</h4>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+              <div class="sm:col-span-2">
+                <label class="block text-slate-400 mb-1 font-bold">Item Name *</label>
+                <input id="liveItemName" type="text" required placeholder="e.g., Fresh Rohu Fish / Katla or Desi Palak"
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+
+              <div>
+                <label class="block text-slate-400 mb-1 font-bold">Category *</label>
+                <select id="liveCategory" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+                  <option value="4">Fish & Seafood</option>
+                  <option value="12">River Fish</option>
+                  <option value="13">Sea Fish</option>
+                  <option value="2">Fresh Vegetables</option>
+                  <option value="15">Fresh Fruits</option>
+                  <option value="3">Meat & Poultry</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-slate-400 mb-1 font-bold">Price (₹ per kg) *</label>
+                <input id="livePrice" type="number" step="0.5" required placeholder="e.g., 320"
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div>
+                <label class="block text-slate-400 mb-1 font-bold">Stock Available (in kg / units) *</label>
+                <input id="liveStock" type="number" required placeholder="e.g., 15"
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+
+              <div>
+                <label class="block text-slate-400 mb-1 font-bold">Optional Image URL (or upload below)</label>
+                <input id="liveImageUrl" type="text" placeholder="https://..." oninput="onLiveImageUrlChange(this.value)"
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+            </div>
+
+            <!-- Upload Photograph Area -->
+            <div>
+              <label class="block text-slate-400 mb-1 font-bold">Upload Real Morning Photograph *</label>
+              <div onclick="document.getElementById('livePhotoFileInput').click()" class="border-2 border-dashed border-slate-700 rounded-xl p-6 text-center hover:border-emerald-500 transition-all cursor-pointer bg-slate-950 relative group">
+                <input id="livePhotoFileInput" type="file" accept="image/*" class="hidden" onchange="handleLivePhotoFile(event)">
+                
+                <div id="livePhotoPlaceholder" class="space-y-2">
+                  <i class="fa-solid fa-cloud-arrow-up text-3xl text-emerald-500"></i>
+                  <p class="text-xs text-slate-300 font-bold">Click to upload live stock snapshot from device / camera</p>
+                  <p class="text-[11px] text-slate-500">Supports JPG, PNG, WEBP (under 5MB)</p>
+                </div>
+
+                <!-- Image preview -->
+                <div id="livePhotoPreviewContainer" class="hidden flex flex-col items-center gap-2">
+                  <img id="livePhotoPreviewImg" src="" alt="Live Preview" class="h-32 object-cover rounded-xl border border-emerald-500 shadow-md">
+                  <span class="text-[11px] text-emerald-400 font-bold">Photo ready to publish (Click to change)</span>
+                </div>
+              </div>
+            </div>
+
+            <button id="btnPublishLive" type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>Publish Live to Marketplace</span>
+            </button>
+          </form>
+
+          <!-- Today's Live Active Catches List -->
+          <div class="space-y-3">
+            <h4 class="font-bold text-sm text-white flex items-center justify-between">
+              <span>Today's Live Published Catches & Fresh Produce</span>
+              <button onclick="loadLiveCatchProducts()" class="text-xs text-slate-400 hover:text-white">
+                <i class="fa-solid fa-rotate-right mr-1"></i> Refresh
+              </button>
+            </h4>
+            <div id="livePublishedList" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div class="p-6 text-center text-slate-500 bg-slate-900/60 rounded-xl border border-slate-800 md:col-span-2">
+                Loading today's fresh live products...
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- 📦 TAB 3: PRODUCTS & INVENTORY (GROCERY)       -->
+      <!-- ============================================== -->
+      <div id="inventory" class="tab-content hidden space-y-6">
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-6 shadow-xl">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h3 class="font-bold text-lg text-white">
+                <i class="fa-solid fa-boxes-stacked text-emerald-400 mr-2"></i>
+                Grocery & Packaged Inventory Management
+              </h3>
+              <p class="text-xs text-slate-400 mt-1">
+                Default system images are fixed for grocery items. Edit price or stock quantity directly in the boxes and click update.
+              </p>
+            </div>
+            <button onclick="openAddGroceryModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-lg flex items-center gap-1.5 transition-all">
+              <i class="fa-solid fa-plus"></i>
+              <span>Add New Grocery Item</span>
+            </button>
+          </div>
+
+          <!-- Quick Search -->
+          <div class="flex items-center gap-3">
+            <div class="relative flex-1">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+              <input id="grocerySearch" type="text" placeholder="Search grocery products by name..." oninput="handleGrocerySearch(this.value)"
+                class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+            </div>
+          </div>
+
+          <!-- Dynamic Grocery Items Container -->
+          <div id="groceryItemsContainer" class="space-y-4 text-xs">
+            <div class="p-8 text-center text-slate-500 bg-slate-900 rounded-2xl border border-slate-800">
+              Loading grocery and packaged inventory...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- 🚚 TAB 4: INCOMING ORDERS                      -->
+      <!-- ============================================== -->
+      <div id="orders" class="tab-content hidden space-y-6">
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div>
+              <h3 class="font-bold text-lg text-white">Incoming Customer Orders</h3>
+              <p class="text-xs text-slate-400 mt-0.5">Real-time marketplace orders ready for preparation and packing</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="loadSellerOrders()" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl transition-all">
+                <i class="fa-solid fa-rotate-right mr-1"></i> Refresh
+              </button>
+            </div>
+          </div>
+
+          <!-- Status Filters -->
+          <div class="flex flex-wrap gap-2 text-xs">
+            <button onclick="filterOrdersByStatus('')" class="order-filter-btn px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-bold" data-status="">All Orders</button>
+            <button onclick="filterOrdersByStatus('pending')" class="order-filter-btn px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 hover:text-white" data-status="pending">Pending</button>
+            <button onclick="filterOrdersByStatus('confirmed')" class="order-filter-btn px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 hover:text-white" data-status="confirmed">Confirmed</button>
+            <button onclick="filterOrdersByStatus('processing')" class="order-filter-btn px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 hover:text-white" data-status="processing">Packing</button>
+            <button onclick="filterOrdersByStatus('ready_for_pickup')" class="order-filter-btn px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 hover:text-white" data-status="ready_for_pickup">Ready for Pickup</button>
+            <button onclick="filterOrdersByStatus('delivered')" class="order-filter-btn px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 hover:text-white" data-status="delivered">Delivered</button>
+          </div>
+
+          <!-- Dynamic Orders List -->
+          <div id="ordersContainer" class="space-y-4">
+            <div class="p-8 text-center text-slate-500 bg-slate-900 rounded-xl border border-slate-800 text-xs">
+              Loading incoming customer orders...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- 🤖 TAB 5: AI BARGAIN RULES                     -->
+      <!-- ============================================== -->
+      <div id="bargain" class="tab-content hidden space-y-6">
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div>
+              <h3 class="font-bold text-lg text-white">
+                <i class="fa-solid fa-robot text-purple-400 mr-2"></i>
+                Automated AI Bargain Limit Settings
+              </h3>
+              <p class="text-xs text-slate-400 mt-1">
+                Configure minimum allowable discount limits so the AI bot can negotiate autonomously with local buyers on your behalf.
+              </p>
+            </div>
+            <button onclick="loadBargainProducts()" class="px-3 py-1.5 bg-purple-950/40 border border-purple-800/60 text-purple-300 text-xs font-bold rounded-xl hover:bg-purple-900/60 transition-all">
+              <i class="fa-solid fa-rotate-right mr-1"></i> Reload Items
+            </button>
+          </div>
+          
+          <!-- Dynamic Bargain Products Grid -->
+          <div id="bargainRulesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="p-8 text-center text-slate-500 bg-slate-900 rounded-xl border border-slate-800 md:col-span-2">
+              Loading AI bargain products...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- 💳 TAB 6: PAYOUTS & EARNINGS                  -->
+      <!-- ============================================== -->
+      <div id="earnings" class="tab-content hidden space-y-6">
+        
+        <!-- Payout Overview 3 Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Net Earnings</p>
+            <h3 id="earnNetTotal" class="text-2xl font-black text-emerald-400 mt-2">₹ 0</h3>
+            <p id="earnCommissionLabel" class="text-[10px] text-slate-500 mt-1">After 5% platform marketplace commission</p>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Ready for Payout</p>
+              <h3 id="earnAvailable" class="text-2xl font-black text-blue-400 mt-2">₹ 0</h3>
+            </div>
+            <button onclick="openWithdrawModal()" class="mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-money-bill-transfer"></i>
+              <span>Withdraw Now</span>
+            </button>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Bank / UPI Linked</p>
+              <h3 id="earnBankName" class="text-sm font-bold text-white mt-3">State Bank of India</h3>
+              <p id="earnBankDetails" class="text-xs text-slate-400 mt-0.5 font-mono">A/C: ****5820 | UPI: ratan@sbi</p>
+            </div>
+            <button onclick="switchTab('settings')" class="text-[11px] text-emerald-400 hover:underline font-bold mt-2 text-left">
+              Edit Payment Details &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- Recent Payout Requests & Sales Activity -->
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
+          <h4 class="font-bold text-sm text-white flex items-center gap-2">
+            <i class="fa-solid fa-clock-rotate-left text-blue-400"></i>
+            <span>Payout History & Transferred Settlements</span>
+          </h4>
+          <div id="payoutHistoryContainer" class="space-y-3 text-xs">
+            <div class="p-6 text-center text-slate-500 bg-slate-900 rounded-xl border border-slate-800">
+              Loading payout history...
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================== -->
+      <!-- ⭐ TAB 7: RATINGS & BUYER PHOTOS              -->
+      <!-- ============================================== -->
+      <div id="reviews" class="tab-content hidden space-y-6">
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-6 shadow-xl">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div>
+              <h3 class="font-bold text-lg text-white">
+                <i class="fa-solid fa-star text-amber-400 mr-2"></i>
+                Ratings & Buyer Photo Reviews
+              </h3>
+              <p class="text-xs text-slate-400 mt-1">
+                See real feedback and delivery photos uploaded by customers after receiving their orders.
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="reviewAveragePill" class="px-3 py-1.5 bg-amber-950/60 border border-amber-800/80 text-amber-300 font-bold text-xs rounded-xl flex items-center gap-1.5">
+                <i class="fa-solid fa-star text-amber-400"></i>
+                <span id="reviewAverageText">5.0 / 5.0</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Reviews List -->
+          <div id="reviewsContainer" class="space-y-4 text-xs">
+            <div class="p-8 text-center text-slate-500 bg-slate-900 rounded-xl border border-slate-800">
+              Loading customer reviews and feedback...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- ⚙️ TAB 8: STORE SETTINGS                       -->
+      <!-- ============================================== -->
+      <div id="settings" class="tab-content hidden space-y-6">
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-5 shadow-xl max-w-3xl">
+          <div>
+            <h3 class="font-bold text-lg text-white">Store Profile & Operating Settings</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Update shop credentials, stall location, payout UPI and operating status</p>
+          </div>
+
+          <form id="storeSettingsForm" onsubmit="handleSaveStoreSettings(event)" class="space-y-5 text-xs">
+            
+            <!-- Seller Profile Picture & Shop Banner Section -->
+            <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-4">
+              <h4 class="font-bold text-white text-sm flex items-center gap-2">
+                <i class="fa-solid fa-id-badge text-emerald-400"></i>
+                <span>Shopkeeper Identity & Store Pictures</span>
+              </h4>
+
+              <div class="flex flex-col sm:flex-row items-center gap-4">
+                <div class="relative group">
+                  <img id="setShopLogoPreview" src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=200&auto=format&fit=crop&q=80" 
+                       alt="Shop Logo" class="w-20 h-20 rounded-2xl object-cover border-2 border-emerald-500 shadow-md">
+                  <button type="button" onclick="document.getElementById('fileShopLogo').click()" 
+                          class="absolute inset-0 bg-slate-950/70 text-white rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-[9px] font-bold">
+                    <i class="fa-solid fa-camera text-sm text-emerald-400"></i>
+                    <span>Change</span>
+                  </button>
+                  <input type="file" id="fileShopLogo" accept="image/*" class="hidden" onchange="handleShopLogoUpload(event)">
+                </div>
+
+                <div class="flex-1 space-y-2 w-full">
+                  <div>
+                    <label class="block text-slate-400 mb-1 font-bold">Shop Logo / Seller Picture URL</label>
+                    <div class="flex gap-2">
+                      <input id="setShopLogo" type="text" oninput="document.getElementById('setShopLogoPreview').src = this.value" placeholder="https://..."
+                        class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500 text-xs">
+                      <button type="button" onclick="document.getElementById('fileShopLogo').click()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold rounded-xl border border-slate-700 flex items-center gap-1">
+                        <i class="fa-solid fa-upload"></i> Upload
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-slate-400 mb-1 font-bold">Shop Banner URL</label>
+                    <input id="setShopBanner" type="text" placeholder="https://..."
+                      class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500 text-xs">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-slate-400 mb-1 font-bold">Shopkeeper / Owner Full Name *</label>
+                <input id="setOwnerName" type="text" required placeholder="e.g. Ratan Ghosh"
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+
+              <div>
+                <label class="block text-slate-400 mb-1 font-bold">Account Email (Verified)</label>
+                <input id="setAccountEmail" type="email" readonly disabled
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-400 cursor-not-allowed">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-slate-400 mb-1 font-bold">Store Name / Stall Title *</label>
+                <input id="setShopName" type="text" required placeholder="e.g. Ratan Fresh & Grocery Stall #14"
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+
+              <div>
+                <label class="block text-slate-400 mb-1 font-bold">Market Hub Location / Stall Address *</label>
+                <input id="setShopAddress" type="text" required placeholder="e.g. Rajpur Sonarpur Main Bazaar"
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-slate-400 mb-1 font-bold">City / Municipality</label>
+                <input id="setCity" type="text" placeholder="Rajpur Sonarpur"
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+
+              <div>
+                <label class="block text-slate-400 mb-1 font-bold">Pin Code</label>
+                <input id="setPincode" type="text" placeholder="700149"
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+
+              <div>
+                <label class="block text-slate-400 mb-1 font-bold">Business Phone Number</label>
+                <input id="setPhone" type="text" placeholder="9876543210"
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-slate-400 mb-1 font-bold">Bank Name</label>
+                <input id="setBankName" type="text" placeholder="State Bank of India"
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+
+              <div>
+                <label class="block text-slate-400 mb-1 font-bold">Account Number</label>
+                <input id="setAccountNumber" type="text" placeholder="38491029485"
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-slate-400 mb-1 font-bold">IFSC Code</label>
+                <input id="setIfscCode" type="text" placeholder="SBIN0001234"
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+
+              <div>
+                <label class="block text-slate-400 mb-1 font-bold">Settlement UPI ID</label>
+                <input id="setUpiId" type="text" placeholder="ratan@sbi"
+                  class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+            </div>
+
+            <!-- Vacation Mode -->
+            <div class="p-3.5 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between">
+              <div>
+                <p class="font-bold text-white">Temporary Vacation Mode</p>
+                <p class="text-slate-400 text-[11px]">Temporarily pause incoming customer orders when your stall is closed</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input id="setVacationMode" type="checkbox" class="sr-only peer">
+                <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
+              </label>
+            </div>
+
+            <button id="btnSaveSettings" type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg transition-all flex items-center gap-2">
+              <i class="fa-solid fa-floppy-disk"></i>
+              <span>Save Changes</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- =============================== -->
+  <!-- 3. MODALS & POPUPS              -->
+  <!-- =============================== -->
+
+  <!-- Modal: Add New Grocery Item -->
+  <div id="addGroceryModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-base text-white flex items-center gap-2">
+          <i class="fa-solid fa-plus text-emerald-400"></i>
+          <span>Add New Packaged Grocery Item</span>
+        </h3>
+        <button onclick="closeAddGroceryModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="addGroceryForm" onsubmit="handleCreateGroceryItem(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-400 mb-1 font-bold">Grocery Item Name *</label>
+          <input id="newGrocName" type="text" required placeholder="e.g. Fortune Sunflower Oil (1 Litre)"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 mb-1 font-bold">Category</label>
+            <select id="newGrocCategory" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              <option value="1">Groceries</option>
+              <option value="16">Rice & Grains</option>
+              <option value="17">Pulses</option>
+              <option value="18">Oil & Spices</option>
+              <option value="19">Snacks</option>
+              <option value="20">Dairy & Milk</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1 font-bold">Selling Price (₹) *</label>
+            <input id="newGrocPrice" type="number" step="0.5" required placeholder="e.g. 150"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 mb-1 font-bold">Stock Quantity *</label>
+            <input id="newGrocStock" type="number" required placeholder="e.g. 30"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1 font-bold">Brand Name</label>
+            <input id="newGrocBrand" type="text" placeholder="e.g. Fortune"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeAddGroceryModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg">Create Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Change Product Image (Seller can change any product image) -->
+  <div id="changeProductImageModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-base">
+            <i class="fa-solid fa-camera"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-base text-white">Change Product Image</h3>
+            <p id="changeProductModalTitle" class="text-xs text-slate-400 font-semibold truncate max-w-xs">Product Name</p>
+          </div>
+        </div>
+        <button onclick="closeChangeProductImageModal()" class="text-slate-400 hover:text-white p-1 text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Current Image Preview -->
+      <div class="flex flex-col items-center justify-center p-4 bg-slate-950 border border-slate-800 rounded-xl relative">
+        <img id="changeProductPreviewImg" src="" alt="Product Preview" class="h-36 w-52 object-cover rounded-xl border border-emerald-500/50 shadow-md">
+        <span class="text-[10px] text-slate-400 mt-2 font-medium">Live Photo Preview</span>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <!-- Option 1: File Upload -->
+        <div>
+          <label class="block text-slate-300 font-bold mb-1">Option 1: Upload from Device or Camera</label>
+          <div onclick="document.getElementById('changeProductFileInput').click()" class="border border-dashed border-slate-700 hover:border-emerald-500 rounded-xl p-3 text-center cursor-pointer bg-slate-950/60 transition-all">
+            <i class="fa-solid fa-cloud-arrow-up text-emerald-400 text-lg mb-1 block"></i>
+            <span class="text-[11px] text-slate-300 font-bold">Click to choose image file (JPG, PNG, WEBP)</span>
+            <input type="file" id="changeProductFileInput" accept="image/*" class="hidden" onchange="handleProductPhotoFileUpload(event)">
+          </div>
+        </div>
+
+        <!-- Option 2: Image URL -->
+        <div>
+          <label class="block text-slate-300 font-bold mb-1">Option 2: Or Paste Direct Web Image URL</label>
+          <input type="text" id="changeProductImageUrlInput" oninput="onProductPhotoUrlInput(this.value)" placeholder="https://images.unsplash.com/photo-..."
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500 text-xs">
+        </div>
+
+        <!-- Option 3: Presets -->
+        <div>
+          <label class="block text-slate-400 font-bold mb-1.5 text-[11px]">Option 3: Quick Select Local Produce Presets</label>
+          <div class="grid grid-cols-3 sm:grid-cols-4 gap-1.5">
+            <button type="button" onclick="selectPresetPhoto('https://images.unsplash.com/photo-1544943910-4c1dc44a0eb5?w=500&auto=format&fit=crop&q=80')" class="p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 rounded-lg text-left text-[10px] text-slate-300 font-bold transition-all truncate">
+              🐟 Katla Fish
+            </button>
+            <button type="button" onclick="selectPresetPhoto('https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&auto=format&fit=crop&q=80')" class="p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 rounded-lg text-left text-[10px] text-slate-300 font-bold transition-all truncate">
+              🐟 Rui Fish
+            </button>
+            <button type="button" onclick="selectPresetPhoto('https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=500&auto=format&fit=crop&q=80')" class="p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 rounded-lg text-left text-[10px] text-slate-300 font-bold transition-all truncate">
+              🦐 Fresh Prawns
+            </button>
+            <button type="button" onclick="selectPresetPhoto('https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=500&auto=format&fit=crop&q=80')" class="p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 rounded-lg text-left text-[10px] text-slate-300 font-bold transition-all truncate">
+              🥔 Country Potatoes
+            </button>
+            <button type="button" onclick="selectPresetPhoto('https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=500&auto=format&fit=crop&q=80')" class="p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 rounded-lg text-left text-[10px] text-slate-300 font-bold transition-all truncate">
+              🧅 Red Onions
+            </button>
+            <button type="button" onclick="selectPresetPhoto('https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=80')" class="p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 rounded-lg text-left text-[10px] text-slate-300 font-bold transition-all truncate">
+              🍅 Fresh Tomatoes
+            </button>
+            <button type="button" onclick="selectPresetPhoto('https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500&auto=format&fit=crop&q=80')" class="p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 rounded-lg text-left text-[10px] text-slate-300 font-bold transition-all truncate">
+              🛢️ Mustard Oil
+            </button>
+            <button type="button" onclick="selectPresetPhoto('https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500&auto=format&fit=crop&q=80')" class="p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 rounded-lg text-left text-[10px] text-slate-300 font-bold transition-all truncate">
+              🍚 Gobindabhog Rice
+            </button>
+            <button type="button" onclick="selectPresetPhoto('https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&auto=format&fit=crop&q=80')" class="p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 rounded-lg text-left text-[10px] text-slate-300 font-bold transition-all truncate">
+              🌾 Wheat Atta
+            </button>
+            <button type="button" onclick="selectPresetPhoto('https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500&auto=format&fit=crop&q=80')" class="p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 rounded-lg text-left text-[10px] text-slate-300 font-bold transition-all truncate">
+              🥛 Cow Milk
+            </button>
+            <button type="button" onclick="selectPresetPhoto('https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80')" class="p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 rounded-lg text-left text-[10px] text-slate-300 font-bold transition-all truncate">
+              🧀 Fresh Paneer
+            </button>
+            <button type="button" onclick="selectPresetPhoto('https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500&auto=format&fit=crop&q=80')" class="p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 rounded-lg text-left text-[10px] text-slate-300 font-bold transition-all truncate">
+              🍗 Fresh Chicken
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+        <button type="button" onclick="closeChangeProductImageModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold text-xs">Cancel</button>
+        <button type="button" onclick="saveChangedProductImage()" id="btnSaveProductPhoto" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs flex items-center gap-1.5 shadow-lg">
+          <i class="fa-solid fa-floppy-disk"></i> Save Image
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Withdraw Earnings -->
+  <div id="withdrawModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-base text-white flex items-center gap-2">
+          <i class="fa-solid fa-wallet text-blue-400"></i>
+          <span>Withdraw Available Earnings</span>
+        </h3>
+        <button onclick="closeWithdrawModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="withdrawForm" onsubmit="handleRequestWithdraw(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block text-slate-400 mb-1 font-bold">Available for Withdrawal</label>
+          <div id="modalAvailableDisplay" class="text-xl font-black text-emerald-400 py-1 font-mono">₹ 0.00</div>
+        </div>
+
+        <div>
+          <label class="block text-slate-400 mb-1 font-bold">Withdraw Amount (₹) *</label>
+          <input id="withdrawAmount" type="number" min="100" step="1" required placeholder="Min ₹100"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold text-sm focus:outline-none focus:border-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-slate-400 mb-1 font-bold">Payout Destination Method</label>
+          <select id="withdrawMethod" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+            <option value="upi">Direct UPI Transfer (Instant)</option>
+            <option value="bank_transfer">Direct Bank NEFT / IMPS</option>
+          </select>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeWithdrawModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg">Confirm Payout</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Global Toast Feedback -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 border border-emerald-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs transform translate-y-20 opacity-0 transition-all duration-300">
+    <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+    <span id="toastMessage">Success</span>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 4. JAVASCRIPT LOGIC & API CLIENT -->
+  <!-- =============================== -->
+  <script>
+    // Dynamic API Base routed via LocalLinkApp bridge
+    const API_BASE = "";
+
+    function toggleSellerSidebar(open) {
+      const sidebar = document.getElementById("sellerSidebar");
+      const backdrop = document.getElementById("sellerSidebarBackdrop");
+      if (!sidebar || !backdrop) return;
+      if (open) {
+        sidebar.classList.remove("-translate-x-full");
+        backdrop.classList.remove("hidden");
+      } else {
+        sidebar.classList.add("-translate-x-full");
+        backdrop.classList.add("hidden");
+      }
+    }
+
+    // Application State
+    let currentSeller = null;
+    let currentProducts = [];
+    let currentOrders = [];
+    let currentOrderFilter = "";
+    let cachedAvailableBalance = 0;
+    let liveUploadedImageDataUrl = null;
+
+    // Token Utilities
+    function getStoredToken() {
+      try {
+        return localStorage.getItem("locallinkSellerToken") || sessionStorage.getItem("locallinkSellerToken");
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function removeStoredToken() {
+      try {
+        localStorage.removeItem("locallinkSellerToken");
+        localStorage.removeItem("locallinkSellerUser");
+        sessionStorage.removeItem("locallinkSellerToken");
+        sessionStorage.removeItem("locallinkSellerUser");
+      } catch (e) {}
+    }
+
+    // Toast Notification Display
+    function showToast(message, type = "success") {
+      const toast = document.getElementById("toast");
+      const text = document.getElementById("toastMessage");
+      const icon = document.getElementById("toastIcon");
+
+      if (type === "error") {
+        toast.className = "fixed bottom-5 right-5 z-50 bg-slate-900 border border-rose-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs transform translate-y-0 opacity-100 transition-all duration-300";
+        icon.className = "fa-solid fa-circle-exclamation text-rose-400 text-sm";
+      } else {
+        toast.className = "fixed bottom-5 right-5 z-50 bg-slate-900 border border-emerald-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs transform translate-y-0 opacity-100 transition-all duration-300";
+        icon.className = "fa-solid fa-circle-check text-emerald-400 text-sm";
+      }
+      text.textContent = message;
+
+      setTimeout(() => {
+        toast.className = "fixed bottom-5 right-5 z-50 bg-slate-900 border border-emerald-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs transform translate-y-20 opacity-0 transition-all duration-300";
+      }, 3500);
+    }
+
+    // Authenticated API Fetch Wrapper with Safari-proof parsing
+    async function apiRequest(endpoint, options = {}) {
+      const token = getStoredToken();
+      if (!token) {
+        window.location.href = "seller-login.html";
+        return null;
+      }
+
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        ...(options.headers || {})
+      };
+
+      try {
+        const response = await fetch(`${API_BASE}${endpoint}`, {
+          ...options,
+          headers
+        });
+
+        const rawText = await response.text();
+        let data = {};
+        try {
+          data = rawText ? JSON.parse(rawText) : {};
+        } catch (jsonErr) {
+          throw new Error(`Server returned non-JSON response (${response.status})`);
+        }
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            removeStoredToken();
+            window.location.href = "seller-login.html";
+            return null;
+          }
+          throw new Error(data.message || `Request failed with status ${response.status}`);
+        }
+
+        return data;
+      } catch (err) {
+        showToast(err.message || "Server connection error", "error");
+        throw err;
+      }
+    }
+
+    // Tab Switching
+    function switchTab(tabId) {
+      toggleSellerSidebar(false);
+      const tabs = document.querySelectorAll('.tab-content');
+      tabs.forEach(tab => tab.classList.add('hidden'));
+
+      const links = document.querySelectorAll('.sidebar-link');
+      links.forEach(link => {
+        link.classList.remove('bg-emerald-600', 'text-white', 'shadow-lg', 'shadow-emerald-950/50');
+        link.classList.add('text-slate-400', 'hover:bg-slate-900', 'hover:text-slate-200');
+      });
+
+      const targetTab = document.getElementById(tabId);
+      if (targetTab) {
+        targetTab.classList.remove('hidden');
+      }
+
+      const activeLink = document.getElementById('link-' + tabId);
+      if (activeLink) {
+        activeLink.classList.add('bg-emerald-600', 'text-white', 'shadow-lg', 'shadow-emerald-950/50');
+        activeLink.classList.remove('text-slate-400', 'hover:bg-slate-900', 'hover:text-slate-200');
+      }
+
+      // Tab specific refresh
+      if (tabId === 'dashboard') loadDashboardData();
+      else if (tabId === 'photo-upload') loadLiveCatchProducts();
+      else if (tabId === 'inventory') loadGroceryInventory();
+      else if (tabId === 'orders') loadSellerOrders();
+      else if (tabId === 'bargain') loadBargainProducts();
+      else if (tabId === 'earnings') loadEarningsData();
+      else if (tabId === 'reviews') loadSellerReviews();
+      else if (tabId === 'settings') loadStoreSettings();
+    }
+
+    // ==============================================
+    // INITIALIZATION ON LOAD
+    // ==============================================
+    window.addEventListener("DOMContentLoaded", async () => {
+      await initializeSellerSession();
+      loadDashboardData();
+      switchTab('dashboard');
+    });
+
+    async function initializeSellerSession() {
+      try {
+        const data = await apiRequest("/api/seller/auth/me");
+        if (!data || !data.success) return;
+
+        currentSeller = data.data;
+
+        // Populate sidebar header & avatars
+        const shopName = currentSeller.shop ? currentSeller.shop.shopName : currentSeller.user.name;
+        document.getElementById("sidebarShopName").textContent = shopName;
+        document.getElementById("sidebarShopLocation").textContent = (currentSeller.shop && currentSeller.shop.city) ? `${currentSeller.shop.city} Market Hub` : "Rajpur Sonarpur Market";
+
+        const logo = (currentSeller.shop && currentSeller.shop.shopLogo) || currentSeller.user.avatarUrl || "https://images.unsplash.com/photo-1542838132-92c53300491e?w=100&auto=format&fit=crop&q=80";
+        const sideImg = document.getElementById("sidebarShopAvatarImg");
+        if (sideImg) sideImg.src = logo;
+        const navImg = document.getElementById("navSellerAvatarImg");
+        if (navImg) navImg.src = logo;
+        const navName = document.getElementById("navSellerNameText");
+        if (navName) navName.textContent = shopName.split(" ")[0] || "Store";
+
+        // Store status badge
+        const badge = document.getElementById("storeStatusBadge");
+        if (currentSeller.shop && currentSeller.shop.isVacationMode) {
+          badge.className = "hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-amber-950/70 border border-amber-800 text-amber-300 text-xs font-bold rounded-full";
+          badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span><span>Vacation Mode</span>`;
+        } else {
+          badge.className = "hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-950/70 border border-emerald-800 text-emerald-300 text-xs font-bold rounded-full";
+          badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>Store Open</span>`;
+        }
+      } catch (e) {
+        console.error("Session init failed:", e);
+      }
+    }
+
+    function handleLogout() {
+      if (confirm("Are you sure you want to log out of your vendor portal?")) {
+        removeStoredToken();
+        showToast("Logged out successfully");
+        setTimeout(() => {
+          window.location.href = "seller-login.html";
+        }, 500);
+      }
+    }
+
+    // ==============================================
+    // 📊 1. STORE DASHBOARD
+    // ==============================================
+    async function loadDashboardData() {
+      try {
+        const res = await apiRequest("/api/seller/dashboard/overview");
+        if (!res || !res.success) return;
+
+        const { products, orders, financials, reviews, recentOrders, topProducts } = res.data;
+
+        // KPI Cards
+        document.getElementById("dashTodaySales").textContent = `₹ ${Number(financials.todaySales || 0).toLocaleString("en-IN")}`;
+        document.getElementById("dashPendingOrders").textContent = `${orders.pending || 0} Orders`;
+        
+        // Orders Badge
+        const badgeOrders = document.getElementById("badge-orders-count");
+        if (orders.pending > 0) {
+          badgeOrders.textContent = orders.pending;
+          badgeOrders.classList.remove("hidden");
+        } else {
+          badgeOrders.classList.add("hidden");
+        }
+
+        // Ratings
+        document.getElementById("dashStoreRating").innerHTML = `<i class="fa-solid fa-star text-amber-400 text-lg"></i> ${Number(reviews.averageRating || 5.0).toFixed(1)} / 5.0`;
+        document.getElementById("dashReviewCount").textContent = `${reviews.total || 0} verified customer reviews`;
+
+        // Secondary cards
+        document.getElementById("dashNetEarnings").textContent = `₹ ${Number(financials.netSellerEarnings || 0).toLocaleString("en-IN")}`;
+        document.getElementById("dashActiveProducts").textContent = `${products.active || 0} Products`;
+        document.getElementById("dashCompletedPayouts").textContent = `₹ ${Number(financials.completedPayouts || 0).toLocaleString("en-IN")}`;
+        cachedAvailableBalance = Number(financials.availableBalance || 0);
+
+        // Recent Orders List
+        const ordersListEl = document.getElementById("dashRecentOrdersList");
+        if (!recentOrders || recentOrders.length === 0) {
+          ordersListEl.innerHTML = `<div class="p-6 text-center text-slate-500 bg-slate-900 rounded-xl">No incoming customer orders yet today.</div>`;
+        } else {
+          ordersListEl.innerHTML = recentOrders.map(o => `
+            <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between">
+              <div>
+                <p class="font-bold text-white">${o.order_number || ('#LL-' + o.order_id)}</p>
+                <p class="text-slate-400 text-[11px]">${o.customerName || 'Customer'} &bull; ${o.itemCount} item(s)</p>
+              </div>
+              <div class="text-right">
+                <p class="font-bold text-emerald-400">₹ ${Number(o.sellerSubtotal).toLocaleString("en-IN")}</p>
+                <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-bold ${
+                  o.order_status === 'pending' ? 'bg-amber-950 text-amber-300 border border-amber-800' :
+                  o.order_status === 'confirmed' ? 'bg-blue-950 text-blue-300 border border-blue-800' :
+                  o.order_status === 'processing' ? 'bg-purple-950 text-purple-300 border border-purple-800' :
+                  o.order_status === 'ready_for_pickup' ? 'bg-teal-950 text-teal-300 border border-teal-800' :
+                  'bg-emerald-950 text-emerald-300 border border-emerald-800'
+                }">
+                  ${o.order_status.replace(/_/g, " ").toUpperCase()}
+                </span>
+              </div>
+            </div>
+          `).join("");
+        }
+
+        // Top Selling Products List
+        const topEl = document.getElementById("dashTopProductsList");
+        if (!topProducts || topProducts.length === 0) {
+          topEl.innerHTML = `<div class="p-6 text-center text-slate-500 bg-slate-900 rounded-xl">No top selling products recorded yet.</div>`;
+        } else {
+          topEl.innerHTML = topProducts.map(p => `
+            <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-slate-950 rounded-lg flex items-center justify-center text-emerald-400">
+                  <i class="fa-solid fa-box-open"></i>
+                </div>
+                <div>
+                  <p class="font-bold text-white">${p.name}</p>
+                  <p class="text-slate-400 text-[11px]">₹ ${Number(p.price).toLocaleString("en-IN")}</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="font-bold text-white">${p.totalSold} Sold</p>
+                <p class="text-slate-400 text-[11px]">₹ ${Number(p.totalRevenue).toLocaleString("en-IN")}</p>
+              </div>
+            </div>
+          `).join("");
+        }
+
+      } catch (e) {
+        console.error("Dashboard load failed:", e);
+      }
+    }
+
+    // ==============================================
+    // 📸 2. DAILY REAL PHOTO UPLOAD (FISH / VEGETABLES)
+    // ==============================================
+    function handleLivePhotoFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        liveUploadedImageDataUrl = evt.target.result;
+        document.getElementById("livePhotoPreviewImg").src = liveUploadedImageDataUrl;
+        document.getElementById("livePhotoPreviewContainer").classList.remove("hidden");
+        document.getElementById("livePhotoPlaceholder").classList.add("hidden");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function onLiveImageUrlChange(url) {
+      if (url && url.startsWith("http")) {
+        liveUploadedImageDataUrl = url;
+        document.getElementById("livePhotoPreviewImg").src = url;
+        document.getElementById("livePhotoPreviewContainer").classList.remove("hidden");
+        document.getElementById("livePhotoPlaceholder").classList.add("hidden");
+      }
+    }
+
+    async function handlePublishLivePhoto(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnPublishLive");
+      const originalHTML = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Publishing Live...`;
+
+      try {
+        const name = document.getElementById("liveItemName").value.trim();
+        const categoryId = document.getElementById("liveCategory").value;
+        const price = Number(document.getElementById("livePrice").value);
+        const stockQuantity = Number(document.getElementById("liveStock").value);
+        const imageUrl = liveUploadedImageDataUrl || document.getElementById("liveImageUrl").value.trim() || "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500&auto=format&fit=crop&q=80";
+
+        const payload = {
+          name,
+          categoryId,
+          price,
+          stockQuantity,
+          imageUrl,
+          status: "active",
+          description: "Fresh daily morning catch / harvest uploaded live by local shopkeeper"
+        };
+
+        const res = await apiRequest("/api/seller/products", {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+
+        if (res && res.success) {
+          showToast(`Live stock "${name}" published successfully!`);
+          document.getElementById("livePhotoForm").reset();
+          liveUploadedImageDataUrl = null;
+          document.getElementById("livePhotoPreviewContainer").classList.add("hidden");
+          document.getElementById("livePhotoPlaceholder").classList.remove("hidden");
+          loadLiveCatchProducts();
+          loadDashboardData();
+        }
+      } catch (err) {
+        showToast(err.message || "Failed to publish photo", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+      }
+    }
+
+    async function loadLiveCatchProducts() {
+      const container = document.getElementById("livePublishedList");
+      try {
+        // Fetch products in fish / veg categories (4, 12, 13, 2, 15, 3)
+        const res = await apiRequest("/api/seller/products?limit=50");
+        if (!res || !res.success) return;
+
+        currentProducts = res.data.products || [];
+        
+        // Filter fresh fish, veg, fruits
+        const freshItems = currentProducts.filter(p => {
+          const cid = Number(p.categoryId);
+          return [4, 12, 13, 2, 15, 3, 35].includes(cid) || (p.description && p.description.includes("catch"));
+        });
+
+        if (freshItems.length === 0) {
+          container.innerHTML = `
+            <div class="p-8 text-center text-slate-500 bg-slate-900 rounded-xl border border-slate-800 md:col-span-2">
+              <i class="fa-solid fa-camera text-3xl mb-2 text-slate-600 block"></i>
+              No live morning catch published yet today. Use the form above to upload today's fresh stock photo!
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = freshItems.map(item => `
+          <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-16 h-16 rounded-xl bg-slate-950 border border-slate-800 overflow-hidden flex-shrink-0 relative">
+                <img src="${item.imageUrl || 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500&auto=format&fit=crop&q=80'}" alt="${item.name}" class="w-full h-full object-cover">
+                <span class="absolute bottom-0 inset-x-0 bg-emerald-600/90 text-[8px] text-center text-white font-bold py-0.5">Live Photo</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-white text-sm">${item.name}</h4>
+                <p class="text-slate-400 text-xs">${item.categoryName || 'Fresh Catch'}</p>
+                <div class="flex items-center gap-3 mt-1">
+                  <span class="text-emerald-400 font-bold">₹ ${item.price} / kg</span>
+                  <span class="text-slate-300 font-semibold">${item.stockQuantity} kg available</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 self-end sm:self-center">
+              <button onclick="handleDeleteProduct(${item.id}, '${item.name.replace(/'/g, "\\'")}')" class="px-3 py-1.5 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-900/60 text-rose-400 text-xs font-bold rounded-xl transition-all">
+                Sold Out / Remove
+              </button>
+            </div>
+          </div>
+        `).join("");
+
+      } catch (e) {
+        container.innerHTML = `<div class="p-4 text-center text-rose-400 md:col-span-2">Error loading fresh items</div>`;
+      }
+    }
+
+    // ==============================================
+    // 📦 3. PRODUCTS & INVENTORY (GROCERY)
+    // ==============================================
+    async function loadGroceryInventory() {
+      const container = document.getElementById("groceryItemsContainer");
+      try {
+        const res = await apiRequest("/api/seller/products?limit=50");
+        if (!res || !res.success) return;
+
+        currentProducts = res.data.products || [];
+        renderGroceryItems(currentProducts);
+      } catch (e) {
+        container.innerHTML = `<div class="p-6 text-center text-rose-400">Failed to load inventory</div>`;
+      }
+    }
+
+    function renderGroceryItems(items) {
+      const container = document.getElementById("groceryItemsContainer");
+      
+      // Select grocery items (or all items not strictly fresh fish)
+      const groceryList = items.filter(p => {
+        const cid = Number(p.categoryId);
+        return ![4, 12, 13].includes(cid) || (p.categoryName && p.categoryName.toLowerCase().includes("groc"));
+      });
+
+      if (groceryList.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center text-slate-500 bg-slate-900 rounded-2xl border border-slate-800">
+            <i class="fa-solid fa-boxes-stacked text-3xl mb-2 text-slate-600 block"></i>
+            No grocery items listed yet. Click "+ Add New Grocery Item" to list your packaged goods.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = groceryList.map((p, idx) => {
+        // Choose appropriate icon for grocery
+        let icon = "fa-bowl-rice";
+        const nameLower = p.name.toLowerCase();
+        if (nameLower.includes("oil")) icon = "fa-bottle-droplet";
+        else if (nameLower.includes("wheat") || nameLower.includes("flour") || nameLower.includes("atta")) icon = "fa-wheat-awn";
+        else if (nameLower.includes("milk") || nameLower.includes("dairy")) icon = "fa-cow";
+        else if (nameLower.includes("spice") || nameLower.includes("masala")) icon = "fa-mortar-pestle";
+        else if (nameLower.includes("dal") || nameLower.includes("pulse")) icon = "fa-seedling";
+
+        return `
+          <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl flex flex-wrap justify-between items-center gap-4 hover:border-slate-700 transition-all">
+            <div class="flex items-center gap-4">
+              <!-- Product Photo Thumbnail with Quick Change Button -->
+              <div class="w-16 h-16 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-center text-amber-400 text-2xl shadow-inner relative overflow-hidden flex-shrink-0 group cursor-pointer"
+                   onclick="openChangeProductImageModal(${p.id}, '${p.name.replace(/'/g, "\\'")}', '${p.imageUrl || ''}')" title="Click to change product photo">
+                ${p.imageUrl ? `
+                  <img src="${p.imageUrl}" alt="${p.name}" class="w-full h-full object-cover rounded-xl group-hover:scale-110 transition-transform">
+                ` : `
+                  <i class="fa-solid ${icon}"></i>
+                `}
+                <div class="absolute inset-0 bg-slate-950/80 text-white opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-0.5 text-[8px] font-bold">
+                  <i class="fa-solid fa-camera text-emerald-400 text-xs"></i>
+                  <span>Change</span>
+                </div>
+              </div>
+              <div>
+                <h4 class="font-bold text-white text-sm">${p.name}</h4>
+                <p class="text-slate-400 text-xs">Category: ${p.categoryName || 'Grocery & Grains'}</p>
+                <div class="flex items-center gap-3 mt-1">
+                  <span class="text-[11px] text-slate-500 font-mono">SKU: ${p.sku || ('SKU-' + p.id)}</span>
+                  <button type="button" onclick="openChangeProductImageModal(${p.id}, '${p.name.replace(/'/g, "\\'")}', '${p.imageUrl || ''}')" 
+                          class="text-[11px] text-sky-400 hover:text-sky-300 font-bold underline flex items-center gap-1 transition-colors">
+                    <i class="fa-solid fa-camera"></i> Change Photo
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 flex-wrap">
+              <div>
+                <label class="block text-[10px] text-slate-400 font-bold mb-1">Price (₹)</label>
+                <input type="number" step="0.5" id="price-input-${p.id}" value="${p.price}" 
+                  class="w-24 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold text-center focus:outline-none focus:border-emerald-500">
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-400 font-bold mb-1">Stock Qty</label>
+                <input type="number" id="stock-input-${p.id}" value="${p.stockQuantity}" 
+                  class="w-24 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-emerald-400 font-bold text-center focus:outline-none focus:border-emerald-500">
+              </div>
+              <button onclick="updateGroceryItem(${p.id}, '${p.name.replace(/'/g, "\\'")}')" 
+                class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl mt-5 shadow-lg transition-all flex items-center gap-1.5">
+                <i class="fa-solid fa-check"></i>
+                <span>Update Stock</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function handleGrocerySearch(query) {
+      const q = query.toLowerCase().trim();
+      if (!q) {
+        renderGroceryItems(currentProducts);
+        return;
+      }
+      const filtered = currentProducts.filter(p => p.name.toLowerCase().includes(q) || (p.sku && p.sku.toLowerCase().includes(q)));
+      renderGroceryItems(filtered);
+    }
+
+    async function updateGroceryItem(productId, productName) {
+      const priceVal = Number(document.getElementById(`price-input-${productId}`).value);
+      const stockVal = Number(document.getElementById(`stock-input-${productId}`).value);
+
+      if (isNaN(priceVal) || priceVal <= 0) {
+        showToast("Please enter a valid price", "error");
+        return;
+      }
+      if (isNaN(stockVal) || stockVal < 0) {
+        showToast("Please enter a valid stock quantity", "error");
+        return;
+      }
+
+      try {
+        const res = await apiRequest(`/api/seller/products/${productId}`, {
+          method: "PUT",
+          body: JSON.stringify({
+            price: priceVal,
+            stockQuantity: stockVal
+          })
+        });
+
+        if (res && res.success) {
+          showToast(`Stock & price updated for "${productName}"! Price: ₹${priceVal}, Stock: ${stockVal}`);
+          loadDashboardData();
+        }
+      } catch (e) {
+        showToast("Update failed: " + e.message, "error");
+      }
+    }
+
+    // ==============================================
+    // 📸 CHANGE PRODUCT IMAGE (SELLER CONTROL)
+    // ==============================================
+    let currentEditPhotoProductId = null;
+    let currentEditPhotoProductName = "";
+
+    function openChangeProductImageModal(productId, productName, currentImageUrl) {
+      currentEditPhotoProductId = productId;
+      currentEditPhotoProductName = productName;
+      document.getElementById("changeProductModalTitle").textContent = productName;
+      
+      const preview = document.getElementById("changeProductPreviewImg");
+      const fallback = "https://images.unsplash.com/photo-1544943910-4c1dc44a0eb5?w=500&auto=format&fit=crop&q=80";
+      preview.src = currentImageUrl && currentImageUrl.trim() ? currentImageUrl : fallback;
+      document.getElementById("changeProductImageUrlInput").value = currentImageUrl || "";
+      document.getElementById("changeProductFileInput").value = "";
+
+      document.getElementById("changeProductImageModal").classList.remove("hidden");
+    }
+
+    function closeChangeProductImageModal() {
+      document.getElementById("changeProductImageModal").classList.add("hidden");
+      currentEditPhotoProductId = null;
+      currentEditPhotoProductName = "";
+    }
+
+    function onProductPhotoUrlInput(url) {
+      if (url && url.trim()) {
+        document.getElementById("changeProductPreviewImg").src = url.trim();
+      }
+    }
+
+    function selectPresetPhoto(url) {
+      document.getElementById("changeProductImageUrlInput").value = url;
+      document.getElementById("changeProductPreviewImg").src = url;
+      showToast("Preset photo selected!");
+    }
+
+    function handleProductPhotoFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+        showToast("Please choose an image file (PNG, JPG, WEBP)", "error");
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        showToast("File size too large. Please select an image under 5MB.", "error");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        document.getElementById("changeProductPreviewImg").src = dataUrl;
+        document.getElementById("changeProductImageUrlInput").value = dataUrl;
+        showToast("Photo loaded from device! Click 'Save Image' to publish.");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function saveChangedProductImage() {
+      if (!currentEditPhotoProductId) {
+        showToast("No product selected", "error");
+        return;
+      }
+
+      const newImageUrl = document.getElementById("changeProductImageUrlInput").value.trim() || document.getElementById("changeProductPreviewImg").src;
+      if (!newImageUrl) {
+        showToast("Please choose a file, paste an image URL, or pick a preset photo", "error");
+        return;
+      }
+
+      const btn = document.getElementById("btnSaveProductPhoto");
+      const orig = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Saving...`;
+
+      try {
+        const res = await apiRequest(`/api/seller/products/${currentEditPhotoProductId}`, {
+          method: "PUT",
+          body: JSON.stringify({
+            imageUrl: newImageUrl
+          })
+        });
+
+        if (res && res.success) {
+          showToast(`Product image successfully updated for "${currentEditPhotoProductName}"!`);
+          
+          // Update in local memory
+          const prod = currentProducts.find(p => p.id === currentEditPhotoProductId);
+          if (prod) prod.imageUrl = newImageUrl;
+          
+          renderGroceryItems(currentProducts);
+          closeChangeProductImageModal();
+        } else {
+          throw new Error(res.message || "Failed to update image");
+        }
+      } catch (err) {
+        showToast("Failed to save image: " + err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+      }
+    }
+
+    function openAddGroceryModal() {
+      document.getElementById("addGroceryModal").classList.remove("hidden");
+    }
+
+    function closeAddGroceryModal() {
+      document.getElementById("addGroceryModal").classList.add("hidden");
+      document.getElementById("addGroceryForm").reset();
+    }
+
+    async function handleCreateGroceryItem(e) {
+      e.preventDefault();
+      try {
+        const payload = {
+          name: document.getElementById("newGrocName").value.trim(),
+          categoryId: document.getElementById("newGrocCategory").value,
+          price: Number(document.getElementById("newGrocPrice").value),
+          stockQuantity: Number(document.getElementById("newGrocStock").value),
+          brand: document.getElementById("newGrocBrand").value.trim() || null,
+          status: "active"
+        };
+
+        const res = await apiRequest("/api/seller/products", {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+
+        if (res && res.success) {
+          showToast(`Grocery item "${payload.name}" added successfully!`);
+          closeAddGroceryModal();
+          loadGroceryInventory();
+          loadDashboardData();
+        }
+      } catch (err) {
+        showToast(err.message || "Failed to create product", "error");
+      }
+    }
+
+    async function handleDeleteProduct(productId, name) {
+      if (confirm(`Are you sure you want to remove "${name}" from your active marketplace listings?`)) {
+        try {
+          const res = await apiRequest(`/api/seller/products/${productId}`, {
+            method: "DELETE"
+          });
+          if (res && res.success) {
+            showToast(`Product "${name}" removed.`);
+            loadLiveCatchProducts();
+            loadGroceryInventory();
+            loadDashboardData();
+          }
+        } catch (e) {
+          showToast(e.message, "error");
+        }
+      }
+    }
+
+    // ==============================================
+    // 🚚 4. INCOMING ORDERS
+    // ==============================================
+    async function loadSellerOrders() {
+      const container = document.getElementById("ordersContainer");
+      try {
+        const endpoint = currentOrderFilter ? `/api/seller/orders?status=${currentOrderFilter}` : "/api/seller/orders";
+        const res = await apiRequest(endpoint);
+        if (!res || !res.success) return;
+
+        currentOrders = res.data.orders || [];
+
+        if (currentOrders.length === 0) {
+          container.innerHTML = `
+            <div class="p-8 text-center text-slate-500 bg-slate-900 rounded-xl border border-slate-800 text-xs">
+              <i class="fa-solid fa-truck-ramp-box text-3xl mb-2 text-slate-600 block"></i>
+              No orders found in this category.
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = currentOrders.map(order => {
+          let actionButton = "";
+          if (order.orderStatus === "pending") {
+            actionButton = `<button onclick="updateOrderStatus(${order.orderId}, 'confirmed')" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all">Confirm Order</button>`;
+          } else if (order.orderStatus === "confirmed") {
+            actionButton = `<button onclick="updateOrderStatus(${order.orderId}, 'processing')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all">Mark as Packed</button>`;
+          } else if (order.orderStatus === "processing") {
+            actionButton = `<button onclick="updateOrderStatus(${order.orderId}, 'ready_for_pickup')" class="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all">Ready for Rider</button>`;
+          } else if (order.orderStatus === "ready_for_pickup") {
+            actionButton = `<span class="text-xs text-teal-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-clock"></i> Awaiting Rider Pickup</span>`;
+          } else if (order.orderStatus === "delivered") {
+            actionButton = `<span class="text-xs text-emerald-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> Delivered Successfully</span>`;
+          } else {
+            actionButton = `<span class="text-xs text-slate-400 font-bold uppercase">${order.orderStatus}</span>`;
+          }
+
+          return `
+            <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-white text-sm">${order.orderNumber || ('#LL-' + order.orderId)}</span>
+                  <span class="text-slate-500">&bull;</span>
+                  <span class="text-slate-400">${new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                </div>
+                <p class="text-slate-300">
+                  Customer: <strong class="text-white">${order.customerName || 'Local Buyer'}</strong> 
+                  ${order.deliveryAddress ? `&bull; <span class="text-slate-400">${order.deliveryAddress}</span>` : ''}
+                </p>
+                <p class="text-slate-400">Total Stall Earnings: <strong class="text-emerald-400 font-bold">₹ ${Number(order.sellerSubtotal).toLocaleString("en-IN")}</strong></p>
+                <p class="text-emerald-400 text-[11px] font-semibold">
+                  Status: ${order.paymentStatus === 'paid' ? 'Paid via UPI' : 'Cash on Delivery'} (${order.orderStatus})
+                </p>
+              </div>
+
+              <div>
+                ${actionButton}
+              </div>
+            </div>
+          `;
+        }).join("");
+
+      } catch (e) {
+        container.innerHTML = `<div class="p-4 text-center text-rose-400">Error loading orders</div>`;
+      }
+    }
+
+    function filterOrdersByStatus(status) {
+      currentOrderFilter = status;
+      document.querySelectorAll(".order-filter-btn").forEach(btn => {
+        if (btn.getAttribute("data-status") === status) {
+          btn.className = "order-filter-btn px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-bold";
+        } else {
+          btn.className = "order-filter-btn px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 hover:text-white";
+        }
+      });
+      loadSellerOrders();
+    }
+
+    async function updateOrderStatus(orderId, newStatus) {
+      try {
+        const res = await apiRequest(`/api/seller/orders/${orderId}/status`, {
+          method: "PATCH",
+          body: JSON.stringify({ status: newStatus })
+        });
+        if (res && res.success) {
+          showToast(`Order #${orderId} status updated to "${newStatus}"!`);
+          loadSellerOrders();
+          loadDashboardData();
+        }
+      } catch (e) {
+        showToast("Status update failed: " + e.message, "error");
+      }
+    }
+
+    // ==============================================
+    // 🤖 5. AI BARGAIN RULES
+    // ==============================================
+    async function loadBargainProducts() {
+      const container = document.getElementById("bargainRulesContainer");
+      try {
+        const res = await apiRequest("/api/seller/products?limit=50");
+        if (!res || !res.success) return;
+
+        currentProducts = res.data.products || [];
+
+        if (currentProducts.length === 0) {
+          container.innerHTML = `
+            <div class="p-8 text-center text-slate-500 bg-slate-900 rounded-xl border border-slate-800 md:col-span-2">
+              No products found to configure bargain rules.
+            </div>
+          `;
+          return;
+        }
+
+        let configuredCount = 0;
+
+        container.innerHTML = currentProducts.map(p => {
+          const regularPrice = Number(p.price);
+          // Default minimum AI floor: 85% of regular price or discountPrice if saved
+          const floorPrice = p.discountPrice ? Number(p.discountPrice) : Math.round(regularPrice * 0.9);
+          const minSlider = Math.round(regularPrice * 0.7);
+          const maxSlider = regularPrice;
+
+          if (p.discountPrice) configuredCount++;
+
+          return `
+            <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
+              <div class="flex justify-between items-start">
+                <h4 class="font-bold text-emerald-400 text-sm">${p.name}</h4>
+                <button onclick="saveBargainRule(${p.id}, '${p.name.replace(/'/g, "\\'")}')" 
+                  class="px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg text-[11px] shadow transition-all">
+                  Save Rule
+                </button>
+              </div>
+              <p class="text-slate-400">Regular Selling Price: <span class="text-white font-bold">₹ ${regularPrice}</span></p>
+              <div class="flex items-center justify-between">
+                <p class="text-slate-300">Minimum AI Bargain Floor: <strong id="floor-label-${p.id}" class="text-purple-400 font-bold">₹ ${floorPrice}</strong></p>
+                <input type="number" id="floor-input-${p.id}" value="${floorPrice}" min="${minSlider}" max="${maxSlider}"
+                  oninput="syncBargainSlider(${p.id}, this.value)"
+                  class="w-20 bg-slate-950 border border-slate-800 rounded-lg px-2 py-0.5 text-center text-purple-400 font-bold text-xs">
+              </div>
+              <input type="range" id="floor-slider-${p.id}" min="${minSlider}" max="${maxSlider}" value="${floorPrice}" 
+                oninput="syncBargainInput(${p.id}, this.value)"
+                class="w-full accent-purple-500 mt-1 cursor-pointer">
+              <p class="text-[10px] text-slate-500">AI bot will not sell below this limit under any automated chat negotiation.</p>
+            </div>
+          `;
+        }).join("");
+
+        document.getElementById("dashBargainDeals").textContent = `${configuredCount} Configured`;
+
+      } catch (e) {
+        container.innerHTML = `<div class="p-4 text-center text-rose-400 md:col-span-2">Failed to load bargain rules</div>`;
+      }
+    }
+
+    function syncBargainSlider(id, val) {
+      document.getElementById(`floor-slider-${id}`).value = val;
+      document.getElementById(`floor-label-${id}`).textContent = `₹ ${val}`;
+    }
+
+    function syncBargainInput(id, val) {
+      document.getElementById(`floor-input-${id}`).value = val;
+      document.getElementById(`floor-label-${id}`).textContent = `₹ ${val}`;
+    }
+
+    async function saveBargainRule(productId, productName) {
+      const floorVal = Number(document.getElementById(`floor-input-${productId}`).value);
+      if (isNaN(floorVal) || floorVal <= 0) {
+        showToast("Invalid bargain floor price", "error");
+        return;
+      }
+
+      try {
+        const res = await apiRequest(`/api/seller/products/${productId}`, {
+          method: "PUT",
+          body: JSON.stringify({ discountPrice: floorVal })
+        });
+        if (res && res.success) {
+          showToast(`AI Bargain Floor for "${productName}" saved at ₹${floorVal}!`);
+          loadDashboardData();
+        }
+      } catch (e) {
+        showToast(e.message, "error");
+      }
+    }
+
+    // ==============================================
+    // 💳 6. PAYOUTS & EARNINGS
+    // ==============================================
+    async function loadEarningsData() {
+      try {
+        const res = await apiRequest("/api/seller/earnings/overview");
+        if (!res || !res.success) return;
+
+        const { financials, paymentSettings, payouts } = res.data;
+
+        document.getElementById("earnNetTotal").textContent = `₹ ${Number(financials.netEarnings || 0).toLocaleString("en-IN")}`;
+        document.getElementById("earnAvailable").textContent = `₹ ${Number(financials.availableBalance || 0).toLocaleString("en-IN")}`;
+        cachedAvailableBalance = Number(financials.availableBalance || 0);
+
+        if (financials.commissionRate) {
+          document.getElementById("earnCommissionLabel").textContent = `After ${financials.commissionRate}% platform marketplace commission`;
+        }
+
+        // Bank details card
+        if (paymentSettings && paymentSettings.isConfigured) {
+          document.getElementById("earnBankName").textContent = paymentSettings.bankName || "Linked Bank Account";
+          document.getElementById("earnBankDetails").textContent = `A/C: ${paymentSettings.accountNumber || '****'} | UPI: ${paymentSettings.upiId || 'Not set'}`;
+        } else {
+          document.getElementById("earnBankName").textContent = "Payment Info Pending";
+          document.getElementById("earnBankDetails").textContent = "Please configure your UPI ID in Store Settings";
+        }
+
+        // Payout history
+        const container = document.getElementById("payoutHistoryContainer");
+        if (!payouts || payouts.length === 0) {
+          container.innerHTML = `<div class="p-6 text-center text-slate-500 bg-slate-900 rounded-xl">No past payout requests found. Available funds will settle directly.</div>`;
+        } else {
+          container.innerHTML = payouts.map(p => `
+            <div class="p-3.5 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between">
+              <div>
+                <p class="font-bold text-white">Payout #${p.payoutId} &bull; <span class="text-blue-400 font-mono">₹ ${Number(p.amount).toLocaleString("en-IN")}</span></p>
+                <p class="text-slate-400 text-[11px] mt-0.5">Method: ${p.payoutMethod.toUpperCase()} (${p.payoutDetails}) &bull; ${new Date(p.requestedAt).toLocaleDateString()}</p>
+              </div>
+              <span class="px-2.5 py-1 rounded text-[11px] font-bold ${
+                p.status === 'completed' ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' :
+                p.status === 'processing' ? 'bg-blue-950 text-blue-300 border border-blue-800' :
+                'bg-amber-950 text-amber-300 border border-amber-800'
+              }">
+                ${p.status.toUpperCase()}
+              </span>
+            </div>
+          `).join("");
+        }
+
+      } catch (e) {
+        console.error("Earnings load failed:", e);
+      }
+    }
+
+    function openWithdrawModal() {
+      document.getElementById("modalAvailableDisplay").textContent = `₹ ${cachedAvailableBalance.toFixed(2)}`;
+      document.getElementById("withdrawAmount").value = cachedAvailableBalance >= 100 ? cachedAvailableBalance : "";
+      document.getElementById("withdrawModal").classList.remove("hidden");
+    }
+
+    function closeWithdrawModal() {
+      document.getElementById("withdrawModal").classList.add("hidden");
+    }
+
+    async function handleRequestWithdraw(e) {
+      e.preventDefault();
+      const amount = Number(document.getElementById("withdrawAmount").value);
+      const payoutMethod = document.getElementById("withdrawMethod").value;
+
+      if (amount < 100) {
+        showToast("Minimum withdrawal is ₹100", "error");
+        return;
+      }
+      if (amount > cachedAvailableBalance) {
+        showToast(`Requested amount exceeds available balance (₹${cachedAvailableBalance})`, "error");
+        return;
+      }
+
+      try {
+        const res = await apiRequest("/api/seller/earnings/payouts", {
+          method: "POST",
+          body: JSON.stringify({ amount, payoutMethod })
+        });
+        if (res && res.success) {
+          showToast(`Payout request of ₹${amount} submitted successfully!`);
+          closeWithdrawModal();
+          loadEarningsData();
+          loadDashboardData();
+        }
+      } catch (e) {
+        showToast(e.message, "error");
+      }
+    }
+
+    // ==============================================
+    // ⭐ 7. RATINGS & BUYER PHOTOS
+    // ==============================================
+    async function loadSellerReviews() {
+      const container = document.getElementById("reviewsContainer");
+      try {
+        const res = await apiRequest("/api/seller/reviews");
+        if (!res || !res.success) return;
+
+        const { reviews, stats } = res.data;
+
+        if (stats) {
+          document.getElementById("reviewAverageText").textContent = `${Number(stats.averageRating || 5.0).toFixed(1)} / 5.0 (${stats.totalReviews || 0} reviews)`;
+        }
+
+        if (!reviews || reviews.length === 0) {
+          container.innerHTML = `
+            <div class="p-8 text-center text-slate-500 bg-slate-900 rounded-xl border border-slate-800">
+              <i class="fa-solid fa-star text-3xl mb-2 text-slate-600 block"></i>
+              No reviews received yet. Verified ratings from your buyers will appear here.
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = reviews.map(r => {
+          const stars = Array.from({ length: 5 }, (_, i) => 
+            `<i class="fa-solid fa-star ${i < r.rating ? 'text-amber-400' : 'text-slate-700'}"></i>`
+          ).join("");
+
+          return `
+            <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-white">${r.customerName} &mdash; <span class="text-emerald-400">${r.productName}</span></span>
+                <span class="flex items-center gap-1">${stars}</span>
+              </div>
+              <p class="text-slate-300">"${r.comment || 'Great fresh product received on time.'}"</p>
+              
+              ${r.sellerReply ? `
+                <div class="p-2.5 bg-slate-950 rounded-lg border-l-2 border-emerald-500 text-xs text-slate-400">
+                  <strong class="text-emerald-400">Your Stall Reply:</strong> ${r.sellerReply}
+                </div>
+              ` : `
+                <div class="pt-1">
+                  <button onclick="promptSellerReply(${r.reviewId})" class="text-[11px] text-emerald-400 hover:underline font-bold">
+                    Reply to this review &rarr;
+                  </button>
+                </div>
+              `}
+
+              <span class="text-[10px] text-slate-500 block">Verified Purchase &bull; ${new Date(r.createdAt).toLocaleDateString()}</span>
+            </div>
+          `;
+        }).join("");
+
+      } catch (e) {
+        container.innerHTML = `<div class="p-4 text-center text-rose-400">Failed to load reviews</div>`;
+      }
+    }
+
+    async function promptSellerReply(reviewId) {
+      const reply = prompt("Enter your reply message to this customer review:");
+      if (!reply || !reply.trim()) return;
+
+      try {
+        const res = await apiRequest(`/api/seller/reviews/${reviewId}/reply`, {
+          method: "POST",
+          body: JSON.stringify({ reply: reply.trim() })
+        });
+        if (res && res.success) {
+          showToast("Reply published to customer review!");
+          loadSellerReviews();
+        }
+      } catch (e) {
+        showToast(e.message, "error");
+      }
+    }
+
+    // ==============================================
+    // ⚙️ 8. STORE SETTINGS & SELLER ACCOUNT
+    // ==============================================
+    function handleShopLogoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+        showToast("Please choose an image file", "error");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        document.getElementById("setShopLogoPreview").src = dataUrl;
+        document.getElementById("setShopLogo").value = dataUrl;
+        showToast("Shop logo / profile photo loaded! Click Save to publish.");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function loadStoreSettings() {
+      try {
+        const res = await apiRequest("/api/seller/profile");
+        if (!res || !res.success) return;
+
+        const p = res.data;
+        const shop = p.shop || {};
+
+        document.getElementById("setOwnerName").value = p.ownerName || "";
+        document.getElementById("setAccountEmail").value = p.accountEmail || "";
+        document.getElementById("setShopName").value = shop.shopName || p.shopName || "";
+        document.getElementById("setShopAddress").value = shop.shopAddress || p.shopAddress || "";
+        document.getElementById("setCity").value = shop.city || p.city || "Rajpur Sonarpur";
+        document.getElementById("setPincode").value = shop.pincode || p.pincode || "700149";
+        document.getElementById("setPhone").value = shop.businessPhone || p.accountPhone || "";
+        
+        const logoUrl = shop.shopLogo || p.avatarUrl || "https://images.unsplash.com/photo-1542838132-92c53300491e?w=200&auto=format&fit=crop&q=80";
+        document.getElementById("setShopLogo").value = logoUrl;
+        document.getElementById("setShopLogoPreview").src = logoUrl;
+        document.getElementById("setShopBanner").value = shop.shopBanner || "";
+
+        document.getElementById("setBankName").value = p.payoutDetails?.bankName || p.bankName || "";
+        document.getElementById("setAccountNumber").value = p.payoutDetails?.accountNumber || p.accountNumber || "";
+        document.getElementById("setIfscCode").value = p.payoutDetails?.ifscCode || p.ifscCode || "";
+        document.getElementById("setUpiId").value = p.payoutDetails?.upiId || p.upiId || "";
+        document.getElementById("setVacationMode").checked = Boolean(shop.isVacationMode || p.isVacationMode);
+
+      } catch (e) {
+        console.error("Load store settings failed:", e);
+      }
+    }
+
+    async function handleSaveStoreSettings(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnSaveSettings");
+      const orig = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Saving...`;
+
+      try {
+        const payload = {
+          ownerName: document.getElementById("setOwnerName").value.trim(),
+          shopName: document.getElementById("setShopName").value.trim(),
+          shopAddress: document.getElementById("setShopAddress").value.trim(),
+          city: document.getElementById("setCity").value.trim(),
+          pincode: document.getElementById("setPincode").value.trim(),
+          businessPhone: document.getElementById("setPhone").value.trim(),
+          shopLogo: document.getElementById("setShopLogo").value.trim(),
+          avatarUrl: document.getElementById("setShopLogo").value.trim(),
+          shopBanner: document.getElementById("setShopBanner").value.trim(),
+          bankName: document.getElementById("setBankName").value.trim(),
+          accountNumber: document.getElementById("setAccountNumber").value.trim(),
+          ifscCode: document.getElementById("setIfscCode").value.trim(),
+          upiId: document.getElementById("setUpiId").value.trim(),
+          isVacationMode: document.getElementById("setVacationMode").checked
+        };
+
+        const res = await apiRequest("/api/seller/profile", {
+          method: "PUT",
+          body: JSON.stringify(payload)
+        });
+
+        if (res && res.success) {
+          showToast("Store profile & settings saved successfully!");
+          document.getElementById("sidebarShopName").textContent = payload.shopName;
+          document.getElementById("sidebarShopLocation").textContent = `${payload.city || 'Kolkata'} Market Hub`;
+          if (payload.shopLogo) {
+            const sidebarImg = document.getElementById("sidebarShopAvatarImg");
+            if (sidebarImg) sidebarImg.src = payload.shopLogo;
+          }
+          initializeSellerSession();
+        }
+      } catch (err) {
+        showToast(err.message || "Failed to update settings", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+      }
+    }
+  </script>
+</body>
+</html>
