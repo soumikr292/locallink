@@ -31,8 +31,15 @@ jobs:
           distribution: "temurin"
           java-version: "21"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Accept Android SDK Licenses
+        run: |
+          SDK_MANAGER="$(command -v sdkmanager || echo "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager")"
+          if [ ! -x "$SDK_MANAGER" ]; then
+            SDK_MANAGER="$(find /usr/local/lib/android -name sdkmanager 2>/dev/null | head -n 1)"
+          fi
+          echo "Using sdkmanager: $SDK_MANAGER"
+          yes | "$SDK_MANAGER" --licenses >/dev/null 2>&1 || true
+          "$SDK_MANAGER" "platforms;android-36" >/dev/null || true
 
       - name: Install Capacitor & build dependencies
         run: npm install --no-audit --no-fund
