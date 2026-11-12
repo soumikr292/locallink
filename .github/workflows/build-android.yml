@@ -46,7 +46,7 @@ jobs:
 
       - name: Build web assets & sync Capacitor Android
         env:
-          BACKEND_API_URL: ${{ github.event.inputs.backend_api_url || vars.BACKEND_API_URL || '' }}
+          BACKEND_API_URL: ${{ github.event.inputs.backend_api_url || vars.BACKEND_API_URL || 'https://locallink-web-production.up.railway.app' }}
         run: node scripts/build-mobile.js && npx cap sync android
 
       - name: Decode Release Keystore (if configured)

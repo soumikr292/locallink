@@ -71,6 +71,7 @@ async function initCloudDb() {
 
   let conn;
   let shouldSeedInitial = false;
+  let missingDemoCatalog = false;
 
   try {
     conn = await pool.getConnection();
@@ -112,6 +113,8 @@ async function initCloudDb() {
     const countRows = await conn.query("SELECT COUNT(*) AS cnt FROM users");
     const userCount = Number(countRows[0]?.cnt || 0);
     shouldSeedInitial = userCount === 0;
+    const demoOrderRows = await conn.query("SELECT COUNT(*) AS cnt FROM orders WHERE order_number = 'LL-8942'");
+    missingDemoCatalog = Number(demoOrderRows[0]?.cnt || 0) === 0;
     console.log(`Existing user count in database: ${userCount}`);
   } catch (err) {
     console.error("Cloud DB initialization failed:", err);
@@ -123,10 +126,12 @@ async function initCloudDb() {
   }
 
   // Run seeders in fresh child processes so each manages its own pool lifecycle cleanly
-  if (shouldSeedInitial || forceSeed) {
+  if (shouldSeedInitial || forceSeed || missingDemoCatalog) {
     const scriptsToRun = shouldSeedInitial
       ? ["seedData.js", "runSellerMigrations.js", "seedCustomerAndRider.js"]
-      : ["runSellerMigrations.js", "seedCustomerAndRider.js"];
+      : forceSeed
+        ? ["runSellerMigrations.js", "seedCustomerAndRider.js"]
+        : ["seedCustomerAndRider.js"];
 
     for (const scriptName of scriptsToRun) {
       const scriptPath = path.join(__dirname, scriptName);

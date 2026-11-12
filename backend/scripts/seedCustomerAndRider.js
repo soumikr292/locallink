@@ -64,16 +64,32 @@ async function seed() {
     }
 
     // 3. Make sure multiple local sellers exist with proper shop names & coordinates for compare feature
-    // Shop 1: Ratan Fresh Stall #14 (seller_id: 3)
-    const s1 = await conn.query("SELECT * FROM seller_profiles WHERE seller_id = 3");
+    const sellerUsers = await conn.query("SELECT user_id FROM users WHERE role = 'seller' ORDER BY user_id ASC LIMIT 2");
+    const seller1Id = sellerUsers[0] ? Number(sellerUsers[0].user_id) : 3;
+    const seller2Id = sellerUsers[1] ? Number(sellerUsers[1].user_id) : seller1Id;
+
+    const catRows = await conn.query("SELECT category_id, LOWER(name) AS name FROM categories ORDER BY category_id ASC");
+    const defaultCatId = catRows[0] ? Number(catRows[0].category_id) : 1;
+    const pickCategoryId = (preferredId, keyword) => {
+      if (catRows.some(c => Number(c.category_id) === preferredId)) return preferredId;
+      const byName = catRows.find(c => c.name.includes(keyword));
+      return byName ? Number(byName.category_id) : defaultCatId;
+    };
+    const fishCatId = pickCategoryId(4, "fish");
+    const vegCatId = pickCategoryId(2, "veg");
+    const riceCatId = pickCategoryId(16, "grain");
+    const oilCatId = pickCategoryId(18, "oil");
+
+    // Shop 1: Ratan Fresh Stall #14
+    const s1 = await conn.query("SELECT * FROM seller_profiles WHERE seller_id = ?", [seller1Id]);
     if (s1.length > 0) {
-      await conn.query("UPDATE seller_profiles SET shop_name = 'Ratan Fresh (Stall #14)', shop_address = 'Stall #14, Rajpur Sonarpur Main Bazaar', city = 'Rajpur Sonarpur' WHERE seller_id = 3");
+      await conn.query("UPDATE seller_profiles SET shop_name = 'Ratan Fresh (Stall #14)', shop_address = 'Stall #14, Rajpur Sonarpur Main Bazaar', city = 'Rajpur Sonarpur' WHERE seller_id = ?", [seller1Id]);
     }
 
-    // Shop 2: Mondal Fish Corner Stall #07 (seller_id: 10 or create)
-    const s2 = await conn.query("SELECT * FROM seller_profiles WHERE seller_id = 10");
+    // Shop 2: Mondal Fish Corner Stall #07
+    const s2 = await conn.query("SELECT * FROM seller_profiles WHERE seller_id = ?", [seller2Id]);
     if (s2.length > 0) {
-      await conn.query("UPDATE seller_profiles SET shop_name = 'Mondal Fish Corner (Stall #07)', shop_address = 'Stall #07, Sonarpur Daily Fish Market', city = 'Sonarpur' WHERE seller_id = 10");
+      await conn.query("UPDATE seller_profiles SET shop_name = 'Mondal Fish Corner (Stall #07)', shop_address = 'Stall #07, Sonarpur Daily Fish Market', city = 'Sonarpur' WHERE seller_id = ?", [seller2Id]);
     }
 
     // 4. Ensure products match the template:
@@ -83,62 +99,62 @@ async function seed() {
     // - Mustard Oil - Fortune (1L)
     const prods = [
       {
-        seller_id: 3,
+        seller_id: seller1Id,
         name: "Fresh Katla Fish (1 kg)",
         slug: "fresh-katla-fish-1kg",
         price: 320,
         discount_price: 300,
         stock_quantity: 25,
         brand: "Sonarpur Fresh Catch",
-        category_id: 4,
+        category_id: fishCatId,
         image_url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500&auto=format&fit=crop&q=80",
         description: "Fresh river Katla caught today morning from local freshwater ponds. Certified fresh quality."
       },
       {
-        seller_id: 3,
+        seller_id: seller1Id,
         name: "Country Potatoes (1 kg)",
         slug: "country-potatoes-1kg",
         price: 28,
         discount_price: 25,
         stock_quantity: 120,
         brand: "Bengal Farm Fresh",
-        category_id: 2,
+        category_id: vegCatId,
         image_url: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=500&auto=format&fit=crop&q=80",
         description: "Fresh organic country potatoes harvested directly from local farms in Sonarpur."
       },
       {
-        seller_id: 3,
+        seller_id: seller1Id,
         name: "Gobindabhog Rice (1 kg)",
         slug: "gobindabhog-rice-1kg",
         price: 95,
         discount_price: 90,
         stock_quantity: 80,
         brand: "Sonar Bangla",
-        category_id: 16,
+        category_id: riceCatId,
         image_url: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500&auto=format&fit=crop&q=80",
         description: "Aromatic traditional premium Gobindabhog rice from Bengal paddy fields. Perfect for khichdi & desserts."
       },
       {
-        seller_id: 3,
+        seller_id: seller1Id,
         name: "Mustard Oil - Fortune (1L)",
         slug: "mustard-oil-fortune-1l",
         price: 160,
         discount_price: 155,
         stock_quantity: 45,
         brand: "Fortune",
-        category_id: 18,
+        category_id: oilCatId,
         image_url: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500&auto=format&fit=crop&q=80",
         description: "Pure Kachi Ghani mustard oil for authentic Bengali cooking and rich traditional flavor."
       },
       {
-        seller_id: 10,
+        seller_id: seller2Id,
         name: "Fresh Katla Fish (1 kg)",
         slug: "mondal-fresh-katla-fish-1kg",
         price: 340,
         discount_price: 325,
         stock_quantity: 18,
         brand: "Mondal Fish Supply",
-        category_id: 4,
+        category_id: fishCatId,
         image_url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500&auto=format&fit=crop&q=80",
         description: "Sweet water medium-sized Katla fish, dressed and cleaned upon request."
       }
@@ -169,11 +185,12 @@ async function seed() {
       activeOrderId = Number(insOrder.insertId);
 
       const riceProd = await conn.query("SELECT product_id FROM products WHERE slug = 'gobindabhog-rice-1kg' LIMIT 1");
-      const riceId = riceProd.length > 0 ? Number(riceProd[0].product_id) : 2;
+      const anyProd = await conn.query("SELECT product_id FROM products ORDER BY product_id ASC LIMIT 1");
+      const riceId = riceProd.length > 0 ? Number(riceProd[0].product_id) : Number(anyProd[0].product_id);
 
       await conn.query(
-        "INSERT INTO order_items (order_id, product_id, seller_id, product_name, sku, quantity, unit_price, agreed_price, discount_amount, final_price) VALUES (?, ?, 3, 'Gobindabhog Rice (1 kg)', 'SKU-RICE-001', 1, 95.00, 95.00, 0.00, 95.00)",
-        [activeOrderId, riceId]
+        "INSERT INTO order_items (order_id, product_id, seller_id, product_name, sku, quantity, unit_price, agreed_price, discount_amount, final_price) VALUES (?, ?, ?, 'Gobindabhog Rice (1 kg)', 'SKU-RICE-001', 1, 95.00, 95.00, 0.00, 95.00)",
+        [activeOrderId, riceId, seller1Id]
       );
       console.log("Created order #LL-8942 with ID:", activeOrderId);
     } else {
@@ -207,9 +224,12 @@ async function seed() {
         [customerUserId]
       );
       poolOrderId = Number(insPool.insertId);
+      const katlaProd = await conn.query("SELECT product_id FROM products WHERE slug = 'fresh-katla-fish-1kg' LIMIT 1");
+      const anyProdPool = await conn.query("SELECT product_id FROM products ORDER BY product_id ASC LIMIT 1");
+      const katlaId = katlaProd.length > 0 ? Number(katlaProd[0].product_id) : Number(anyProdPool[0].product_id);
       await conn.query(
-        "INSERT INTO order_items (order_id, product_id, seller_id, product_name, sku, quantity, unit_price, agreed_price, discount_amount, final_price) VALUES (?, 3, 3, 'Fresh Katla Fish (1 kg)', 'SKU-KATLA-001', 1, 320.00, 320.00, 0.00, 320.00)",
-        [poolOrderId]
+        "INSERT INTO order_items (order_id, product_id, seller_id, product_name, sku, quantity, unit_price, agreed_price, discount_amount, final_price) VALUES (?, ?, ?, 'Fresh Katla Fish (1 kg)', 'SKU-KATLA-001', 1, 320.00, 320.00, 0.00, 320.00)",
+        [poolOrderId, katlaId, seller1Id]
       );
       await conn.query(
         "INSERT INTO deliveries (order_id, delivery_partner_id, pickup_address, customer_address, customer_phone, delivery_status, pickup_latitude, pickup_longitude, customer_latitude, customer_longitude, delivery_instructions, estimated_distance_km, estimated_duration_minutes, delivery_otp) VALUES (?, NULL, 'Ratan Fresh (Stall #14), Sonarpur Bazaar', 'Apt 3B, Sonarpur Green Enclave, Sector 4', '9876543211', 'pending', 22.4390, 88.3965, 22.4510, 88.4080, 'Fragile - Fresh Fish', 1.2, 10, '8943')",
