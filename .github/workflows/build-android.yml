@@ -31,27 +31,38 @@ jobs:
           distribution: "temurin"
           java-version: "21"
 
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Install Capacitor & build dependencies
         run: npm install --no-audit --no-fund
 
       - name: Build web assets & sync Capacitor Android
         env:
           BACKEND_API_URL: ${{ github.event.inputs.backend_api_url || vars.BACKEND_API_URL || '' }}
-        run: npm run app:sync
+        run: node scripts/build-mobile.js && npx cap sync android
 
       - name: Decode Release Keystore (if configured)
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/locallink-release.jks
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/locallink-release.jks
+            echo "Decoded release keystore."
+          else
+            echo "No release keystore secret configured; building unsigned release artifacts."
+          fi
 
       - name: Build Release APK & Play Store Bundle (.aab)
         working-directory: android
         env:
-          ANDROID_KEYSTORE_FILE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' && 'app/locallink-release.jks' || '' }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
+          if [ -f app/locallink-release.jks ]; then
+            export ANDROID_KEYSTORE_FILE="app/locallink-release.jks"
+          fi
           chmod +x gradlew
           ./gradlew assembleRelease bundleRelease --no-daemon
 
