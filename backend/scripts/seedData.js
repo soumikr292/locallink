@@ -254,7 +254,7 @@ async function seed() {
         brand: "AyurRoots",
         catSlug: "wellness",
         imageUrl: "https://images.unsplash.com/photo-1607006314643-982736181b85?w=500&auto=format&fit=crop&q=80",
-        status: "active"
+        status: "inactive"
       },
       {
         sellerId: seller1Id,
