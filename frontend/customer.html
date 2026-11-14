@@ -43,6 +43,80 @@
       letter-spacing: 0.015em !important;
     }
 
+    /* Light Theme Adaptive Styling */
+    body.light-theme {
+      background-color: #f8fafc !important;
+      color: #0f172a !important;
+    }
+    body.light-theme header {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    }
+    body.light-theme #marketSearchInput, 
+    body.light-theme #mobileMarketSearchInput {
+      background-color: #f1f5f9 !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+      -webkit-text-fill-color: #0f172a !important;
+    }
+    body.light-theme #marketSearchInput::placeholder,
+    body.light-theme #mobileMarketSearchInput::placeholder {
+      color: #64748b !important;
+      -webkit-text-fill-color: #64748b !important;
+    }
+    body.light-theme .bg-slate-900 {
+      background-color: #ffffff !important;
+    }
+    body.light-theme .bg-slate-950 {
+      background-color: #f8fafc !important;
+    }
+    body.light-theme .border-slate-800,
+    body.light-theme .border-slate-700 {
+      border-color: #e2e8f0 !important;
+    }
+    body.light-theme .text-white {
+      color: #0f172a !important;
+    }
+    body.light-theme .text-slate-300,
+    body.light-theme .text-slate-400 {
+      color: #475569 !important;
+    }
+    body.light-theme input, 
+    body.light-theme select, 
+    body.light-theme textarea {
+      color: #0f172a !important;
+      -webkit-text-fill-color: #0f172a !important;
+    }
+    body.light-theme #floatingQuickCartBar {
+      background-color: #0f172a !important;
+      color: #ffffff !important;
+    }
+    body.light-theme #floatingQuickCartBar .text-white {
+      color: #ffffff !important;
+    }
+    body.light-theme #floatingQuickCartBar .text-emerald-400 {
+      color: #34d399 !important;
+    }
+    body.light-theme #headerThreeDotMenu,
+    body.light-theme #quickRoleDropdown,
+    body.light-theme #marketSearchDropdown,
+    body.light-theme #mobileMarketSearchDropdown {
+      background-color: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
+    }
+    body.light-theme #customerProfileModal .bg-slate-900,
+    body.light-theme #voiceSearchModal .bg-slate-900 {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+    }
+    body.light-theme nav.md\:hidden {
+      background-color: rgba(255, 255, 255, 0.95) !important;
+      border-color: #e2e8f0 !important;
+    }
+
     /* Custom scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #020617; }
@@ -115,8 +189,11 @@
       <div class="flex-1 min-w-[240px] max-w-3xl mx-2 sm:mx-4 hidden md:block relative">
         <div class="relative flex items-center">
           <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400 text-sm sm:text-base pointer-events-none transition-colors"></i>
-          <input type="text" id="marketSearchInput" oninput="handleMarketSearch(this.value)" onkeydown="if(event.key==='Enter')handleMarketSearchSubmit()" placeholder="Search fresh fish, country potatoes, oil, rice, turmeric, or stall name..." style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; background-color: #020617 !important;" class="w-full text-white placeholder-slate-400 text-sm sm:text-base font-semibold px-4 py-2.5 sm:py-3 pl-11 sm:pl-12 pr-12 rounded-2xl bg-slate-950 border border-slate-700/80 hover:border-slate-600 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 outline-none shadow-inner tracking-wide transition-all caret-emerald-400">
-          <button type="button" id="marketSearchClearBtn" onclick="clearMarketSearch()" class="hidden absolute right-3.5 w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white flex items-center justify-center text-xs font-bold transition-all shadow" title="Clear search">✕</button>
+          <input type="text" id="marketSearchInput" oninput="handleMarketSearch(this.value)" onkeydown="if(event.key==='Enter')handleMarketSearchSubmit()" placeholder="Search fresh fish, country potatoes, oil, rice, turmeric, or stall name..." style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; background-color: #020617 !important;" class="w-full text-white placeholder-slate-400 text-sm sm:text-base font-semibold px-4 py-2.5 sm:py-3 pl-11 sm:pl-12 pr-20 rounded-2xl bg-slate-950 border border-slate-700/80 hover:border-slate-600 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 outline-none shadow-inner tracking-wide transition-all caret-emerald-400">
+          <button type="button" id="marketSearchClearBtn" onclick="clearMarketSearch()" class="hidden absolute right-12 w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white flex items-center justify-center text-xs font-bold transition-all shadow" title="Clear search">✕</button>
+          <button type="button" id="marketVoiceSearchBtn" onclick="openVoiceSearchModal()" class="absolute right-3.5 w-7 h-7 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all shadow group" title="Voice Search (English, বাংলা, हिन्दी)">
+            <i class="fa-solid fa-microphone text-emerald-400 group-hover:text-white transition-colors"></i>
+          </button>
         </div>
         <!-- Live Instant Suggestions Dropdown -->
         <div id="marketSearchDropdown" class="hidden absolute left-0 right-0 top-full mt-2 bg-slate-900/98 backdrop-blur-xl border border-slate-700/90 rounded-2xl shadow-2xl overflow-hidden z-50 divide-y divide-slate-800/80"></div>
@@ -126,21 +203,21 @@
       <div class="flex items-center gap-1.5 sm:gap-2.5 text-xs font-bold flex-shrink-0">
         <!-- Desktop Tabs (Visible on Extra Large Screens, Bottom Tab Bar for Mobile) -->
         <button onclick="switchCustomerPage('home')" id="nav-btn-home" class="hidden 2xl:flex px-3 py-2 bg-emerald-600 text-white rounded-xl items-center gap-1.5 transition-all" title="Catalog">
-          <i class="fa-solid fa-house"></i> <span>Home</span>
+          <i class="fa-solid fa-house"></i> <span data-i18n="nav_home">Home</span>
         </button>
         <button onclick="switchCustomerPage('compare')" id="nav-btn-compare" class="hidden xl:flex px-3 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 rounded-xl items-center gap-1.5 transition-all" title="Price Comparison">
-          <i class="fa-solid fa-scale-balanced"></i> <span>Compare</span>
+          <i class="fa-solid fa-scale-balanced"></i> <span data-i18n="nav_compare">Compare</span>
         </button>
         <button onclick="switchCustomerPage('bargain')" id="nav-btn-bargain" class="hidden 2xl:flex px-3 py-2 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 rounded-xl items-center gap-1.5 transition-all" title="AI Bargain Agent">
-          <i class="fa-solid fa-robot"></i> <span>AI Bargain</span>
+          <i class="fa-solid fa-robot"></i> <span data-i18n="nav_bargain">AI Bargain</span>
         </button>
         <button onclick="switchCustomerPage('orders')" id="nav-btn-orders" class="hidden xl:flex px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl items-center gap-1.5 transition-all" title="Order Tracking">
-          <i class="fa-solid fa-box-archive text-amber-400 text-sm"></i> <span>Orders</span>
+          <i class="fa-solid fa-box-archive text-amber-400 text-sm"></i> <span data-i18n="nav_orders">Orders</span>
         </button>
 
         <!-- Shopping Cart (Always visible with green item badge) -->
         <button onclick="switchCustomerPage('cart')" id="nav-btn-cart" class="flex px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl items-center gap-1.5 relative transition-all shadow-sm" title="View Shopping Cart">
-          <i class="fa-solid fa-cart-shopping text-emerald-400 text-sm"></i> <span class="hidden sm:inline">Cart</span>
+          <i class="fa-solid fa-cart-shopping text-emerald-400 text-sm"></i> <span class="hidden sm:inline" data-i18n="nav_cart">Cart</span>
           <span id="cartCountBadge" class="w-4 h-4 bg-emerald-500 text-slate-950 rounded-full text-[9px] font-black flex items-center justify-center">0</span>
         </button>
 
@@ -149,7 +226,7 @@
           <button type="button" data-ll-role-trigger="true" onclick="toggleRoleDropdown(event)" class="px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-950 hover:bg-slate-800 border border-emerald-500/50 hover:border-emerald-400 text-emerald-300 hover:text-emerald-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm flex-shrink-0" title="Switch Portal (Customer, Seller Hub, Rider Console, Admin)">
             <span id="llHeaderConnectionDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
             <i class="fa-solid fa-layer-group text-emerald-400"></i>
-            <span class="hidden sm:inline">Switch Role</span>
+            <span class="hidden sm:inline" data-i18n="nav_roles">Switch Role</span>
             <span class="sm:hidden">Roles</span>
             <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 transition-transform group-hover:rotate-180"></i>
           </button>
@@ -196,8 +273,93 @@
           <span id="navCustomerNameText" class="text-[11px] font-bold hidden sm:inline truncate max-w-[75px]">Tanvir</span>
         </button>
 
+        <!-- Three-Dot Menu (Profile, Theme, Language, Role Switcher, Signout) -->
+        <div class="relative" id="threeDotMenuContainer">
+          <button type="button" id="btnHeaderThreeDot" onclick="toggleThreeDotMenu(event)" class="w-8 h-8 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/50 flex items-center justify-center text-slate-300 hover:text-white transition-all shadow-sm" title="Settings, Language & Appearance">
+            <i class="fa-solid fa-ellipsis-vertical text-sm"></i>
+          </button>
+
+          <!-- Three-Dot Dropdown Menu -->
+          <div id="headerThreeDotMenu" class="hidden absolute right-0 top-full mt-2 w-64 bg-slate-900/98 backdrop-blur-xl border border-slate-700/90 rounded-2xl shadow-2xl p-3 z-50 space-y-2 text-xs">
+            <!-- Profile shortcut -->
+            <button type="button" onclick="openCustomerProfileModal(); closeThreeDotMenu();" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 transition-colors font-bold text-left">
+              <i class="fa-solid fa-user text-emerald-400 w-4 text-center"></i>
+              <div class="flex-1">
+                <span class="block text-white" data-i18n="menu_profile">My Profile & Account</span>
+                <span class="text-[10px] text-slate-400 font-normal" data-i18n="menu_profile_sub">Personal info, address & stats</span>
+              </div>
+            </button>
+
+            <div class="border-t border-slate-800/80 my-1"></div>
+
+            <!-- Appearance Theme Switcher -->
+            <div class="px-2 py-1">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
+                  <i class="fa-solid fa-circle-half-stroke text-sky-400"></i>
+                  <span data-i18n="menu_theme">Appearance</span>
+                </span>
+                <span id="threeDotThemeStatus" class="text-[10px] text-emerald-400 font-bold">Dark Mode</span>
+              </div>
+              <div class="grid grid-cols-2 gap-1.5 p-1 bg-slate-950 rounded-xl border border-slate-800">
+                <button type="button" onclick="setAppTheme('dark')" id="btnThemeDarkMenu" class="py-1 px-2 rounded-lg text-center font-bold text-[11px] transition-all bg-emerald-600 text-white shadow">
+                  <i class="fa-solid fa-moon mr-1"></i> Dark
+                </button>
+                <button type="button" onclick="setAppTheme('light')" id="btnThemeLightMenu" class="py-1 px-2 rounded-lg text-center font-bold text-[11px] transition-all text-slate-400 hover:text-white">
+                  <i class="fa-solid fa-sun mr-1"></i> Light
+                </button>
+              </div>
+            </div>
+
+            <div class="border-t border-slate-800/80 my-1"></div>
+
+            <!-- Language Setting -->
+            <div class="px-2 py-1">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
+                  <i class="fa-solid fa-language text-amber-400"></i>
+                  <span data-i18n="menu_language">Language / ভাষা / भाषा</span>
+                </span>
+              </div>
+              <div class="grid grid-cols-3 gap-1 p-1 bg-slate-950 rounded-xl border border-slate-800 text-[11px] font-bold">
+                <button type="button" onclick="setAppLanguage('en')" id="btnLangEnMenu" class="py-1 rounded-lg text-center transition-all bg-emerald-600 text-white shadow">
+                  EN
+                </button>
+                <button type="button" onclick="setAppLanguage('bn')" id="btnLangBnMenu" class="py-1 rounded-lg text-center transition-all text-slate-400 hover:text-white">
+                  বাংলা
+                </button>
+                <button type="button" onclick="setAppLanguage('hi')" id="btnLangHiMenu" class="py-1 rounded-lg text-center transition-all text-slate-400 hover:text-white">
+                  हिन्दी
+                </button>
+              </div>
+            </div>
+
+            <div class="border-t border-slate-800/80 my-1"></div>
+
+            <!-- Portals Links -->
+            <div class="space-y-0.5">
+              <a href="seller.html" class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300 font-semibold text-[11px]">
+                <i class="fa-solid fa-store text-amber-400 w-3.5"></i>
+                <span data-i18n="menu_seller">Seller Hub</span>
+              </a>
+              <a href="delivery.html" class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300 font-semibold text-[11px]">
+                <i class="fa-solid fa-motorcycle text-sky-400 w-3.5"></i>
+                <span data-i18n="menu_rider">Delivery Partner (Rider)</span>
+              </a>
+            </div>
+
+            <div class="border-t border-slate-800/80 my-1"></div>
+
+            <!-- Sign Out button -->
+            <button type="button" onclick="handleCustomerLogout(); closeThreeDotMenu();" class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-rose-400 hover:bg-rose-950/40 font-bold text-left transition-colors">
+              <i class="fa-solid fa-arrow-right-from-bracket w-3.5"></i>
+              <span data-i18n="menu_signout">Sign Out</span>
+            </button>
+          </div>
+        </div>
+
         <button onclick="openCustomerAuthModal()" id="customerLoginNavBtn" class="hidden px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-lg">
-          <i class="fa-solid fa-arrow-right-to-bracket"></i> <span>Sign In</span>
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> <span data-i18n="nav_signin">Sign In</span>
         </button>
       </div>
     </div>
@@ -207,15 +369,18 @@
       <div onclick="openAddressChangeModal()" class="flex items-center justify-between text-[11px] bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800 text-slate-300 cursor-pointer">
         <span class="flex items-center gap-1.5 truncate">
           <i class="fa-solid fa-location-dot text-rose-500"></i>
-          <span>Deliver to: <strong id="mobileDeliveryAddressText" class="text-emerald-400">Rajpur Block C</strong></span>
+          <span><span data-i18n="deliver_to">Deliver to:</span> <strong id="mobileDeliveryAddressText" class="text-emerald-400">Rajpur Block C</strong></span>
         </span>
         <span class="text-[10px] text-emerald-400 font-bold ml-2 flex-shrink-0">Change ▾</span>
       </div>
       <div class="relative">
         <div class="relative flex items-center">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-slate-400 text-sm pointer-events-none"></i>
-          <input type="text" id="mobileMarketSearchInput" oninput="handleMarketSearch(this.value)" onkeydown="if(event.key==='Enter')handleMarketSearchSubmit()" placeholder="Search fresh fish, country potatoes, oil, rice, stalls..." style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; background-color: #020617 !important;" class="w-full text-white placeholder-slate-400 text-sm font-semibold px-4 py-3 pl-11 pr-11 rounded-2xl bg-slate-950 border border-slate-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 shadow-inner outline-none tracking-wide caret-emerald-400">
-          <button type="button" id="mobileMarketSearchClearBtn" onclick="clearMarketSearch()" class="hidden absolute right-2.5 w-6 h-6 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white flex items-center justify-center text-xs font-bold transition-all shadow" title="Clear search">✕</button>
+          <input type="text" id="mobileMarketSearchInput" oninput="handleMarketSearch(this.value)" onkeydown="if(event.key==='Enter')handleMarketSearchSubmit()" placeholder="Search fresh fish, country potatoes, oil, rice, stalls..." style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; background-color: #020617 !important;" class="w-full text-white placeholder-slate-400 text-sm font-semibold px-4 py-3 pl-11 pr-20 rounded-2xl bg-slate-950 border border-slate-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 shadow-inner outline-none tracking-wide caret-emerald-400">
+          <button type="button" id="mobileMarketSearchClearBtn" onclick="clearMarketSearch()" class="hidden absolute right-11 w-6 h-6 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white flex items-center justify-center text-xs font-bold transition-all shadow" title="Clear search">✕</button>
+          <button type="button" id="mobileVoiceSearchBtn" onclick="openVoiceSearchModal()" class="absolute right-3 w-6 h-6 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all shadow group" title="Voice Search (English, বাংলা, हिन्दी)">
+            <i class="fa-solid fa-microphone text-emerald-400 group-hover:text-white text-[11px] transition-colors"></i>
+          </button>
         </div>
         <!-- Mobile Dropdown -->
         <div id="mobileMarketSearchDropdown" class="hidden absolute left-0 right-0 top-full mt-2 bg-slate-900/98 backdrop-blur-xl border border-slate-700/90 rounded-2xl shadow-2xl overflow-hidden z-50 divide-y divide-slate-800/80"></div>
@@ -1333,31 +1498,157 @@
         <!-- Order Summary Badges -->
         <div class="grid grid-cols-3 gap-2 py-2 text-center">
           <div class="p-2 bg-slate-950 border border-slate-800 rounded-xl">
-            <span class="text-[10px] text-slate-500 block font-bold">Total Orders</span>
+            <span class="text-[10px] text-slate-500 block font-bold" data-i18n="profile_stats_orders">Total Orders</span>
             <span id="custStatsTotalOrders" class="text-sm font-black text-white">0</span>
           </div>
           <div class="p-2 bg-slate-950 border border-slate-800 rounded-xl">
-            <span class="text-[10px] text-slate-500 block font-bold">Active Deliveries</span>
+            <span class="text-[10px] text-slate-500 block font-bold" data-i18n="profile_stats_active">Active Deliveries</span>
             <span id="custStatsActiveOrders" class="text-sm font-black text-emerald-400">0</span>
           </div>
           <div class="p-2 bg-slate-950 border border-slate-800 rounded-xl">
-            <span class="text-[10px] text-slate-500 block font-bold">Local Stalls</span>
+            <span class="text-[10px] text-slate-500 block font-bold" data-i18n="profile_stats_stalls">Local Stalls</span>
             <span class="text-sm font-black text-sky-400">3 Hubs</span>
+          </div>
+        </div>
+
+        <!-- Appearance Theme Section -->
+        <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-palette text-purple-400"></i>
+              <span class="font-bold text-white text-xs" data-i18n="profile_theme_title">Theme & Appearance</span>
+            </div>
+            <span id="profileCurrentThemeLabel" class="text-[10px] text-emerald-400 font-bold">Dark Mode</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="setAppTheme('dark')" id="btnProfileThemeDark" class="py-2 px-3 rounded-xl border border-slate-700 bg-emerald-600 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all">
+              <i class="fa-solid fa-moon"></i> <span data-i18n="theme_dark">Dark Mode</span>
+            </button>
+            <button type="button" onclick="setAppTheme('light')" id="btnProfileThemeLight" class="py-2 px-3 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 hover:text-white font-bold text-xs flex items-center justify-center gap-2 transition-all">
+              <i class="fa-solid fa-sun text-amber-400"></i> <span data-i18n="theme_light">Light Mode</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Language Preference Section -->
+        <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-language text-sky-400"></i>
+              <span class="font-bold text-white text-xs" data-i18n="profile_lang_title">Language Preference</span>
+            </div>
+            <span id="profileCurrentLangLabel" class="text-[10px] text-emerald-400 font-bold">English</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="setAppLanguage('en')" id="btnProfileLangEn" class="py-2 px-2 rounded-xl border border-slate-700 bg-emerald-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all">
+              🇬🇧 <span>English</span>
+            </button>
+            <button type="button" onclick="setAppLanguage('bn')" id="btnProfileLangBn" class="py-2 px-2 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 hover:text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all">
+              🇧🇩 <span>বাংলা</span>
+            </button>
+            <button type="button" onclick="setAppLanguage('hi')" id="btnProfileLangHi" class="py-2 px-2 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 hover:text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all">
+              🇮🇳 <span>हिन्दी</span>
+            </button>
           </div>
         </div>
 
         <div class="flex items-center justify-between pt-2 border-t border-slate-800">
           <button type="button" onclick="handleCustomerLogout()" class="text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1.5 transition-colors">
             <i class="fa-solid fa-arrow-right-from-bracket"></i>
-            <span>Sign Out</span>
+            <span data-i18n="menu_signout">Sign Out</span>
           </button>
           
           <button type="submit" id="btnSaveCustProfile" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg flex items-center gap-1.5 transition-all">
             <i class="fa-solid fa-floppy-disk"></i>
-            <span>Save Profile</span>
+            <span data-i18n="profile_save">Save Profile</span>
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Voice Search Assistant Modal -->
+  <div id="voiceSearchModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 text-center space-y-5 shadow-2xl relative overflow-hidden">
+      <!-- Close Button -->
+      <button onclick="closeVoiceSearchModal()" class="absolute right-4 top-4 text-slate-400 hover:text-white p-2 rounded-full hover:bg-slate-800 transition-colors">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- Header -->
+      <div class="space-y-1">
+        <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-black uppercase tracking-wider inline-flex items-center gap-1.5">
+          <i class="fa-solid fa-sparkles"></i> <span data-i18n="voice_badge">AI Voice Search Assistant</span>
+        </span>
+        <h3 class="text-xl font-black text-white" data-i18n="voice_title">Search by Voice</h3>
+        <p class="text-xs text-slate-400" data-i18n="voice_subtitle">Speak clearly in Bangla, English, or Hindi to find any product</p>
+      </div>
+
+      <!-- Language Selector Chips inside Modal -->
+      <div class="flex items-center justify-center gap-2 p-1 bg-slate-950 rounded-2xl border border-slate-800">
+        <button type="button" onclick="setVoiceRecognitionLanguage('bn-IN', 'bn')" id="btnVoiceLangBn" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white">
+          🇧🇩 বাংলা
+        </button>
+        <button type="button" onclick="setVoiceRecognitionLanguage('en-IN', 'en')" id="btnVoiceLangEn" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white shadow">
+          🇬🇧 English
+        </button>
+        <button type="button" onclick="setVoiceRecognitionLanguage('hi-IN', 'hi')" id="btnVoiceLangHi" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white">
+          🇮🇳 हिन्दी
+        </button>
+      </div>
+
+      <!-- Animated Mic Circle -->
+      <div class="relative py-4 flex items-center justify-center">
+        <!-- Radiating Pulse Rings -->
+        <div id="voiceMicPulseRings" class="absolute w-32 h-32 rounded-full bg-emerald-500/20 animate-ping pointer-events-none"></div>
+        <div class="relative z-10">
+          <button type="button" id="voiceMicActionButton" onclick="toggleVoiceListening()" class="w-24 h-24 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white flex items-center justify-center text-3xl shadow-xl shadow-emerald-500/30 transition-transform active:scale-95 group">
+            <i id="voiceMicIcon" class="fa-solid fa-microphone"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Waveform Visualizer -->
+      <div id="voiceAudioWaveform" class="flex items-center justify-center gap-1.5 h-6">
+        <span class="w-1 bg-emerald-400 rounded-full animate-bounce" style="height: 12px; animation-delay: 0.1s;"></span>
+        <span class="w-1 bg-emerald-400 rounded-full animate-bounce" style="height: 22px; animation-delay: 0.2s;"></span>
+        <span class="w-1 bg-emerald-400 rounded-full animate-bounce" style="height: 16px; animation-delay: 0.3s;"></span>
+        <span class="w-1 bg-emerald-400 rounded-full animate-bounce" style="height: 26px; animation-delay: 0.4s;"></span>
+        <span class="w-1 bg-emerald-400 rounded-full animate-bounce" style="height: 14px; animation-delay: 0.5s;"></span>
+      </div>
+
+      <!-- Status & Live Transcription Box -->
+      <div class="space-y-2">
+        <p id="voiceSearchStatusText" class="text-xs font-bold text-emerald-400 tracking-wide" data-i18n="voice_listening">
+          Listening... Speak now!
+        </p>
+        <div class="min-h-[58px] p-3.5 bg-slate-950 border border-slate-800 rounded-2xl flex items-center justify-center">
+          <p id="voiceLiveTranscript" class="text-sm font-semibold text-white italic">
+            "..."
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Example Voice Hints -->
+      <div class="text-[11px] text-slate-400">
+        <span class="font-bold text-slate-300" data-i18n="voice_try_saying">Try saying:</span>
+        <div class="flex flex-wrap items-center justify-center gap-1.5 mt-1.5" id="voiceSuggestionsContainer">
+          <button type="button" onclick="applyVoiceText('Fresh Rohu Fish')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px]">🐟 Fresh Rohu Fish</button>
+          <button type="button" onclick="applyVoiceText('দেশি আলু')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px]">🥔 দেশি আলু</button>
+          <button type="button" onclick="applyVoiceText('सरसों का तेल')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px]">🛢️ सरसों का तेल</button>
+          <button type="button" onclick="applyVoiceText('Fortune Mustard Oil')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px]">🌾 Mustard Oil</button>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2 pt-2">
+        <button type="button" onclick="closeVoiceSearchModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition-colors" data-i18n="voice_cancel">
+          Cancel
+        </button>
+        <button type="button" id="btnVoiceSubmitSearch" onclick="submitVoiceSearch()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-2" data-i18n="voice_search_btn">
+          <i class="fa-solid fa-magnifying-glass"></i> <span>Search Now</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1421,12 +1712,12 @@
             <span class="text-emerald-200 text-xs">•</span>
             <span id="floatingCartTotalText" class="font-black text-sm text-white">₹ 0</span>
           </div>
-          <span class="text-[10px] text-emerald-100/80 block">Tap to review cart & express checkout</span>
+          <span class="text-[10px] text-emerald-100/80 block" data-i18n="quick_cart_tap">Tap to review cart & express checkout</span>
         </div>
       </div>
 
       <div class="flex items-center gap-2 bg-slate-950/25 px-3 py-1.5 rounded-xl text-xs font-black tracking-wide group-hover:bg-slate-950/40 transition-all flex-shrink-0">
-        <span>View Cart</span>
+        <span data-i18n="quick_cart_view">View Cart</span>
         <i class="fa-solid fa-arrow-right text-[11px] group-hover:translate-x-1 transition-transform"></i>
       </div>
     </div>
@@ -1436,24 +1727,24 @@
   <nav class="md:hidden fixed bottom-0 inset-x-0 bg-slate-950/95 backdrop-blur-md border-t border-slate-800 z-40 grid grid-cols-5 text-[10px] font-bold ll-safe-bottom shadow-2xl">
     <button onclick="switchCustomerPage('home')" id="mob-nav-home" class="mob-nav-btn py-2.5 flex flex-col items-center justify-center gap-1 text-emerald-400 transition-colors">
       <i class="fa-solid fa-house text-sm"></i>
-      <span>Home</span>
+      <span data-i18n="mob_nav_home">Home</span>
     </button>
     <button onclick="switchCustomerPage('compare')" id="mob-nav-compare" class="mob-nav-btn py-2.5 flex flex-col items-center justify-center gap-1 text-slate-400 transition-colors">
       <i class="fa-solid fa-scale-balanced text-sm"></i>
-      <span>Compare</span>
+      <span data-i18n="mob_nav_compare">Compare</span>
     </button>
     <button onclick="switchCustomerPage('bargain')" id="mob-nav-bargain" class="mob-nav-btn py-2.5 flex flex-col items-center justify-center gap-1 text-slate-400 transition-colors">
       <i class="fa-solid fa-robot text-sm"></i>
-      <span>Bargain</span>
+      <span data-i18n="mob_nav_bargain">Bargain</span>
     </button>
     <button onclick="switchCustomerPage('cart')" id="mob-nav-cart" class="mob-nav-btn py-2.5 flex flex-col items-center justify-center gap-1 text-slate-400 relative transition-colors">
       <i class="fa-solid fa-cart-shopping text-sm"></i>
-      <span>Cart</span>
+      <span data-i18n="mob_nav_cart">Cart</span>
       <span id="cartCountBadgeMobile" class="absolute top-1.5 right-4 w-4 h-4 bg-emerald-500 text-slate-950 rounded-full text-[9px] font-black flex items-center justify-center">0</span>
     </button>
     <button onclick="switchCustomerPage('orders')" id="mob-nav-orders" class="mob-nav-btn py-2.5 flex flex-col items-center justify-center gap-1 text-slate-400 transition-colors">
       <i class="fa-solid fa-box-archive text-sm"></i>
-      <span>Orders</span>
+      <span data-i18n="mob_nav_orders">Orders</span>
     </button>
   </nav>
 
@@ -1537,6 +1828,7 @@
 
     // Initialize on page load
     window.addEventListener("DOMContentLoaded", async () => {
+      initAppThemeAndLanguage();
       loadCartFromStorage();
       await initializeCustomerAuth();
       await loadCustomerProducts();
@@ -3708,6 +4000,518 @@
         btn.disabled = false;
         btn.innerHTML = orig;
       }
+    }
+
+    // =========================================================================
+    // MULTILINGUAL (i18n) TRANSLATION ENGINE & DICTIONARY (EN, BN, HI)
+    // =========================================================================
+    const LOCAL_LINK_TRANSLATIONS = {
+      en: {
+        app_brand_sub: "Local Market App",
+        deliver_to: "Deliver to:",
+        search_placeholder: "Search fresh fish, country potatoes, oil, rice, turmeric, or stall name...",
+        search_mobile_placeholder: "Search fish, potatoes, oil, rice, stalls...",
+        nav_home: "Home",
+        nav_compare: "Compare",
+        nav_bargain: "AI Bargain",
+        nav_orders: "Orders",
+        nav_cart: "Cart",
+        nav_roles: "Switch Role",
+        nav_signin: "Sign In",
+        menu_profile: "My Profile & Account",
+        menu_profile_sub: "Personal info, address & stats",
+        menu_theme: "Appearance",
+        menu_language: "Language / ভাষা / भाषा",
+        menu_seller: "Seller Hub",
+        menu_rider: "Delivery Partner (Rider)",
+        menu_signout: "Sign Out",
+        theme_dark: "Dark Mode",
+        theme_light: "Light Mode",
+        profile_theme_title: "Theme & Appearance",
+        profile_lang_title: "Language Preference",
+        profile_stats_orders: "Total Orders",
+        profile_stats_active: "Active Deliveries",
+        profile_stats_stalls: "Local Stalls",
+        profile_save: "Save Profile",
+        hero_badge: "Sonarpur Local Market Hub",
+        hero_title: "Fresh Fish, Vegetables & Daily Grocery Delivered Fast",
+        hero_desc: "Buy fresh morning fish/vegetables and pantry essentials (Rice, Oil, Maida, Turmeric) directly from verified local stalls in Rajpur Sonarpur.",
+        cat_all: "All Items",
+        cat_fish: "Fresh Fish",
+        cat_vegetables: "Vegetables",
+        cat_grocery: "Groceries & Spices",
+        showing_nearby_stalls: "Showing nearby stalls for:",
+        all_stalls_btn: "All Stalls",
+        quick_cart_tap: "Tap to review cart & express checkout",
+        quick_cart_view: "View Cart",
+        voice_badge: "AI Voice Search Assistant",
+        voice_title: "Search by Voice",
+        voice_subtitle: "Speak clearly in Bangla, English, or Hindi to find any product",
+        voice_listening: "Listening... Speak now!",
+        voice_try_saying: "Try saying:",
+        voice_cancel: "Cancel",
+        voice_search_btn: "Search Now",
+        mob_nav_home: "Home",
+        mob_nav_compare: "Compare",
+        mob_nav_bargain: "Bargain",
+        mob_nav_cart: "Cart",
+        mob_nav_orders: "Orders"
+      },
+      bn: {
+        app_brand_sub: "লোকাল মার্কেট অ্যাপ",
+        deliver_to: "ডেলিভারি ঠিকানা:",
+        search_placeholder: "তাজা মাছ, আলু, তেল, চাল, হলুদ বা দোকানের নাম খুঁজুন...",
+        search_mobile_placeholder: "মাছ, দেশি আলু, তেল, চাল, দোকান খুঁজুন...",
+        nav_home: "হোম",
+        nav_compare: "তুলনা",
+        nav_bargain: "এআই দরদাম",
+        nav_orders: "অর্ডার",
+        nav_cart: "কার্ট",
+        nav_roles: "ভূমিকা বদল",
+        nav_signin: "লগইন",
+        menu_profile: "আমার প্রোফাইল ও অ্যাকাউন্ট",
+        menu_profile_sub: "ব্যক্তিগত তথ্য, ঠিকানা ও রেকর্ড",
+        menu_theme: "থিম ও ডিসপ্লে",
+        menu_language: "ভাষা নির্বাচন",
+        menu_seller: "বিক্রেতা হাব",
+        menu_rider: "ডেলিভারি পার্টনার (রাইডার)",
+        menu_signout: "লগ আউট",
+        theme_dark: "ডার্ক মোড",
+        theme_light: "লাইট মোড",
+        profile_theme_title: "থিম ও ডিসপ্লে মোড",
+        profile_lang_title: "পছন্দের ভাষা নির্বাচন",
+        profile_stats_orders: "মোট অর্ডার",
+        profile_stats_active: "চলমান ডেলিভারি",
+        profile_stats_stalls: "লোকাল দোকান",
+        profile_save: "প্রোফাইল সংরক্ষণ",
+        hero_badge: "সোনারপুর লোকাল বাজার হাব",
+        hero_title: "সকালের তাজা মাছ, শাকসবজি ও মুদি পণ্য দ্রুত ডেলিভারি",
+        hero_desc: "রাজপুর সোনারপুরের স্থানীয় দোকান থেকে তাজা সকালের মাছ, সবজি ও চাল, তেল, হলুদ কিনুন মাত্র ১৫ মিনিটে সেরা বাজারদরে।",
+        cat_all: "সব পণ্য",
+        cat_fish: "তাজা মাছ",
+        cat_vegetables: "শাকসবজি",
+        cat_grocery: "মুদি ও মসলা",
+        showing_nearby_stalls: "কাছের দোকান দেখাচ্ছে:",
+        all_stalls_btn: "সব দোকান",
+        quick_cart_tap: "কার্ট চেকআউট করতে ট্যাপ করুন",
+        quick_cart_view: "কার্ট দেখুন",
+        voice_badge: "এআই ভয়েস সার্চ সহকারী",
+        voice_title: "মুখে বলে খুঁজুন",
+        voice_subtitle: "বাংলা, ইংরেজি বা হিন্দিতে যেকোনো পণ্যের নাম বলুন",
+        voice_listening: "শুনছি... এখন মুখে বলুন!",
+        voice_try_saying: "মুখে বলতে পারেন:",
+        voice_cancel: "বাতিল",
+        voice_search_btn: "এখন খুঁজুন",
+        mob_nav_home: "হোম",
+        mob_nav_compare: "তুলনা",
+        mob_nav_bargain: "দরদাম",
+        mob_nav_cart: "কার্ট",
+        mob_nav_orders: "অর্ডার"
+      },
+      hi: {
+        app_brand_sub: "लोकल मार्केट ऐप",
+        deliver_to: "डिलीवरी पता:",
+        search_placeholder: "ताजी मछली, आलू, तेल, चावल, हल्दी या दुकान का नाम खोजें...",
+        search_mobile_placeholder: "मछली, आलू, तेल, चावल, दुकान खोजें...",
+        nav_home: "होम",
+        nav_compare: "तुलना",
+        nav_bargain: "एआई मोलभाव",
+        nav_orders: "ऑर्डर",
+        nav_cart: "कार्ट",
+        nav_roles: "रोल बदलें",
+        nav_signin: "साइन इन",
+        menu_profile: "मेरा प्रोफ़ाइल और खाता",
+        menu_profile_sub: "व्यक्तिगत जानकारी, पता और विवरण",
+        menu_theme: "थीम और दिखावट",
+        menu_language: "भाषा का चयन",
+        menu_seller: "विक्रेता हब",
+        menu_rider: "डिलीवरी पार्टनर (राइडर)",
+        menu_signout: "साइन आउट",
+        theme_dark: "डार्क मोड",
+        theme_light: "लाइट मोड",
+        profile_theme_title: "थीम और दिखावट मोड",
+        profile_lang_title: "पसंदीदा भाषा चुनें",
+        profile_stats_orders: "कुल ऑर्डर",
+        profile_stats_active: "सक्रिय डिलीवरी",
+        profile_stats_stalls: "स्थानीय दुकानें",
+        profile_save: "प्रोफ़ाइल सहेजें",
+        hero_badge: "सोनारपुर लोकल बाज़ार हब",
+        hero_title: "ताजी मछली, सब्ज़ियाँ और दैनिक राशन तेज़ी से डिलीवर",
+        hero_desc: "राजपुर सोनारपुर के सत्यापित स्टॉलों से सुबह की ताजी मछली, सब्ज़ियाँ और तेल, चावल, हल्दी सीधे 15 मिनट में मँगवाएं।",
+        cat_all: "सभी सामान",
+        cat_fish: "ताजी मछली",
+        cat_vegetables: "सब्ज़ियाँ",
+        cat_grocery: "किराना और मसाले",
+        showing_nearby_stalls: "नज़दीकी दुकानें दिखा रहे हैं:",
+        all_stalls_btn: "सभी दुकानें",
+        quick_cart_tap: "कार्ट देखने और चेकआउट करने के लिए टैप करें",
+        quick_cart_view: "कार्ट देखें",
+        voice_badge: "एआई वॉयस सर्च असिस्टेंट",
+        voice_title: "आवाज़ से खोजें",
+        voice_subtitle: "बांग्ला, अंग्रेज़ी या हिन्दी में किसी भी उत्पाद का नाम बोलें",
+        voice_listening: "सुन रहा हूँ... अब बोलिए!",
+        voice_try_saying: "बोल कर देखें:",
+        voice_cancel: "रद्द करें",
+        voice_search_btn: "अब खोजें",
+        mob_nav_home: "होम",
+        mob_nav_compare: "तुलना",
+        mob_nav_bargain: "मोलभाव",
+        mob_nav_cart: "कार्ट",
+        mob_nav_orders: "ऑर्डर"
+      }
+    };
+
+    let currentAppLanguage = localStorage.getItem("locallink_lang") || "en";
+    let currentAppTheme = localStorage.getItem("locallink_theme") || "dark";
+
+    function setAppLanguage(lang) {
+      if (!LOCAL_LINK_TRANSLATIONS[lang]) lang = "en";
+      currentAppLanguage = lang;
+      localStorage.setItem("locallink_lang", lang);
+
+      // Default voice recognition lang to match selected language
+      if (lang === "bn") currentVoiceLang = "bn-IN";
+      else if (lang === "hi") currentVoiceLang = "hi-IN";
+      else currentVoiceLang = "en-IN";
+
+      applyTranslations(lang);
+      updateLanguageUIButtons(lang);
+
+      const msg = lang === "bn" ? "ভাষা সফলভাবে বাংলা নির্বাচিত হয়েছে" : (lang === "hi" ? "भाषा हिन्दी सफलतापूर्वक चुनी गई" : "Language set to English");
+      showToast(msg, "success");
+    }
+
+    function applyTranslations(lang) {
+      const dict = LOCAL_LINK_TRANSLATIONS[lang] || LOCAL_LINK_TRANSLATIONS.en;
+
+      // 1. All elements tagged with data-i18n
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (dict[key]) {
+          el.textContent = dict[key];
+        }
+      });
+
+      // 2. Search inputs placeholders
+      const desktopSearch = document.getElementById("marketSearchInput");
+      if (desktopSearch && dict.search_placeholder) {
+        desktopSearch.setAttribute("placeholder", dict.search_placeholder);
+      }
+      const mobileSearch = document.getElementById("mobileMarketSearchInput");
+      if (mobileSearch && dict.search_mobile_placeholder) {
+        mobileSearch.setAttribute("placeholder", dict.search_mobile_placeholder);
+      }
+
+      // 3. Document HTML lang
+      document.documentElement.lang = lang;
+    }
+
+    function updateLanguageUIButtons(lang) {
+      // Three-Dot menu language buttons
+      const menuEn = document.getElementById("btnLangEnMenu");
+      const menuBn = document.getElementById("btnLangBnMenu");
+      const menuHi = document.getElementById("btnLangHiMenu");
+      const activeClass = "py-1 rounded-lg text-center transition-all bg-emerald-600 text-white shadow";
+      const inactiveClass = "py-1 rounded-lg text-center transition-all text-slate-400 hover:text-white";
+
+      if (menuEn) menuEn.className = lang === "en" ? activeClass : inactiveClass;
+      if (menuBn) menuBn.className = lang === "bn" ? activeClass : inactiveClass;
+      if (menuHi) menuHi.className = lang === "hi" ? activeClass : inactiveClass;
+
+      // Profile modal language buttons
+      const profEn = document.getElementById("btnProfileLangEn");
+      const profBn = document.getElementById("btnProfileLangBn");
+      const profHi = document.getElementById("btnProfileLangHi");
+      const profActive = "py-2 px-2 rounded-xl border border-slate-700 bg-emerald-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all";
+      const profInactive = "py-2 px-2 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 hover:text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all";
+
+      if (profEn) profEn.className = lang === "en" ? profActive : profInactive;
+      if (profBn) profBn.className = lang === "bn" ? profActive : profInactive;
+      if (profHi) profHi.className = lang === "hi" ? profActive : profInactive;
+
+      const profLabel = document.getElementById("profileCurrentLangLabel");
+      if (profLabel) {
+        profLabel.textContent = lang === "bn" ? "বাংলা" : (lang === "hi" ? "हिन्दी" : "English");
+      }
+    }
+
+    // =========================================================================
+    // THEME CONTROLLER (DARK & LIGHT MODE)
+    // =========================================================================
+    function setAppTheme(theme) {
+      if (theme !== "dark" && theme !== "light") theme = "dark";
+      currentAppTheme = theme;
+      localStorage.setItem("locallink_theme", theme);
+
+      if (theme === "light") {
+        document.body.classList.add("light-theme");
+        document.documentElement.style.colorScheme = "light";
+      } else {
+        document.body.classList.remove("light-theme");
+        document.documentElement.style.colorScheme = "dark";
+      }
+
+      updateThemeUIButtons(theme);
+    }
+
+    function updateThemeUIButtons(theme) {
+      const isLight = theme === "light";
+
+      // Three-dot menu theme buttons
+      const btnDarkMenu = document.getElementById("btnThemeDarkMenu");
+      const btnLightMenu = document.getElementById("btnThemeLightMenu");
+      const statusMenu = document.getElementById("threeDotThemeStatus");
+
+      if (btnDarkMenu) {
+        btnDarkMenu.className = !isLight 
+          ? "py-1 px-2 rounded-lg text-center font-bold text-[11px] transition-all bg-emerald-600 text-white shadow" 
+          : "py-1 px-2 rounded-lg text-center font-bold text-[11px] transition-all text-slate-400 hover:text-white";
+      }
+      if (btnLightMenu) {
+        btnLightMenu.className = isLight 
+          ? "py-1 px-2 rounded-lg text-center font-bold text-[11px] transition-all bg-emerald-600 text-white shadow" 
+          : "py-1 px-2 rounded-lg text-center font-bold text-[11px] transition-all text-slate-400 hover:text-white";
+      }
+      if (statusMenu) {
+        statusMenu.textContent = isLight ? "Light Mode" : "Dark Mode";
+      }
+
+      // Profile modal theme buttons
+      const btnDarkProf = document.getElementById("btnProfileThemeDark");
+      const btnLightProf = document.getElementById("btnProfileThemeLight");
+      const labelProf = document.getElementById("profileCurrentThemeLabel");
+
+      if (btnDarkProf) {
+        btnDarkProf.className = !isLight
+          ? "py-2 px-3 rounded-xl border border-slate-700 bg-emerald-600 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all"
+          : "py-2 px-3 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 hover:text-white font-bold text-xs flex items-center justify-center gap-2 transition-all";
+      }
+      if (btnLightProf) {
+        btnLightProf.className = isLight
+          ? "py-2 px-3 rounded-xl border border-slate-700 bg-emerald-600 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all"
+          : "py-2 px-3 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 hover:text-white font-bold text-xs flex items-center justify-center gap-2 transition-all";
+      }
+      if (labelProf) {
+        labelProf.textContent = isLight ? "Light Mode" : "Dark Mode";
+      }
+    }
+
+    function initAppThemeAndLanguage() {
+      const savedTheme = localStorage.getItem("locallink_theme") || "dark";
+      setAppTheme(savedTheme);
+
+      const savedLang = localStorage.getItem("locallink_lang") || "en";
+      currentAppLanguage = savedLang;
+      applyTranslations(savedLang);
+      updateLanguageUIButtons(savedLang);
+    }
+
+    // =========================================================================
+    // THREE-DOT MENU CONTROLLER
+    // =========================================================================
+    function toggleThreeDotMenu(event) {
+      if (event) event.stopPropagation();
+      const menu = document.getElementById("headerThreeDotMenu");
+      if (!menu) return;
+      menu.classList.toggle("hidden");
+    }
+
+    function closeThreeDotMenu() {
+      const menu = document.getElementById("headerThreeDotMenu");
+      if (menu) menu.classList.add("hidden");
+    }
+
+    document.addEventListener("click", (e) => {
+      const container = document.getElementById("threeDotMenuContainer");
+      if (container && !container.contains(e.target)) {
+        closeThreeDotMenu();
+      }
+    });
+
+    // =========================================================================
+    // VOICE SEARCH ASSISTANT CONTROLLER (BANGLA, ENGLISH, HINDI)
+    // =========================================================================
+    let speechRecognitionInstance = null;
+    let currentVoiceLang = "en-IN";
+    let isVoiceListening = false;
+    let currentVoiceTranscript = "";
+
+    function openVoiceSearchModal() {
+      const modal = document.getElementById("voiceSearchModal");
+      if (!modal) return;
+      modal.classList.remove("hidden");
+      currentVoiceTranscript = "";
+      
+      const transcriptEl = document.getElementById("voiceLiveTranscript");
+      if (transcriptEl) transcriptEl.textContent = '"..."';
+
+      // Pick shortcode
+      const short = currentVoiceLang.startsWith("bn") ? "bn" : (currentVoiceLang.startsWith("hi") ? "hi" : "en");
+      setVoiceRecognitionLanguage(currentVoiceLang, short);
+
+      startVoiceListening();
+    }
+
+    function closeVoiceSearchModal() {
+      stopVoiceListening();
+      const modal = document.getElementById("voiceSearchModal");
+      if (modal) modal.classList.add("hidden");
+    }
+
+    function setVoiceRecognitionLanguage(langCode, shortCode) {
+      currentVoiceLang = langCode;
+      ["bn", "en", "hi"].forEach(l => {
+        const btn = document.getElementById("btnVoiceLang" + l.charAt(0).toUpperCase() + l.slice(1));
+        if (btn) {
+          if (l === shortCode) {
+            btn.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white shadow";
+          } else {
+            btn.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white";
+          }
+        }
+      });
+
+      if (isVoiceListening) {
+        stopVoiceListening();
+        setTimeout(() => startVoiceListening(), 250);
+      }
+    }
+
+    function startVoiceListening() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        const statusEl = document.getElementById("voiceSearchStatusText");
+        if (statusEl) {
+          statusEl.textContent = "Speech recognition is not supported in this browser. Please type in search bar.";
+        }
+        updateVoiceUIState(false);
+        return;
+      }
+
+      try {
+        if (speechRecognitionInstance) {
+          speechRecognitionInstance.abort();
+        }
+        speechRecognitionInstance = new SpeechRecognition();
+        speechRecognitionInstance.continuous = false;
+        speechRecognitionInstance.interimResults = true;
+        speechRecognitionInstance.lang = currentVoiceLang;
+
+        speechRecognitionInstance.onstart = function() {
+          isVoiceListening = true;
+          updateVoiceUIState(true);
+          const dict = LOCAL_LINK_TRANSLATIONS[currentAppLanguage] || LOCAL_LINK_TRANSLATIONS.en;
+          const statusEl = document.getElementById("voiceSearchStatusText");
+          if (statusEl) statusEl.textContent = dict.voice_listening || "Listening... Speak now!";
+        };
+
+        speechRecognitionInstance.onresult = function(event) {
+          let interim = "";
+          let final = "";
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              final += event.results[i][0].transcript;
+            } else {
+              interim += event.results[i][0].transcript;
+            }
+          }
+          const text = (final || interim).trim();
+          if (text) {
+            currentVoiceTranscript = text;
+            const el = document.getElementById("voiceLiveTranscript");
+            if (el) el.textContent = `"${text}"`;
+          }
+        };
+
+        speechRecognitionInstance.onerror = function(event) {
+          console.warn("Speech recognition error:", event.error);
+          isVoiceListening = false;
+          updateVoiceUIState(false);
+          const statusEl = document.getElementById("voiceSearchStatusText");
+          if (statusEl) {
+            if (event.error === "not-allowed") {
+              statusEl.textContent = "Microphone permission denied. Please allow microphone in browser.";
+            } else if (event.error === "no-speech") {
+              statusEl.textContent = "No speech heard. Tap microphone to speak.";
+            } else {
+              statusEl.textContent = `Recognition error (${event.error}). Tap to retry.`;
+            }
+          }
+        };
+
+        speechRecognitionInstance.onend = function() {
+          isVoiceListening = false;
+          updateVoiceUIState(false);
+          if (currentVoiceTranscript && currentVoiceTranscript.trim().length > 0) {
+            setTimeout(() => {
+              submitVoiceSearch();
+            }, 600);
+          }
+        };
+
+        speechRecognitionInstance.start();
+      } catch (err) {
+        console.warn("Speech recognition error:", err);
+        isVoiceListening = false;
+        updateVoiceUIState(false);
+      }
+    }
+
+    function stopVoiceListening() {
+      if (speechRecognitionInstance) {
+        try {
+          speechRecognitionInstance.abort();
+        } catch (e) {}
+      }
+      isVoiceListening = false;
+      updateVoiceUIState(false);
+    }
+
+    function toggleVoiceListening() {
+      if (isVoiceListening) {
+        stopVoiceListening();
+      } else {
+        startVoiceListening();
+      }
+    }
+
+    function updateVoiceUIState(active) {
+      const pulseRings = document.getElementById("voiceMicPulseRings");
+      const waveform = document.getElementById("voiceAudioWaveform");
+      const micIcon = document.getElementById("voiceMicIcon");
+      const actionBtn = document.getElementById("voiceMicActionButton");
+
+      if (active) {
+        if (pulseRings) pulseRings.classList.remove("hidden");
+        if (waveform) waveform.classList.remove("opacity-20");
+        if (micIcon) micIcon.className = "fa-solid fa-microphone animate-pulse text-white";
+        if (actionBtn) actionBtn.classList.add("ring-4", "ring-emerald-400/50");
+      } else {
+        if (pulseRings) pulseRings.classList.add("hidden");
+        if (waveform) waveform.classList.add("opacity-20");
+        if (micIcon) micIcon.className = "fa-solid fa-microphone text-white";
+        if (actionBtn) actionBtn.classList.remove("ring-4", "ring-emerald-400/50");
+      }
+    }
+
+    function submitVoiceSearch() {
+      const query = (currentVoiceTranscript || "").trim();
+      closeVoiceSearchModal();
+      if (!query) return;
+
+      const desktopInput = document.getElementById("marketSearchInput");
+      const mobileInput = document.getElementById("mobileMarketSearchInput");
+      if (desktopInput) desktopInput.value = query;
+      if (mobileInput) mobileInput.value = query;
+
+      handleMarketSearch(query);
+      handleMarketSearchSubmit();
+      showToast(`🎙️ Voice search: "${query}"`, "success");
+    }
+
+    function applyVoiceText(text) {
+      currentVoiceTranscript = text;
+      submitVoiceSearch();
     }
   </script>
 </body>

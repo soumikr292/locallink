@@ -49,29 +49,29 @@
       <!-- Navigation Links -->
       <nav class="space-y-1 text-xs font-medium">
         <button id="link-dashboard" onclick="switchTab('dashboard')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-950/50 transition-all">
-          <i class="fa-solid fa-chart-pie w-4"></i> Store Dashboard
+          <i class="fa-solid fa-chart-pie w-4"></i> <span data-i18n="seller_nav_dashboard">Store Dashboard</span>
         </button>
         <button id="link-photo-upload" onclick="switchTab('photo-upload')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
-          <i class="fa-solid fa-camera-retro w-4 text-emerald-400"></i> Daily Real Photo Upload (Fish/Veg)
+          <i class="fa-solid fa-camera-retro w-4 text-emerald-400"></i> <span data-i18n="seller_nav_photo">Daily Real Photo Upload</span>
         </button>
         <button id="link-inventory" onclick="switchTab('inventory')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
-          <i class="fa-solid fa-boxes-stacked w-4"></i> Products & Inventory (Grocery)
+          <i class="fa-solid fa-boxes-stacked w-4"></i> <span data-i18n="seller_nav_inventory">Products & Inventory</span>
         </button>
         <button id="link-orders" onclick="switchTab('orders')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
-          <i class="fa-solid fa-truck-ramp-box w-4"></i> Incoming Orders
+          <i class="fa-solid fa-truck-ramp-box w-4"></i> <span data-i18n="seller_nav_orders">Incoming Orders</span>
           <span id="badge-orders-count" class="ml-auto hidden px-2 py-0.5 bg-amber-500 text-slate-950 rounded-full text-[10px] font-black">0</span>
         </button>
         <button id="link-bargain" onclick="switchTab('bargain')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
-          <i class="fa-solid fa-robot w-4 text-purple-400"></i> AI Bargain Rules
+          <i class="fa-solid fa-robot w-4 text-purple-400"></i> <span data-i18n="seller_nav_bargain">AI Bargain Rules</span>
         </button>
         <button id="link-earnings" onclick="switchTab('earnings')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
-          <i class="fa-solid fa-wallet w-4 text-blue-400"></i> Payouts & Earnings
+          <i class="fa-solid fa-wallet w-4 text-blue-400"></i> <span data-i18n="seller_nav_earnings">Payouts & Earnings</span>
         </button>
         <button id="link-reviews" onclick="switchTab('reviews')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
-          <i class="fa-solid fa-star w-4 text-amber-400"></i> Ratings & Buyer Photos
+          <i class="fa-solid fa-star w-4 text-amber-400"></i> <span data-i18n="seller_nav_reviews">Ratings & Buyer Photos</span>
         </button>
         <button id="link-settings" onclick="switchTab('settings')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
-          <i class="fa-solid fa-gears w-4"></i> Store Settings
+          <i class="fa-solid fa-gears w-4"></i> <span data-i18n="seller_nav_settings">Store Settings</span>
         </button>
       </nav>
     </div>
@@ -104,27 +104,40 @@
           <i class="fa-solid fa-bars"></i>
         </button>
         <div class="min-w-0">
-          <h2 class="text-base sm:text-xl font-bold text-white tracking-tight truncate">Vendor Suite</h2>
-          <p class="text-[10px] sm:text-xs text-slate-400 truncate hidden sm:block">Manage daily live catalog, grocery inventory, and automated pricing</p>
+          <h2 class="text-base sm:text-xl font-bold text-white tracking-tight truncate" data-i18n="seller_title">Vendor Suite</h2>
+          <p class="text-[10px] sm:text-xs text-slate-400 truncate hidden sm:block" data-i18n="seller_subtitle">Manage daily live catalog, grocery inventory, and automated pricing</p>
         </div>
       </div>
       <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
         <!-- Portal Navigation Shortcuts (Native Safe) -->
         <a href="customer.html" onclick="window.LocalLinkApp.goToRole('customer');return false;" class="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl transition-all" title="View Customer Marketplace">
           <i class="fa-solid fa-bag-shopping text-emerald-400"></i>
-          <span>Customer Store</span>
+          <span data-i18n="seller_customer_store">Customer Store</span>
         </a>
         <a href="delivery.html" onclick="window.LocalLinkApp.goToRole('rider');return false;" class="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl transition-all" title="View Rider Console">
           <i class="fa-solid fa-motorcycle text-sky-400"></i>
-          <span>Rider Console</span>
+          <span data-i18n="seller_rider_console">Rider Console</span>
         </a>
 
         <!-- Role Switcher Pill (Visible on Mobile + Desktop) -->
         <button type="button" data-ll-role-trigger="true" onclick="window.LocalLinkApp.openRoleSwitcher()" class="px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 border border-emerald-500/40 text-emerald-300 rounded-xl text-[11px] font-bold flex items-center gap-1.5 transition-all" title="Switch Role (Customer / Seller / Rider / Admin)">
           <span id="llHeaderConnectionDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
           <i class="fa-solid fa-layer-group"></i>
-          <span class="hidden sm:inline">Switch Role</span>
+          <span class="hidden sm:inline" data-i18n="seller_switch_role">Switch Role</span>
         </button>
+
+        <!-- Seller Language Switcher Pill (EN | বাংলা | हिन्दी) -->
+        <div class="flex items-center p-0.5 bg-slate-900 border border-slate-800 rounded-xl text-[11px] font-bold">
+          <button type="button" onclick="setSellerLanguage('en')" id="btnSellerLangEn" class="px-2 py-1 rounded-lg transition-all bg-emerald-600 text-white shadow">
+            EN
+          </button>
+          <button type="button" onclick="setSellerLanguage('bn')" id="btnSellerLangBn" class="px-2 py-1 rounded-lg transition-all text-slate-400 hover:text-white">
+            বাংলা
+          </button>
+          <button type="button" onclick="setSellerLanguage('hi')" id="btnSellerLangHi" class="px-2 py-1 rounded-lg transition-all text-slate-400 hover:text-white">
+            हिन्दी
+          </button>
+        </div>
 
         <!-- Seller Profile & Picture Pill -->
         <button onclick="switchTab('settings')" class="flex items-center gap-2 pl-1 pr-2 sm:pr-3 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-xs font-bold text-slate-200 transition-all" title="View Store Profile & Settings">
@@ -135,13 +148,13 @@
         <!-- Live Status Pill -->
         <span id="storeStatusBadge" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-950/70 border border-emerald-800 text-emerald-300 text-xs font-bold rounded-full">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Store Open</span>
+          <span data-i18n="seller_store_open">Store Open</span>
         </span>
 
         <!-- Quick Upload Live Morning Photo Button -->
         <button onclick="switchTab('photo-upload')" class="px-3 sm:px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-950/50 flex items-center gap-1.5 transition-all">
           <i class="fa-solid fa-camera"></i>
-          <span class="hidden md:inline">Upload Live Morning Photo</span>
+          <span class="hidden md:inline" data-i18n="seller_upload_photo">Upload Live Morning Photo</span>
         </button>
       </div>
     </header>
@@ -1061,6 +1074,7 @@
     // INITIALIZATION ON LOAD
     // ==============================================
     window.addEventListener("DOMContentLoaded", async () => {
+      initSellerLanguage();
       await initializeSellerSession();
       loadDashboardData();
       switchTab('dashboard');
@@ -2094,6 +2108,106 @@
         btn.disabled = false;
         btn.innerHTML = orig;
       }
+    }
+
+    // =========================================================================
+    // SELLER PORTAL MULTILINGUAL (i18n) ENGINE & DICTIONARY
+    // =========================================================================
+    const SELLER_TRANSLATIONS = {
+      en: {
+        seller_title: "Vendor Suite",
+        seller_subtitle: "Manage daily live catalog, grocery inventory, and automated pricing",
+        seller_customer_store: "Customer Store",
+        seller_rider_console: "Rider Console",
+        seller_switch_role: "Switch Role",
+        seller_store_open: "Store Open",
+        seller_upload_photo: "Upload Live Morning Photo",
+        seller_nav_dashboard: "Store Dashboard",
+        seller_nav_photo: "Daily Real Photo Upload",
+        seller_nav_inventory: "Products & Inventory",
+        seller_nav_orders: "Incoming Orders",
+        seller_nav_bargain: "AI Bargain Rules",
+        seller_nav_earnings: "Payouts & Earnings",
+        seller_nav_reviews: "Ratings & Buyer Photos",
+        seller_nav_settings: "Store Settings"
+      },
+      bn: {
+        seller_title: "বিক্রেতা প্যানেল",
+        seller_subtitle: "দৈনিক তাজা ক্যাটালগ, মুদি স্টক এবং স্বয়ংক্রিয় মূল্য নির্ধারণ পরিচালনা করুন",
+        seller_customer_store: "কাস্টমার স্টোর",
+        seller_rider_console: "রাইডার কনসোল",
+        seller_switch_role: "ভূমিকা বদল",
+        seller_store_open: "দোকান খোলা",
+        seller_upload_photo: "সকালের ছবি আপলোড",
+        seller_nav_dashboard: "স্টোর ড্যাশবোর্ড",
+        seller_nav_photo: "দৈনিক আসল ছবি আপলোড",
+        seller_nav_inventory: "পণ্য ও স্টক তালিকা",
+        seller_nav_orders: "নতুন অর্ডার সমূহ",
+        seller_nav_bargain: "এআই দরদামের নিয়ম",
+        seller_nav_earnings: "উপার্জন ও পেমেন্ট",
+        seller_nav_reviews: "রেটিং ও ক্রেতার ছবি",
+        seller_nav_settings: "দোকানের সেটিংস"
+      },
+      hi: {
+        seller_title: "विक्रेता सुइट",
+        seller_subtitle: "दैनिक लाइव कैटलॉग, किराना इन्वेंटरी और स्वचालित मूल्य निर्धारण प्रबंधित करें",
+        seller_customer_store: "कस्टमर स्टोर",
+        seller_rider_console: "राइडर कंसोल",
+        seller_switch_role: "रोल बदलें",
+        seller_store_open: "दुकान खुली है",
+        seller_upload_photo: "सुबह की फ़ोटो अपलोड करें",
+        seller_nav_dashboard: "स्टोर डैशबोर्ड",
+        seller_nav_photo: "दैनिक वास्तविक फ़ोटो अपलोड",
+        seller_nav_inventory: "उत्पाद और इन्वेंटरी",
+        seller_nav_orders: "आने वाले ऑर्डर",
+        seller_nav_bargain: "एआई मोलभाव नियम",
+        seller_nav_earnings: "कमाई और भुगतान",
+        seller_nav_reviews: "रेटिंग और समीक्षा",
+        seller_nav_settings: "स्टोर सेटिंग्स"
+      }
+    };
+
+    let currentSellerLanguage = localStorage.getItem("locallink_lang") || "en";
+
+    function setSellerLanguage(lang) {
+      if (!SELLER_TRANSLATIONS[lang]) lang = "en";
+      currentSellerLanguage = lang;
+      localStorage.setItem("locallink_lang", lang);
+
+      applySellerTranslations(lang);
+      updateSellerLanguageUIButtons(lang);
+      const msg = lang === "bn" ? "ভাষা বাংলা নির্বাচিত হয়েছে" : (lang === "hi" ? "भाषा हिन्दी चुनी गई है" : "Language set to English");
+      showToast(msg);
+    }
+
+    function applySellerTranslations(lang) {
+      const dict = SELLER_TRANSLATIONS[lang] || SELLER_TRANSLATIONS.en;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (dict[key]) {
+          el.textContent = dict[key];
+        }
+      });
+      document.documentElement.lang = lang;
+    }
+
+    function updateSellerLanguageUIButtons(lang) {
+      const btnEn = document.getElementById("btnSellerLangEn");
+      const btnBn = document.getElementById("btnSellerLangBn");
+      const btnHi = document.getElementById("btnSellerLangHi");
+      const active = "px-2 py-1 rounded-lg transition-all bg-emerald-600 text-white shadow";
+      const inactive = "px-2 py-1 rounded-lg transition-all text-slate-400 hover:text-white";
+
+      if (btnEn) btnEn.className = lang === "en" ? active : inactive;
+      if (btnBn) btnBn.className = lang === "bn" ? active : inactive;
+      if (btnHi) btnHi.className = lang === "hi" ? active : inactive;
+    }
+
+    function initSellerLanguage() {
+      const savedLang = localStorage.getItem("locallink_lang") || "en";
+      currentSellerLanguage = savedLang;
+      applySellerTranslations(savedLang);
+      updateSellerLanguageUIButtons(savedLang);
     }
   </script>
 </body>
