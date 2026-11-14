@@ -374,6 +374,7 @@ async function getCustomerProducts({ category, search, locality, city, address, 
 
     if (search && search.trim()) {
       const synonymMap = {
+        // Transliterated Bengali / Hindi
         mach: "fish",
         macher: "fish",
         alu: "potato",
@@ -388,7 +389,97 @@ async function getCustomerProducts({ category, search, locality, city, address, 
         noon: "salt",
         lobon: "salt",
         dal: "dal",
-        daal: "dal"
+        daal: "dal",
+        sabji: "vegetable",
+        sobji: "vegetable",
+        holud: "turmeric",
+        haldi: "turmeric",
+        peyaj: "onion",
+        piyaj: "onion",
+        pyaj: "onion",
+        roshun: "garlic",
+        ada: "ginger",
+        adrak: "ginger",
+        lonka: "chilli",
+        mirchi: "chilli",
+
+        // Native Bengali Script (বাংলা লিপি)
+        "মাছ": "fish",
+        "মাছের": "fish",
+        "রুই": "rohu",
+        "কাতলা": "katla",
+        "ইলিশ": "ilish",
+        "চিংড়ি": "prawn",
+        "চিংরি": "prawn",
+        "আলু": "potato",
+        "তেল": "oil",
+        "সর্ষে": "mustard",
+        "সর্ষের": "mustard",
+        "চাল": "rice",
+        "ভাত": "rice",
+        "ডিম": "egg",
+        "মুরগি": "chicken",
+        "ঘি": "ghee",
+        "লবণ": "salt",
+        "নুন": "salt",
+        "ডাল": "dal",
+        "সবজি": "vegetable",
+        "শাকসবজি": "vegetables",
+        "শাক": "spinach",
+        "হলুদ": "turmeric",
+        "পেঁয়াজ": "onion",
+        "পিয়াজ": "onion",
+        "রসুন": "garlic",
+        "আদা": "ginger",
+        "মরিচ": "chilli",
+        "লঙ্কা": "chilli",
+        "টমেটো": "tomato",
+        "পটল": "potol",
+        "বেগুন": "brinjal",
+        "ফুলকপি": "cauliflower",
+        "বাঁধাকপি": "cabbage",
+        "দুধ": "milk",
+        "ময়দা": "maida",
+        "আটা": "atta",
+        "সুজি": "suji",
+        "চিনি": "sugar",
+        "চা": "tea",
+        "লেবু": "lemon",
+
+        // Native Hindi Devanagari Script (हिन्दी लिपि)
+        "मछली": "fish",
+        "मछलियां": "fish",
+        "आलू": "potato",
+        "तेल": "oil",
+        "सरसों": "mustard",
+        "चावल": "rice",
+        "अंडा": "egg",
+        "अंडे": "egg",
+        "मुर्गा": "chicken",
+        "चिकन": "chicken",
+        "घी": "ghee",
+        "नमक": "salt",
+        "दाल": "dal",
+        "सब्जी": "vegetable",
+        "सब्जियां": "vegetables",
+        "पालक": "spinach",
+        "हल्दी": "turmeric",
+        "प्याज": "onion",
+        "लहसुन": "garlic",
+        "अदरक": "ginger",
+        "मिर्च": "chilli",
+        "टमाटर": "tomato",
+        "परवल": "potol",
+        "बैंगन": "brinjal",
+        "गोभी": "cauliflower",
+        "पत्तागोभी": "cabbage",
+        "दूध": "milk",
+        "मैदा": "maida",
+        "आटा": "atta",
+        "सूजी": "suji",
+        "चीनी": "sugar",
+        "चाय": "tea",
+        "नींबू": "lemon"
       };
 
       const rawSearch = search.trim().toLowerCase();
@@ -551,7 +642,14 @@ async function getCompareItems(itemName = "") {
       );
     } else {
       // Search matching term across product name, description, brand, or category
+      const synonymMap = {
+        mach: "fish", macher: "fish", alu: "potato", aloo: "potato", tel: "oil", chal: "rice", chawal: "rice",
+        "মাছ": "fish", "মাছের": "fish", "রুই": "rohu", "কাতলা": "katla", "আলু": "potato", "তেল": "oil", "চাল": "rice", "ডিম": "egg",
+        "मछली": "fish", "आलू": "potato", "तेल": "oil", "चावल": "rice", "अंडा": "egg"
+      };
+      const translated = synonymMap[queryTerm] || queryTerm;
       const searchTerm = `%${queryTerm}%`;
+      const searchTranslated = `%${translated}%`;
       rows = await conn.query(
         `SELECT
            p.product_id,
@@ -571,11 +669,11 @@ async function getCompareItems(itemName = "") {
          LEFT JOIN categories c ON p.category_id = c.category_id
          LEFT JOIN seller_profiles sp ON p.seller_id = sp.seller_id
          LEFT JOIN reviews r ON p.product_id = r.product_id
-         WHERE (LOWER(p.name) LIKE ? OR LOWER(p.description) LIKE ? OR LOWER(c.name) LIKE ?) AND p.status = 'active'
+         WHERE (LOWER(p.name) LIKE ? OR LOWER(p.name) LIKE ? OR LOWER(p.description) LIKE ? OR LOWER(c.name) LIKE ?) AND p.status = 'active'
          GROUP BY p.product_id
          ORDER BY p.price ASC
          LIMIT 30`,
-        [searchTerm, searchTerm, searchTerm]
+        [searchTerm, searchTranslated, searchTranslated, searchTranslated]
       );
 
       // If no direct matches, split query words (e.g. "katla fish 1kg" -> search "katla")

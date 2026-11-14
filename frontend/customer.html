@@ -173,14 +173,14 @@
             <h1 class="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-1.5">
               LocalLink <span class="hidden sm:inline text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30">Sonarpur</span>
             </h1>
-            <p class="text-[8px] sm:text-[9px] text-slate-400 font-bold uppercase tracking-wider truncate">Local Market App</p>
+            <p class="text-[8px] sm:text-[9px] text-slate-400 font-bold uppercase tracking-wider truncate" data-i18n="app_brand_sub">Local Market App</p>
           </div>
         </button>
 
         <!-- Delivery Location Pill (Desktop) -->
         <div onclick="openAddressChangeModal()" class="hidden md:flex items-center gap-1.5 text-xs bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800 text-slate-300 ml-2 cursor-pointer hover:border-emerald-500/50 transition-all" title="Click to change delivery neighborhood">
           <i class="fa-solid fa-location-dot text-rose-500"></i>
-          <span>Deliver to: <strong id="navDeliveryAddressText" class="text-emerald-400">Tanvir - Rajpur Block C</strong></span>
+          <span><span data-i18n="deliver_to">Deliver to:</span> <strong id="navDeliveryAddressText" class="text-emerald-400">Tanvir - Rajpur Block C</strong></span>
           <i class="fa-solid fa-chevron-down text-[10px] text-slate-500 ml-1"></i>
         </div>
       </div>
@@ -236,33 +236,33 @@
             <a href="customer.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-bold text-xs">
               <i class="fa-solid fa-bag-shopping text-emerald-400 w-4"></i>
               <div>
-                <span class="block text-white">Customer App</span>
-                <span class="text-[9px] text-emerald-400 font-normal">Active (Local Buyer)</span>
+                <span class="block text-white" data-i18n="role_customer_app">Customer App</span>
+                <span class="text-[9px] text-emerald-400 font-normal" data-i18n="role_customer_sub">Active (Local Buyer)</span>
               </div>
             </a>
             <a href="seller.html" onclick="window.LocalLinkApp.goToRole('seller');return false;" class="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 font-bold text-xs transition-colors">
               <i class="fa-solid fa-store text-amber-400 w-4"></i>
               <div>
-                <span class="block text-white">Seller Shopkeeper Hub</span>
-                <span class="text-[9px] text-slate-400 font-normal">Manage inventory & orders</span>
+                <span class="block text-white" data-i18n="role_seller_app">Seller Shopkeeper Hub</span>
+                <span class="text-[9px] text-slate-400 font-normal" data-i18n="role_seller_sub">Manage inventory & orders</span>
               </div>
             </a>
             <a href="delivery.html" onclick="window.LocalLinkApp.goToRole('rider');return false;" class="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 font-bold text-xs transition-colors">
               <i class="fa-solid fa-motorcycle text-sky-400 w-4"></i>
               <div>
-                <span class="block text-white">Delivery Partner (Rider)</span>
-                <span class="text-[9px] text-slate-400 font-normal">Dispatch & OTP delivery</span>
+                <span class="block text-white" data-i18n="role_rider_app">Delivery Partner (Rider)</span>
+                <span class="text-[9px] text-slate-400 font-normal" data-i18n="role_rider_sub">Dispatch & OTP delivery</span>
               </div>
             </a>
             <a href="admin.html" onclick="window.LocalLinkApp.goToRole('admin');return false;" class="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 font-bold text-xs transition-colors">
               <i class="fa-solid fa-shield-halved text-purple-400 w-4"></i>
               <div>
-                <span class="block text-white">Admin Control Center</span>
-                <span class="text-[9px] text-slate-400 font-normal">Municipal oversight</span>
+                <span class="block text-white" data-i18n="role_admin_app">Admin Control Center</span>
+                <span class="text-[9px] text-slate-400 font-normal" data-i18n="role_admin_sub">Municipal oversight</span>
               </div>
             </a>
             <button type="button" onclick="window.LocalLinkApp.openRoleSwitcher()" class="w-full text-center text-[10px] text-slate-400 hover:text-emerald-400 py-1.5 border-t border-slate-800 font-bold block transition-colors">
-              <i class="fa-solid fa-gear mr-1"></i> Role & Server Settings
+              <i class="fa-solid fa-gear mr-1"></i> <span data-i18n="role_settings">Role & Server Settings</span>
             </button>
           </div>
         </div>
@@ -418,11 +418,11 @@
           <i class="fa-solid fa-store"></i>
         </div>
         <div class="max-w-xl space-y-2 relative z-10">
-          <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-full border border-emerald-500/30">
+          <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-full border border-emerald-500/30" data-i18n="hero_badge">
             Sonarpur Local Market Hub
           </span>
-          <h2 class="text-2xl md:text-3xl font-black text-white">Fresh Fish, Vegetables & Daily Grocery Delivered Fast</h2>
-          <p class="text-xs text-slate-300">Buy fresh morning fish/vegetables and pantry essentials (Rice, Oil, Maida, Turmeric) directly from verified local stalls in Rajpur Sonarpur.</p>
+          <h2 class="text-2xl md:text-3xl font-black text-white" data-i18n="hero_title">Fresh Fish, Vegetables & Daily Grocery Delivered Fast</h2>
+          <p class="text-xs text-slate-300" data-i18n="hero_desc">Buy fresh morning fish/vegetables and pantry essentials (Rice, Oil, Maida, Turmeric) directly from verified local stalls in Rajpur Sonarpur.</p>
         </div>
       </div>
 
@@ -431,29 +431,29 @@
         <!-- Category Filter Pills -->
         <div class="flex gap-2 overflow-x-auto pb-1 md:pb-0 text-xs">
           <button onclick="filterCategory('all')" class="cat-btn px-4 py-2 bg-emerald-600 text-white font-bold rounded-xl shadow-lg transition-all whitespace-nowrap" data-cat="all">
-            All Items
+            <span data-i18n="cat_all">All Items</span>
           </button>
           <button onclick="filterCategory('fish')" class="cat-btn px-4 py-2 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 transition-all whitespace-nowrap" data-cat="fish">
-            <i class="fa-solid fa-fish mr-1 text-blue-400"></i> Fresh Fish
+            <i class="fa-solid fa-fish mr-1 text-blue-400"></i> <span data-i18n="cat_fish">Fresh Fish</span>
           </button>
           <button onclick="filterCategory('vegetables')" class="cat-btn px-4 py-2 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 transition-all whitespace-nowrap" data-cat="vegetables">
-            <i class="fa-solid fa-carrot mr-1 text-amber-500"></i> Vegetables
+            <i class="fa-solid fa-carrot mr-1 text-amber-500"></i> <span data-i18n="cat_vegetables">Vegetables</span>
           </button>
           <button onclick="filterCategory('grocery')" class="cat-btn px-4 py-2 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 transition-all whitespace-nowrap" data-cat="grocery">
-            <i class="fa-solid fa-bowl-rice mr-1 text-amber-300"></i> Groceries & Spices
+            <i class="fa-solid fa-bowl-rice mr-1 text-amber-300"></i> <span data-i18n="cat_grocery">Groceries & Spices</span>
           </button>
         </div>
 
         <!-- Local Marketplace Proximity Filter -->
         <div class="flex items-center gap-2 text-xs flex-shrink-0 self-end md:self-auto">
-          <span class="text-slate-400 text-[11px] font-medium hidden sm:inline">Showing nearby stalls for:</span>
+          <span class="text-slate-400 text-[11px] font-medium hidden sm:inline" data-i18n="showing_nearby_stalls">Showing nearby stalls for:</span>
           <button onclick="openAddressChangeModal()" class="px-3 py-1.5 bg-slate-950 hover:bg-slate-800 border border-emerald-500/40 text-emerald-300 font-bold rounded-xl flex items-center gap-1.5 text-xs transition-all shadow-sm" title="Click to change locality / address">
             <i class="fa-solid fa-location-dot text-rose-500 text-xs"></i>
             <span id="activeNeighborhoodBadge">Rajpur Block C</span>
             <i class="fa-solid fa-pen-to-square text-[10px] text-slate-400 ml-1"></i>
           </button>
           <button onclick="toggleNearbyFilter()" id="btnNearbyOnlyToggle" class="px-2.5 py-1.5 bg-slate-900 border border-slate-700 text-slate-300 text-[11px] font-bold rounded-xl hover:bg-slate-800 transition-all" title="Toggle strictly nearby stores">
-            <i class="fa-solid fa-globe mr-1"></i> <span>All Stalls</span>
+            <i class="fa-solid fa-globe mr-1"></i> <span data-i18n="all_stalls_btn">All Stalls</span>
           </button>
         </div>
       </div>
@@ -477,12 +477,12 @@
           <div>
             <h3 class="font-black text-lg text-white flex items-center gap-2">
               <i class="fa-solid fa-scale-balanced text-sky-400"></i>
-              <span id="compareItemTitle">Multi-Store Price Comparison</span>
+              <span id="compareItemTitle" data-i18n="compare_header_title">Multi-Store Price Comparison</span>
             </h3>
-            <p class="text-xs text-slate-400 mt-0.5">Compare live rates across all verified neighborhood stalls before buying.</p>
+            <p class="text-xs text-slate-400 mt-0.5" data-i18n="compare_header_desc">Compare live rates across all verified neighborhood stalls before buying.</p>
           </div>
           <button onclick="switchCustomerPage('home')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center gap-1">
-            <i class="fa-solid fa-house"></i> Home
+            <i class="fa-solid fa-house"></i> <span data-i18n="nav_home">Home</span>
           </button>
         </div>
 
@@ -498,13 +498,13 @@
 
           <!-- Quick Category Comparison Chips -->
           <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar" id="compareCategoryChips">
-            <button onclick="setCompareSearch('all')" class="cmp-chip px-3 py-1.5 bg-sky-600 text-white font-bold rounded-xl whitespace-nowrap shadow transition-all">All Products</button>
-            <button onclick="setCompareSearch('Katla Fish')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">🐟 Katla Fish</button>
-            <button onclick="setCompareSearch('Potato')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">🥔 Potatoes</button>
-            <button onclick="setCompareSearch('Mustard Oil')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">🛢️ Mustard Oil</button>
-            <button onclick="setCompareSearch('Gobindabhog Rice')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">🍚 Rice</button>
-            <button onclick="setCompareSearch('Paneer')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">🧀 Paneer & Dairy</button>
-            <button onclick="setCompareSearch('Tea')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">☕ Darjeeling Tea</button>
+            <button onclick="setCompareSearch('all')" class="cmp-chip px-3 py-1.5 bg-sky-600 text-white font-bold rounded-xl whitespace-nowrap shadow transition-all" data-i18n="compare_chip_all">All Products</button>
+            <button onclick="setCompareSearch('Katla Fish')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">🐟 <span data-i18n="compare_chip_fish">Katla Fish</span></button>
+            <button onclick="setCompareSearch('Potato')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">🥔 <span data-i18n="compare_chip_potato">Potatoes</span></button>
+            <button onclick="setCompareSearch('Mustard Oil')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">🛢️ <span data-i18n="compare_chip_oil">Mustard Oil</span></button>
+            <button onclick="setCompareSearch('Gobindabhog Rice')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">🍚 <span data-i18n="compare_chip_rice">Rice</span></button>
+            <button onclick="setCompareSearch('Paneer')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">🧀 <span data-i18n="compare_chip_dairy">Paneer & Dairy</span></button>
+            <button onclick="setCompareSearch('Tea')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">☕ <span data-i18n="compare_chip_tea">Darjeeling Tea</span></button>
           </div>
         </div>
 
@@ -523,25 +523,25 @@
         <div class="flex justify-between items-center border-b border-slate-800 pb-4">
           <div>
             <h3 class="font-black text-lg text-white flex items-center gap-2">
-              <i class="fa-solid fa-robot text-purple-400"></i> AI Automated Bargain Assistant
+              <i class="fa-solid fa-robot text-purple-400"></i> <span data-i18n="bargain_header_title">AI Automated Bargain Assistant</span>
             </h3>
-            <p class="text-xs text-slate-400 mt-0.5">Negotiate live against stall floor prices autonomously with instant vendor agreement.</p>
+            <p class="text-xs text-slate-400 mt-0.5" data-i18n="bargain_header_desc">Negotiate live against stall floor prices autonomously with instant vendor agreement.</p>
           </div>
           <button onclick="switchCustomerPage('home')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center gap-1">
-            <i class="fa-solid fa-house"></i> Home
+            <i class="fa-solid fa-house"></i> <span data-i18n="nav_home">Home</span>
           </button>
         </div>
 
         <!-- Product Selector for Bargaining -->
         <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
           <div class="w-full sm:w-auto flex-1">
-            <span class="text-slate-400 block font-bold text-[10px] uppercase">Select Marketplace Item to Bargain:</span>
+            <span class="text-slate-400 block font-bold text-[10px] uppercase" data-i18n="bargain_select_product">Select Marketplace Item to Bargain:</span>
             <select id="bargainProductSelect" onchange="onBargainProductChange(this.value)" class="w-full sm:w-auto max-w-md bg-slate-900 border border-slate-800 text-white font-bold rounded-lg px-2.5 py-1.5 mt-1 focus:outline-none focus:border-purple-500 text-xs">
               <option value="">Loading market products...</option>
             </select>
           </div>
           <div class="text-right flex-shrink-0">
-            <span class="text-[10px] text-slate-500 block">Stall Regular Price</span>
+            <span class="text-[10px] text-slate-500 block" data-i18n="bargain_vendor_price">Stall Regular Price</span>
             <span id="bargainProductRegularPrice" class="text-base font-black text-emerald-400">₹ 320</span>
           </div>
         </div>
@@ -552,7 +552,7 @@
             <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center font-bold text-white flex-shrink-0 shadow">
               <i class="fa-solid fa-robot"></i>
             </div>
-            <div class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800 max-w-[80%] text-slate-200">
+            <div id="bargainWelcomeMsg" class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800 max-w-[80%] text-slate-200">
               Hello! I am your autonomous AI Bargain Bot. Select any item from the market and send your desired price. I will negotiate directly with the vendor's digital floor price to give you the lowest possible rate!
             </div>
           </div>
@@ -573,12 +573,12 @@
             <input type="text" id="bargainInputBox" onkeydown="if(event.key==='Enter') sendBargainMessage()" placeholder="Type your offer in ₹ (e.g. Can you give it for ₹300?)..." class="flex-1 bg-slate-900 border border-slate-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500">
             <button onclick="sendBargainMessage()" id="btnSendBargain" class="px-5 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-lg transition-all flex items-center gap-1.5">
               <i class="fa-solid fa-paper-plane"></i>
-              <span>Send</span>
+              <span data-i18n="bargain_start_btn">Send</span>
             </button>
           </div>
           <button id="btnAcceptBargainDeal" onclick="acceptBargainDealAndCheckout()" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
             <i class="fa-solid fa-lock"></i>
-            <span id="btnAcceptBargainText">Accept Deal & Proceed to Cart</span>
+            <span id="btnAcceptBargainText" data-i18n="bargain_accept_btn">Accept Deal & Proceed to Cart</span>
           </button>
         </div>
       </div>
@@ -592,24 +592,24 @@
         <div class="flex justify-between items-center border-b border-slate-800 pb-4">
           <h3 class="font-black text-lg text-white flex items-center gap-2">
             <i class="fa-solid fa-cart-shopping text-emerald-400"></i>
-            <span>Shopping Cart & Express Checkout</span>
+            <span data-i18n="cart_header_title">Shopping Cart & Express Checkout</span>
           </h3>
           <button onclick="switchCustomerPage('home')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center gap-1">
-            <i class="fa-solid fa-house"></i> Home
+            <i class="fa-solid fa-house"></i> <span data-i18n="nav_home">Home</span>
           </button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
           <!-- Cart Items List -->
           <div class="md:col-span-2 space-y-3" id="cartItemsContainer">
-            <div class="p-8 text-center text-slate-500 bg-slate-950 rounded-2xl border border-slate-800">
+            <div class="p-8 text-center text-slate-500 bg-slate-950 rounded-2xl border border-slate-800" data-i18n="cart_empty_msg">
               Your cart is empty. Add products from the catalog or lock an AI Bargain deal!
             </div>
           </div>
 
           <!-- Checkout & Summary Card -->
           <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-4 h-fit shadow-xl">
-            <h4 class="font-bold text-white text-sm">Delivery Address</h4>
+            <h4 class="font-bold text-white text-sm" data-i18n="cart_delivery_addr">Delivery Address</h4>
             
             <div class="space-y-2">
               <input type="text" id="checkoutAddressInput" value="House #42, Main Road, Rajpur Block C" placeholder="Drop address" class="w-full bg-slate-900 border border-slate-800 text-white px-3 py-2 rounded-xl text-xs focus:outline-none focus:border-emerald-500">
@@ -619,22 +619,22 @@
 
             <div class="pt-2 border-t border-slate-900 space-y-2 text-slate-400">
               <div class="flex justify-between">
-                <span>Items Subtotal</span>
+                <span data-i18n="cart_subtotal">Items Subtotal</span>
                 <span id="cartSubtotalText">₹ 0</span>
               </div>
               <div class="flex justify-between">
-                <span>Delivery Charge</span>
+                <span data-i18n="cart_delivery_charge">Delivery Charge</span>
                 <span id="cartDeliveryChargeText">₹ 30</span>
               </div>
               <div class="pt-2 border-t border-slate-900 flex justify-between font-bold text-white text-sm">
-                <span>Grand Total</span>
+                <span data-i18n="cart_grand_total">Grand Total</span>
                 <span id="cartGrandTotalText" class="text-emerald-400">₹ 0</span>
               </div>
             </div>
 
             <button id="btnPlaceOrder" onclick="handlePlaceCustomerOrder()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-1.5">
               <i class="fa-solid fa-bag-shopping"></i>
-              <span id="btnPlaceOrderText">Place Secure Order (₹0)</span>
+              <span id="btnPlaceOrderText" data-i18n="cart_place_order">Place Secure Order</span>
             </button>
           </div>
         </div>
@@ -649,19 +649,20 @@
         <div class="flex justify-between items-center border-b border-slate-800 pb-4">
           <h3 class="font-black text-lg text-white flex items-center gap-2">
             <i class="fa-solid fa-box-archive text-amber-400"></i>
-            <span>My Orders & Real-Time Tracking</span>
+            <span data-i18n="orders_header_title">My Orders & Real-Time Tracking</span>
           </h3>
           <button onclick="loadCustomerOrders()" class="text-xs text-emerald-400 hover:underline font-bold">
-            <i class="fa-solid fa-rotate-right mr-1"></i> Refresh Orders
+            <i class="fa-solid fa-rotate-right mr-1"></i> <span data-i18n="orders_refresh_btn">Refresh Orders</span>
           </button>
         </div>
 
         <!-- Orders List Container -->
         <div id="customerOrdersContainer" class="space-y-4 text-xs">
-          <div class="p-8 text-center text-slate-500 bg-slate-950 rounded-2xl border border-slate-800">
+          <div class="p-8 text-center text-slate-500 bg-slate-950 rounded-2xl border border-slate-800" data-i18n="orders_loading">
             Loading your orders...
           </div>
         </div>
+      </div>
       </div>
     </div>
 
@@ -1541,13 +1542,13 @@
           </div>
           <div class="grid grid-cols-3 gap-2">
             <button type="button" onclick="setAppLanguage('en')" id="btnProfileLangEn" class="py-2 px-2 rounded-xl border border-slate-700 bg-emerald-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all">
-              🇬🇧 <span>English</span>
+              <span>English</span>
             </button>
             <button type="button" onclick="setAppLanguage('bn')" id="btnProfileLangBn" class="py-2 px-2 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 hover:text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all">
-              🇧🇩 <span>বাংলা</span>
+              <span>বাংলা</span>
             </button>
             <button type="button" onclick="setAppLanguage('hi')" id="btnProfileLangHi" class="py-2 px-2 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 hover:text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all">
-              🇮🇳 <span>हिन्दी</span>
+              <span>हिन्दी</span>
             </button>
           </div>
         </div>
@@ -1584,16 +1585,16 @@
         <p class="text-xs text-slate-400" data-i18n="voice_subtitle">Speak clearly in Bangla, English, or Hindi to find any product</p>
       </div>
 
-      <!-- Language Selector Chips inside Modal -->
+      <!-- Language Selector Chips inside Modal (No Flags) -->
       <div class="flex items-center justify-center gap-2 p-1 bg-slate-950 rounded-2xl border border-slate-800">
         <button type="button" onclick="setVoiceRecognitionLanguage('bn-IN', 'bn')" id="btnVoiceLangBn" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white">
-          🇧🇩 বাংলা
+          বাংলা
         </button>
         <button type="button" onclick="setVoiceRecognitionLanguage('en-IN', 'en')" id="btnVoiceLangEn" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white shadow">
-          🇬🇧 English
+          English
         </button>
         <button type="button" onclick="setVoiceRecognitionLanguage('hi-IN', 'hi')" id="btnVoiceLangHi" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white">
-          🇮🇳 हिन्दी
+          हिन्दी
         </button>
       </div>
 
@@ -1964,85 +1965,98 @@
 
         currentProducts = res.data.products || [];
         populateBargainProductDropdown(currentProducts);
-
-        if (currentProducts.length === 0) {
-          grid.innerHTML = `
-            <div class="p-12 text-center text-slate-500 bg-slate-900 rounded-2xl border border-slate-800 sm:col-span-2 md:col-span-4">
-              <i class="fa-solid fa-store-slash text-3xl mb-2 text-slate-600 block"></i>
-              <p class="font-bold text-white text-sm mb-1">No items found within your neighborhood (${currentCustomerLocality})</p>
-              <p class="text-xs text-slate-400 mb-3">You can click below to view all verified market stalls across the municipality.</p>
-              <button onclick="toggleNearbyFilter()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all">
-                <i class="fa-solid fa-globe mr-1"></i> Show All Marketplace Stalls
-              </button>
-            </div>
-          `;
-          return;
-        }
-
-        grid.innerHTML = currentProducts.map(p => {
-          return `
-            <div class="product-card bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden p-4 space-y-3 shadow-xl flex flex-col justify-between hover:border-slate-700 transition-all" 
-                 data-category="${p.categoryKey}" data-name="${p.name}" data-shop="${p.shopName}">
-              <div>
-                <div class="h-44 bg-slate-950 rounded-xl flex items-center justify-center relative border border-slate-800 overflow-hidden group">
-                  ${p.imageUrl ? `
-                    <img src="${p.imageUrl}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                  ` : `
-                    <i class="fa-solid ${p.categoryKey === 'fish' ? 'fa-fish text-blue-400' : p.categoryKey === 'vegetables' ? 'fa-carrot text-amber-500' : 'fa-bowl-rice text-amber-300'} text-5xl"></i>
-                  `}
-                  <span class="absolute top-2 right-2 text-[9px] font-black px-2.5 py-1 rounded-full shadow ${
-                    p.isLivePhoto ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-300'
-                  }">
-                    ${p.isLivePhoto ? 'Live Morning Photo' : 'Fresh Stock'}
-                  </span>
-                </div>
-
-                <div class="mt-3 space-y-1">
-                  <div class="flex items-center justify-between text-[10px]">
-                    <span class="text-emerald-400 font-bold truncate max-w-[140px]">
-                      <i class="fa-solid fa-store mr-1"></i> ${p.shopName}
-                    </span>
-                    <span class="px-1.5 py-0.5 bg-slate-950 text-slate-300 rounded font-bold border border-slate-800 flex items-center gap-1">
-                      <i class="fa-solid fa-location-arrow text-rose-400 text-[8px]"></i> ${p.distanceKm || 0.8} km
-                    </span>
-                  </div>
-                  <h3 class="font-bold text-white text-sm line-clamp-1">${p.name}</h3>
-                  <p class="text-[11px] text-slate-400 line-clamp-2">${p.description}</p>
-                  <div class="text-[10px] text-slate-500 flex items-center gap-2 pt-0.5">
-                    <span><i class="fa-solid fa-bolt text-amber-400 mr-0.5"></i> ${p.deliveryTime || '15 mins'}</span>
-                    <span>•</span>
-                    <span class="truncate">${p.shopAddress || p.city || 'Market Hub'}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="pt-3 border-t border-slate-800 space-y-2">
-                <div class="flex justify-between items-center">
-                  <div>
-                    <span class="text-[10px] text-slate-500 block">Stall Price</span>
-                    <span class="text-base font-black text-emerald-400">₹ ${p.price}</span>
-                  </div>
-                  <button onclick="startCompareForItem('${p.name.replace(/'/g, "\\'")}')" class="text-[10px] text-sky-400 hover:underline flex items-center gap-1 font-bold">
-                    <i class="fa-solid fa-scale-balanced"></i> Compare
-                  </button>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2 items-center">
-                  <button onclick="openBargainForProduct(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price})" class="py-2 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all">
-                    <i class="fa-solid fa-robot"></i> AI Bargain
-                  </button>
-                  <div id="product-action-container-${p.id}" class="w-full">
-                    ${renderProductAddControlHtml(p.id)}
-                  </div>
-                </div>
-              </div>
-            </div>
-          `;
-        }).join("");
-
+        renderProductGrid(currentProducts);
       } catch (e) {
         grid.innerHTML = `<div class="p-6 text-center text-rose-400 sm:col-span-2 md:col-span-4">Failed to load marketplace products</div>`;
       }
+    }
+
+    function renderProductGrid(products) {
+      const grid = document.getElementById("productGrid");
+      if (!grid) return;
+      const dict = LOCAL_LINK_TRANSLATIONS[currentAppLanguage] || LOCAL_LINK_TRANSLATIONS.en;
+
+      if (!products || products.length === 0) {
+        grid.innerHTML = `
+          <div class="p-12 text-center text-slate-500 bg-slate-900 rounded-2xl border border-slate-800 sm:col-span-2 md:col-span-4">
+            <i class="fa-solid fa-store-slash text-3xl mb-2 text-slate-600 block"></i>
+            <p class="font-bold text-white text-sm mb-1">${dict.card_no_products || "No items found within your neighborhood"} (${currentCustomerLocality})</p>
+            <p class="text-xs text-slate-400 mb-3">${dict.hero_desc || "You can click below to view all verified market stalls across the municipality."}</p>
+            <button onclick="toggleNearbyFilter()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all">
+              <i class="fa-solid fa-globe mr-1"></i> ${dict.card_show_all || "Show All Marketplace Stalls"}
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = products.map(p => {
+        const liveLabel = p.isLivePhoto ? (dict.card_live_photo || 'Live Morning Photo') : (dict.card_fresh_stock || 'Fresh Stock');
+        const stallPriceLabel = dict.card_stall_price || 'Stall Price';
+        const compareLabel = dict.card_compare || 'Compare';
+        const bargainLabel = dict.card_bargain || 'AI Bargain';
+        const minsLabel = dict.card_mins || 'mins';
+        const deliveryText = (p.deliveryTime || '15 mins').replace('mins', minsLabel);
+
+        return `
+          <div class="product-card bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden p-4 space-y-3 shadow-xl flex flex-col justify-between hover:border-slate-700 transition-all" 
+               data-category="${p.categoryKey}" data-name="${p.name}" data-shop="${p.shopName}">
+            <div>
+              <div class="h-44 bg-slate-950 rounded-xl flex items-center justify-center relative border border-slate-800 overflow-hidden group">
+                ${p.imageUrl ? `
+                  <img src="${p.imageUrl}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                ` : `
+                  <i class="fa-solid ${p.categoryKey === 'fish' ? 'fa-fish text-blue-400' : p.categoryKey === 'vegetables' ? 'fa-carrot text-amber-500' : 'fa-bowl-rice text-amber-300'} text-5xl"></i>
+                `}
+                <span class="absolute top-2 right-2 text-[9px] font-black px-2.5 py-1 rounded-full shadow ${
+                  p.isLivePhoto ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-300'
+                }">
+                  ${liveLabel}
+                </span>
+              </div>
+
+              <div class="mt-3 space-y-1">
+                <div class="flex items-center justify-between text-[10px]">
+                  <span class="text-emerald-400 font-bold truncate max-w-[140px]">
+                    <i class="fa-solid fa-store mr-1"></i> ${p.shopName}
+                  </span>
+                  <span class="px-1.5 py-0.5 bg-slate-950 text-slate-300 rounded font-bold border border-slate-800 flex items-center gap-1">
+                    <i class="fa-solid fa-location-arrow text-rose-400 text-[8px]"></i> ${p.distanceKm || 0.8} km
+                  </span>
+                </div>
+                <h3 class="font-bold text-white text-sm line-clamp-1">${p.name}</h3>
+                <p class="text-[11px] text-slate-400 line-clamp-2">${p.description}</p>
+                <div class="text-[10px] text-slate-500 flex items-center gap-2 pt-0.5">
+                  <span><i class="fa-solid fa-bolt text-amber-400 mr-0.5"></i> ${deliveryText}</span>
+                  <span>•</span>
+                  <span class="truncate">${p.shopAddress || p.city || 'Market Hub'}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-800 space-y-2">
+              <div class="flex justify-between items-center">
+                <div>
+                  <span class="text-[10px] text-slate-500 block">${stallPriceLabel}</span>
+                  <span class="text-base font-black text-emerald-400">₹ ${p.price}</span>
+                </div>
+                <button onclick="startCompareForItem('${p.name.replace(/'/g, "\\'")}')" class="text-[10px] text-sky-400 hover:underline flex items-center gap-1 font-bold">
+                  <i class="fa-solid fa-scale-balanced"></i> ${compareLabel}
+                </button>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 items-center">
+                <button onclick="openBargainForProduct(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price})" class="py-2 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all">
+                  <i class="fa-solid fa-robot"></i> ${bargainLabel}
+                </button>
+                <div id="product-action-container-${p.id}" class="w-full">
+                  ${renderProductAddControlHtml(p.id)}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
     }
 
     // Dynamic Bargain Dropdown Population
@@ -2330,6 +2344,8 @@
 
         const comparisons = res.data.comparisons || [];
 
+        const dict = LOCAL_LINK_TRANSLATIONS[currentAppLanguage] || LOCAL_LINK_TRANSLATIONS.en;
+
         if (comparisons.length === 0) {
           container.innerHTML = `
             <div class="p-8 text-center text-slate-500 bg-slate-950 rounded-2xl border border-slate-800 space-y-2">
@@ -2337,7 +2353,7 @@
               <p class="font-bold text-white text-sm">No live store comparisons found matching "${itemName}"</p>
               <p class="text-xs text-slate-400">Try searching for "Fish", "Rice", "Oil", "Potato", or click "All Products" above.</p>
               <button onclick="setCompareSearch('all')" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl text-xs mt-2 transition-all">
-                <i class="fa-solid fa-globe mr-1"></i> View All Products
+                <i class="fa-solid fa-globe mr-1"></i> ${dict.compare_chip_all || "View All Products"}
               </button>
             </div>
           `;
@@ -2358,7 +2374,7 @@
                 <div class="flex items-center gap-2 flex-wrap">
                   <h4 class="font-bold text-white text-sm truncate">${s.name}</h4>
                   ${s.isLowestPrice ? `
-                    <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-[9px] font-black tracking-wide">LOWEST PRICE</span>
+                    <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-[9px] font-black tracking-wide">${dict.compare_lowest_price || 'LOWEST PRICE'}</span>
                   ` : ''}
                 </div>
                 <div class="flex items-center gap-2 text-[11px] text-slate-400 flex-wrap">
@@ -2373,12 +2389,12 @@
 
             <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-900 flex-shrink-0">
               <div class="text-left sm:text-right">
-                <span class="text-[10px] text-slate-500 block">Stall Price</span>
+                <span class="text-[10px] text-slate-500 block">${dict.card_stall_price || 'Stall Price'}</span>
                 <span class="text-base font-black ${s.isLowestPrice ? 'text-emerald-400' : 'text-slate-200'}">₹ ${s.price}</span>
               </div>
               <div class="flex items-center gap-1.5">
                 <button onclick="openBargainForProduct(${s.productId}, '${s.name.replace(/'/g, "\\'")}', ${s.price})" class="px-3 py-1.5 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 font-bold rounded-xl text-xs flex items-center gap-1 transition-all" title="Bargain autonomously with AI">
-                  <i class="fa-solid fa-robot"></i> AI Bargain
+                  <i class="fa-solid fa-robot"></i> ${dict.card_bargain || 'AI Bargain'}
                 </button>
                 <div id="compare-action-container-${s.productId}" data-is-lowest="${s.isLowestPrice}">
                   ${renderCompareAddControlHtml(s.productId, s.isLowestPrice)}
@@ -2547,11 +2563,13 @@
     function renderProductAddControlHtml(productId) {
       const pid = Number(productId);
       const qty = getProductCartQuantity(pid);
+      const dict = LOCAL_LINK_TRANSLATIONS[currentAppLanguage] || LOCAL_LINK_TRANSLATIONS.en;
+      const addText = dict.card_add || "ADD";
       if (qty <= 0) {
         return `
-          <button onclick="changeProductCartQty(${pid}, 1, event)" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95" title="Add to Cart">
+          <button onclick="changeProductCartQty(${pid}, 1, event)" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95" title="${addText}">
             <i class="fa-solid fa-plus text-[10px]"></i>
-            <span>ADD</span>
+            <span>${addText}</span>
           </button>
         `;
       } else {
@@ -2572,10 +2590,12 @@
     function renderCompareAddControlHtml(productId, isLowestPrice = false) {
       const pid = Number(productId);
       const qty = getProductCartQuantity(pid);
+      const dict = LOCAL_LINK_TRANSLATIONS[currentAppLanguage] || LOCAL_LINK_TRANSLATIONS.en;
+      const buyText = dict.compare_buy_here || "Buy Here";
       if (qty <= 0) {
         return `
-          <button onclick="changeProductCartQty(${pid}, 1, event)" class="px-3.5 py-1.5 ${isLowestPrice ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-slate-800 hover:bg-slate-700'} text-white font-bold rounded-xl text-xs transition-all flex items-center gap-1 active:scale-95" title="Add to Cart">
-            <i class="fa-solid fa-cart-plus"></i> Buy Here
+          <button onclick="changeProductCartQty(${pid}, 1, event)" class="px-3.5 py-1.5 ${isLowestPrice ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-slate-800 hover:bg-slate-700'} text-white font-bold rounded-xl text-xs transition-all flex items-center gap-1 active:scale-95" title="${buyText}">
+            <i class="fa-solid fa-cart-plus"></i> ${buyText}
           </button>
         `;
       } else {
@@ -2676,9 +2696,10 @@
         const countBadge = document.getElementById("floatingCartCount");
         const itemsText = document.getElementById("floatingCartItemsText");
         const totalText = document.getElementById("floatingCartTotalText");
+        const dict = LOCAL_LINK_TRANSLATIONS[currentAppLanguage] || LOCAL_LINK_TRANSLATIONS.en;
 
         if (countBadge) countBadge.textContent = totalQty;
-        if (itemsText) itemsText.textContent = `${totalQty} ${totalQty === 1 ? 'Item' : 'Items'} in Cart`;
+        if (itemsText) itemsText.textContent = `${totalQty} ${dict.items_text || 'Items'} in Cart`;
         if (totalText) totalText.textContent = `₹ ${subtotal}`;
       } else {
         bar.classList.add("hidden");
@@ -2767,16 +2788,17 @@
 
     function renderCart() {
       const container = document.getElementById("cartItemsContainer");
+      const dict = LOCAL_LINK_TRANSLATIONS[currentAppLanguage] || LOCAL_LINK_TRANSLATIONS.en;
       if (cart.length === 0) {
         container.innerHTML = `
           <div class="p-8 text-center text-slate-500 bg-slate-950 rounded-2xl border border-slate-800">
             <i class="fa-solid fa-cart-shopping text-3xl mb-2 text-slate-600 block"></i>
-            Your shopping cart is currently empty.
+            ${dict.cart_empty_msg || "Your shopping cart is currently empty."}
           </div>
         `;
         document.getElementById("cartSubtotalText").textContent = "₹ 0";
         document.getElementById("cartGrandTotalText").textContent = "₹ 0";
-        document.getElementById("btnPlaceOrderText").textContent = "Place Secure Order (₹0)";
+        document.getElementById("btnPlaceOrderText").textContent = `${dict.cart_place_order || "Place Secure Order"} (₹0)`;
         return;
       }
 
@@ -2793,7 +2815,7 @@
               <p class="text-slate-400 text-xs mt-0.5">${item.shopName}</p>
               ${item.agreedPrice ? `
                 <span class="inline-block mt-1 px-2 py-0.5 bg-purple-500/20 text-purple-300 font-bold rounded text-[10px]">
-                  <i class="fa-solid fa-robot mr-1"></i> AI Bargain Agreed Rate
+                  <i class="fa-solid fa-robot mr-1"></i> ${dict.cart_bargain_rate || "AI Bargain Agreed Rate"}
                 </span>
               ` : ''}
             </div>
@@ -2820,9 +2842,9 @@
       const grandTotal = subtotal + deliveryFee;
 
       document.getElementById("cartSubtotalText").textContent = `₹ ${subtotal}`;
-      document.getElementById("cartDeliveryChargeText").textContent = deliveryFee === 0 ? "FREE" : `₹ ${deliveryFee}`;
+      document.getElementById("cartDeliveryChargeText").textContent = deliveryFee === 0 ? (dict.cart_free || "FREE") : `₹ ${deliveryFee}`;
       document.getElementById("cartGrandTotalText").textContent = `₹ ${grandTotal}`;
-      document.getElementById("btnPlaceOrderText").textContent = `Place Secure Order (₹${grandTotal})`;
+      document.getElementById("btnPlaceOrderText").textContent = `${dict.cart_place_order || "Place Secure Order"} (₹${grandTotal})`;
     }
 
     async function handlePlaceCustomerOrder() {
@@ -3352,15 +3374,16 @@
     // ==============================================
     async function loadCustomerOrders() {
       const container = document.getElementById("customerOrdersContainer");
+      const dict = LOCAL_LINK_TRANSLATIONS[currentAppLanguage] || LOCAL_LINK_TRANSLATIONS.en;
       if (!localStorage.getItem("locallinkCustomerToken")) {
         container.innerHTML = `
           <div class="p-8 text-center bg-slate-950 rounded-2xl border border-slate-800 space-y-3">
             <i class="fa-solid fa-user-lock text-3xl text-emerald-400 block"></i>
-            <h4 class="font-bold text-white text-sm">Sign in to view your orders & live delivery map</h4>
+            <h4 class="font-bold text-white text-sm">${dict.orders_signin_prompt || "Sign in to view your orders & live delivery map"}</h4>
             <p class="text-xs text-slate-400">Create your personal neighborhood account or try our quick demo account.</p>
             <div class="flex items-center justify-center gap-2 pt-1">
-              <button onclick="openCustomerAuthModal('signin')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs">Sign In</button>
-              <button onclick="openCustomerAuthModal('signup')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-xs">Create Account</button>
+              <button onclick="openCustomerAuthModal('signin')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs">${dict.nav_signin || "Sign In"}</button>
+              <button onclick="openCustomerAuthModal('signup')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-xs">${dict.auth_tab_signup || "Create Account"}</button>
             </div>
           </div>
         `;
@@ -3376,7 +3399,7 @@
         if (orders.length === 0) {
           container.innerHTML = `
             <div class="p-8 text-center text-slate-500 bg-slate-950 rounded-2xl border border-slate-800">
-              No orders found yet.
+              ${dict.orders_empty_msg || "No orders found yet."}
             </div>
           `;
           return;
@@ -3386,6 +3409,10 @@
           const isDelivered = ord.order_status === "delivered";
           const isOut = ord.order_status === "out_for_delivery";
           const isPaid = ord.payment_status === "paid";
+          const statusText = isDelivered ? (dict.status_delivered || "DELIVERED") :
+                             isOut ? (dict.status_out_delivery || "OUT FOR DELIVERY") :
+                             (dict.status_preparing || "PREPARING");
+          const payText = isPaid ? (dict.status_paid || "PAID") : (dict.status_pending || "PENDING");
 
           return `
             <div class="p-5 bg-slate-950 border border-slate-800 rounded-2xl space-y-3">
@@ -3396,7 +3423,7 @@
                     <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
                       isPaid ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                     }">
-                      <i class="fa-solid ${isPaid ? 'fa-circle-check text-emerald-400' : 'fa-clock text-amber-400'} mr-1"></i>${(ord.payment_status || 'paid').toUpperCase()}
+                      <i class="fa-solid ${isPaid ? 'fa-circle-check text-emerald-400' : 'fa-clock text-amber-400'} mr-1"></i>${payText}
                     </span>
                   </div>
                   <p class="text-slate-400 text-[10px] mt-0.5">Placed on ${new Date(ord.created_at).toLocaleDateString()} &bull; Total: <strong class="text-emerald-400">₹${ord.total_amount}</strong></p>
@@ -3406,28 +3433,28 @@
                   isOut ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
                   'bg-amber-500/10 text-amber-300 border border-amber-500/20'
                 }">
-                  ${ord.order_status.replace(/_/g, " ").toUpperCase()}
+                  ${statusText}
                 </span>
               </div>
 
               <!-- Items List -->
               <div class="text-slate-300 space-y-1">
-                <p><strong>Items:</strong> ${(ord.items || []).map(i => `${i.product_name} (x${i.quantity})`).join(", ")}</p>
-                <p><strong>Assigned Rider:</strong> ${ord.rider_name ? `${ord.rider_name} (${ord.vehicle_type || 'Scooter'}, ${ord.rider_phone})` : '<span class="text-amber-400 font-semibold">Waiting for seller confirmation & nearby rider dispatch</span>'}</p>
+                <p><strong>${dict.orders_items || "Items:"}</strong> ${(ord.items || []).map(i => `${i.product_name} (x${i.quantity})`).join(", ")}</p>
+                <p><strong>${dict.orders_assigned_rider || "Assigned Rider:"}</strong> ${ord.rider_name ? `${ord.rider_name} (${ord.vehicle_type || 'Scooter'}, ${ord.rider_phone})` : `<span class="text-amber-400 font-semibold">${dict.orders_waiting_rider || "Waiting for seller confirmation & nearby rider dispatch"}</span>`}</p>
                 ${ord.delivery_otp ? `
-                  <p class="text-amber-400"><strong>Delivery OTP:</strong> <span class="font-mono font-bold bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800">${ord.delivery_otp}</span> (Share with rider upon arrival)</p>
+                  <p class="text-amber-400"><strong>${dict.orders_delivery_otp || "Delivery OTP:"}</strong> <span class="font-mono font-bold bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800">${ord.delivery_otp}</span> (Share with rider upon arrival)</p>
                 ` : ''}
               </div>
 
               <div class="pt-2 flex flex-wrap gap-2">
                 <button onclick="openLiveTrackingModal(${ord.order_id}, '${ord.order_number}')" class="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md transition-all">
                   <i class="fa-solid fa-map-location-dot"></i>
-                  <span>Live GPS Map Tracking</span>
+                  <span>${dict.orders_live_tracking || "Live GPS Map Tracking"}</span>
                 </button>
 
                 ${isDelivered ? `
                   <button onclick="openReviewModal(${ord.items?.[0]?.product_id || 33}, ${ord.order_id})" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-amber-300 border border-slate-800 rounded-xl text-xs font-bold transition-all flex items-center gap-1">
-                    <i class="fa-solid fa-star text-amber-400"></i> Rate & Review
+                    <i class="fa-solid fa-star text-amber-400"></i> ${dict.orders_rate_review || "Rate & Review"}
                   </button>
                 ` : ''}
               </div>
@@ -4018,6 +4045,15 @@
         nav_cart: "Cart",
         nav_roles: "Switch Role",
         nav_signin: "Sign In",
+        role_customer_app: "Customer App",
+        role_customer_sub: "Active (Local Buyer)",
+        role_seller_app: "Seller Shopkeeper Hub",
+        role_seller_sub: "Manage inventory & orders",
+        role_rider_app: "Delivery Partner (Rider)",
+        role_rider_sub: "Dispatch & OTP delivery",
+        role_admin_app: "Admin Control Center",
+        role_admin_sub: "Municipal oversight",
+        role_settings: "Role & Server Settings",
         menu_profile: "My Profile & Account",
         menu_profile_sub: "Personal info, address & stats",
         menu_theme: "Appearance",
@@ -4033,6 +4069,10 @@
         profile_stats_active: "Active Deliveries",
         profile_stats_stalls: "Local Stalls",
         profile_save: "Save Profile",
+        profile_name_label: "Full Name *",
+        profile_phone_label: "Phone Number",
+        profile_locality_label: "Primary Locality",
+        profile_address_label: "Default Delivery Address",
         hero_badge: "Sonarpur Local Market Hub",
         hero_title: "Fresh Fish, Vegetables & Daily Grocery Delivered Fast",
         hero_desc: "Buy fresh morning fish/vegetables and pantry essentials (Rice, Oil, Maida, Turmeric) directly from verified local stalls in Rajpur Sonarpur.",
@@ -4042,8 +4082,63 @@
         cat_grocery: "Groceries & Spices",
         showing_nearby_stalls: "Showing nearby stalls for:",
         all_stalls_btn: "All Stalls",
+        card_live_photo: "Live Morning Photo",
+        card_fresh_stock: "Fresh Stock",
+        card_stall_price: "Stall Price",
+        card_compare: "Compare",
+        card_bargain: "AI Bargain",
+        card_add: "ADD",
+        card_mins: "mins",
+        card_no_products: "No items found within your neighborhood",
+        card_show_all: "Show All Marketplace Stalls",
+        compare_header_title: "Multi-Store Price Comparison",
+        compare_header_desc: "Compare live rates across all verified neighborhood stalls before buying.",
+        compare_chip_all: "All Products",
+        compare_chip_fish: "Katla Fish",
+        compare_chip_potato: "Potatoes",
+        compare_chip_oil: "Mustard Oil",
+        compare_chip_rice: "Rice",
+        compare_chip_dairy: "Paneer & Dairy",
+        compare_chip_tea: "Darjeeling Tea",
+        compare_lowest_price: "LOWEST PRICE",
+        compare_buy_here: "Buy Here",
+        compare_search_ph: "Search any product to compare rates across stalls...",
+        bargain_header_title: "AI Automated Bargain Assistant",
+        bargain_header_desc: "Negotiate live against stall floor prices autonomously with instant vendor agreement.",
+        bargain_select_product: "Select Marketplace Item to Bargain:",
+        bargain_vendor_price: "Stall Regular Price",
+        bargain_welcome_msg: "Hello! I am your autonomous AI Bargain Bot. Select any item from the market and send your desired price. I will negotiate directly with the vendor's digital floor price to give you the lowest possible rate!",
+        bargain_placeholder: "Type your offer in ₹ (e.g. Can you give it for ₹300?)...",
+        bargain_start_btn: "Send",
+        bargain_accept_btn: "Accept Deal & Proceed to Cart",
+        cart_header_title: "Shopping Cart & Express Checkout",
+        cart_empty_msg: "Your shopping cart is currently empty.",
+        cart_delivery_addr: "Delivery Address",
+        cart_subtotal: "Items Subtotal",
+        cart_delivery_charge: "Delivery Charge",
+        cart_grand_total: "Grand Total",
+        cart_place_order: "Place Secure Order",
+        cart_free: "FREE",
+        cart_bargain_rate: "AI Bargain Agreed Rate",
         quick_cart_tap: "Tap to review cart & express checkout",
         quick_cart_view: "View Cart",
+        items_text: "Items",
+        orders_header_title: "My Orders & Real-Time Tracking",
+        orders_refresh_btn: "Refresh Orders",
+        orders_loading: "Loading your orders...",
+        orders_empty_msg: "No orders found yet.",
+        orders_signin_prompt: "Sign in to view your orders & live delivery map",
+        orders_live_tracking: "Live GPS Map Tracking",
+        orders_rate_review: "Rate & Review",
+        orders_items: "Items:",
+        orders_assigned_rider: "Assigned Rider:",
+        orders_delivery_otp: "Delivery OTP:",
+        orders_waiting_rider: "Waiting for seller confirmation & nearby rider dispatch",
+        status_delivered: "DELIVERED",
+        status_out_delivery: "OUT FOR DELIVERY",
+        status_preparing: "PREPARING",
+        status_paid: "PAID",
+        status_pending: "PENDING",
         voice_badge: "AI Voice Search Assistant",
         voice_title: "Search by Voice",
         voice_subtitle: "Speak clearly in Bangla, English, or Hindi to find any product",
@@ -4051,6 +4146,7 @@
         voice_try_saying: "Try saying:",
         voice_cancel: "Cancel",
         voice_search_btn: "Search Now",
+        voice_not_supported: "Speech recognition is not supported in this browser. Please type in search bar.",
         mob_nav_home: "Home",
         mob_nav_compare: "Compare",
         mob_nav_bargain: "Bargain",
@@ -4069,6 +4165,15 @@
         nav_cart: "কার্ট",
         nav_roles: "ভূমিকা বদল",
         nav_signin: "লগইন",
+        role_customer_app: "কাস্টমার অ্যাপ",
+        role_customer_sub: "সক্রিয় (লোকাল ক্রেতা)",
+        role_seller_app: "বিক্রেতা দোকানদার হাব",
+        role_seller_sub: "পণ্য ও অর্ডার পরিচালনা",
+        role_rider_app: "ডেলিভারি পার্টনার (রাইডার)",
+        role_rider_sub: "ডেলিভারি ও ওটিপি যাচাই",
+        role_admin_app: "অ্যাডমিন কন্ট্রোল সেন্টার",
+        role_admin_sub: "পৌর প্রশাসনিক নজরদারি",
+        role_settings: "ভূমিকা ও সার্ভার সেটিংস",
         menu_profile: "আমার প্রোফাইল ও অ্যাকাউন্ট",
         menu_profile_sub: "ব্যক্তিগত তথ্য, ঠিকানা ও রেকর্ড",
         menu_theme: "থিম ও ডিসপ্লে",
@@ -4084,6 +4189,10 @@
         profile_stats_active: "চলমান ডেলিভারি",
         profile_stats_stalls: "লোকাল দোকান",
         profile_save: "প্রোফাইল সংরক্ষণ",
+        profile_name_label: "পূর্ণ নাম *",
+        profile_phone_label: "ফোন নম্বর",
+        profile_locality_label: "প্রধান এলাকা",
+        profile_address_label: "ডিফল্ট ডেলিভারি ঠিকানা",
         hero_badge: "সোনারপুর লোকাল বাজার হাব",
         hero_title: "সকালের তাজা মাছ, শাকসবজি ও মুদি পণ্য দ্রুত ডেলিভারি",
         hero_desc: "রাজপুর সোনারপুরের স্থানীয় দোকান থেকে তাজা সকালের মাছ, সবজি ও চাল, তেল, হলুদ কিনুন মাত্র ১৫ মিনিটে সেরা বাজারদরে।",
@@ -4093,8 +4202,63 @@
         cat_grocery: "মুদি ও মসলা",
         showing_nearby_stalls: "কাছের দোকান দেখাচ্ছে:",
         all_stalls_btn: "সব দোকান",
-        quick_cart_tap: "কার্ট চেকআউট করতে ট্যাপ করুন",
+        card_live_photo: "সকালের তাজা ছবি",
+        card_fresh_stock: "তাজা স্টক",
+        card_stall_price: "দোকানের দর",
+        card_compare: "তুলনা করুন",
+        card_bargain: "এআই দরদাম",
+        card_add: "যুক্ত করুন",
+        card_mins: "মিনিট",
+        card_no_products: "আপনার এলাকার মধ্যে কোনো পণ্য পাওয়া যায়নি",
+        card_show_all: "সব লোকাল দোকানের পণ্য দেখুন",
+        compare_header_title: "দোকানদর তুলনা ও যাচাই",
+        compare_header_desc: "কেনার আগে আপনার এলাকার সমস্ত যাচাইকৃত দোকানের লাইভ দর তুলনা করুন।",
+        compare_chip_all: "সব পণ্য",
+        compare_chip_fish: "কাতলা মাছ",
+        compare_chip_potato: "দেশি আলু",
+        compare_chip_oil: "সর্ষের তেল",
+        compare_chip_rice: "চাল",
+        compare_chip_dairy: "পনির ও দুধ",
+        compare_chip_tea: "দার্জিলিং চা",
+        compare_lowest_price: "সবচেয়ে কম দাম",
+        compare_buy_here: "এখান থেকে কিনুন",
+        compare_search_ph: "দোকানদর তুলনা করতে পণ্যের নাম লিখুন...",
+        bargain_header_title: "এআই স্বয়ংক্রিয় দরদাম সহকারী",
+        bargain_header_desc: "দোকানদারের ন্যূনতম দরের সাথে সরাসরি দরদাম করে সেরা ছাড়ে কিনুন।",
+        bargain_select_product: "দরদাম করার পণ্য নির্বাচন করুন:",
+        bargain_vendor_price: "দোকানের নিয়মিত দর",
+        bargain_welcome_msg: "নমস্কার! আমি আপনার এআই দরদাম সহকারী। বাজার থেকে যেকোনো পণ্য বেছে নিয়ে আপনার পছন্দের দাম জানান। আমি দোকানদারের সাথে দরদাম করে আপনাকে সর্বনিম্ন দামে এনে দেব!",
+        bargain_placeholder: "টাকায় আপনার অফার লিখুন (যেমন: ৩০০ টাকায় দেবেন?)...",
+        bargain_start_btn: "পাঠান",
+        bargain_accept_btn: "অফার গ্রহণ করুন ও কার্টে যান",
+        cart_header_title: "শপিং কার্ট ও এক্সপ্রেস চেকআউট",
+        cart_empty_msg: "আপনার শপিং কার্ট বর্তমানে খালি আছে।",
+        cart_delivery_addr: "ডেলিভারি ঠিকানা",
+        cart_subtotal: "পণ্যের মোট মূল্য",
+        cart_delivery_charge: "ডেলিভারি চার্জ",
+        cart_grand_total: "সর্বমোট প্রদেয়",
+        cart_place_order: "নিরাপদ অর্ডার করুন",
+        cart_free: "বিনামূল্যে",
+        cart_bargain_rate: "এআই দরদামে নির্ধারিত দর",
+        quick_cart_tap: "কার্ট দেখতে ও চেকআউট করতে ট্যাপ করুন",
         quick_cart_view: "কার্ট দেখুন",
+        items_text: "টি পণ্য",
+        orders_header_title: "আমার অর্ডার ও লাইভ ট্র্যাকিং",
+        orders_refresh_btn: "অর্ডার রিফ্রেশ",
+        orders_loading: "আপনার অর্ডার লোড হচ্ছে...",
+        orders_empty_msg: "এখনো কোনো অর্ডার পাওয়া যায়নি।",
+        orders_signin_prompt: "আপনার অর্ডার ও লাইভ ডেলিভারি দেখতে লগইন করুন",
+        orders_live_tracking: "লাইভ জিপিএস ম্যাপ ট্র্যাকিং",
+        orders_rate_review: "রেটিং ও রিভিউ দিন",
+        orders_items: "পণ্যসামগ্রী:",
+        orders_assigned_rider: "নিযুক্ত ডেলিভারি রাইডার:",
+        orders_delivery_otp: "ডেলিভারি ওটিপি:",
+        orders_waiting_rider: "দোকানদারের নিশ্চিতকরণ ও রাইডার বরাদ্দের অপেক্ষায়",
+        status_delivered: "ডেলিভার সম্পন্ন",
+        status_out_delivery: "ডেলিভারির পথে",
+        status_preparing: "প্যাক হচ্ছে",
+        status_paid: "পরিশোধিত",
+        status_pending: "অপেক্ষারত",
         voice_badge: "এআই ভয়েস সার্চ সহকারী",
         voice_title: "মুখে বলে খুঁজুন",
         voice_subtitle: "বাংলা, ইংরেজি বা হিন্দিতে যেকোনো পণ্যের নাম বলুন",
@@ -4102,6 +4266,7 @@
         voice_try_saying: "মুখে বলতে পারেন:",
         voice_cancel: "বাতিল",
         voice_search_btn: "এখন খুঁজুন",
+        voice_not_supported: "এই ব্রাউজারে ভয়েস অনুসন্ধান সমর্থিত নয়। অনুগ্রহ করে লিখে অনুসন্ধান করুন।",
         mob_nav_home: "হোম",
         mob_nav_compare: "তুলনা",
         mob_nav_bargain: "দরদাম",
@@ -4110,7 +4275,7 @@
       },
       hi: {
         app_brand_sub: "लोकल मार्केट ऐप",
-        deliver_to: "डिलीवरी पता:",
+        deliver_to: "डिलीवरी का पता:",
         search_placeholder: "ताजी मछली, आलू, तेल, चावल, हल्दी या दुकान का नाम खोजें...",
         search_mobile_placeholder: "मछली, आलू, तेल, चावल, दुकान खोजें...",
         nav_home: "होम",
@@ -4120,6 +4285,15 @@
         nav_cart: "कार्ट",
         nav_roles: "रोल बदलें",
         nav_signin: "साइन इन",
+        role_customer_app: "ग्राहक ऐप",
+        role_customer_sub: "सक्रिय (स्थानीय खरीदार)",
+        role_seller_app: "विक्रेता दुकानदार हब",
+        role_seller_sub: "इन्वेंटरी और ऑर्डर प्रबंधन",
+        role_rider_app: "डिलीवरी पार्टनर (राइडर)",
+        role_rider_sub: "डिलीवरी और ओटीपी सत्यापन",
+        role_admin_app: "एडमिन नियंत्रण केंद्र",
+        role_admin_sub: "नगर प्रशासनिक निगरानी",
+        role_settings: "रोल और सर्वर सेटिंग्स",
         menu_profile: "मेरा प्रोफ़ाइल और खाता",
         menu_profile_sub: "व्यक्तिगत जानकारी, पता और विवरण",
         menu_theme: "थीम और दिखावट",
@@ -4135,6 +4309,10 @@
         profile_stats_active: "सक्रिय डिलीवरी",
         profile_stats_stalls: "स्थानीय दुकानें",
         profile_save: "प्रोफ़ाइल सहेजें",
+        profile_name_label: "पूरा नाम *",
+        profile_phone_label: "फ़ोन नंबर",
+        profile_locality_label: "मुख्य इलाका",
+        profile_address_label: "डिफ़ॉल्ट डिलीवरी पता",
         hero_badge: "सोनारपुर लोकल बाज़ार हब",
         hero_title: "ताजी मछली, सब्ज़ियाँ और दैनिक राशन तेज़ी से डिलीवर",
         hero_desc: "राजपुर सोनारपुर के सत्यापित स्टॉलों से सुबह की ताजी मछली, सब्ज़ियाँ और तेल, चावल, हल्दी सीधे 15 मिनट में मँगवाएं।",
@@ -4144,8 +4322,63 @@
         cat_grocery: "किराना और मसाले",
         showing_nearby_stalls: "नज़दीकी दुकानें दिखा रहे हैं:",
         all_stalls_btn: "सभी दुकानें",
+        card_live_photo: "सुबह की ताज़ी तस्वीर",
+        card_fresh_stock: "ताज़ा स्टॉक",
+        card_stall_price: "स्टॉल का दाम",
+        card_compare: "तुलना करें",
+        card_bargain: "एआई मोलभाव",
+        card_add: "जोड़ें",
+        card_mins: "मिनट",
+        card_no_products: "आपके इलाके में कोई सामान नहीं मिला",
+        card_show_all: "सभी बाज़ार स्टॉल देखें",
+        compare_header_title: "कई दुकानों के दामों की तुलना",
+        compare_header_desc: "खरीदने से पहले आस-पास के सभी सत्यापित स्टॉलों के ताज़ा दामों की तुलना करें।",
+        compare_chip_all: "सभी उत्पाद",
+        compare_chip_fish: "कतला मछली",
+        compare_chip_potato: "देसी आलू",
+        compare_chip_oil: "सरसों का तेल",
+        compare_chip_rice: "चावल",
+        compare_chip_dairy: "पनीर और डेयरी",
+        compare_chip_tea: "दार्जिलिंग चाय",
+        compare_lowest_price: "सबसे कम दाम",
+        compare_buy_here: "यहाँ से खरीदें",
+        compare_search_ph: "दामों की तुलना के लिए उत्पाद खोजें...",
+        bargain_header_title: "एआई स्वचालित मोलभाव सहायक",
+        bargain_header_desc: "दुकानदार के न्यूनतम दाम पर सीधे मोलभाव करके तुरंत सर्वोत्तम छूट पाएं।",
+        bargain_select_product: "मोलभाव के लिए सामान चुनें:",
+        bargain_vendor_price: "दुकान का सामान्य दाम",
+        bargain_welcome_msg: "नमस्ते! मैं आपका एआई मोलभाव सहायक हूँ। बाज़ार से कोई भी उत्पाद चुनें और अपना मनपसंद दाम बताएं। मैं विक्रेता से मोलभाव करके आपको सबसे कम दाम दिलाऊंगा!",
+        bargain_placeholder: "रुपये में अपना ऑफ़र लिखें (जैसे: क्या ₹300 में देंगे?)...",
+        bargain_start_btn: "भेजें",
+        bargain_accept_btn: "डील स्वीकारें और कार्ट में जाएं",
+        cart_header_title: "शॉपिंग कार्ट और त्वरित चेकआउट",
+        cart_empty_msg: "आपकी शॉपिंग कार्ट अभी खाली है।",
+        cart_delivery_addr: "डिलीवरी का पता",
+        cart_subtotal: "सामान का कुल मूल्य",
+        cart_delivery_charge: "डिलीवरी शुल्क",
+        cart_grand_total: "कुल योग",
+        cart_place_order: "सुरक्षित ऑर्डर करें",
+        cart_free: "निःशुल्क",
+        cart_bargain_rate: "एआई मोलभाव द्वारा तय दाम",
         quick_cart_tap: "कार्ट देखने और चेकआउट करने के लिए टैप करें",
         quick_cart_view: "कार्ट देखें",
+        items_text: "सामान",
+        orders_header_title: "मेरे ऑर्डर और लाइव ट्रैकिंग",
+        orders_refresh_btn: "ऑर्डर रिफ्रेश",
+        orders_loading: "आपके ऑर्डर लोड हो रहे हैं...",
+        orders_empty_msg: "अभी तक कोई ऑर्डर नहीं मिला।",
+        orders_signin_prompt: "अपने ऑर्डर और लाइव डिलीवरी देखने के लिए साइन इन करें",
+        orders_live_tracking: "लाइव जीपीएस मैप ट्रैकिंग",
+        orders_rate_review: "रेटिंग और समीक्षा दें",
+        orders_items: "सामान:",
+        orders_assigned_rider: "सौंपा गया डिलीवरी राइडर:",
+        orders_delivery_otp: "डिलीवरी ओटीपी:",
+        orders_waiting_rider: "दुकानदार की पुष्टि और राइडर असाइन होने की प्रतीक्षा",
+        status_delivered: "डिलीवर हो गया",
+        status_out_delivery: "डिलीवरी के लिए रवाना",
+        status_preparing: "तैयार किया जा रहा है",
+        status_paid: "भुगतान सफल",
+        status_pending: "लंबित",
         voice_badge: "एआई वॉयस सर्च असिस्टेंट",
         voice_title: "आवाज़ से खोजें",
         voice_subtitle: "बांग्ला, अंग्रेज़ी या हिन्दी में किसी भी उत्पाद का नाम बोलें",
@@ -4153,6 +4386,7 @@
         voice_try_saying: "बोल कर देखें:",
         voice_cancel: "रद्द करें",
         voice_search_btn: "अब खोजें",
+        voice_not_supported: "इस ब्राउज़र में स्पीच रिकग्निशन समर्थित नहीं है। कृपया लिखकर खोजें।",
         mob_nav_home: "होम",
         mob_nav_compare: "तुलना",
         mob_nav_bargain: "मोलभाव",
@@ -4201,9 +4435,43 @@
       if (mobileSearch && dict.search_mobile_placeholder) {
         mobileSearch.setAttribute("placeholder", dict.search_mobile_placeholder);
       }
+      const compareSearch = document.getElementById("compareSearchInput");
+      if (compareSearch && dict.compare_search_ph) {
+        compareSearch.setAttribute("placeholder", dict.compare_search_ph);
+      }
+      const bargainInput = document.getElementById("bargainInputBox");
+      if (bargainInput && dict.bargain_placeholder) {
+        bargainInput.setAttribute("placeholder", dict.bargain_placeholder);
+      }
 
       // 3. Document HTML lang
       document.documentElement.lang = lang;
+
+      // 4. Instant re-render of dynamic product cards in catalog!
+      if (typeof currentProducts !== "undefined" && currentProducts && currentProducts.length > 0) {
+        renderProductGrid(currentProducts);
+      }
+
+      // 5. Re-render shopping cart if initialized
+      if (typeof renderCart === "function") {
+        renderCart();
+      }
+
+      // 6. Update sticky floating cart bar
+      if (typeof updateFloatingCartBar === "function") {
+        updateFloatingCartBar();
+      }
+
+      // 7. Update voice search hint pills
+      if (typeof updateVoiceSuggestionsForLang === "function") {
+        updateVoiceSuggestionsForLang(lang);
+      }
+
+      // 8. Update AI Bargain welcome message
+      const bMsg = document.getElementById("bargainWelcomeMsg");
+      if (bMsg && dict.bargain_welcome_msg) {
+        bMsg.textContent = dict.bargain_welcome_msg;
+      }
     }
 
     function updateLanguageUIButtons(lang) {
@@ -4345,11 +4613,17 @@
       const transcriptEl = document.getElementById("voiceLiveTranscript");
       if (transcriptEl) transcriptEl.textContent = '"..."';
 
-      // Pick shortcode
-      const short = currentVoiceLang.startsWith("bn") ? "bn" : (currentVoiceLang.startsWith("hi") ? "hi" : "en");
-      setVoiceRecognitionLanguage(currentVoiceLang, short);
+      // Pick shortcode from current app language
+      const short = currentAppLanguage === "bn" ? "bn" : (currentAppLanguage === "hi" ? "hi" : "en");
+      currentVoiceLang = short === "bn" ? "bn-IN" : (short === "hi" ? "hi-IN" : "en-IN");
 
-      startVoiceListening();
+      updateVoiceLangSelectorUI(short);
+      updateVoiceSuggestionsForLang(short);
+
+      stopVoiceListening();
+      setTimeout(() => {
+        startVoiceListening();
+      }, 150);
     }
 
     function closeVoiceSearchModal() {
@@ -4358,8 +4632,7 @@
       if (modal) modal.classList.add("hidden");
     }
 
-    function setVoiceRecognitionLanguage(langCode, shortCode) {
-      currentVoiceLang = langCode;
+    function updateVoiceLangSelectorUI(shortCode) {
       ["bn", "en", "hi"].forEach(l => {
         const btn = document.getElementById("btnVoiceLang" + l.charAt(0).toUpperCase() + l.slice(1));
         if (btn) {
@@ -4370,11 +4643,52 @@
           }
         }
       });
+    }
 
-      if (isVoiceListening) {
-        stopVoiceListening();
-        setTimeout(() => startVoiceListening(), 250);
-      }
+    function setVoiceRecognitionLanguage(langCode, shortCode) {
+      currentVoiceLang = langCode;
+      updateVoiceLangSelectorUI(shortCode);
+      updateVoiceSuggestionsForLang(shortCode);
+
+      stopVoiceListening();
+      setTimeout(() => {
+        startVoiceListening();
+      }, 150);
+    }
+
+    function updateVoiceSuggestionsForLang(lang) {
+      const container = document.getElementById("voiceSuggestionsContainer");
+      if (!container) return;
+
+      const suggestions = {
+        en: [
+          { text: "Fresh Rohu Fish", icon: "🐟", label: "Fresh Rohu Fish" },
+          { text: "Country Potatoes", icon: "🥔", label: "Country Potatoes" },
+          { text: "Fortune Mustard Oil", icon: "🛢️", label: "Mustard Oil" },
+          { text: "Gobindabhog Rice", icon: "🌾", label: "Gobindabhog Rice" }
+        ],
+        bn: [
+          { text: "রুই মাছ", icon: "🐟", label: "রুই মাছ" },
+          { text: "দেশি আলু", icon: "🥔", label: "দেশি আলু" },
+          { text: "সর্ষের তেল", icon: "🛢️", label: "সর্ষের তেল" },
+          { text: "গোবিন্দভোগ চাল", icon: "🍚", label: "গোবিন্দভোগ চাল" },
+          { text: "ডিম", icon: "🥚", label: "তাজা ডিম" }
+        ],
+        hi: [
+          { text: "ताज़ी मछली", icon: "🐟", label: "ताज़ी मछली" },
+          { text: "देसी आलू", icon: "🥔", label: "देसी आलू" },
+          { text: "सरसों का तेल", icon: "🛢️", label: "सरसों का तेल" },
+          { text: "चावल", icon: "🍚", label: "चावल" },
+          { text: "अंडे", icon: "🥚", label: "ताजा अंडा" }
+        ]
+      };
+
+      const list = suggestions[lang] || suggestions.en;
+      container.innerHTML = list.map(item => `
+        <button type="button" onclick="applyVoiceText('${item.text}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] flex items-center gap-1 transition-all">
+          <span>${item.icon}</span> <span>${item.label}</span>
+        </button>
+      `).join("");
     }
 
     function startVoiceListening() {
@@ -4382,7 +4696,8 @@
       if (!SpeechRecognition) {
         const statusEl = document.getElementById("voiceSearchStatusText");
         if (statusEl) {
-          statusEl.textContent = "Speech recognition is not supported in this browser. Please type in search bar.";
+          const dict = LOCAL_LINK_TRANSLATIONS[currentAppLanguage] || LOCAL_LINK_TRANSLATIONS.en;
+          statusEl.textContent = dict.voice_not_supported || "Speech recognition is not supported in this browser. Please type in search bar.";
         }
         updateVoiceUIState(false);
         return;
@@ -4390,8 +4705,16 @@
 
       try {
         if (speechRecognitionInstance) {
-          speechRecognitionInstance.abort();
+          try {
+            speechRecognitionInstance.onstart = null;
+            speechRecognitionInstance.onresult = null;
+            speechRecognitionInstance.onerror = null;
+            speechRecognitionInstance.onend = null;
+            speechRecognitionInstance.abort();
+          } catch (_) {}
+          speechRecognitionInstance = null;
         }
+
         speechRecognitionInstance = new SpeechRecognition();
         speechRecognitionInstance.continuous = false;
         speechRecognitionInstance.interimResults = true;
@@ -4445,7 +4768,7 @@
           if (currentVoiceTranscript && currentVoiceTranscript.trim().length > 0) {
             setTimeout(() => {
               submitVoiceSearch();
-            }, 600);
+            }, 500);
           }
         };
 
@@ -4504,8 +4827,8 @@
       if (desktopInput) desktopInput.value = query;
       if (mobileInput) mobileInput.value = query;
 
-      handleMarketSearch(query);
-      handleMarketSearchSubmit();
+      switchCustomerPage("home");
+      loadCustomerProducts("all", query);
       showToast(`🎙️ Voice search: "${query}"`, "success");
     }
 
