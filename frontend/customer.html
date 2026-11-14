@@ -195,8 +195,8 @@
             <span id="activeNeighborhoodBadge">Rajpur Block C</span>
             <i class="fa-solid fa-pen-to-square text-[10px] text-slate-400 ml-1"></i>
           </button>
-          <button onclick="toggleNearbyFilter()" id="btnNearbyOnlyToggle" class="px-2.5 py-1.5 bg-emerald-950/60 border border-emerald-800 text-emerald-400 text-[11px] font-bold rounded-xl hover:bg-emerald-900/60 transition-all" title="Toggle strictly nearby stores">
-            <i class="fa-solid fa-filter mr-1"></i> <span>Nearby Only</span>
+          <button onclick="toggleNearbyFilter()" id="btnNearbyOnlyToggle" class="px-2.5 py-1.5 bg-slate-900 border border-slate-700 text-slate-300 text-[11px] font-bold rounded-xl hover:bg-slate-800 transition-all" title="Toggle strictly nearby stores">
+            <i class="fa-solid fa-globe mr-1"></i> <span>All Stalls</span>
           </button>
         </div>
       </div>
@@ -220,13 +220,35 @@
           <div>
             <h3 class="font-black text-lg text-white flex items-center gap-2">
               <i class="fa-solid fa-scale-balanced text-sky-400"></i>
-              <span id="compareItemTitle">Multi-Store Price Comparison (Katla Fish 1 kg)</span>
+              <span id="compareItemTitle">Multi-Store Price Comparison</span>
             </h3>
-            <p class="text-xs text-slate-400 mt-0.5">Compare live rates across different stalls in Sonarpur Market before buying.</p>
+            <p class="text-xs text-slate-400 mt-0.5">Compare live rates across all verified neighborhood stalls before buying.</p>
           </div>
           <button onclick="switchCustomerPage('home')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center gap-1">
             <i class="fa-solid fa-house"></i> Home
           </button>
+        </div>
+
+        <!-- Search Bar & Instant Filter Chips -->
+        <div class="space-y-3">
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+            <input type="text" id="compareSearchInput" oninput="debounceCompareSearch(this.value)" placeholder="Search any product or category to compare prices across stalls (e.g. Fish, Rice, Oil, Potato, Paneer, Tea)..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-10 pr-10 py-3 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-sky-500 shadow-inner">
+            <button onclick="clearCompareSearch()" id="btnClearCompareSearch" class="hidden absolute right-3.5 top-3 text-slate-400 hover:text-white text-xs p-1">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <!-- Quick Category Comparison Chips -->
+          <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar" id="compareCategoryChips">
+            <button onclick="setCompareSearch('all')" class="cmp-chip px-3 py-1.5 bg-sky-600 text-white font-bold rounded-xl whitespace-nowrap shadow transition-all">All Products</button>
+            <button onclick="setCompareSearch('Katla Fish')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">🐟 Katla Fish</button>
+            <button onclick="setCompareSearch('Potato')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">🥔 Potatoes</button>
+            <button onclick="setCompareSearch('Mustard Oil')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">🛢️ Mustard Oil</button>
+            <button onclick="setCompareSearch('Gobindabhog Rice')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">🍚 Rice</button>
+            <button onclick="setCompareSearch('Paneer')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">🧀 Paneer & Dairy</button>
+            <button onclick="setCompareSearch('Tea')" class="cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all">☕ Darjeeling Tea</button>
+          </div>
         </div>
 
         <!-- Dynamic Store Comparison Cards -->
@@ -246,7 +268,7 @@
             <h3 class="font-black text-lg text-white flex items-center gap-2">
               <i class="fa-solid fa-robot text-purple-400"></i> AI Automated Bargain Assistant
             </h3>
-            <p class="text-xs text-slate-400 mt-0.5">Type your desired price to negotiate autonomously with the vendor bot.</p>
+            <p class="text-xs text-slate-400 mt-0.5">Negotiate live against stall floor prices autonomously with instant vendor agreement.</p>
           </div>
           <button onclick="switchCustomerPage('home')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center gap-1">
             <i class="fa-solid fa-house"></i> Home
@@ -255,17 +277,14 @@
 
         <!-- Product Selector for Bargaining -->
         <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-          <div>
-            <span class="text-slate-400 block font-bold text-[10px] uppercase">Select Item to Bargain On:</span>
-            <select id="bargainProductSelect" onchange="onBargainProductChange(this.value)" class="bg-slate-900 border border-slate-800 text-white font-bold rounded-lg px-2.5 py-1.5 mt-1 focus:outline-none focus:border-purple-500 text-xs">
-              <option value="33">Fresh Katla Fish (1 kg) - Regular ₹320</option>
-              <option value="34">Country Potatoes (1 kg) - Regular ₹28</option>
-              <option value="35">Gobindabhog Rice (1 kg) - Regular ₹95</option>
-              <option value="36">Mustard Oil - Fortune (1L) - Regular ₹160</option>
+          <div class="w-full sm:w-auto flex-1">
+            <span class="text-slate-400 block font-bold text-[10px] uppercase">Select Marketplace Item to Bargain:</span>
+            <select id="bargainProductSelect" onchange="onBargainProductChange(this.value)" class="w-full sm:w-auto max-w-md bg-slate-900 border border-slate-800 text-white font-bold rounded-lg px-2.5 py-1.5 mt-1 focus:outline-none focus:border-purple-500 text-xs">
+              <option value="">Loading market products...</option>
             </select>
           </div>
-          <div class="text-right">
-            <span class="text-[10px] text-slate-500 block">Regular Price</span>
+          <div class="text-right flex-shrink-0">
+            <span class="text-[10px] text-slate-500 block">Stall Regular Price</span>
             <span id="bargainProductRegularPrice" class="text-base font-black text-emerald-400">₹ 320</span>
           </div>
         </div>
@@ -277,9 +296,18 @@
               <i class="fa-solid fa-robot"></i>
             </div>
             <div class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800 max-w-[80%] text-slate-200">
-              Hello Tanvir! I am your autonomous AI Bargain Bot. Type your desired offer for this item below, and I'll negotiate directly against the vendor's floor limit for you!
+              Hello! I am your autonomous AI Bargain Bot. Select any item from the market and send your desired price. I will negotiate directly with the vendor's digital floor price to give you the lowest possible rate!
             </div>
           </div>
+        </div>
+
+        <!-- Quick Bargain Chips -->
+        <div class="flex items-center gap-2 overflow-x-auto text-[11px] pb-1 no-scrollbar">
+          <span class="text-slate-500 text-[10px] uppercase font-bold flex-shrink-0">Quick Offers:</span>
+          <button onclick="applyQuickBargainOffer(10)" class="px-2.5 py-1 bg-purple-950/60 hover:bg-purple-900/60 text-purple-300 border border-purple-800/60 rounded-lg font-bold whitespace-nowrap transition-all">₹10 OFF</button>
+          <button onclick="applyQuickBargainOffer(20)" class="px-2.5 py-1 bg-purple-950/60 hover:bg-purple-900/60 text-purple-300 border border-purple-800/60 rounded-lg font-bold whitespace-nowrap transition-all">₹20 OFF</button>
+          <button onclick="applyQuickBargainOffer(30)" class="px-2.5 py-1 bg-purple-950/60 hover:bg-purple-900/60 text-purple-300 border border-purple-800/60 rounded-lg font-bold whitespace-nowrap transition-all">₹30 OFF</button>
+          <button onclick="applyQuickBargainPercent(10)" class="px-2.5 py-1 bg-purple-950/60 hover:bg-purple-900/60 text-purple-300 border border-purple-800/60 rounded-lg font-bold whitespace-nowrap transition-all">10% Discount</button>
         </div>
 
         <!-- Input Box & Actions -->
@@ -421,6 +449,181 @@
         <div class="col-span-2 sm:col-span-1">
           <span class="text-slate-500 text-[10px] block font-bold">Delivery OTP</span>
           <span id="trackOtpText" class="text-amber-400 font-mono font-black text-sm">8942</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- 💳 DEMO PAYMENT GATEWAY MODAL                  -->
+  <!-- ============================================== -->
+  <div id="paymentGatewayModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative">
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+            <i class="fa-solid fa-shield-halved text-base"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-white text-sm flex items-center gap-2">
+              <span>LocalLink Secure Payment</span>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">256-bit SSL Demo</span>
+            </h4>
+            <p class="text-[11px] text-slate-400">Encrypted instant checkout gateway</p>
+          </div>
+        </div>
+        <button onclick="closePaymentGatewayModal()" class="text-slate-400 hover:text-white text-lg p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Order Amount Banner -->
+      <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 flex justify-between items-center">
+        <div>
+          <span class="text-[11px] text-slate-400 block">Total Payable Amount</span>
+          <span class="text-xs text-slate-500" id="gwDeliveryAddressText">Drop: House #42, Rajpur Block C</span>
+        </div>
+        <div class="text-right">
+          <span id="gwPayableAmountText" class="text-2xl font-black text-emerald-400">₹ 0</span>
+          <span class="text-[10px] text-emerald-500 block">Zero Platform Fee</span>
+        </div>
+      </div>
+
+      <!-- Payment Method Navigation Tabs -->
+      <div class="grid grid-cols-4 gap-1.5 p-1 bg-slate-950 rounded-xl border border-slate-800 text-[11px]">
+        <button type="button" onclick="selectPaymentMethodTab('upi')" id="pmTab-upi" class="py-2 rounded-lg font-bold text-white bg-emerald-600 transition-all flex flex-col items-center gap-1">
+          <i class="fa-solid fa-qrcode text-xs"></i>
+          <span>UPI / QR</span>
+        </button>
+        <button type="button" onclick="selectPaymentMethodTab('card')" id="pmTab-card" class="py-2 rounded-lg font-bold text-slate-400 hover:text-white transition-all flex flex-col items-center gap-1">
+          <i class="fa-solid fa-credit-card text-xs"></i>
+          <span>Card</span>
+        </button>
+        <button type="button" onclick="selectPaymentMethodTab('netbanking')" id="pmTab-netbanking" class="py-2 rounded-lg font-bold text-slate-400 hover:text-white transition-all flex flex-col items-center gap-1">
+          <i class="fa-solid fa-building-columns text-xs"></i>
+          <span>NetBank</span>
+        </button>
+        <button type="button" onclick="selectPaymentMethodTab('cod')" id="pmTab-cod" class="py-2 rounded-lg font-bold text-slate-400 hover:text-white transition-all flex flex-col items-center gap-1">
+          <i class="fa-solid fa-hand-holding-dollar text-xs"></i>
+          <span>COD</span>
+        </button>
+      </div>
+
+      <!-- Tab 1: UPI & QR Code -->
+      <div id="pmContent-upi" class="space-y-4 text-xs">
+        <div class="p-4 bg-slate-950 rounded-2xl border border-slate-800 flex flex-col items-center text-center space-y-3">
+          <div class="w-36 h-36 bg-white p-2 rounded-2xl shadow-inner flex items-center justify-center relative">
+            <!-- Simulated QR Pattern with LocalLink Logo in Center -->
+            <div class="w-full h-full bg-slate-900 rounded-xl flex flex-col items-center justify-center relative p-2 overflow-hidden border border-slate-800">
+              <i class="fa-solid fa-qrcode text-6xl text-white"></i>
+              <div class="absolute inset-0 bg-emerald-500/10 pointer-events-none animate-pulse"></div>
+            </div>
+          </div>
+          <span class="text-[11px] text-slate-400">Scan with GPay, PhonePe, Paytm, or any UPI app</span>
+          <!-- Quick UPI Apps -->
+          <div class="flex items-center justify-center gap-2 pt-1">
+            <span class="px-2 py-1 bg-slate-900 text-slate-300 rounded-lg text-[10px] font-bold border border-slate-800">Google Pay</span>
+            <span class="px-2 py-1 bg-slate-900 text-slate-300 rounded-lg text-[10px] font-bold border border-slate-800">PhonePe</span>
+            <span class="px-2 py-1 bg-slate-900 text-slate-300 rounded-lg text-[10px] font-bold border border-slate-800">Paytm UPI</span>
+            <span class="px-2 py-1 bg-slate-900 text-slate-300 rounded-lg text-[10px] font-bold border border-slate-800">BHIM</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-400 mb-1 text-[11px] font-bold">Or Enter UPI ID / VPA</label>
+          <div class="flex gap-2">
+            <input type="text" id="gwUpiIdInput" value="customer@okaxis" placeholder="username@okhdfcbank" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-emerald-500">
+            <span class="px-3 py-2 bg-slate-800 text-emerald-400 font-bold rounded-xl text-xs flex items-center gap-1 border border-slate-700">
+              <i class="fa-solid fa-check-circle"></i> Verified
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Credit / Debit Card -->
+      <div id="pmContent-card" class="hidden space-y-3 text-xs">
+        <div class="flex justify-between items-center">
+          <label class="block text-slate-400 text-[11px] font-bold">Card Details (Demo)</label>
+          <button type="button" onclick="quickFillDemoCard()" class="text-[10px] text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Quick-Fill Demo Card
+          </button>
+        </div>
+        <div>
+          <input type="text" id="gwCardNumber" placeholder="4532 8921 7842 1098" maxlength="19" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white font-mono text-xs focus:outline-none focus:border-emerald-500">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-500 mb-1 text-[10px] font-bold">Valid Thru (MM/YY)</label>
+            <input type="text" id="gwCardExpiry" placeholder="08/28" maxlength="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-emerald-500">
+          </div>
+          <div>
+            <label class="block text-slate-500 mb-1 text-[10px] font-bold">CVV</label>
+            <input type="password" id="gwCardCvv" placeholder="•••" maxlength="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-emerald-500">
+          </div>
+        </div>
+        <div>
+          <label class="block text-slate-500 mb-1 text-[10px] font-bold">Name on Card</label>
+          <input type="text" id="gwCardName" placeholder="Soumik Roy" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-emerald-500">
+        </div>
+      </div>
+
+      <!-- Tab 3: Net Banking -->
+      <div id="pmContent-netbanking" class="hidden space-y-3 text-xs">
+        <label class="block text-slate-400 text-[11px] font-bold">Select Bank</label>
+        <div class="grid grid-cols-2 gap-2">
+          <label class="flex items-center gap-2 p-2.5 bg-slate-950 border border-slate-800 rounded-xl cursor-pointer hover:border-emerald-500/50">
+            <input type="radio" name="nbBank" value="SBI" checked class="text-emerald-500">
+            <span class="text-slate-200 font-bold">State Bank of India</span>
+          </label>
+          <label class="flex items-center gap-2 p-2.5 bg-slate-950 border border-slate-800 rounded-xl cursor-pointer hover:border-emerald-500/50">
+            <input type="radio" name="nbBank" value="HDFC" class="text-emerald-500">
+            <span class="text-slate-200 font-bold">HDFC Bank</span>
+          </label>
+          <label class="flex items-center gap-2 p-2.5 bg-slate-950 border border-slate-800 rounded-xl cursor-pointer hover:border-emerald-500/50">
+            <input type="radio" name="nbBank" value="ICICI" class="text-emerald-500">
+            <span class="text-slate-200 font-bold">ICICI Bank</span>
+          </label>
+          <label class="flex items-center gap-2 p-2.5 bg-slate-950 border border-slate-800 rounded-xl cursor-pointer hover:border-emerald-500/50">
+            <input type="radio" name="nbBank" value="Axis" class="text-emerald-500">
+            <span class="text-slate-200 font-bold">Axis Bank</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Tab 4: Cash on Delivery -->
+      <div id="pmContent-cod" class="hidden space-y-3 text-xs">
+        <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-2">
+          <div class="flex items-center gap-2 text-amber-400 font-bold text-xs">
+            <i class="fa-solid fa-coins"></i>
+            <span>Pay on Doorstep Delivery</span>
+          </div>
+          <p class="text-slate-400 text-[11px]">
+            Pay via Cash or Rider UPI QR when your order arrives. The seller will immediately prepare your order upon placement.
+          </p>
+        </div>
+      </div>
+
+      <!-- Pay Action Button -->
+      <div class="pt-2 border-t border-slate-800 space-y-2">
+        <button id="btnExecuteGatewayPay" onclick="executeGatewayPayment()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-sm shadow-xl transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-lock"></i>
+          <span id="btnExecuteGatewayPayText">Pay ₹0 Securely</span>
+        </button>
+        <p class="text-[10px] text-center text-slate-500">
+          <i class="fa-solid fa-shield text-emerald-500 mr-1"></i> Demo Sandbox: Simulated payment authorized instantly.
+        </p>
+      </div>
+
+      <!-- Processing Overlay -->
+      <div id="gwProcessingOverlay" class="absolute inset-0 bg-slate-950/95 backdrop-blur-md rounded-3xl hidden flex flex-col items-center justify-center p-6 text-center space-y-4 z-20">
+        <div class="w-16 h-16 rounded-full border-4 border-emerald-500/20 border-t-emerald-500 animate-spin"></div>
+        <div class="space-y-1">
+          <h4 class="font-bold text-white text-base" id="gwProgressTitle">Connecting to Gateway...</h4>
+          <p class="text-xs text-slate-400" id="gwProgressSubtitle">Authorizing payment with bank server...</p>
+        </div>
+        <div class="w-48 bg-slate-900 rounded-full h-1.5 overflow-hidden">
+          <div id="gwProgressBar" class="bg-emerald-500 h-full w-1/3 transition-all duration-300"></div>
         </div>
       </div>
     </div>
@@ -917,14 +1120,16 @@
     let currentCustomerUser = null;
     let currentCustomerLocality = localStorage.getItem("locallinkCustomerLocality") || "Rajpur Block C";
     let currentCustomerAddress = localStorage.getItem("locallinkCustomerAddress") || "House #42, Main Road, Rajpur Block C";
-    let isNearbyOnlyFilter = true;
+    let isNearbyOnlyFilter = false;
+    let compareSearchTimeout = null;
+    let currentPaymentMethod = 'upi';
 
     // Initialize on page load
     window.addEventListener("DOMContentLoaded", async () => {
       loadCartFromStorage();
       await initializeCustomerAuth();
       await loadCustomerProducts();
-      await loadCompareItems();
+      await loadCompareItems("all");
     });
 
     // One-Time Login System: Checks saved persistent session (never auto-hijacks another user's account)
@@ -1046,7 +1251,7 @@
     async function loadCustomerProducts(category = 'all', search = '') {
       const grid = document.getElementById("productGrid");
       try {
-        let endpoint = `/api/customer/products?limit=50&locality=${encodeURIComponent(currentCustomerLocality)}&nearbyOnly=${isNearbyOnlyFilter}`;
+        let endpoint = `/api/customer/products?limit=100&locality=${encodeURIComponent(currentCustomerLocality)}&nearbyOnly=${isNearbyOnlyFilter}`;
         if (category && category !== 'all') endpoint += `&category=${encodeURIComponent(category)}`;
         if (search) endpoint += `&search=${encodeURIComponent(search)}`;
 
@@ -1054,6 +1259,7 @@
         if (!res || !res.success) return;
 
         currentProducts = res.data.products || [];
+        populateBargainProductDropdown(currentProducts);
 
         if (currentProducts.length === 0) {
           grid.innerHTML = `
@@ -1135,6 +1341,25 @@
       }
     }
 
+    // Dynamic Bargain Dropdown Population
+    function populateBargainProductDropdown(products) {
+      const select = document.getElementById("bargainProductSelect");
+      if (!select || !products || products.length === 0) return;
+
+      const currentVal = select.value;
+      select.innerHTML = products.map(p => {
+        return `<option value="${p.id}">${p.name} - Regular ₹${p.price} (${p.shopName || 'Market Stall'})</option>`;
+      }).join("");
+
+      if (currentVal && products.some(p => p.id == currentVal)) {
+        select.value = currentVal;
+      } else if (products.length > 0) {
+        select.value = products[0].id;
+        const priceEl = document.getElementById("bargainProductRegularPrice");
+        if (priceEl) priceEl.textContent = `₹ ${products[0].price}`;
+      }
+    }
+
     // Category Filtering
     function filterCategory(category) {
       document.querySelectorAll(".cat-btn").forEach(btn => {
@@ -1184,35 +1409,116 @@
     // ==============================================
     // 2. STORE PRICE COMPARISON
     // ==============================================
-    async function loadCompareItems(itemName = "Katla Fish") {
+    function debounceCompareSearch(val) {
+      const clearBtn = document.getElementById("btnClearCompareSearch");
+      if (clearBtn) {
+        if (val && val.trim().length > 0) clearBtn.classList.remove("hidden");
+        else clearBtn.classList.add("hidden");
+      }
+
+      clearTimeout(compareSearchTimeout);
+      compareSearchTimeout = setTimeout(() => {
+        loadCompareItems(val.trim() || "all");
+      }, 350);
+    }
+
+    function setCompareSearch(term) {
+      const input = document.getElementById("compareSearchInput");
+      if (input) input.value = (term === 'all' || !term) ? "" : term;
+      const clearBtn = document.getElementById("btnClearCompareSearch");
+      if (clearBtn) {
+        if (term && term !== 'all') clearBtn.classList.remove("hidden");
+        else clearBtn.classList.add("hidden");
+      }
+
+      document.querySelectorAll(".cmp-chip").forEach(chip => {
+        if (chip.textContent.toLowerCase().includes((term || 'all').toLowerCase())) {
+          chip.className = "cmp-chip px-3 py-1.5 bg-sky-600 text-white font-bold rounded-xl whitespace-nowrap shadow transition-all";
+        } else {
+          chip.className = "cmp-chip px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 whitespace-nowrap transition-all";
+        }
+      });
+
+      loadCompareItems(term || "all");
+    }
+
+    function clearCompareSearch() {
+      const input = document.getElementById("compareSearchInput");
+      if (input) input.value = "";
+      const clearBtn = document.getElementById("btnClearCompareSearch");
+      if (clearBtn) clearBtn.classList.add("hidden");
+      setCompareSearch("all");
+    }
+
+    async function loadCompareItems(itemName = "all") {
       const container = document.getElementById("compareCardsContainer");
-      document.getElementById("compareItemTitle").textContent = `Multi-Store Price Comparison (${itemName})`;
+      const titleSpan = document.getElementById("compareItemTitle");
+      if (titleSpan) {
+        titleSpan.textContent = (!itemName || itemName === "all") 
+          ? "Multi-Store Price Comparison (All Products Across Stalls)"
+          : `Multi-Store Price Comparison (${itemName})`;
+      }
 
       try {
-        const res = await apiRequest(`/api/customer/compare?item=${encodeURIComponent(itemName)}`);
+        const res = await apiRequest(`/api/customer/compare?item=${encodeURIComponent(itemName || 'all')}`);
         if (!res || !res.success) return;
 
         const comparisons = res.data.comparisons || [];
 
         if (comparisons.length === 0) {
-          container.innerHTML = `<div class="p-6 text-center text-slate-500">No multi-store comparison available for "${itemName}".</div>`;
+          container.innerHTML = `
+            <div class="p-8 text-center text-slate-500 bg-slate-950 rounded-2xl border border-slate-800 space-y-2">
+              <i class="fa-solid fa-scale-unbalanced text-3xl text-slate-600 block mb-1"></i>
+              <p class="font-bold text-white text-sm">No live store comparisons found matching "${itemName}"</p>
+              <p class="text-xs text-slate-400">Try searching for "Fish", "Rice", "Oil", "Potato", or click "All Products" above.</p>
+              <button onclick="setCompareSearch('all')" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl text-xs mt-2 transition-all">
+                <i class="fa-solid fa-globe mr-1"></i> View All Products
+              </button>
+            </div>
+          `;
           return;
         }
 
-        container.innerHTML = comparisons.map((s, idx) => `
-          <div class="p-4 bg-slate-950 border ${s.isLowestPrice ? 'border-emerald-500/40' : 'border-slate-800'} rounded-2xl flex justify-between items-center transition-all hover:border-slate-700">
-            <div class="space-y-1">
-              ${s.isLowestPrice ? `
-                <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded text-[9px] font-bold">Lowest Price</span>
-              ` : ''}
-              <h4 class="font-bold text-white text-sm">${s.shopName}</h4>
-              <p class="text-slate-400">⭐ ${s.rating} Rating &bull; ${s.distanceKm} km away from your location</p>
+        container.innerHTML = comparisons.map(s => `
+          <div class="p-4 bg-slate-950 border ${s.isLowestPrice ? 'border-emerald-500/40 bg-emerald-950/10' : 'border-slate-800'} rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 transition-all hover:border-slate-700">
+            <div class="flex items-center gap-3 flex-1 min-w-0">
+              <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 overflow-hidden flex-shrink-0 flex items-center justify-center">
+                ${s.imageUrl ? `
+                  <img src="${s.imageUrl}" alt="${s.name}" class="w-full h-full object-cover">
+                ` : `
+                  <i class="fa-solid fa-bag-shopping text-slate-500 text-lg"></i>
+                `}
+              </div>
+              <div class="space-y-0.5 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 class="font-bold text-white text-sm truncate">${s.name}</h4>
+                  ${s.isLowestPrice ? `
+                    <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-[9px] font-black tracking-wide">LOWEST PRICE</span>
+                  ` : ''}
+                </div>
+                <div class="flex items-center gap-2 text-[11px] text-slate-400 flex-wrap">
+                  <span class="text-sky-400 font-bold truncate"><i class="fa-solid fa-store mr-1"></i>${s.shopName}</span>
+                  <span>•</span>
+                  <span><i class="fa-solid fa-location-dot text-rose-400 mr-0.5"></i> ${s.distanceKm} km</span>
+                  <span>•</span>
+                  <span class="text-amber-400 font-bold">⭐ ${s.rating}</span>
+                </div>
+              </div>
             </div>
-            <div class="text-right space-y-2">
-              <span class="text-lg font-black ${s.isLowestPrice ? 'text-emerald-400' : 'text-slate-300'}">₹ ${s.price}</span>
-              <button onclick="addToCart(${s.productId})" class="block px-3.5 py-1.5 ${s.isLowestPrice ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-slate-800 hover:bg-slate-700'} text-white font-bold rounded-xl text-xs transition-all">
-                Buy Here
-              </button>
+
+            <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-900 flex-shrink-0">
+              <div class="text-left sm:text-right">
+                <span class="text-[10px] text-slate-500 block">Stall Price</span>
+                <span class="text-base font-black ${s.isLowestPrice ? 'text-emerald-400' : 'text-slate-200'}">₹ ${s.price}</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button onclick="openBargainForProduct(${s.productId}, '${s.name.replace(/'/g, "\\'")}', ${s.price})" class="px-3 py-1.5 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 font-bold rounded-xl text-xs flex items-center gap-1 transition-all" title="Bargain autonomously with AI">
+                  <i class="fa-solid fa-robot"></i> AI Bargain
+                </button>
+                <button onclick="addToCart(${s.productId})" class="px-3.5 py-1.5 ${s.isLowestPrice ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-slate-800 hover:bg-slate-700'} text-white font-bold rounded-xl text-xs transition-all flex items-center gap-1">
+                  <i class="fa-solid fa-cart-plus"></i> Buy Here
+                </button>
+              </div>
             </div>
           </div>
         `).join("");
@@ -1224,6 +1530,8 @@
 
     function startCompareForItem(itemName) {
       switchCustomerPage('compare');
+      const input = document.getElementById("compareSearchInput");
+      if (input) input.value = itemName;
       loadCompareItems(itemName);
     }
 
@@ -1247,6 +1555,8 @@
         select.add(opt);
         select.value = productId;
       }
+      const priceEl = document.getElementById("bargainProductRegularPrice");
+      if (priceEl) priceEl.textContent = `₹ ${regularPrice}`;
       onBargainProductChange(productId);
     }
 
@@ -1271,6 +1581,24 @@
         </div>
       `;
       chat.scrollTop = chat.scrollHeight;
+    }
+
+    function applyQuickBargainOffer(discountAmount) {
+      const priceText = document.getElementById("bargainProductRegularPrice").textContent;
+      const regularPrice = Number(priceText.replace(/[^0-9]/g, "")) || 100;
+      const targetOffer = Math.max(1, regularPrice - discountAmount);
+      const input = document.getElementById("bargainInputBox");
+      input.value = `Can you please sell it for ₹${targetOffer}?`;
+      sendBargainMessage();
+    }
+
+    function applyQuickBargainPercent(percent) {
+      const priceText = document.getElementById("bargainProductRegularPrice").textContent;
+      const regularPrice = Number(priceText.replace(/[^0-9]/g, "")) || 100;
+      const targetOffer = Math.round(regularPrice * (1 - percent / 100));
+      const input = document.getElementById("bargainInputBox");
+      input.value = `Would you accept ₹${targetOffer} (${percent}% off regular price)?`;
+      sendBargainMessage();
     }
 
     async function sendBargainMessage() {
@@ -1476,18 +1804,138 @@
       }
 
       if (cart.length === 0) {
-        showToast("Cart is empty!", "error");
+        showToast("Cart is empty! Add products first.", "error");
         return;
       }
 
-      const btn = document.getElementById("btnPlaceOrder");
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Submitting Order...`;
+      const deliveryAddress = document.getElementById("checkoutAddressInput")?.value.trim();
+      const customerPhone = document.getElementById("checkoutPhoneInput")?.value.trim();
+
+      if (!deliveryAddress) {
+        showToast("Please enter your delivery drop address", "error");
+        document.getElementById("checkoutAddressInput")?.focus();
+        return;
+      }
+
+      if (!customerPhone) {
+        showToast("Please enter your contact phone number", "error");
+        document.getElementById("checkoutPhoneInput")?.focus();
+        return;
+      }
+
+      openPaymentGatewayModal();
+    }
+
+    // ==============================================
+    // DEMO PAYMENT GATEWAY CONTROLLERS
+    // ==============================================
+    function openPaymentGatewayModal() {
+      const subtotal = cart.reduce((sum, item) => sum + (item.agreedPrice * item.quantity), 0);
+      const deliveryFee = subtotal >= 500 ? 0 : 30;
+      const grandTotal = subtotal + deliveryFee;
+
+      const dropAddress = document.getElementById("checkoutAddressInput")?.value.trim() || currentCustomerAddress;
+      const addressEl = document.getElementById("gwDeliveryAddressText");
+      if (addressEl) addressEl.textContent = `Drop: ${dropAddress}`;
+
+      const amountEl = document.getElementById("gwPayableAmountText");
+      if (amountEl) amountEl.textContent = `₹ ${grandTotal}`;
+
+      selectPaymentMethodTab(currentPaymentMethod || 'upi');
+
+      const modal = document.getElementById("paymentGatewayModal");
+      if (modal) modal.classList.remove("hidden");
+    }
+
+    function closePaymentGatewayModal() {
+      const modal = document.getElementById("paymentGatewayModal");
+      if (modal) modal.classList.add("hidden");
+      const overlay = document.getElementById("gwProcessingOverlay");
+      if (overlay) overlay.classList.add("hidden");
+    }
+
+    function selectPaymentMethodTab(method) {
+      currentPaymentMethod = method;
+      const tabs = ['upi', 'card', 'netbanking', 'cod'];
+
+      tabs.forEach(t => {
+        const tabBtn = document.getElementById(`pmTab-${t}`);
+        const contentDiv = document.getElementById(`pmContent-${t}`);
+
+        if (t === method) {
+          if (tabBtn) {
+            tabBtn.className = "py-2 rounded-lg font-bold text-white bg-emerald-600 transition-all flex flex-col items-center gap-1 shadow";
+          }
+          if (contentDiv) contentDiv.classList.remove("hidden");
+        } else {
+          if (tabBtn) {
+            tabBtn.className = "py-2 rounded-lg font-bold text-slate-400 hover:text-white transition-all flex flex-col items-center gap-1";
+          }
+          if (contentDiv) contentDiv.classList.add("hidden");
+        }
+      });
+
+      const subtotal = cart.reduce((sum, item) => sum + (item.agreedPrice * item.quantity), 0);
+      const deliveryFee = subtotal >= 500 ? 0 : 30;
+      const grandTotal = subtotal + deliveryFee;
+
+      const payBtnText = document.getElementById("btnExecuteGatewayPayText");
+      if (payBtnText) {
+        if (method === 'cod') {
+          payBtnText.textContent = `Confirm Cash on Delivery (₹${grandTotal})`;
+        } else {
+          payBtnText.textContent = `Pay ₹${grandTotal} Securely (${method.toUpperCase()})`;
+        }
+      }
+    }
+
+    function quickFillDemoCard() {
+      const numInput = document.getElementById("gwCardNumber");
+      const expInput = document.getElementById("gwCardExpiry");
+      const cvvInput = document.getElementById("gwCardCvv");
+      const nameInput = document.getElementById("gwCardName");
+
+      if (numInput) numInput.value = "4532 8921 7842 1098";
+      if (expInput) expInput.value = "08/28";
+      if (cvvInput) cvvInput.value = "742";
+      if (nameInput) nameInput.value = (currentCustomerUser && currentCustomerUser.name) ? currentCustomerUser.name : "Soumik Roy";
+
+      showToast("✨ Demo Card details quick-filled!");
+    }
+
+    async function executeGatewayPayment() {
+      const overlay = document.getElementById("gwProcessingOverlay");
+      const progressTitle = document.getElementById("gwProgressTitle");
+      const progressSub = document.getElementById("gwProgressSubtitle");
+      const progressBar = document.getElementById("gwProgressBar");
+      const payBtn = document.getElementById("btnExecuteGatewayPay");
+
+      const deliveryAddress = document.getElementById("checkoutAddressInput")?.value.trim() || currentCustomerAddress;
+      const customerPhone = document.getElementById("checkoutPhoneInput")?.value.trim() || "9876543211";
+      const customerNote = document.getElementById("checkoutNoteInput")?.value.trim() || "";
+
+      payBtn.disabled = true;
+      if (overlay) overlay.classList.remove("hidden");
 
       try {
-        const deliveryAddress = document.getElementById("checkoutAddressInput").value.trim();
-        const customerPhone = document.getElementById("checkoutPhoneInput").value.trim();
-        const customerNote = document.getElementById("checkoutNoteInput").value.trim();
+        if (currentPaymentMethod === "cod") {
+          if (progressTitle) progressTitle.textContent = "Confirming COD Order...";
+          if (progressSub) progressSub.textContent = "Reserving fresh inventory with seller stall...";
+          if (progressBar) progressBar.style.width = "70%";
+          await new Promise(r => setTimeout(r, 600));
+        } else {
+          if (progressTitle) progressTitle.textContent = "Contacting Bank Gateway...";
+          if (progressSub) progressSub.textContent = `Verifying ${currentPaymentMethod.toUpperCase()} token & credentials...`;
+          if (progressBar) progressBar.style.width = "40%";
+          await new Promise(r => setTimeout(r, 600));
+
+          if (progressTitle) progressTitle.textContent = "Authorizing Payment...";
+          if (progressSub) progressSub.textContent = "256-bit encrypted bank clearance in progress...";
+          if (progressBar) progressBar.style.width = "85%";
+          await new Promise(r => setTimeout(r, 600));
+        }
+
+        const txnId = `TXN_LL_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`;
 
         const payload = {
           items: cart.map(i => ({
@@ -1497,7 +1945,10 @@
           })),
           deliveryAddress,
           customerPhone,
-          customerNote
+          customerNote,
+          paymentMethod: currentPaymentMethod,
+          paymentStatus: currentPaymentMethod === 'cod' ? 'pending' : 'paid',
+          transactionId: txnId
         };
 
         const res = await apiRequest("/api/customer/orders", {
@@ -1506,16 +1957,28 @@
         });
 
         if (res && res.success) {
-          showToast("Order placed successfully! Waiting for seller confirmation.");
+          if (progressBar) progressBar.style.width = "100%";
+          if (progressTitle) progressTitle.textContent = "Order Placed Successfully!";
+          if (progressSub) progressSub.textContent = `Txn ID: ${txnId} • Seller notified`;
+
+          await new Promise(r => setTimeout(r, 700));
+
+          closePaymentGatewayModal();
+          showToast(currentPaymentMethod === 'cod' 
+            ? "Order placed with Cash on Delivery! Seller is preparing your items."
+            : `Payment Successful (Txn: ${txnId})! Seller is preparing your order.`);
+
           cart = [];
           saveCartToStorage();
+          renderCart();
           switchCustomerPage('orders');
+          await loadCustomerOrders();
         }
-      } catch (e) {
-        showToast(e.message, "error");
+      } catch (err) {
+        showToast(err.message || "Payment transaction failed", "error");
+        if (overlay) overlay.classList.add("hidden");
       } finally {
-        btn.disabled = false;
-        renderCart();
+        payBtn.disabled = false;
       }
     }
 
@@ -1557,12 +2020,20 @@
         container.innerHTML = orders.map(ord => {
           const isDelivered = ord.order_status === "delivered";
           const isOut = ord.order_status === "out_for_delivery";
+          const isPaid = ord.payment_status === "paid";
 
           return `
             <div class="p-5 bg-slate-950 border border-slate-800 rounded-2xl space-y-3">
               <div class="flex justify-between items-start border-b border-slate-900 pb-3">
                 <div>
-                  <span class="font-bold text-white text-sm">Order #${ord.order_number || ('LL-' + ord.order_id)}</span>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-bold text-white text-sm">Order #${ord.order_number || ('LL-' + ord.order_id)}</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+                      isPaid ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                    }">
+                      <i class="fa-solid ${isPaid ? 'fa-circle-check text-emerald-400' : 'fa-clock text-amber-400'} mr-1"></i>${(ord.payment_status || 'paid').toUpperCase()}
+                    </span>
+                  </div>
                   <p class="text-slate-400 text-[10px] mt-0.5">Placed on ${new Date(ord.created_at).toLocaleDateString()} &bull; Total: <strong class="text-emerald-400">₹${ord.total_amount}</strong></p>
                 </div>
                 <span class="px-2.5 py-1 font-bold rounded-full text-[10px] ${

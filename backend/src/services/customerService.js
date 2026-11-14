@@ -351,7 +351,7 @@ async function updateCustomerProfile(userId, data) {
 }
 
 // 2. Fetch Catalog Products with filter, search, and local store proximity
-async function getCustomerProducts({ category, search, locality, city, address, nearbyOnly = false, limit = 50 }) {
+async function getCustomerProducts({ category, search, locality, city, address, nearbyOnly = false, limit = 100 }) {
   let conn;
   try {
     conn = await pool.getConnection();
@@ -405,7 +405,7 @@ async function getCustomerProducts({ category, search, locality, city, address, 
        ${whereSql}
        ORDER BY p.product_id DESC
        LIMIT ?`,
-      [...params, Number(limit)]
+      [...params, Number(limit) || 100]
     );
 
     const activeLocality = locality || address || "Rajpur";
@@ -466,40 +466,18 @@ async function getCustomerProducts({ category, search, locality, city, address, 
   }
 }
 
-// 3. Multi-Store Price Comparison
-async function getCompareItems(itemName = "Katla Fish") {
+// 3. Multi-Store Price Comparison (searches across stalls for single item or all products)
+async function getCompareItems(itemName = "") {
   let conn;
   try {
     conn = await pool.getConnection();
 
-    const searchTerm = `%${itemName.trim().toLowerCase()}%`;
+    const queryTerm = (itemName || "").trim().toLowerCase();
+    let rows = [];
 
-    const rows = await conn.query(
-      `SELECT
-         p.product_id,
-         p.seller_id,
-         p.name,
-         p.price,
-         p.discount_price,
-         p.stock_quantity,
-         p.image_url,
-         sp.shop_name,
-         sp.shop_address,
-         sp.city,
-         COALESCE(AVG(r.rating), 4.8) AS avg_rating,
-         COUNT(r.review_id) AS review_count
-       FROM products p
-       LEFT JOIN seller_profiles sp ON p.seller_id = sp.seller_id
-       LEFT JOIN reviews r ON p.product_id = r.product_id
-       WHERE LOWER(p.name) LIKE ? AND p.status = 'active'
-       GROUP BY p.product_id
-       ORDER BY p.price ASC`,
-      [searchTerm]
-    );
-
-    if (rows.length === 0) {
-      // Fallback: search for Katla fish or any fish products
-      const fallbackRows = await conn.query(
+    if (!queryTerm || queryTerm === "all" || queryTerm === "compare") {
+      // Return broad catalog comparison across vendors
+      rows = await conn.query(
         `SELECT
            p.product_id,
            p.seller_id,
@@ -508,18 +486,85 @@ async function getCompareItems(itemName = "Katla Fish") {
            p.discount_price,
            p.stock_quantity,
            p.image_url,
-           sp.shop_name,
-           sp.shop_address,
-           sp.city,
-           4.8 AS avg_rating,
-           12 AS review_count
+           c.name AS category_name,
+           COALESCE(sp.shop_name, 'Local Vendor Stall') AS shop_name,
+           COALESCE(sp.shop_address, 'Sonarpur Daily Market') AS shop_address,
+           COALESCE(sp.city, 'Rajpur Sonarpur') AS city,
+           COALESCE(AVG(r.rating), 4.8) AS avg_rating,
+           COUNT(r.review_id) AS review_count
          FROM products p
+         LEFT JOIN categories c ON p.category_id = c.category_id
          LEFT JOIN seller_profiles sp ON p.seller_id = sp.seller_id
-         WHERE (LOWER(p.name) LIKE '%fish%' OR LOWER(p.name) LIKE '%katla%' OR LOWER(p.name) LIKE '%rice%') AND p.status = 'active'
+         LEFT JOIN reviews r ON p.product_id = r.product_id
+         WHERE p.status = 'active'
+         GROUP BY p.product_id
          ORDER BY p.price ASC
-         LIMIT 4`
+         LIMIT 30`
       );
-      rows.push(...fallbackRows);
+    } else {
+      // Search matching term across product name, description, brand, or category
+      const searchTerm = `%${queryTerm}%`;
+      rows = await conn.query(
+        `SELECT
+           p.product_id,
+           p.seller_id,
+           p.name,
+           p.price,
+           p.discount_price,
+           p.stock_quantity,
+           p.image_url,
+           c.name AS category_name,
+           COALESCE(sp.shop_name, 'Local Vendor Stall') AS shop_name,
+           COALESCE(sp.shop_address, 'Sonarpur Daily Market') AS shop_address,
+           COALESCE(sp.city, 'Rajpur Sonarpur') AS city,
+           COALESCE(AVG(r.rating), 4.8) AS avg_rating,
+           COUNT(r.review_id) AS review_count
+         FROM products p
+         LEFT JOIN categories c ON p.category_id = c.category_id
+         LEFT JOIN seller_profiles sp ON p.seller_id = sp.seller_id
+         LEFT JOIN reviews r ON p.product_id = r.product_id
+         WHERE (LOWER(p.name) LIKE ? OR LOWER(p.description) LIKE ? OR LOWER(c.name) LIKE ?) AND p.status = 'active'
+         GROUP BY p.product_id
+         ORDER BY p.price ASC
+         LIMIT 30`,
+        [searchTerm, searchTerm, searchTerm]
+      );
+
+      // If no direct matches, split query words (e.g. "katla fish 1kg" -> search "katla")
+      if (rows.length === 0) {
+        const words = queryTerm.split(/\s+/).filter(w => w.length > 2);
+        for (const w of words) {
+          const wTerm = `%${w}%`;
+          const subRows = await conn.query(
+            `SELECT
+               p.product_id,
+               p.seller_id,
+               p.name,
+               p.price,
+               p.discount_price,
+               p.stock_quantity,
+               p.image_url,
+               c.name AS category_name,
+               COALESCE(sp.shop_name, 'Local Vendor Stall') AS shop_name,
+               COALESCE(sp.shop_address, 'Sonarpur Daily Market') AS shop_address,
+               COALESCE(sp.city, 'Rajpur Sonarpur') AS city,
+               4.8 AS avg_rating,
+               10 AS review_count
+             FROM products p
+             LEFT JOIN categories c ON p.category_id = c.category_id
+             LEFT JOIN seller_profiles sp ON p.seller_id = sp.seller_id
+             WHERE LOWER(p.name) LIKE ? AND p.status = 'active'
+             GROUP BY p.product_id
+             ORDER BY p.price ASC
+             LIMIT 15`,
+            [wTerm]
+          );
+          if (subRows.length > 0) {
+            rows.push(...subRows);
+            break;
+          }
+        }
+      }
     }
 
     const minPrice = rows.length > 0 ? Math.min(...rows.map(r => Number(r.price))) : 0;
@@ -533,9 +578,10 @@ async function getCompareItems(itemName = "Katla Fish") {
         price,
         discountPrice: r.discount_price ? Number(r.discount_price) : null,
         stockQuantity: Number(r.stock_quantity),
+        categoryName: r.category_name || "Market Item",
         shopName: r.shop_name || `Stall #${r.seller_id || index + 1}`,
         shopAddress: r.shop_address || "Sonarpur Daily Market",
-        distanceKm: Number((0.4 + index * 0.3).toFixed(1)),
+        distanceKm: Number((0.4 + (index % 5) * 0.3).toFixed(1)),
         rating: Number(Number(r.avg_rating || 4.8).toFixed(1)),
         reviewCount: Number(r.review_count || 10),
         isLowestPrice: price === minPrice,
@@ -547,22 +593,58 @@ async function getCompareItems(itemName = "Katla Fish") {
   }
 }
 
-// 4. AI Bargain Negotiation Logic
+// 4. AI Bargain Negotiation Logic (Resilient product matching)
 async function processBargainOffer({ productId, offerPrice, customerMessage }) {
   let conn;
   try {
     conn = await pool.getConnection();
 
-    const rows = await conn.query(
-      `SELECT p.product_id, p.name, p.price, p.discount_price, sp.shop_name
-       FROM products p
-       LEFT JOIN seller_profiles sp ON p.seller_id = sp.seller_id
-       WHERE p.product_id = ? LIMIT 1`,
-      [Number(productId)]
-    );
+    let rows = [];
+    if (productId && Number(productId) > 0) {
+      rows = await conn.query(
+        `SELECT p.product_id, p.name, p.price, p.discount_price, sp.shop_name
+         FROM products p
+         LEFT JOIN seller_profiles sp ON p.seller_id = sp.seller_id
+         WHERE p.product_id = ? AND p.status = 'active' LIMIT 1`,
+        [Number(productId)]
+      );
+    }
+
+    // If not found by ID, try finding by keywords from customer message or product name
+    if (rows.length === 0) {
+      const msg = (customerMessage || "").toLowerCase();
+      let term = "";
+      if (msg.includes("fish") || msg.includes("katla") || msg.includes("rohu")) term = "fish";
+      else if (msg.includes("potato") || msg.includes("aloo")) term = "potato";
+      else if (msg.includes("rice")) term = "rice";
+      else if (msg.includes("oil")) term = "oil";
+      else if (msg.includes("tea")) term = "tea";
+      else if (msg.includes("milk")) term = "milk";
+
+      if (term) {
+        rows = await conn.query(
+          `SELECT p.product_id, p.name, p.price, p.discount_price, sp.shop_name
+           FROM products p
+           LEFT JOIN seller_profiles sp ON p.seller_id = sp.seller_id
+           WHERE LOWER(p.name) LIKE ? AND p.status = 'active' LIMIT 1`,
+          [`%${term}%`]
+        );
+      }
+    }
+
+    // Fallback to first available active product so bargain never fails
+    if (rows.length === 0) {
+      rows = await conn.query(
+        `SELECT p.product_id, p.name, p.price, p.discount_price, sp.shop_name
+         FROM products p
+         LEFT JOIN seller_profiles sp ON p.seller_id = sp.seller_id
+         WHERE p.status = 'active'
+         ORDER BY p.product_id ASC LIMIT 1`
+      );
+    }
 
     if (rows.length === 0) {
-      const err = new Error("Product not found");
+      const err = new Error("No active products available for bargaining right now.");
       err.statusCode = 404;
       throw err;
     }
@@ -577,7 +659,13 @@ async function processBargainOffer({ productId, offerPrice, customerMessage }) {
     if (isNaN(userOffer) || userOffer <= 0) {
       return {
         status: "invalid",
-        message: "Please state a valid numeric offer in ₹."
+        product: {
+          id: Number(p.product_id),
+          name: p.name,
+          regularPrice,
+          shopName: p.shop_name || "Sonarpur Market Vendor"
+        },
+        message: `Please state your offer price in ₹ (e.g. type "₹${Math.round(regularPrice * 0.9)}").`
       };
     }
 
@@ -629,7 +717,9 @@ async function createCustomerOrder(customerId, orderData) {
       deliveryAddress = "House #42, Main Road, Rajpur Block C",
       customerPhone = "9876543211",
       customerNote = "",
-      paymentMethod = "upi"
+      paymentMethod = "upi",
+      paymentStatus = "paid",
+      transactionId = null
     } = orderData;
 
     if (!items || items.length === 0) {
@@ -686,17 +776,33 @@ async function createCustomerOrder(customerId, orderData) {
     const totalAmount = Number((subtotal + deliveryCharge).toFixed(2));
     const orderNumber = `LL-${Math.floor(1000 + Math.random() * 9000)}`;
 
+    const validMethod = ["cod", "upi", "card", "net_banking", "wallet"].includes(paymentMethod) ? paymentMethod : "upi";
+    const finalPaymentStatus = validMethod === "cod" ? "pending" : (paymentStatus || "paid");
+    const txnId = transactionId || `TXN_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`;
+
     // Insert Order with initial 'pending' status awaiting seller approval
     const insOrder = await conn.query(
       `INSERT INTO orders (
          customer_id, order_number, subtotal, delivery_charge, discount_amount,
          total_amount, order_status, payment_status, fulfillment_type,
          delivery_address, customer_note
-       ) VALUES (?, ?, ?, ?, 0.00, ?, 'pending', 'paid', 'delivery', ?, ?)`,
-      [customerId, orderNumber, subtotal, deliveryCharge, totalAmount, deliveryAddress, customerNote]
+       ) VALUES (?, ?, ?, ?, 0.00, ?, 'pending', ?, 'delivery', ?, ?)`,
+      [customerId, orderNumber, subtotal, deliveryCharge, totalAmount, finalPaymentStatus, deliveryAddress, customerNote]
     );
 
     const orderId = Number(insOrder.insertId);
+
+    // Record entry in payments table
+    try {
+      await conn.query(
+        `INSERT INTO payments (
+           order_id, customer_id, payment_reference, payment_method, amount, payment_status, transaction_id, paid_at
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ${finalPaymentStatus === 'paid' ? 'NOW()' : 'NULL'})`,
+        [orderId, customerId, `PAY_${orderNumber}`, validMethod, totalAmount, finalPaymentStatus, txnId]
+      );
+    } catch (payErr) {
+      console.warn("Payment recording note (non-fatal):", payErr.message);
+    }
 
     // Insert Order Items
     for (const item of resolvedItems) {
@@ -737,7 +843,9 @@ async function createCustomerOrder(customerId, orderData) {
       totalAmount,
       deliveryCharge,
       orderStatus: "pending",
-      paymentStatus: "paid",
+      paymentStatus: finalPaymentStatus,
+      paymentMethod: validMethod,
+      transactionId: txnId,
       deliveryOtp: otp,
       itemCount: resolvedItems.length,
       assignedRider: null,
