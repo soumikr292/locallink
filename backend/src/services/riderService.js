@@ -398,10 +398,17 @@ async function acceptDelivery(partnerId, deliveryId) {
     conn = await pool.getConnection();
     await conn.beginTransaction();
 
-    const dCheck = await conn.query(
-      "SELECT delivery_id, order_id, delivery_partner_id, delivery_status FROM deliveries WHERE delivery_id = ? OR order_id = ? LIMIT 1",
-      [Number(deliveryId), Number(deliveryId)]
+    let dCheck = await conn.query(
+      "SELECT delivery_id, order_id, delivery_partner_id, delivery_status FROM deliveries WHERE delivery_id = ? LIMIT 1",
+      [Number(deliveryId)]
     );
+
+    if (dCheck.length === 0) {
+      dCheck = await conn.query(
+        "SELECT delivery_id, order_id, delivery_partner_id, delivery_status FROM deliveries WHERE order_id = ? LIMIT 1",
+        [Number(deliveryId)]
+      );
+    }
 
     if (dCheck.length === 0) {
       const err = new Error("Delivery order not found");
@@ -412,12 +419,12 @@ async function acceptDelivery(partnerId, deliveryId) {
     const actualDeliveryId = Number(dCheck[0].delivery_id);
     const orderId = Number(dCheck[0].order_id);
 
-    // Concurrency-safe atomic update: only succeeds if delivery_partner_id IS NULL and status is 'pending'
+    // Concurrency-safe atomic update: only succeeds if delivery_partner_id is null/unassigned and status is 'pending'
     const updateRes = await conn.query(
       `UPDATE deliveries
        SET delivery_partner_id = ?, delivery_status = 'assigned'
        WHERE delivery_id = ?
-         AND delivery_partner_id IS NULL
+         AND (delivery_partner_id IS NULL OR delivery_partner_id = 0)
          AND delivery_status = 'pending'`,
       [Number(partnerId), actualDeliveryId]
     );
@@ -458,10 +465,17 @@ async function updateDeliveryStatus(partnerId, deliveryId, status, otp) {
     conn = await pool.getConnection();
     await conn.beginTransaction();
 
-    const dRows = await conn.query(
-      "SELECT delivery_id, order_id, delivery_otp, delivery_status FROM deliveries WHERE (delivery_id = ? OR order_id = ?) AND (delivery_partner_id = ? OR delivery_partner_id IS NULL) LIMIT 1",
-      [Number(deliveryId), Number(deliveryId), Number(partnerId)]
+    let dRows = await conn.query(
+      "SELECT delivery_id, order_id, delivery_otp, delivery_status FROM deliveries WHERE delivery_id = ? AND (delivery_partner_id = ? OR delivery_partner_id IS NULL) LIMIT 1",
+      [Number(deliveryId), Number(partnerId)]
     );
+
+    if (dRows.length === 0) {
+      dRows = await conn.query(
+        "SELECT delivery_id, order_id, delivery_otp, delivery_status FROM deliveries WHERE order_id = ? AND (delivery_partner_id = ? OR delivery_partner_id IS NULL) LIMIT 1",
+        [Number(deliveryId), Number(partnerId)]
+      );
+    }
 
     if (dRows.length === 0) {
       const err = new Error("Delivery not found or not assigned to this rider");
@@ -542,10 +556,16 @@ async function updateRiderLocation(partnerId, latitude, longitude, deliveryId) {
     );
 
     if (deliveryId) {
-      const dCheck = await conn.query(
-        "SELECT delivery_id FROM deliveries WHERE delivery_id = ? OR order_id = ? LIMIT 1",
-        [Number(deliveryId), Number(deliveryId)]
+      let dCheck = await conn.query(
+        "SELECT delivery_id FROM deliveries WHERE delivery_id = ? LIMIT 1",
+        [Number(deliveryId)]
       );
+      if (dCheck.length === 0) {
+        dCheck = await conn.query(
+          "SELECT delivery_id FROM deliveries WHERE order_id = ? LIMIT 1",
+          [Number(deliveryId)]
+        );
+      }
       if (dCheck.length > 0) {
         const actualDeliveryId = Number(dCheck[0].delivery_id);
         await conn.query(
