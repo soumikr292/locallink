@@ -19,6 +19,30 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
+    :root {
+      color-scheme: dark;
+    }
+
+    /* Force all text inputs to render bright, crisp white text across all OS and browsers */
+    input, select, textarea {
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+    }
+    input::placeholder, textarea::placeholder {
+      color: #94a3b8 !important;
+      -webkit-text-fill-color: #94a3b8 !important;
+      opacity: 1 !important;
+    }
+
+    #marketSearchInput, #mobileMarketSearchInput {
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+      background-color: #020617 !important;
+      font-size: 15px !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.015em !important;
+    }
+
     /* Custom scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #020617; }
@@ -87,51 +111,84 @@
         </div>
       </div>
 
-      <!-- Desktop & Tablet Search Bar (Bigger, longer, clear visibility) -->
-      <div class="flex-1 max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-2 sm:mx-4 hidden md:block relative">
+      <!-- Desktop & Tablet Search Bar (Bigger, perfectly centered, prominent) -->
+      <div class="flex-1 min-w-[240px] max-w-3xl mx-2 sm:mx-4 hidden md:block relative">
         <div class="relative flex items-center">
           <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400 text-sm sm:text-base pointer-events-none transition-colors"></i>
-          <input type="text" id="marketSearchInput" oninput="handleMarketSearch(this.value)" onkeydown="if(event.key==='Enter')handleMarketSearchSubmit()" placeholder="Search fresh fish, potatoes, oil, rice, turmeric, or stall name..." class="w-full bg-slate-950/95 border border-slate-700/80 hover:border-slate-600 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 text-sm sm:text-base font-semibold text-white px-4 py-2.5 sm:py-3 pl-11 sm:pl-12 pr-12 rounded-2xl shadow-inner placeholder-slate-400 tracking-wide transition-all outline-none">
-          <button type="button" id="marketSearchClearBtn" onclick="clearMarketSearch()" class="hidden absolute right-3.5 w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold transition-all shadow" title="Clear search">✕</button>
+          <input type="text" id="marketSearchInput" oninput="handleMarketSearch(this.value)" onkeydown="if(event.key==='Enter')handleMarketSearchSubmit()" placeholder="Search fresh fish, country potatoes, oil, rice, turmeric, or stall name..." style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; background-color: #020617 !important;" class="w-full text-white placeholder-slate-400 text-sm sm:text-base font-semibold px-4 py-2.5 sm:py-3 pl-11 sm:pl-12 pr-12 rounded-2xl bg-slate-950 border border-slate-700/80 hover:border-slate-600 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 outline-none shadow-inner tracking-wide transition-all caret-emerald-400">
+          <button type="button" id="marketSearchClearBtn" onclick="clearMarketSearch()" class="hidden absolute right-3.5 w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white flex items-center justify-center text-xs font-bold transition-all shadow" title="Clear search">✕</button>
         </div>
         <!-- Live Instant Suggestions Dropdown -->
         <div id="marketSearchDropdown" class="hidden absolute left-0 right-0 top-full mt-2 bg-slate-900/98 backdrop-blur-xl border border-slate-700/90 rounded-2xl shadow-2xl overflow-hidden z-50 divide-y divide-slate-800/80"></div>
       </div>
 
-      <!-- Header Actions with Built-In Role Switcher & Account -->
+      <!-- Header Actions with Built-In Role Switcher (Housing Seller, Rider, Customer, Admin) -->
       <div class="flex items-center gap-1.5 sm:gap-2.5 text-xs font-bold flex-shrink-0">
-        <!-- Desktop Tabs (hidden on < md because Mobile Bottom Tab Bar is active) -->
-        <button onclick="switchCustomerPage('home')" id="nav-btn-home" class="hidden md:flex px-3 py-2 bg-emerald-600 text-white rounded-xl items-center gap-1.5 transition-all" title="Catalog">
+        <!-- Desktop Tabs (Visible on Extra Large Screens, Bottom Tab Bar for Mobile) -->
+        <button onclick="switchCustomerPage('home')" id="nav-btn-home" class="hidden 2xl:flex px-3 py-2 bg-emerald-600 text-white rounded-xl items-center gap-1.5 transition-all" title="Catalog">
           <i class="fa-solid fa-house"></i> <span>Home</span>
         </button>
-        <button onclick="switchCustomerPage('compare')" id="nav-btn-compare" class="hidden md:flex px-3 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 rounded-xl items-center gap-1.5 transition-all">
+        <button onclick="switchCustomerPage('compare')" id="nav-btn-compare" class="hidden xl:flex px-3 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 rounded-xl items-center gap-1.5 transition-all" title="Price Comparison">
           <i class="fa-solid fa-scale-balanced"></i> <span>Compare</span>
         </button>
-        <button onclick="switchCustomerPage('bargain')" id="nav-btn-bargain" class="hidden md:flex px-3 py-2 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 rounded-xl items-center gap-1.5 transition-all">
+        <button onclick="switchCustomerPage('bargain')" id="nav-btn-bargain" class="hidden 2xl:flex px-3 py-2 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 rounded-xl items-center gap-1.5 transition-all" title="AI Bargain Agent">
           <i class="fa-solid fa-robot"></i> <span>AI Bargain</span>
         </button>
+        <button onclick="switchCustomerPage('orders')" id="nav-btn-orders" class="hidden xl:flex px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl items-center gap-1.5 transition-all" title="Order Tracking">
+          <i class="fa-solid fa-box-archive text-amber-400 text-sm"></i> <span>Orders</span>
+        </button>
+
+        <!-- Shopping Cart (Always visible with green item badge) -->
         <button onclick="switchCustomerPage('cart')" id="nav-btn-cart" class="flex px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl items-center gap-1.5 relative transition-all shadow-sm" title="View Shopping Cart">
           <i class="fa-solid fa-cart-shopping text-emerald-400 text-sm"></i> <span class="hidden sm:inline">Cart</span>
           <span id="cartCountBadge" class="w-4 h-4 bg-emerald-500 text-slate-950 rounded-full text-[9px] font-black flex items-center justify-center">0</span>
         </button>
-        <button onclick="switchCustomerPage('orders')" id="nav-btn-orders" class="hidden md:flex px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl items-center gap-1.5 transition-all">
-          <i class="fa-solid fa-box-archive text-amber-400 text-sm"></i> <span>Orders</span>
-        </button>
 
-        <!-- Direct Seller & Rider Desktop Pills -->
-        <a href="seller.html" onclick="window.LocalLinkApp.goToRole('seller');return false;" class="hidden xl:inline-flex px-2.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-xl text-[11px] items-center gap-1 transition-all" title="Seller Hub - Shopkeeper Portal">
-          <i class="fa-solid fa-store text-amber-400"></i> <span>Seller</span>
-        </a>
-        <a href="delivery.html" onclick="window.LocalLinkApp.goToRole('rider');return false;" class="hidden xl:inline-flex px-2.5 py-1.5 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/30 rounded-xl text-[11px] items-center gap-1 transition-all" title="Delivery Partner & Rider Console">
-          <i class="fa-solid fa-motorcycle text-sky-400"></i> <span>Rider</span>
-        </a>
+        <!-- Built-in Role Switcher Button (Houses Customer, Seller Hub, Rider Console, Admin) -->
+        <div class="relative group" id="roleSwitcherContainer">
+          <button type="button" data-ll-role-trigger="true" onclick="toggleRoleDropdown(event)" class="px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-950 hover:bg-slate-800 border border-emerald-500/50 hover:border-emerald-400 text-emerald-300 hover:text-emerald-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm flex-shrink-0" title="Switch Portal (Customer, Seller Hub, Rider Console, Admin)">
+            <span id="llHeaderConnectionDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <i class="fa-solid fa-layer-group text-emerald-400"></i>
+            <span class="hidden sm:inline">Switch Role</span>
+            <span class="sm:hidden">Roles</span>
+            <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 transition-transform group-hover:rotate-180"></i>
+          </button>
 
-        <!-- Built-in Role Switcher Pill (Always visible on Mobile + Desktop) -->
-        <button type="button" data-ll-role-trigger="true" onclick="window.LocalLinkApp.openRoleSwitcher()" class="px-2.5 py-1.5 bg-slate-950 hover:bg-slate-800 border border-emerald-500/40 text-emerald-300 rounded-xl text-[11px] font-bold flex items-center gap-1.5 transition-all" title="Switch Role (Customer / Seller / Rider / Admin) & Server">
-          <span id="llHeaderConnectionDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-          <i class="fa-solid fa-layer-group"></i>
-          <span>Switch Role</span>
-        </button>
+          <!-- Quick Role Dropdown Menu -->
+          <div id="quickRoleDropdown" class="hidden group-hover:block absolute right-0 top-full mt-1.5 w-60 bg-slate-900/95 backdrop-blur-xl border border-slate-700/90 rounded-2xl shadow-2xl p-2 z-50 space-y-1">
+            <a href="customer.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-bold text-xs">
+              <i class="fa-solid fa-bag-shopping text-emerald-400 w-4"></i>
+              <div>
+                <span class="block text-white">Customer App</span>
+                <span class="text-[9px] text-emerald-400 font-normal">Active (Local Buyer)</span>
+              </div>
+            </a>
+            <a href="seller.html" onclick="window.LocalLinkApp.goToRole('seller');return false;" class="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 font-bold text-xs transition-colors">
+              <i class="fa-solid fa-store text-amber-400 w-4"></i>
+              <div>
+                <span class="block text-white">Seller Shopkeeper Hub</span>
+                <span class="text-[9px] text-slate-400 font-normal">Manage inventory & orders</span>
+              </div>
+            </a>
+            <a href="delivery.html" onclick="window.LocalLinkApp.goToRole('rider');return false;" class="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 font-bold text-xs transition-colors">
+              <i class="fa-solid fa-motorcycle text-sky-400 w-4"></i>
+              <div>
+                <span class="block text-white">Delivery Partner (Rider)</span>
+                <span class="text-[9px] text-slate-400 font-normal">Dispatch & OTP delivery</span>
+              </div>
+            </a>
+            <a href="admin.html" onclick="window.LocalLinkApp.goToRole('admin');return false;" class="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 font-bold text-xs transition-colors">
+              <i class="fa-solid fa-shield-halved text-purple-400 w-4"></i>
+              <div>
+                <span class="block text-white">Admin Control Center</span>
+                <span class="text-[9px] text-slate-400 font-normal">Municipal oversight</span>
+              </div>
+            </a>
+            <button type="button" onclick="window.LocalLinkApp.openRoleSwitcher()" class="w-full text-center text-[10px] text-slate-400 hover:text-emerald-400 py-1.5 border-t border-slate-800 font-bold block transition-colors">
+              <i class="fa-solid fa-gear mr-1"></i> Role & Server Settings
+            </button>
+          </div>
+        </div>
 
         <!-- Customer Account & Profile Button -->
         <button onclick="openCustomerProfileModal()" id="customerProfileNavBtn" class="flex items-center gap-1.5 pl-1 pr-2 py-1 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/40 rounded-xl text-slate-200 transition-all" title="View Profile & Account Details">
@@ -157,8 +214,8 @@
       <div class="relative">
         <div class="relative flex items-center">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-slate-400 text-sm pointer-events-none"></i>
-          <input type="text" id="mobileMarketSearchInput" oninput="handleMarketSearch(this.value)" onkeydown="if(event.key==='Enter')handleMarketSearchSubmit()" placeholder="Search fresh fish, potatoes, oil, rice, stalls..." class="w-full bg-slate-950/95 border border-slate-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 text-sm font-semibold text-white px-4 py-2.5 pl-10 pr-10 rounded-2xl shadow-inner placeholder-slate-400 tracking-wide outline-none">
-          <button type="button" id="mobileMarketSearchClearBtn" onclick="clearMarketSearch()" class="hidden absolute right-2.5 w-6 h-6 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold transition-all shadow" title="Clear search">✕</button>
+          <input type="text" id="mobileMarketSearchInput" oninput="handleMarketSearch(this.value)" onkeydown="if(event.key==='Enter')handleMarketSearchSubmit()" placeholder="Search fresh fish, country potatoes, oil, rice, stalls..." style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; background-color: #020617 !important;" class="w-full text-white placeholder-slate-400 text-sm font-semibold px-4 py-3 pl-11 pr-11 rounded-2xl bg-slate-950 border border-slate-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 shadow-inner outline-none tracking-wide caret-emerald-400">
+          <button type="button" id="mobileMarketSearchClearBtn" onclick="clearMarketSearch()" class="hidden absolute right-2.5 w-6 h-6 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white flex items-center justify-center text-xs font-bold transition-all shadow" title="Clear search">✕</button>
         </div>
         <!-- Mobile Dropdown -->
         <div id="mobileMarketSearchDropdown" class="hidden absolute left-0 right-0 top-full mt-2 bg-slate-900/98 backdrop-blur-xl border border-slate-700/90 rounded-2xl shadow-2xl overflow-hidden z-50 divide-y divide-slate-800/80"></div>
@@ -1887,6 +1944,32 @@
           !e.target.closest("#marketSearchDropdown") && 
           !e.target.closest("#mobileMarketSearchDropdown")) {
         hideSearchDropdowns();
+      }
+    });
+
+    // Role Switcher Dropdown & Modal Toggle
+    function toggleRoleDropdown(e) {
+      if (e) e.stopPropagation();
+      const dropdown = document.getElementById("quickRoleDropdown");
+      if (window.innerWidth < 768) {
+        if (window.LocalLinkApp && window.LocalLinkApp.openRoleSwitcher) {
+          window.LocalLinkApp.openRoleSwitcher();
+        }
+      } else {
+        if (dropdown) {
+          dropdown.classList.toggle("hidden");
+        } else if (window.LocalLinkApp && window.LocalLinkApp.openRoleSwitcher) {
+          window.LocalLinkApp.openRoleSwitcher();
+        }
+      }
+    }
+
+    // Close role dropdown on click outside
+    document.addEventListener("click", (e) => {
+      const container = document.getElementById("roleSwitcherContainer");
+      const dropdown = document.getElementById("quickRoleDropdown");
+      if (dropdown && container && !container.contains(e.target)) {
+        dropdown.classList.add("hidden");
       }
     });
 
