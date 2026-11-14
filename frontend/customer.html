@@ -80,8 +80,8 @@
         <button onclick="switchCustomerPage('bargain')" id="nav-btn-bargain" class="hidden md:flex px-3 py-2 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 rounded-xl items-center gap-1.5 transition-all">
           <i class="fa-solid fa-robot"></i> <span>AI Bargain</span>
         </button>
-        <button onclick="switchCustomerPage('cart')" id="nav-btn-cart" class="hidden md:flex px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl items-center gap-1.5 relative transition-all">
-          <i class="fa-solid fa-cart-shopping text-emerald-400 text-sm"></i> <span>Cart</span>
+        <button onclick="switchCustomerPage('cart')" id="nav-btn-cart" class="flex px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl items-center gap-1.5 relative transition-all shadow-sm" title="View Shopping Cart">
+          <i class="fa-solid fa-cart-shopping text-emerald-400 text-sm"></i> <span class="hidden sm:inline">Cart</span>
           <span id="cartCountBadge" class="w-4 h-4 bg-emerald-500 text-slate-950 rounded-full text-[9px] font-black flex items-center justify-center">0</span>
         </button>
         <button onclick="switchCustomerPage('orders')" id="nav-btn-orders" class="hidden md:flex px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl items-center gap-1.5 transition-all">
@@ -1021,6 +1021,33 @@
     </div>
   </footer>
 
+  <!-- ============================================== -->
+  <!-- 🛒 FLOATING STICKY QUICK CART BAR              -->
+  <!-- ============================================== -->
+  <div id="floatingQuickCartBar" class="hidden fixed bottom-16 md:bottom-6 left-3 right-3 md:left-auto md:right-8 md:max-w-md z-40 transition-all duration-300">
+    <div onclick="switchCustomerPage('cart')" class="cursor-pointer bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-2xl p-3.5 sm:px-5 sm:py-3.5 shadow-2xl flex items-center justify-between border border-emerald-400/40 backdrop-blur-md transition-all active:scale-[0.99] group">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-slate-950/30 flex items-center justify-center text-lg relative flex-shrink-0">
+          <i class="fa-solid fa-cart-shopping text-white"></i>
+          <span id="floatingCartCount" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-amber-400 text-slate-950 rounded-full text-[10px] font-black flex items-center justify-center shadow">0</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span id="floatingCartItemsText" class="font-bold text-xs text-emerald-100">0 Items</span>
+            <span class="text-emerald-200 text-xs">•</span>
+            <span id="floatingCartTotalText" class="font-black text-sm text-white">₹ 0</span>
+          </div>
+          <span class="text-[10px] text-emerald-100/80 block">Tap to review cart & express checkout</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 bg-slate-950/25 px-3 py-1.5 rounded-xl text-xs font-black tracking-wide group-hover:bg-slate-950/40 transition-all flex-shrink-0">
+        <span>View Cart</span>
+        <i class="fa-solid fa-arrow-right text-[11px] group-hover:translate-x-1 transition-transform"></i>
+      </div>
+    </div>
+  </div>
+
   <!-- Mobile Bottom App Navigation Bar (Visible on Phones & Tablets) -->
   <nav class="md:hidden fixed bottom-0 inset-x-0 bg-slate-950/95 backdrop-blur-md border-t border-slate-800 z-40 grid grid-cols-5 text-[10px] font-bold ll-safe-bottom shadow-2xl">
     <button onclick="switchCustomerPage('home')" id="mob-nav-home" class="mob-nav-btn py-2.5 flex flex-col items-center justify-center gap-1 text-emerald-400 transition-colors">
@@ -1243,6 +1270,7 @@
       if (pageId === 'cart') renderCart();
       else if (pageId === 'orders') loadCustomerOrders();
       else if (pageId === 'compare') loadCompareItems();
+      updateFloatingCartBar();
     }
 
     // ==============================================
@@ -1323,13 +1351,13 @@
                   </button>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-2 gap-2 items-center">
                   <button onclick="openBargainForProduct(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price})" class="py-2 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all">
                     <i class="fa-solid fa-robot"></i> AI Bargain
                   </button>
-                  <button onclick="addToCart(${p.id})" class="py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all">
-                    <i class="fa-solid fa-plus"></i> Add
-                  </button>
+                  <div id="product-action-container-${p.id}" class="w-full">
+                    ${renderProductAddControlHtml(p.id)}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1515,9 +1543,9 @@
                 <button onclick="openBargainForProduct(${s.productId}, '${s.name.replace(/'/g, "\\'")}', ${s.price})" class="px-3 py-1.5 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 font-bold rounded-xl text-xs flex items-center gap-1 transition-all" title="Bargain autonomously with AI">
                   <i class="fa-solid fa-robot"></i> AI Bargain
                 </button>
-                <button onclick="addToCart(${s.productId})" class="px-3.5 py-1.5 ${s.isLowestPrice ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-slate-800 hover:bg-slate-700'} text-white font-bold rounded-xl text-xs transition-all flex items-center gap-1">
-                  <i class="fa-solid fa-cart-plus"></i> Buy Here
-                </button>
+                <div id="compare-action-container-${s.productId}" data-is-lowest="${s.isLowestPrice}">
+                  ${renderCompareAddControlHtml(s.productId, s.isLowestPrice)}
+                </div>
               </div>
             </div>
           </div>
@@ -1673,6 +1701,153 @@
     // ==============================================
     // 4. CART & SECURE CHECKOUT
     // ==============================================
+    function getProductCartQuantity(productId) {
+      const pid = Number(productId);
+      const item = cart.find(i => Number(i.productId) === pid);
+      return item ? Number(item.quantity) : 0;
+    }
+
+    function renderProductAddControlHtml(productId) {
+      const pid = Number(productId);
+      const qty = getProductCartQuantity(pid);
+      if (qty <= 0) {
+        return `
+          <button onclick="changeProductCartQty(${pid}, 1, event)" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95" title="Add to Cart">
+            <i class="fa-solid fa-plus text-[10px]"></i>
+            <span>ADD</span>
+          </button>
+        `;
+      } else {
+        return `
+          <div class="flex items-center justify-between bg-emerald-600 rounded-xl overflow-hidden shadow-lg border border-emerald-500 font-black text-xs h-[34px]">
+            <button onclick="changeProductCartQty(${pid}, -1, event)" class="w-9 h-full flex items-center justify-center bg-emerald-700 hover:bg-emerald-800 text-white transition-all active:scale-90" title="Decrease Quantity">
+              <i class="fa-solid fa-minus text-[11px]"></i>
+            </button>
+            <span class="px-2 text-white font-mono font-black text-xs text-center flex-1 select-none">${qty}</span>
+            <button onclick="changeProductCartQty(${pid}, 1, event)" class="w-9 h-full flex items-center justify-center bg-emerald-700 hover:bg-emerald-800 text-white transition-all active:scale-90" title="Increase Quantity">
+              <i class="fa-solid fa-plus text-[11px]"></i>
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function renderCompareAddControlHtml(productId, isLowestPrice = false) {
+      const pid = Number(productId);
+      const qty = getProductCartQuantity(pid);
+      if (qty <= 0) {
+        return `
+          <button onclick="changeProductCartQty(${pid}, 1, event)" class="px-3.5 py-1.5 ${isLowestPrice ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-slate-800 hover:bg-slate-700'} text-white font-bold rounded-xl text-xs transition-all flex items-center gap-1 active:scale-95" title="Add to Cart">
+            <i class="fa-solid fa-cart-plus"></i> Buy Here
+          </button>
+        `;
+      } else {
+        return `
+          <div class="flex items-center justify-between bg-emerald-600 rounded-xl overflow-hidden shadow border border-emerald-500 font-black text-xs h-8">
+            <button onclick="changeProductCartQty(${pid}, -1, event)" class="w-7 h-full flex items-center justify-center bg-emerald-700 hover:bg-emerald-800 text-white active:scale-90" title="Decrease Quantity">
+              <i class="fa-solid fa-minus text-[10px]"></i>
+            </button>
+            <span class="px-2 text-white font-mono font-black text-xs min-w-[20px] text-center select-none">${qty}</span>
+            <button onclick="changeProductCartQty(${pid}, 1, event)" class="w-7 h-full flex items-center justify-center bg-emerald-700 hover:bg-emerald-800 text-white active:scale-90" title="Increase Quantity">
+              <i class="fa-solid fa-plus text-[10px]"></i>
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function refreshAllProductAddControls(productId = null) {
+      if (productId) {
+        const el = document.getElementById(`product-action-container-${productId}`);
+        if (el) el.innerHTML = renderProductAddControlHtml(productId);
+
+        const cmpEl = document.getElementById(`compare-action-container-${productId}`);
+        if (cmpEl) {
+          const isLowest = cmpEl.getAttribute("data-is-lowest") === "true";
+          cmpEl.innerHTML = renderCompareAddControlHtml(productId, isLowest);
+        }
+      } else {
+        document.querySelectorAll("[id^='product-action-container-']").forEach(container => {
+          const id = container.id.replace("product-action-container-", "");
+          container.innerHTML = renderProductAddControlHtml(id);
+        });
+        document.querySelectorAll("[id^='compare-action-container-']").forEach(container => {
+          const id = container.id.replace("compare-action-container-", "");
+          const isLowest = container.getAttribute("data-is-lowest") === "true";
+          container.innerHTML = renderCompareAddControlHtml(id, isLowest);
+        });
+      }
+    }
+
+    function changeProductCartQty(productId, delta, event) {
+      if (event && event.stopPropagation) event.stopPropagation();
+
+      const pid = Number(productId);
+      const existingIndex = cart.findIndex(i => Number(i.productId) === pid);
+
+      if (existingIndex > -1) {
+        cart[existingIndex].quantity += delta;
+        if (cart[existingIndex].quantity <= 0) {
+          const removedName = cart[existingIndex].name;
+          cart.splice(existingIndex, 1);
+          showToast(`Removed "${removedName}" from cart`);
+        } else {
+          if (delta > 0) {
+            showToast(`Updated "${cart[existingIndex].name}" (Qty: ${cart[existingIndex].quantity})`);
+          }
+        }
+      } else if (delta > 0) {
+        const product = currentProducts.find(p => Number(p.id) === pid);
+        const name = product ? product.name : "Local Market Item";
+        const shopName = product ? product.shopName : "Sonarpur Stall";
+        const unitPrice = product ? Number(product.price) : 95;
+
+        cart.push({
+          productId: pid,
+          name,
+          shopName,
+          unitPrice,
+          agreedPrice: unitPrice,
+          quantity: delta
+        });
+        showToast(`Added "${name}" to cart (Qty: 1)!`);
+      }
+
+      saveCartToStorage();
+      updateCartBadge();
+      updateFloatingCartBar();
+      refreshAllProductAddControls(pid);
+
+      const cartPage = document.getElementById("page-cart");
+      if (cartPage && !cartPage.classList.contains("hidden")) {
+        renderCart();
+      }
+    }
+
+    function updateFloatingCartBar() {
+      const bar = document.getElementById("floatingQuickCartBar");
+      if (!bar) return;
+
+      const totalQty = cart.reduce((acc, i) => acc + (Number(i.quantity) || 0), 0);
+      const subtotal = cart.reduce((sum, item) => sum + ((Number(item.agreedPrice) || Number(item.unitPrice) || 0) * Number(item.quantity)), 0);
+
+      const cartPage = document.getElementById("page-cart");
+      const isCartPageActive = cartPage && !cartPage.classList.contains("hidden");
+
+      if (totalQty > 0 && !isCartPageActive) {
+        bar.classList.remove("hidden");
+        const countBadge = document.getElementById("floatingCartCount");
+        const itemsText = document.getElementById("floatingCartItemsText");
+        const totalText = document.getElementById("floatingCartTotalText");
+
+        if (countBadge) countBadge.textContent = totalQty;
+        if (itemsText) itemsText.textContent = `${totalQty} ${totalQty === 1 ? 'Item' : 'Items'} in Cart`;
+        if (totalText) totalText.textContent = `₹ ${subtotal}`;
+      } else {
+        bar.classList.add("hidden");
+      }
+    }
+
     function loadCartFromStorage() {
       try {
         const saved = localStorage.getItem("locallinkCart");
@@ -1681,58 +1856,75 @@
         cart = [];
       }
       updateCartBadge();
+      updateFloatingCartBar();
     }
 
     function saveCartToStorage() {
       localStorage.setItem("locallinkCart", JSON.stringify(cart));
       updateCartBadge();
+      updateFloatingCartBar();
     }
 
     function updateCartBadge() {
       const badge = document.getElementById("cartCountBadge");
       const badgeMob = document.getElementById("cartCountBadgeMobile");
-      const totalQty = cart.reduce((acc, i) => acc + i.quantity, 0);
+      const totalQty = cart.reduce((acc, i) => acc + (Number(i.quantity) || 0), 0);
       if (badge) badge.textContent = totalQty;
       if (badgeMob) badgeMob.textContent = totalQty;
     }
 
     function addToCart(productId, agreedPrice = null) {
-      const product = currentProducts.find(p => p.id === productId);
+      const pid = Number(productId);
+      const product = currentProducts.find(p => Number(p.id) === pid);
       const name = product ? product.name : "Local Market Item";
       const shopName = product ? product.shopName : "Sonarpur Stall";
-      const unitPrice = agreedPrice !== null ? agreedPrice : (product ? product.price : 95);
+      const unitPrice = product ? Number(product.price) : 95;
+      const finalPrice = agreedPrice !== null ? Number(agreedPrice) : unitPrice;
 
-      const existingIndex = cart.findIndex(i => i.productId === productId && i.agreedPrice === agreedPrice);
+      const existingIndex = cart.findIndex(i => Number(i.productId) === pid);
       if (existingIndex > -1) {
         cart[existingIndex].quantity += 1;
+        if (agreedPrice !== null) cart[existingIndex].agreedPrice = finalPrice;
       } else {
         cart.push({
-          productId,
+          productId: pid,
           name,
           shopName,
           unitPrice,
-          agreedPrice,
+          agreedPrice: finalPrice,
           quantity: 1
         });
       }
 
       saveCartToStorage();
+      updateCartBadge();
+      updateFloatingCartBar();
+      refreshAllProductAddControls(pid);
       showToast(`Added "${name}" to your cart!`);
     }
 
     function updateCartItemQty(index, delta) {
       if (!cart[index]) return;
+      const pid = cart[index].productId;
       cart[index].quantity += delta;
       if (cart[index].quantity <= 0) {
         cart.splice(index, 1);
       }
       saveCartToStorage();
+      updateCartBadge();
+      updateFloatingCartBar();
+      refreshAllProductAddControls(pid);
       renderCart();
     }
 
     function removeCartItem(index) {
+      if (!cart[index]) return;
+      const pid = cart[index].productId;
       cart.splice(index, 1);
       saveCartToStorage();
+      updateCartBadge();
+      updateFloatingCartBar();
+      refreshAllProductAddControls(pid);
       renderCart();
     }
 
@@ -1970,6 +2162,8 @@
 
           cart = [];
           saveCartToStorage();
+          refreshAllProductAddControls();
+          updateFloatingCartBar();
           renderCart();
           switchCustomerPage('orders');
           await loadCustomerOrders();
