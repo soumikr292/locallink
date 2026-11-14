@@ -373,9 +373,57 @@ async function getCustomerProducts({ category, search, locality, city, address, 
     }
 
     if (search && search.trim()) {
-      const q = `%${search.trim().toLowerCase()}%`;
-      conditions.push("(LOWER(p.name) LIKE ? OR LOWER(p.description) LIKE ? OR LOWER(sp.shop_name) LIKE ? OR LOWER(c.name) LIKE ?)");
-      params.push(q, q, q, q);
+      const synonymMap = {
+        mach: "fish",
+        macher: "fish",
+        alu: "potato",
+        aloo: "potato",
+        tel: "oil",
+        chal: "rice",
+        chawal: "rice",
+        dim: "egg",
+        deem: "egg",
+        murgi: "chicken",
+        ghee: "ghee",
+        noon: "salt",
+        lobon: "salt",
+        dal: "dal",
+        daal: "dal"
+      };
+
+      const rawSearch = search.trim().toLowerCase();
+      // Separate glued units like 1kg -> 1 kg, 500g -> 500 g, 1l -> 1 l, remove punctuation
+      const separated = rawSearch.replace(/(\d+)(kg|g|gm|l|ml|ltr)/gi, "$1 $2");
+      const cleanedSearch = separated.replace(/[()[\]{}.,+_-]/g, " ");
+      const words = cleanedSearch.split(/\s+/).filter(Boolean);
+
+      if (words.length > 0) {
+        for (const word of words) {
+          const synonym = synonymMap[word];
+          if (synonym) {
+            const q1 = `%${word}%`;
+            const q2 = `%${synonym}%`;
+            conditions.push(`(
+              LOWER(p.name) LIKE ? OR LOWER(p.name) LIKE ? OR
+              LOWER(COALESCE(p.description, '')) LIKE ? OR LOWER(COALESCE(p.description, '')) LIKE ? OR
+              LOWER(COALESCE(p.brand, '')) LIKE ? OR LOWER(COALESCE(p.brand, '')) LIKE ? OR
+              LOWER(COALESCE(sp.shop_name, '')) LIKE ? OR
+              LOWER(COALESCE(c.name, '')) LIKE ? OR LOWER(COALESCE(c.name, '')) LIKE ?
+            )`);
+            params.push(q1, q2, q1, q2, q1, q2, q1, q1, q2);
+          } else {
+            const q = `%${word}%`;
+            conditions.push(`(
+              LOWER(p.name) LIKE ? OR
+              LOWER(COALESCE(p.description, '')) LIKE ? OR
+              LOWER(COALESCE(p.brand, '')) LIKE ? OR
+              LOWER(COALESCE(sp.shop_name, '')) LIKE ? OR
+              LOWER(COALESCE(c.name, '')) LIKE ?
+            )`);
+            params.push(q, q, q, q, q);
+          }
+        }
+      }
     }
 
     const whereSql = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
