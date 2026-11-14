@@ -686,13 +686,13 @@ async function createCustomerOrder(customerId, orderData) {
     const totalAmount = Number((subtotal + deliveryCharge).toFixed(2));
     const orderNumber = `LL-${Math.floor(1000 + Math.random() * 9000)}`;
 
-    // Insert Order
+    // Insert Order with initial 'pending' status awaiting seller approval
     const insOrder = await conn.query(
       `INSERT INTO orders (
          customer_id, order_number, subtotal, delivery_charge, discount_amount,
          total_amount, order_status, payment_status, fulfillment_type,
          delivery_address, customer_note
-       ) VALUES (?, ?, ?, ?, 0.00, ?, 'confirmed', 'paid', 'delivery', ?, ?)`,
+       ) VALUES (?, ?, ?, ?, 0.00, ?, 'pending', 'paid', 'delivery', ?, ?)`,
       [customerId, orderNumber, subtotal, deliveryCharge, totalAmount, deliveryAddress, customerNote]
     );
 
@@ -709,27 +709,24 @@ async function createCustomerOrder(customerId, orderData) {
       );
     }
 
-    // Assign to active delivery rider Kamal Hossain (partner_id = 8 or first available)
-    let partnerId = 8;
-    const partnerCheck = await conn.query("SELECT delivery_partner_id FROM delivery_partners WHERE verification_status = 'verified' LIMIT 1");
-    if (partnerCheck.length > 0) {
-      partnerId = Number(partnerCheck[0].delivery_partner_id);
-    }
-
     // Get seller shop address
     const sp = await conn.query("SELECT shop_name, shop_address FROM seller_profiles WHERE seller_id = ? LIMIT 1", [primarySellerId]);
-    const pickupAddr = sp.length > 0 ? `${sp[0].shop_name}, ${sp[0].shop_address || 'Sonarpur Market'}` : "Sonarpur Central Hub";
+    const shopName = sp.length > 0 && sp[0].shop_name ? sp[0].shop_name : "Sonarpur Central Hub";
+    const shopAddress = sp.length > 0 && sp[0].shop_address ? sp[0].shop_address : "Sonarpur Market";
+    const pickupAddr = `${shopName}, ${shopAddress}`;
+    const pickupLat = 22.4390;
+    const pickupLng = 88.3965;
     const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
 
-    // Insert Deliveries entry
+    // Insert Deliveries entry as unassigned ('pending') awaiting seller approval and rider pickup
     await conn.query(
       `INSERT INTO deliveries (
          order_id, delivery_partner_id, pickup_address, customer_address,
          customer_phone, delivery_status, pickup_latitude, pickup_longitude,
          customer_latitude, customer_longitude, delivery_instructions,
          estimated_distance_km, estimated_duration_minutes, delivery_otp
-       ) VALUES (?, ?, ?, ?, ?, 'out_for_delivery', 22.4390, 88.3965, 22.4460, 88.4020, ?, 1.8, 12, ?)`,
-      [orderId, partnerId, pickupAddr, deliveryAddress, customerPhone, customerNote || "Standard express delivery", otp]
+       ) VALUES (?, NULL, ?, ?, ?, 'pending', ?, ?, 22.4460, 88.4020, ?, 1.8, 12, ?)`,
+      [orderId, pickupAddr, deliveryAddress, customerPhone, pickupLat, pickupLng, customerNote || "Standard express delivery", otp]
     );
 
     await conn.commit();
@@ -739,11 +736,12 @@ async function createCustomerOrder(customerId, orderData) {
       orderNumber,
       totalAmount,
       deliveryCharge,
-      orderStatus: "out_for_delivery",
+      orderStatus: "pending",
       paymentStatus: "paid",
       deliveryOtp: otp,
       itemCount: resolvedItems.length,
-      assignedRider: "Kamal Hossain (+91 98765 43210)"
+      assignedRider: null,
+      message: "Order placed successfully! Sent to seller for approval."
     };
   } catch (err) {
     if (conn) await conn.rollback();
@@ -872,6 +870,7 @@ async function getOrderTrackingData(orderId, customerId = null) {
     }
 
     const t = rows[0];
+    const hasRider = Boolean(t.rider_name);
 
     return {
       orderId: Number(t.order_id),
@@ -889,13 +888,13 @@ async function getOrderTrackingData(orderId, customerId = null) {
         lat: Number(t.customer_latitude),
         lng: Number(t.customer_longitude)
       },
-      rider: {
-        name: t.rider_name || "Kamal Hossain",
-        phone: t.rider_phone || "+91 98765 43210",
+      rider: hasRider ? {
+        name: t.rider_name,
+        phone: t.rider_phone,
         vehicle: `${t.vehicle_type || 'Scooter'} (${t.vehicle_number || 'WB-74-X-9821'})`,
         lat: Number(t.rider_latitude),
         lng: Number(t.rider_longitude)
-      },
+      } : null,
       estimatedDistanceKm: Number(t.estimated_distance_km || 1.8),
       estimatedDurationMinutes: Number(t.estimated_duration_minutes || 12)
     };

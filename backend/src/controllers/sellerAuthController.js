@@ -7,8 +7,9 @@ const {
 
 async function sellerLogin(req, res, next) {
   try {
-    const { loginIdentifier, password } = req.body;
-    const result = await loginSeller(loginIdentifier, password);
+    const { loginIdentifier, email, phone, password } = req.body;
+    const identifier = loginIdentifier || email || phone;
+    const result = await loginSeller(identifier, password);
     return res.status(200).json({
       success: true,
       message: "Seller login successful",

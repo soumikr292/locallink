@@ -473,6 +473,11 @@
           loadActiveDelivery(),
           loadAvailableOrders()
         ]);
+
+        // Auto-refresh pool orders every 4 seconds so newly ready orders pop up in real-time
+        setInterval(() => {
+          loadAvailableOrders();
+        }, 4000);
       }
     });
 
@@ -752,12 +757,16 @@
 
         container.innerHTML = orders.map(ord => `
           <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl flex justify-between items-center text-xs">
-            <div>
-              <p class="font-bold text-white">${ord.pickup.split(",")[0]} &rarr; ${ord.drop.split(",")[0]}</p>
-              <p class="text-slate-400 text-[10px] mt-0.5">Distance: ${ord.distanceKm} km | Fee: <strong class="text-emerald-400">₹${ord.deliveryFee}</strong></p>
+            <div class="space-y-0.5">
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-white text-xs">${ord.orderNumber || ('#LL-' + ord.orderId)}</span>
+                <span class="px-1.5 py-0.2 rounded text-[9px] bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">READY FOR PICKUP</span>
+              </div>
+              <p class="font-medium text-slate-300 text-[11px]">${ord.pickup.split(",")[0]} &rarr; ${ord.drop.split(",")[0]}</p>
+              <p class="text-slate-400 text-[10px]">Distance: ${ord.distanceKm} km | Fee: <strong class="text-emerald-400 font-bold">₹${ord.deliveryFee}</strong></p>
             </div>
-            <button onclick="acceptOrder(${ord.deliveryId})" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-md transition-all text-xs">
-              Accept
+            <button onclick="acceptOrder(${ord.deliveryId})" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow-md transition-all text-xs flex items-center gap-1.5 shrink-0">
+              <i class="fa-solid fa-hand-holding-box"></i> Accept
             </button>
           </div>
         `).join("");
@@ -809,12 +818,14 @@
           method: "POST"
         });
         if (res && res.success) {
-          showToast(res.message || "Order accepted!");
+          showToast(res.message || "Order claimed successfully! Added to your active delivery.");
           await loadActiveDelivery();
           await loadAvailableOrders();
+          switchRiderTab('map');
         }
       } catch (e) {
-        showToast(e.message, "error");
+        showToast(e.message || "Order has already been claimed by another delivery partner.", "error");
+        await loadAvailableOrders();
       }
     }
 

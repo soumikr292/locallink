@@ -1650,38 +1650,46 @@
         container.innerHTML = currentOrders.map(order => {
           let actionButton = "";
           if (order.orderStatus === "pending") {
-            actionButton = `<button onclick="updateOrderStatus(${order.orderId}, 'confirmed')" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all">Confirm Order</button>`;
-          } else if (order.orderStatus === "confirmed") {
-            actionButton = `<button onclick="updateOrderStatus(${order.orderId}, 'processing')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all">Mark as Packed</button>`;
-          } else if (order.orderStatus === "processing") {
-            actionButton = `<button onclick="updateOrderStatus(${order.orderId}, 'ready_for_pickup')" class="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all">Ready for Rider</button>`;
+            actionButton = `<button onclick="updateOrderStatus(${order.orderId}, 'processing')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all flex items-center gap-1.5"><i class="fa-solid fa-check"></i> Accept & Prepare</button>`;
+          } else if (order.orderStatus === "confirmed" || order.orderStatus === "processing") {
+            actionButton = `<button onclick="updateOrderStatus(${order.orderId}, 'ready_for_pickup')" class="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all flex items-center gap-1.5"><i class="fa-solid fa-box-open"></i> Mark Ready for Rider</button>`;
           } else if (order.orderStatus === "ready_for_pickup") {
-            actionButton = `<span class="text-xs text-teal-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-clock"></i> Awaiting Rider Pickup</span>`;
+            actionButton = `<span class="px-3 py-1.5 bg-amber-500/10 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5"><i class="fa-solid fa-tower-broadcast animate-pulse"></i> Ready & Broadcasted to Nearby Riders</span>`;
+          } else if (order.orderStatus === "out_for_delivery") {
+            actionButton = `<span class="px-3 py-1.5 bg-sky-500/10 text-sky-400 border border-sky-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5"><i class="fa-solid fa-motorcycle"></i> Out for Delivery</span>`;
           } else if (order.orderStatus === "delivered") {
-            actionButton = `<span class="text-xs text-emerald-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> Delivered Successfully</span>`;
+            actionButton = `<span class="px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> Delivered Successfully</span>`;
           } else {
             actionButton = `<span class="text-xs text-slate-400 font-bold uppercase">${order.orderStatus}</span>`;
           }
 
           return `
             <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs">
-              <div class="space-y-1">
+              <div class="space-y-1.5 flex-1">
                 <div class="flex items-center gap-2">
                   <span class="font-bold text-white text-sm">${order.orderNumber || ('#LL-' + order.orderId)}</span>
                   <span class="text-slate-500">&bull;</span>
                   <span class="text-slate-400">${new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+                    order.orderStatus === 'pending' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' :
+                    order.orderStatus === 'ready_for_pickup' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30' :
+                    order.orderStatus === 'delivered' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' :
+                    'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                  }">${order.orderStatus.replace(/_/g, ' ').toUpperCase()}</span>
                 </div>
                 <p class="text-slate-300">
                   Customer: <strong class="text-white">${order.customerName || 'Local Buyer'}</strong> 
                   ${order.deliveryAddress ? `&bull; <span class="text-slate-400">${order.deliveryAddress}</span>` : ''}
                 </p>
-                <p class="text-slate-400">Total Stall Earnings: <strong class="text-emerald-400 font-bold">₹ ${Number(order.sellerSubtotal).toLocaleString("en-IN")}</strong></p>
-                <p class="text-emerald-400 text-[11px] font-semibold">
-                  Status: ${order.paymentStatus === 'paid' ? 'Paid via UPI' : 'Cash on Delivery'} (${order.orderStatus})
-                </p>
+                <p class="text-slate-400">Total Stall Earnings: <strong class="text-emerald-400 font-bold">₹ ${Number(order.sellerSubtotal).toLocaleString("en-IN")}</strong> &bull; <span class="text-slate-500 font-semibold">${order.paymentStatus === 'paid' ? 'Paid via UPI' : 'Cash on Delivery'}</span></p>
+                ${order.items && order.items.length ? `
+                  <div class="mt-2 p-2 bg-slate-950/70 rounded-lg border border-slate-800 text-[11px] text-slate-300">
+                    <strong class="text-white">Items to Pack:</strong> ${order.items.map(it => `${it.productName} (x${it.quantity})`).join(", ")}
+                  </div>
+                ` : ''}
               </div>
 
-              <div>
+              <div class="shrink-0">
                 ${actionButton}
               </div>
             </div>

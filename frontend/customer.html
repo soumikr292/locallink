@@ -1506,7 +1506,7 @@
         });
 
         if (res && res.success) {
-          showToast("Order placed successfully! Delivery assigned.");
+          showToast("Order placed successfully! Waiting for seller confirmation.");
           cart = [];
           saveCartToStorage();
           switchCustomerPage('orders');
@@ -1577,7 +1577,7 @@
               <!-- Items List -->
               <div class="text-slate-300 space-y-1">
                 <p><strong>Items:</strong> ${(ord.items || []).map(i => `${i.product_name} (x${i.quantity})`).join(", ")}</p>
-                <p><strong>Assigned Rider:</strong> ${ord.rider_name || 'Kamal Hossain'} (${ord.vehicle_type || 'Honda Dio'}, ${ord.rider_phone || '+91 98765 43210'})</p>
+                <p><strong>Assigned Rider:</strong> ${ord.rider_name ? `${ord.rider_name} (${ord.vehicle_type || 'Scooter'}, ${ord.rider_phone})` : '<span class="text-amber-400 font-semibold">Waiting for seller confirmation & nearby rider dispatch</span>'}</p>
                 ${ord.delivery_otp ? `
                   <p class="text-amber-400"><strong>Delivery OTP:</strong> <span class="font-mono font-bold bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800">${ord.delivery_otp}</span> (Share with rider upon arrival)</p>
                 ` : ''}
@@ -1628,23 +1628,38 @@
 
         const data = res.data;
 
-        document.getElementById("trackModalRiderSubtitle").textContent = `Rider: ${data.rider.name} (${data.rider.vehicle})`;
-        document.getElementById("trackEtaText").textContent = `${data.estimatedDurationMinutes} Minutes`;
-        document.getElementById("trackDistanceText").textContent = `${data.estimatedDistanceKm} km`;
+        if (data.rider) {
+          document.getElementById("trackModalRiderSubtitle").textContent = `Rider: ${data.rider.name} (${data.rider.vehicle})`;
+          document.getElementById("trackEtaText").textContent = `${data.estimatedDurationMinutes} Minutes`;
+        } else if (data.orderStatus === "pending") {
+          document.getElementById("trackModalRiderSubtitle").textContent = "Status: Waiting for seller approval & preparation";
+          document.getElementById("trackEtaText").textContent = "Pending Approval";
+        } else if (data.orderStatus === "confirmed" || data.orderStatus === "processing") {
+          document.getElementById("trackModalRiderSubtitle").textContent = "Status: Seller is preparing & packing your order";
+          document.getElementById("trackEtaText").textContent = "Preparing Order";
+        } else if (data.orderStatus === "ready_for_pickup") {
+          document.getElementById("trackModalRiderSubtitle").textContent = "Status: Ready & broadcasted to nearby riders...";
+          document.getElementById("trackEtaText").textContent = "Finding Rider";
+        } else {
+          document.getElementById("trackModalRiderSubtitle").textContent = `Status: ${data.orderStatus}`;
+          document.getElementById("trackEtaText").textContent = `${data.estimatedDurationMinutes || 12} Minutes`;
+        }
+
+        document.getElementById("trackDistanceText").textContent = `${data.estimatedDistanceKm || 1.8} km`;
         document.getElementById("trackOtpText").textContent = data.deliveryOtp || "8942";
 
         const pickupLat = data.pickup.lat;
         const pickupLng = data.pickup.lng;
         const dropLat = data.customer.lat;
         const dropLng = data.customer.lng;
-        const riderLat = data.rider.lat;
-        const riderLng = data.rider.lng;
+        const centerLat = data.rider ? data.rider.lat : pickupLat;
+        const centerLng = data.rider ? data.rider.lng : pickupLng;
 
         if (!customerTrackingMap) {
           customerTrackingMap = L.map('customerTrackingMap', {
             zoomControl: true,
             attributionControl: false
-          }).setView([riderLat, riderLng], 15);
+          }).setView([centerLat, centerLng], 15);
 
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19
@@ -1675,32 +1690,53 @@
           })
         }).addTo(customerTrackingMap).bindPopup("<b>Your Delivery Drop:</b><br>" + data.customer.address);
 
-        // 3. Live Rider GPS Marker (Sky Blue Motorcycle with glow)
-        if (custRiderMarker) customerTrackingMap.removeLayer(custRiderMarker);
-        custRiderMarker = L.marker([riderLat, riderLng], {
-          icon: L.divIcon({
-            html: '<div style="background:#0284c7; color:#fff; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 0 16px rgba(2,132,199,0.9); border:2px solid #fff;"><i class="fa-solid fa-motorcycle" style="font-size:16px;"></i></div>',
-            className: '',
-            iconSize: [36, 36],
-            iconAnchor: [18, 18]
-          })
-        }).addTo(customerTrackingMap).bindPopup(`<b>${data.rider.name}</b><br>Live GPS Movement`);
+        // 3. Live Rider GPS Marker & Route
+        if (data.rider) {
+          const riderLat = data.rider.lat;
+          const riderLng = data.rider.lng;
+          if (custRiderMarker) customerTrackingMap.removeLayer(custRiderMarker);
+          custRiderMarker = L.marker([riderLat, riderLng], {
+            icon: L.divIcon({
+              html: '<div style="background:#0284c7; color:#fff; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 0 16px rgba(2,132,199,0.9); border:2px solid #fff;"><i class="fa-solid fa-motorcycle" style="font-size:16px;"></i></div>',
+              className: '',
+              iconSize: [36, 36],
+              iconAnchor: [18, 18]
+            })
+          }).addTo(customerTrackingMap).bindPopup(`<b>${data.rider.name}</b><br>Live GPS Movement`);
 
-        // 4. Polyline Route
-        if (custRouteLine) customerTrackingMap.removeLayer(custRouteLine);
-        const routePoints = [
-          [pickupLat, pickupLng],
-          [riderLat, riderLng],
-          [dropLat, dropLng]
-        ];
-        custRouteLine = L.polyline(routePoints, {
-          color: '#10b981',
-          weight: 4,
-          opacity: 0.85,
-          dashArray: '6, 8'
-        }).addTo(customerTrackingMap);
+          if (custRouteLine) customerTrackingMap.removeLayer(custRouteLine);
+          const routePoints = [
+            [pickupLat, pickupLng],
+            [riderLat, riderLng],
+            [dropLat, dropLng]
+          ];
+          custRouteLine = L.polyline(routePoints, {
+            color: '#10b981',
+            weight: 4,
+            opacity: 0.85,
+            dashArray: '6, 8'
+          }).addTo(customerTrackingMap);
 
-        customerTrackingMap.fitBounds(routePoints, { padding: [30, 30] });
+          customerTrackingMap.fitBounds(routePoints, { padding: [30, 30] });
+        } else {
+          if (custRiderMarker) {
+            customerTrackingMap.removeLayer(custRiderMarker);
+            custRiderMarker = null;
+          }
+          if (custRouteLine) customerTrackingMap.removeLayer(custRouteLine);
+          const routePoints = [
+            [pickupLat, pickupLng],
+            [dropLat, dropLng]
+          ];
+          custRouteLine = L.polyline(routePoints, {
+            color: '#f59e0b',
+            weight: 3,
+            opacity: 0.7,
+            dashArray: '4, 6'
+          }).addTo(customerTrackingMap);
+
+          customerTrackingMap.fitBounds(routePoints, { padding: [30, 30] });
+        }
 
       } catch (e) {
         console.warn("Tracking update error:", e);

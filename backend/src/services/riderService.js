@@ -350,7 +350,7 @@ async function getActiveDelivery(partnerId) {
   }
 }
 
-// 4. Get Available Deliveries Pool
+// 4. Get Available Deliveries Pool (Ready for pickup orders broadcast to nearby riders)
 async function getAvailableDeliveries() {
   let conn;
   try {
@@ -369,10 +369,11 @@ async function getAvailableDeliveries() {
          d.created_at
        FROM deliveries d
        JOIN orders o ON d.order_id = o.order_id
-       WHERE (d.delivery_partner_id IS NULL OR d.delivery_status = 'pending')
-         AND d.delivery_status NOT IN ('delivered', 'failed', 'cancelled')
+       WHERE d.delivery_partner_id IS NULL
+         AND d.delivery_status = 'pending'
+         AND o.order_status = 'ready_for_pickup'
        ORDER BY d.delivery_id DESC
-       LIMIT 10`
+       LIMIT 20`
     );
 
     return rows.map(r => ({
@@ -381,39 +382,70 @@ async function getAvailableDeliveries() {
       orderNumber: r.order_number,
       pickup: r.pickup_address,
       drop: r.customer_address,
-      distanceKm: Number(r.estimated_distance_km || 1.2),
-      durationMinutes: Number(r.estimated_duration_minutes || 10),
-      deliveryFee: 95
+      distanceKm: Number(r.estimated_distance_km || 1.8),
+      durationMinutes: Number(r.estimated_duration_minutes || 12),
+      deliveryFee: 80
     }));
   } finally {
     if (conn) conn.release();
   }
 }
 
-// 5. Accept Available Delivery
+// 5. Accept Available Delivery (First rider to accept claims it atomically)
 async function acceptDelivery(partnerId, deliveryId) {
   let conn;
   try {
     conn = await pool.getConnection();
+    await conn.beginTransaction();
 
     const dCheck = await conn.query(
-      "SELECT delivery_id FROM deliveries WHERE delivery_id = ? OR order_id = ? LIMIT 1",
+      "SELECT delivery_id, order_id, delivery_partner_id, delivery_status FROM deliveries WHERE delivery_id = ? OR order_id = ? LIMIT 1",
       [Number(deliveryId), Number(deliveryId)]
     );
-    const actualDeliveryId = dCheck.length > 0 ? Number(dCheck[0].delivery_id) : Number(deliveryId);
 
-    await conn.query(
+    if (dCheck.length === 0) {
+      const err = new Error("Delivery order not found");
+      err.statusCode = 404;
+      throw err;
+    }
+
+    const actualDeliveryId = Number(dCheck[0].delivery_id);
+    const orderId = Number(dCheck[0].order_id);
+
+    // Concurrency-safe atomic update: only succeeds if delivery_partner_id IS NULL and status is 'pending'
+    const updateRes = await conn.query(
       `UPDATE deliveries
        SET delivery_partner_id = ?, delivery_status = 'assigned'
-       WHERE delivery_id = ?`,
+       WHERE delivery_id = ?
+         AND delivery_partner_id IS NULL
+         AND delivery_status = 'pending'`,
       [Number(partnerId), actualDeliveryId]
     );
+
+    if (updateRes.affectedRows === 0) {
+      await conn.rollback();
+      const err = new Error("This order has already been accepted by another delivery partner or is no longer available.");
+      err.statusCode = 409;
+      throw err;
+    }
+
+    // Record status history
+    await conn.query(
+      "INSERT INTO delivery_status_history (delivery_id, previous_status, new_status, notes) VALUES (?, 'pending', 'assigned', ?)",
+      [actualDeliveryId, `Delivery claimed by delivery partner #${partnerId}`]
+    );
+
+    await conn.commit();
 
     return {
       success: true,
       deliveryId: actualDeliveryId,
+      orderId,
       message: "Delivery request accepted! Added to your active delivery list."
     };
+  } catch (err) {
+    if (conn) await conn.rollback();
+    throw err;
   } finally {
     if (conn) conn.release();
   }

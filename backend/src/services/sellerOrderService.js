@@ -316,10 +316,15 @@ async function updateSellerOrderStatus(sellerId, orderId, newStatus) {
       [newStatus, Number(orderId)]
     );
 
-    // If marked ready_for_pickup, update delivery status if delivery exists
+    // If marked ready_for_pickup, ensure the delivery request is pending and open for rider claim
     if (newStatus === "ready_for_pickup") {
       await connection.query(
-        "UPDATE deliveries SET delivery_status = 'assigned' WHERE order_id = ? AND delivery_status = 'pending'",
+        "UPDATE deliveries SET delivery_status = 'pending', delivery_partner_id = NULL WHERE order_id = ? AND delivery_status != 'delivered'",
+        [Number(orderId)]
+      );
+    } else if (newStatus === "cancelled") {
+      await connection.query(
+        "UPDATE deliveries SET delivery_status = 'cancelled' WHERE order_id = ?",
         [Number(orderId)]
       );
     }
