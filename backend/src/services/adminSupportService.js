@@ -211,7 +211,11 @@ async function replyToTicket(ticketId, { message, senderId, newStatus }) {
     if (!text) throw Object.assign(new Error("Message content cannot be empty"), { statusCode: 400 });
 
     let adminId = Number(senderId);
-    const [adminExists] = await connection.query("SELECT user_id FROM users WHERE user_id = ? LIMIT 1", [adminId]);
+    let adminExists = false;
+    if (Number.isFinite(adminId) && adminId > 0) {
+      const rows = await connection.query("SELECT user_id FROM users WHERE user_id = ? LIMIT 1", [adminId]);
+      if (rows.length > 0) adminExists = true;
+    }
     if (!adminExists) {
       const [anyAdmin] = await connection.query("SELECT user_id FROM users WHERE role IN ('admin', 'super_admin') LIMIT 1");
       adminId = anyAdmin?.user_id || 1;
@@ -283,8 +287,12 @@ async function createTicket(data) {
   try {
     connection = await pool.getConnection();
 
-    let sellerId = Number(data.sellerId);
-    const [sellerExists] = await connection.query("SELECT user_id FROM users WHERE user_id = ? LIMIT 1", [sellerId]);
+    let sellerId = Number(data.sellerId || data.seller_id);
+    let sellerExists = false;
+    if (Number.isFinite(sellerId) && sellerId > 0) {
+      const rows = await connection.query("SELECT user_id FROM users WHERE user_id = ? LIMIT 1", [sellerId]);
+      if (rows.length > 0) sellerExists = true;
+    }
     if (!sellerExists) {
       const [firstSeller] = await connection.query("SELECT user_id FROM users WHERE role = 'seller' LIMIT 1");
       if (firstSeller) {
@@ -310,8 +318,12 @@ async function createTicket(data) {
     const ticketId = Number(res.insertId);
 
     if (initialMessage) {
-      let adminId = Number(data.adminId);
-      const [adminExists] = await connection.query("SELECT user_id FROM users WHERE user_id = ? LIMIT 1", [adminId]);
+      let adminId = Number(data.adminId || data.admin_id);
+      let adminExists = false;
+      if (Number.isFinite(adminId) && adminId > 0) {
+        const rows = await connection.query("SELECT user_id FROM users WHERE user_id = ? LIMIT 1", [adminId]);
+        if (rows.length > 0) adminExists = true;
+      }
       if (!adminExists) {
         const [anyAdmin] = await connection.query("SELECT user_id FROM users WHERE role IN ('admin', 'super_admin') LIMIT 1");
         adminId = anyAdmin?.user_id || sellerId;
