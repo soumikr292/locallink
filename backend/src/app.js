@@ -26,6 +26,9 @@ const adminShippingRoutes = require("./routes/adminShippingRoutes");
 const adminMarketingRoutes = require("./routes/adminMarketingRoutes");
 const adminReviewRoutes = require("./routes/adminReviewRoutes");
 const adminContentRoutes = require("./routes/adminContentRoutes");
+const adminTaxRoutes = require("./routes/adminTaxRoutes");
+const adminNotificationRoutes = require("./routes/adminNotificationRoutes");
+const adminSupportRoutes = require("./routes/adminSupportRoutes");
 
 // ===============================
 // Seller Routes
@@ -212,6 +215,15 @@ app.use(
 
 // Admin Content Management (Pages, Blog, FAQs, Media Library)
 app.use("/api/admin/content", adminContentRoutes);
+
+// Admin Taxes Management
+app.use("/api/admin/taxes", adminTaxRoutes);
+
+// Admin Notifications Hub
+app.use("/api/admin/notifications", adminNotificationRoutes);
+
+// Admin Support Hub
+app.use("/api/admin/support", adminSupportRoutes);
 
 // ===============================
 // Seller Endpoints

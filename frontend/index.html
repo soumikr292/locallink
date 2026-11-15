@@ -53,15 +53,21 @@
             } else if (tabId === "marketing") {
                 if (typeof loadMarketingCoupons === "function") loadMarketingCoupons();
                 if (typeof loadMarketingBanners === "function") loadMarketingBanners();
-                if (typeof refreshAbandonedCartsPanel === "function") refreshAbandonedCartsPanel();
             } else if (tabId === "reviews") {
                 if (typeof loadReviews === "function") loadReviews(1);
             } else if (tabId === "content") {
                 if (typeof loadContentModule === "function") loadContentModule();
             } else if (tabId === "staff") {
                 if (typeof loadStaffModule === "function") loadStaffModule();
+            } else if (tabId === "taxes") {
+                if (typeof loadTaxesModule === "function") loadTaxesModule();
+            } else if (tabId === "notifications") {
+                if (typeof loadNotificationsModule === "function") loadNotificationsModule();
+            } else if (tabId === "support") {
+                if (typeof loadSupportModule === "function") loadSupportModule();
             } else if (tabId === "reports") {
                 if (typeof loadReportsModule === "function") loadReportsModule();
+                if (typeof loadAbandonedCartReport === "function") loadAbandonedCartReport();
             } else if (tabId === "settings") {
                 if (typeof loadSettingsModule === "function") loadSettingsModule();
             }
@@ -1419,7 +1425,7 @@ function showCatalogModule(module) {
     </div>
 
 <!-- Marketing Sub-module Buttons -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
     <button type="button"
         onclick="showMarketingModule('coupons')"
@@ -1435,14 +1441,6 @@ function showCatalogModule(module) {
         <h3 class="font-bold text-white mb-2">📢 Flash Sales & Banners</h3>
         <p class="text-sm text-slate-400">Manage promotional banners and limited-time deals.</p>
         <p class="text-xs text-blue-300 mt-3">Open module →</p>
-    </button>
-
-    <button type="button"
-        onclick="showMarketingModule('abandoned')"
-        class="marketing-module-btn text-left p-5 bg-slate-950 border border-slate-800 rounded-2xl hover:border-amber-400 hover:bg-slate-900 transition">
-        <h3 class="font-bold text-white mb-2">🛒 Abandoned Carts</h3>
-        <p class="text-sm text-slate-400">Track unfinished buyer checkouts and recovery status.</p>
-        <p class="text-xs text-amber-300 mt-3">Open module →</p>
     </button>
 
 </div>
@@ -1722,86 +1720,6 @@ function showCatalogModule(module) {
 </div>
 </div>
 
-<!-- Abandoned Carts: frontend structure; live data requires cart tracking API -->
-<div id="marketingAbandonedCartsPanel" class="hidden space-y-6">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-            <h3 class="text-xl font-bold text-white">Abandoned Cart Recovery</h3>
-            <p class="text-sm text-slate-400 mt-1">Review unfinished checkouts and track recovery.</p>
-        </div>
-        <button type="button" onclick="refreshAbandonedCartsPanel()"
-            class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-sm border border-slate-700">
-            ↻ Refresh
-        </button>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5">
-            <p class="text-sm text-slate-400">Abandoned Carts</p>
-            <p id="abandonedCartCount" class="text-2xl font-bold text-white mt-2">—</p>
-            <p class="text-xs text-slate-500 mt-2">Carts awaiting recovery</p>
-        </div>
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5">
-            <p class="text-sm text-slate-400">Potential Revenue</p>
-            <p id="abandonedCartRevenue" class="text-2xl font-bold text-white mt-2">—</p>
-            <p class="text-xs text-slate-500 mt-2">Calculated from saved cart items</p>
-        </div>
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5">
-            <p class="text-sm text-slate-400">Recovered Carts</p>
-            <p class="text-2xl font-bold text-white mt-2">—</p>
-            <p class="text-xs text-slate-500 mt-2">Requires recovery status tracking</p>
-        </div>
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5">
-            <p class="text-sm text-slate-400">Recovery Rate</p>
-            <p class="text-2xl font-bold text-white mt-2">—</p>
-            <p class="text-xs text-slate-500 mt-2">Calculated after recovery tracking is connected</p>
-        </div>
-    </div>
-
-    <div class="bg-slate-950 border border-amber-500/30 rounded-2xl p-5 sm:p-6">
-        <div class="flex items-start gap-3">
-            <div class="text-2xl" aria-hidden="true">ℹ️</div>
-            <div>
-                <h4 class="font-bold text-amber-300">Abandoned Cart Status</h4>
-               <p id="abandonedCartMessage" role="status" aria-live="polite"
-   class="text-sm text-slate-300 mt-1">Loading abandoned carts...</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-4">
-        <div>
-            <h4 class="text-lg font-bold text-white">Abandoned Carts List</h4>
-            <p class="text-sm text-slate-400 mt-1">The table shows live abandoned carts from the backend.</p>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <input id="abandonedCartSearch" type="search"
-    placeholder="Search customer name, email or cart ID"
-    class="w-full rounded-xl bg-slate-900 border border-slate-700 text-white px-3 py-3 outline-none focus:border-amber-500">
-            <select id="abandonedCartStatusFilter" class="w-full rounded-xl bg-slate-900 border border-slate-700 text-white px-3 py-3" disabled>
-                <option>All statuses (API pending)</option>
-            </select>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="w-full min-w-[760px] text-sm text-left">
-                <thead class="text-xs uppercase text-slate-400 border-b border-slate-800">
-                    <tr>
-                        <th class="px-3 py-3">Cart / Customer</th>
-                        <th class="px-3 py-3">Items</th>
-                        <th class="px-3 py-3">Cart Value</th>
-                        <th class="px-3 py-3">Last Activity</th>
-                        <th class="px-3 py-3">Recovery Status</th>
-                    </tr>
-                </thead>
-                <tbody id="abandonedCartsTableBody" class="divide-y divide-slate-800">
-                    <tr><td colspan="5" class="px-3 py-10 text-center text-slate-400">No live cart data yet. Connect the cart tracking API to populate this table.</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-           
 <!-- ⭐ REVIEWS -->
 <div id="reviews" class="tab-content hidden space-y-6">
 
@@ -2031,25 +1949,238 @@ function showCatalogModule(module) {
                         </div>
                     </div>
                 </div>
+
+                <!-- 🛒 ABANDONED CARTS ANALYSIS & DROP-OFF FUNNEL (REPORTS & ANALYTICS) -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800 pb-4">
+                        <div>
+                            <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                                <i class="fa-solid fa-cart-arrow-down text-amber-400"></i> Abandoned Cart & Checkout Drop-off Report
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-1">Analyze lost conversions, pending buyer carts, and recovery potential</p>
+                        </div>
+                        <button type="button" onclick="loadAbandonedCartReport()" class="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white text-xs border border-slate-700 flex items-center gap-2 transition-all">
+                            <i class="fa-solid fa-rotate text-amber-400"></i> Refresh Cart Analytics
+                        </button>
+                    </div>
+
+                    <!-- Abandoned Metrics -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl">
+                            <span class="text-xs text-slate-400 uppercase font-semibold">Abandoned Sessions</span>
+                            <div id="repAbandonedCount" class="text-2xl font-bold text-amber-400 mt-1">0</div>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Unconverted buyer carts</p>
+                        </div>
+                        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl">
+                            <span class="text-xs text-slate-400 uppercase font-semibold">Revenue At Risk</span>
+                            <div id="repAbandonedRevenue" class="text-2xl font-bold text-rose-400 mt-1">₹ 0</div>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Total uncaptured cart value</p>
+                        </div>
+                        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl">
+                            <span class="text-xs text-slate-400 uppercase font-semibold">Avg. Abandoned Value</span>
+                            <div id="repAbandonedAvg" class="text-2xl font-bold text-sky-400 mt-1">₹ 0</div>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Per dropped session</p>
+                        </div>
+                        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl">
+                            <span class="text-xs text-slate-400 uppercase font-semibold">Funnel Health</span>
+                            <div id="repFunnelHealth" class="text-2xl font-bold text-emerald-400 mt-1">Good</div>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Based on order conversion</p>
+                        </div>
+                    </div>
+
+                    <!-- Abandoned Carts Table -->
+                    <div class="space-y-3 pt-2">
+                        <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
+                            <input id="repAbandonedSearch" type="search" oninput="debounceAbandonedSearch()" placeholder="Search customer, email or cart #..." class="w-full sm:w-80 rounded-xl bg-slate-900 border border-slate-700 px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:border-amber-400 outline-none">
+                            <span id="repAbandonedStatusMsg" class="text-xs text-slate-400">Live data from marketplace database</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full min-w-[700px] text-left text-xs">
+                                <thead class="bg-slate-900 text-[11px] uppercase text-slate-400">
+                                    <tr>
+                                        <th class="py-2.5 px-3">Customer / Cart ID</th>
+                                        <th class="py-2.5 px-3">Items in Cart</th>
+                                        <th class="py-2.5 px-3">Cart Value</th>
+                                        <th class="py-2.5 px-3">Last Active</th>
+                                        <th class="py-2.5 px-3 text-right">Recovery Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="repAbandonedTableBody" class="divide-y divide-slate-800">
+                                    <tr>
+                                        <td colspan="5" class="py-6 text-center text-slate-400">Loading abandoned carts data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- 💰 TAXES -->
             <div id="taxes" class="tab-content hidden space-y-6">
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4">
-                    <h3 class="font-bold text-lg text-white">Tax Management Sub-modules</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-                            <h4 class="font-bold text-emerald-400 mb-1">Tax Rates & Rules</h4>
-                            <p class="text-slate-400">Configured GST structure (5% essentials, 18% standard commodities).</p>
+                <!-- Header -->
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-coins text-amber-400"></i> GST & Tax Management Center
+                        </h2>
+                        <p class="text-sm text-slate-400 mt-1">Manage commodity tax rates, West Bengal SGST/CGST rules, and GSTR-1 fiscal compliance</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="openAddTaxModal()" class="rounded-xl bg-emerald-500 hover:bg-emerald-400 px-4 py-2 text-sm font-bold text-slate-950 transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20">
+                            <i class="fa-solid fa-plus"></i> Add Tax Rate
+                        </button>
+                        <button onclick="exportGstr1Csv()" class="rounded-xl border border-slate-700 hover:bg-slate-800 px-4 py-2 text-sm text-slate-300 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-file-arrow-down text-emerald-400"></i> Export GSTR-1 CSV
+                        </button>
+                        <button onclick="loadTaxesModule()" class="rounded-xl border border-slate-700 hover:bg-slate-800 px-3.5 py-2 text-sm text-slate-300 transition-all">
+                            ↻ Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tax Summary KPI Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Gross Taxable Turnover</span>
+                        <div id="taxTurnover" class="text-2xl font-bold text-white mt-1">₹ 0</div>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Total eligible market sales</p>
+                    </div>
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Total GST Collected</span>
+                        <div id="taxTotalCollected" class="text-2xl font-bold text-emerald-400 mt-1">₹ 0</div>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Calculated net tax revenue</p>
+                    </div>
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">CGST (Central)</span>
+                        <div id="taxCgstCollected" class="text-2xl font-bold text-sky-400 mt-1">₹ 0</div>
+                        <p class="text-[11px] text-slate-500 mt-0.5">50% intra-state portion</p>
+                    </div>
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">SGST (West Bengal)</span>
+                        <div id="taxSgstCollected" class="text-2xl font-bold text-amber-400 mt-1">₹ 0</div>
+                        <p class="text-[11px] text-slate-500 mt-0.5">50% state portion</p>
+                    </div>
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Active Tax Slabs</span>
+                        <div id="taxActiveSlabsCount" class="text-2xl font-bold text-violet-400 mt-1">5</div>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Across catalog categories</p>
+                    </div>
+                </div>
+
+                <!-- Interactive Sub-modules: Rates & Zones -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Left: Tax Rates Table (2 cols) -->
+                    <div class="lg:col-span-2 bg-slate-950 border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800 pb-3">
+                            <h3 class="font-bold text-base text-white flex items-center gap-2">
+                                <i class="fa-solid fa-table-list text-emerald-400"></i> Commodity Tax Slabs & GST Rates
+                            </h3>
+                            <div class="flex gap-2">
+                                <input id="taxSearchInput" type="search" oninput="debounceTaxSearch()" placeholder="Search tax name, HSN, category..." class="rounded-lg bg-slate-900 border border-slate-700 px-3 py-1.5 text-xs text-white placeholder-slate-500 outline-none focus:border-emerald-500">
+                                <select id="taxStatusFilter" onchange="loadTaxRates()" class="rounded-lg bg-slate-900 border border-slate-700 px-3 py-1.5 text-xs text-white outline-none">
+                                    <option value="">All Statuses</option>
+                                    <option value="active">Active Only</option>
+                                    <option value="inactive">Inactive Only</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-                            <h4 class="font-bold text-emerald-400 mb-1">Tax Zones</h4>
-                            <p class="text-slate-400">Intra-state West Bengal SGST + CGST automated calculation.</p>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full min-w-[620px] text-left text-xs">
+                                <thead class="bg-slate-900 text-slate-400 uppercase text-[10px]">
+                                    <tr>
+                                        <th class="py-2.5 px-3">Tax Name / Commodity</th>
+                                        <th class="py-2.5 px-3">HSN Code</th>
+                                        <th class="py-2.5 px-3">Total Rate</th>
+                                        <th class="py-2.5 px-3">CGST / SGST</th>
+                                        <th class="py-2.5 px-3">Status</th>
+                                        <th class="py-2.5 px-3 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="taxRatesTableBody" class="divide-y divide-slate-800">
+                                    <tr><td colspan="6" class="py-6 text-center text-slate-400">Loading tax rates...</td></tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-                            <h4 class="font-bold text-emerald-400 mb-1">Tax Reports</h4>
-                            <p class="text-slate-400">Monthly GSTR-1 compliant invoice data available in orders export.</p>
+                    </div>
+
+                    <!-- Right: Tax Zones & Rules Configuration (1 col) -->
+                    <div class="space-y-6">
+                        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-4">
+                            <h3 class="font-bold text-base text-white flex items-center gap-2">
+                                <i class="fa-solid fa-map-location-dot text-sky-400"></i> Regional Tax Jurisdictions
+                            </h3>
+                            <div class="space-y-3 text-xs">
+                                <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-bold text-white">West Bengal Intra-State</span>
+                                        <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold text-[10px]">Active Zone</span>
+                                    </div>
+                                    <p class="text-slate-400 text-[11px]">Primary operational zone for Rajpur Sonarpur & Kolkata. Equal split between CGST and SGST.</p>
+                                </div>
+                                <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-bold text-white">Inter-State (Rest of India)</span>
+                                        <span class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 font-bold text-[10px]">IGST Rule</span>
+                                    </div>
+                                    <p class="text-slate-400 text-[11px]">Single IGST rate collected on any shipment crossing state boundary lines.</p>
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-3 text-xs">
+                            <h3 class="font-bold text-base text-white flex items-center gap-2">
+                                <i class="fa-solid fa-sliders text-amber-400"></i> Tax Calculation Policy
+                            </h3>
+                            <div class="flex items-center justify-between p-2.5 bg-slate-900 rounded-xl">
+                                <div>
+                                    <span class="font-bold text-white block">Tax Inclusive Pricing</span>
+                                    <span class="text-[10px] text-slate-400">Displayed shelf prices already include GST</span>
+                                </div>
+                                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold text-[10px]">ENABLED</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2.5 bg-slate-900 rounded-xl">
+                                <div>
+                                    <span class="font-bold text-white block">Municipal Market Surcharge</span>
+                                    <span class="text-[10px] text-slate-400">1% Clean Market Cess on Non-Exempt</span>
+                                </div>
+                                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold text-[10px]">ACTIVE</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Order Invoices & GSTR-1 Breakdown -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800 pb-3">
+                        <div>
+                            <h3 class="font-bold text-base text-white flex items-center gap-2">
+                                <i class="fa-solid fa-receipt text-emerald-400"></i> GSTR-1 Recent Invoice Tax Breakdown
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Live order tax computations prepared for monthly GST portal filing</p>
+                        </div>
+                        <span class="text-xs text-slate-400">Showing last 10 transactions</span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full min-w-[700px] text-left text-xs">
+                            <thead class="bg-slate-900 text-slate-400 uppercase text-[10px]">
+                                <tr>
+                                    <th class="py-2.5 px-3">Order #</th>
+                                    <th class="py-2.5 px-3">Customer</th>
+                                    <th class="py-2.5 px-3">Gross Total</th>
+                                    <th class="py-2.5 px-3">Taxable Value</th>
+                                    <th class="py-2.5 px-3">CGST</th>
+                                    <th class="py-2.5 px-3">SGST</th>
+                                    <th class="py-2.5 px-3">Status</th>
+                                    <th class="py-2.5 px-3">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="taxInvoicesTableBody" class="divide-y divide-slate-800">
+                                <tr><td colspan="8" class="py-6 text-center text-slate-400">Loading invoice data...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -2151,42 +2282,211 @@ function showCatalogModule(module) {
 
             <!-- 🔔 NOTIFICATIONS -->
             <div id="notifications" class="tab-content hidden space-y-6">
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4">
-                    <h3 class="font-bold text-lg text-white">Notifications Hub</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-                            <h4 class="font-bold text-emerald-400 mb-1">Email, SMS & Push</h4>
-                            <p class="text-slate-400">Order dispatched, rider assigned and delivered SMS alerts.</p>
+                <!-- Header -->
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-bell text-emerald-400"></i> Notifications & Broadcast Hub
+                        </h2>
+                        <p class="text-sm text-slate-400 mt-1">Multi-channel messaging across In-App, Push, SMS and Email for customers, sellers, and riders</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="openSendBroadcastModal()" class="rounded-xl bg-emerald-500 hover:bg-emerald-400 px-4 py-2 text-sm font-bold text-slate-950 transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20">
+                            <i class="fa-solid fa-paper-plane"></i> New Broadcast
+                        </button>
+                        <button onclick="loadNotificationsModule()" class="rounded-xl border border-slate-700 hover:bg-slate-800 px-3.5 py-2 text-sm text-slate-300 transition-all">
+                            ↻ Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Notification KPI Metrics -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Total Broadcasts Sent</span>
+                        <div id="notifTotalSent" class="text-2xl font-bold text-white mt-1">0</div>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Platform announcements</p>
+                    </div>
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Audience Reached</span>
+                        <div id="notifTotalReached" class="text-2xl font-bold text-emerald-400 mt-1">0</div>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Total recipients reached</p>
+                    </div>
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">SMS & WhatsApp Alerts</span>
+                        <div id="notifSmsCount" class="text-2xl font-bold text-sky-400 mt-1">0</div>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Transactional deliveries</p>
+                    </div>
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">In-App & Email</span>
+                        <div id="notifInAppCount" class="text-2xl font-bold text-amber-400 mt-1">0</div>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Portal advisories & emails</p>
+                    </div>
+                </div>
+
+                <!-- Broadcast History Table -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800 pb-3">
+                        <h3 class="font-bold text-base text-white flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-sky-400"></i> Dispatched Broadcast History
+                        </h3>
+                        <div class="flex flex-wrap gap-2">
+                            <input id="notifSearchInput" type="search" oninput="debounceNotifSearch()" placeholder="Search title or message..." class="rounded-lg bg-slate-900 border border-slate-700 px-3 py-1.5 text-xs text-white placeholder-slate-500 outline-none focus:border-emerald-500">
+                            <select id="notifAudienceFilter" onchange="loadNotificationLogs()" class="rounded-lg bg-slate-900 border border-slate-700 px-3 py-1.5 text-xs text-white outline-none">
+                                <option value="">All Audiences</option>
+                                <option value="all">Entire Platform (All)</option>
+                                <option value="sellers">Verified Sellers Only</option>
+                                <option value="riders">Delivery Riders Only</option>
+                                <option value="customers">Customers Only</option>
+                            </select>
+                            <select id="notifChannelFilter" onchange="loadNotificationLogs()" class="rounded-lg bg-slate-900 border border-slate-700 px-3 py-1.5 text-xs text-white outline-none">
+                                <option value="">All Channels</option>
+                                <option value="in_app">In-App</option>
+                                <option value="sms">SMS / WhatsApp</option>
+                                <option value="email">Email</option>
+                                <option value="push">Push Notification</option>
+                            </select>
                         </div>
-                        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-                            <h4 class="font-bold text-emerald-400 mb-1">Templates</h4>
-                            <p class="text-slate-400">Customizable transactional WhatsApp & email templates.</p>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full min-w-[720px] text-left text-xs">
+                            <thead class="bg-slate-900 text-slate-400 uppercase text-[10px]">
+                                <tr>
+                                    <th class="py-2.5 px-3">Title & Summary</th>
+                                    <th class="py-2.5 px-3">Audience</th>
+                                    <th class="py-2.5 px-3">Channel</th>
+                                    <th class="py-2.5 px-3">Recipients</th>
+                                    <th class="py-2.5 px-3">Status</th>
+                                    <th class="py-2.5 px-3">Dispatched Date</th>
+                                    <th class="py-2.5 px-3 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="notifLogsTableBody" class="divide-y divide-slate-800">
+                                <tr><td colspan="7" class="py-6 text-center text-slate-400">Loading notification history...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Transactional Message Templates Grid -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div>
+                            <h3 class="font-bold text-base text-white flex items-center gap-2">
+                                <i class="fa-solid fa-envelope-open-text text-amber-400"></i> Standard Transactional Notification Templates
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Automated event triggers for order delivery, vendor alerts, and rider tracking</p>
                         </div>
-                        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-                            <h4 class="font-bold text-emerald-400 mb-1">Notification Logs</h4>
-                            <p class="text-slate-400">Review dispatch history and delivery receipts.</p>
-                        </div>
+                        <span class="text-xs text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check mr-1"></i>5 Active Handlers</span>
+                    </div>
+
+                    <div id="notifTemplatesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Loaded dynamically via JS -->
                     </div>
                 </div>
             </div>
 
             <!-- 💬 SUPPORT -->
             <div id="support" class="tab-content hidden space-y-6">
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4">
-                    <h3 class="font-bold text-lg text-white">Customer Support Hub</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-                            <h4 class="font-bold text-emerald-400 mb-1">Tickets & Inquiries</h4>
-                            <p class="text-slate-400">Customer feedback and missing order resolution routing.</p>
+                <!-- Header -->
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-headset text-sky-400"></i> Customer & Merchant Support Desk
+                        </h2>
+                        <p class="text-sm text-slate-400 mt-1">Multi-tier support ticketing for seller payouts, customer deliveries, and rider logistics</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="openCreateTicketModal()" class="rounded-xl bg-emerald-500 hover:bg-emerald-400 px-4 py-2 text-sm font-bold text-slate-950 transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20">
+                            <i class="fa-solid fa-plus"></i> Create Ticket
+                        </button>
+                        <button onclick="loadSupportModule()" class="rounded-xl border border-slate-700 hover:bg-slate-800 px-3.5 py-2 text-sm text-slate-300 transition-all">
+                            ↻ Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Support Ticket KPI Metrics -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Total Tickets</span>
+                        <div id="suppTotalTickets" class="text-2xl font-bold text-white mt-1">0</div>
+                        <p class="text-[11px] text-slate-500 mt-0.5">All logged inquiries</p>
+                    </div>
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Open / Unresolved</span>
+                        <div id="suppOpenCount" class="text-2xl font-bold text-amber-400 mt-1">0</div>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Awaiting agent response</p>
+                    </div>
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">In Progress</span>
+                        <div id="suppInProgressCount" class="text-2xl font-bold text-sky-400 mt-1">0</div>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Under investigation</p>
+                    </div>
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Resolved</span>
+                        <div id="suppResolvedCount" class="text-2xl font-bold text-emerald-400 mt-1">0</div>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Successfully closed</p>
+                    </div>
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Urgent Priority</span>
+                        <div id="suppUrgentCount" class="text-2xl font-bold text-rose-400 mt-1">0</div>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Immediate action needed</p>
+                    </div>
+                </div>
+
+                <!-- Support Tickets Table -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800 pb-3">
+                        <h3 class="font-bold text-base text-white flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-sky-400"></i> Active Support Tickets
+                        </h3>
+                        <div class="flex flex-wrap gap-2">
+                            <input id="suppSearchInput" type="search" oninput="debounceSupportSearch()" placeholder="Search ticket #, user, subject..." class="rounded-lg bg-slate-900 border border-slate-700 px-3 py-1.5 text-xs text-white placeholder-slate-500 outline-none focus:border-sky-500">
+                            <select id="suppStatusFilter" onchange="loadSupportTickets()" class="rounded-lg bg-slate-900 border border-slate-700 px-3 py-1.5 text-xs text-white outline-none">
+                                <option value="">All Statuses</option>
+                                <option value="open">Open</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="resolved">Resolved</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                            <select id="suppPriorityFilter" onchange="loadSupportTickets()" class="rounded-lg bg-slate-900 border border-slate-700 px-3 py-1.5 text-xs text-white outline-none">
+                                <option value="">All Priorities</option>
+                                <option value="urgent">Urgent</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                            <select id="suppCategoryFilter" onchange="loadSupportTickets()" class="rounded-lg bg-slate-900 border border-slate-700 px-3 py-1.5 text-xs text-white outline-none">
+                                <option value="">All Categories</option>
+                                <option value="catalog">Catalog & Products</option>
+                                <option value="payouts">Payouts & Finance</option>
+                                <option value="delivery">Delivery & Riders</option>
+                                <option value="technical">Technical Support</option>
+                                <option value="general">General Inquiries</option>
+                            </select>
                         </div>
-                        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-                            <h4 class="font-bold text-emerald-400 mb-1">Merchant Assistance</h4>
-                            <p class="text-slate-400">Direct seller catalog and payout dispute desk.</p>
-                        </div>
-                        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-                            <h4 class="font-bold text-emerald-400 mb-1">Rider Helpdesk</h4>
-                            <p class="text-slate-400">Address verification and vehicle breakdown assistance.</p>
-                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full min-w-[780px] text-left text-xs">
+                            <thead class="bg-slate-900 text-slate-400 uppercase text-[10px]">
+                                <tr>
+                                    <th class="py-2.5 px-3">Ticket #</th>
+                                    <th class="py-2.5 px-3">Subject & Category</th>
+                                    <th class="py-2.5 px-3">User / Stall Name</th>
+                                    <th class="py-2.5 px-3">Priority</th>
+                                    <th class="py-2.5 px-3">Status</th>
+                                    <th class="py-2.5 px-3">Messages</th>
+                                    <th class="py-2.5 px-3">Last Updated</th>
+                                    <th class="py-2.5 px-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="suppTicketsTableBody" class="divide-y divide-slate-800">
+                                <tr><td colspan="8" class="py-6 text-center text-slate-400">Loading support tickets...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -2278,6 +2578,211 @@ function showCatalogModule(module) {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- ADD TAX MODAL -->
+            <div id="addTaxModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm p-4 flex items-center justify-center">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-coins text-amber-400"></i> <span id="taxModalTitle">Add Tax Slab</span>
+                        </h3>
+                        <button type="button" onclick="closeAddTaxModal()" class="text-slate-400 hover:text-white text-xl">✕</button>
+                    </div>
+                    <form id="createTaxForm" onsubmit="handleSaveTaxRate(event)" class="space-y-4 text-xs">
+                        <div>
+                            <label class="block font-semibold text-slate-300 uppercase mb-1">Tax Slab Name *</label>
+                            <input id="newTaxName" type="text" required placeholder="e.g. Edible Oils & Spices (5%)" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-white outline-none focus:border-emerald-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-semibold text-slate-300 uppercase mb-1">Total GST Rate (%) *</label>
+                                <input id="newTaxRate" type="number" step="0.01" min="0" max="100" required placeholder="5.0" oninput="autoComputeGstSplit(this.value)" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-white outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-slate-300 uppercase mb-1">HSN / SAC Code</label>
+                                <input id="newTaxHsn" type="text" placeholder="e.g. 1508" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-white outline-none focus:border-emerald-500">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-semibold text-slate-300 uppercase mb-1">CGST Portion (%)</label>
+                                <input id="newTaxCgst" type="number" step="0.01" min="0" max="50" placeholder="2.5" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-white outline-none">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-slate-300 uppercase mb-1">SGST Portion (%)</label>
+                                <input id="newTaxSgst" type="number" step="0.01" min="0" max="50" placeholder="2.5" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-white outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-300 uppercase mb-1">Marketplace Category</label>
+                            <input id="newTaxCategory" type="text" placeholder="e.g. Groceries & Spices" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-white outline-none focus:border-emerald-500">
+                        </div>
+                        <div class="flex items-center gap-2 pt-1">
+                            <input id="newTaxActive" type="checkbox" checked class="w-4 h-4 rounded text-emerald-600 bg-slate-900 border-slate-700 focus:ring-0">
+                            <label for="newTaxActive" class="text-slate-300 font-semibold">Enable tax rate immediately</label>
+                        </div>
+                        <div id="taxModalMsg" class="text-xs"></div>
+                        <div class="flex justify-end gap-3 pt-3 border-t border-slate-800">
+                            <button type="button" onclick="closeAddTaxModal()" class="rounded-lg border border-slate-700 px-4 py-2 text-slate-300 hover:bg-slate-800">Cancel</button>
+                            <button type="submit" class="rounded-lg bg-emerald-600 hover:bg-emerald-500 px-5 py-2 font-bold text-white shadow-md">Save Tax Rate</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- SEND BROADCAST MODAL -->
+            <div id="sendBroadcastModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm p-4 flex items-center justify-center">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl w-full max-w-lg p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-paper-plane text-emerald-400"></i> <span>Send Marketplace Broadcast</span>
+                        </h3>
+                        <button type="button" onclick="closeSendBroadcastModal()" class="text-slate-400 hover:text-white text-xl">✕</button>
+                    </div>
+                    <form id="createBroadcastForm" onsubmit="handleSendBroadcast(event)" class="space-y-4 text-xs">
+                        <div>
+                            <label class="block font-semibold text-slate-300 uppercase mb-1">Broadcast Title *</label>
+                            <input id="newBroadTitle" type="text" required placeholder="e.g. Festival Market Schedule & Timings" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-white outline-none focus:border-emerald-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-semibold text-slate-300 uppercase mb-1">Target Audience *</label>
+                                <select id="newBroadAudience" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-white outline-none">
+                                    <option value="all">Entire Platform (All Users)</option>
+                                    <option value="sellers">Verified Sellers Only</option>
+                                    <option value="riders">Delivery Riders Only</option>
+                                    <option value="customers">Registered Customers Only</option>
+                                    <option value="staff">Staff & Operators</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-slate-300 uppercase mb-1">Delivery Channel *</label>
+                                <select id="newBroadChannel" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-white outline-none">
+                                    <option value="in_app">In-App Notification</option>
+                                    <option value="sms">SMS / WhatsApp Alert</option>
+                                    <option value="email">Email Broadcast</option>
+                                    <option value="push">Mobile Push Notification</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-300 uppercase mb-1">Announcement Type</label>
+                            <select id="newBroadType" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-white outline-none">
+                                <option value="announcement">Platform Announcement</option>
+                                <option value="operational">Operational & Logistics</option>
+                                <option value="payout">Payout & Financial</option>
+                                <option value="promotional">Promotional & Offer</option>
+                                <option value="safety">Safety & Weather Advisory</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-300 uppercase mb-1">Message Content *</label>
+                            <textarea id="newBroadMessage" rows="4" required placeholder="Type announcement message clearly..." class="w-full rounded-lg bg-slate-900 border border-slate-700 p-3 text-white outline-none focus:border-emerald-500"></textarea>
+                        </div>
+                        <div id="broadcastModalMsg" class="text-xs"></div>
+                        <div class="flex justify-end gap-3 pt-3 border-t border-slate-800">
+                            <button type="button" onclick="closeSendBroadcastModal()" class="rounded-lg border border-slate-700 px-4 py-2 text-slate-300 hover:bg-slate-800">Cancel</button>
+                            <button type="submit" class="rounded-lg bg-emerald-600 hover:bg-emerald-500 px-5 py-2 font-bold text-white shadow-md">Dispatch Broadcast</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TICKET DETAIL & REPLY MODAL -->
+            <div id="ticketDetailModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm p-4 flex items-center justify-center">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+                    <!-- Modal Header -->
+                    <div class="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2">
+                                <span id="ticketModalNumber" class="text-xs font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">TCK-0000</span>
+                                <span id="ticketModalStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded uppercase">OPEN</span>
+                                <span id="ticketModalPriorityBadge" class="text-[10px] font-bold px-2 py-0.5 rounded uppercase">MEDIUM</span>
+                            </div>
+                            <h3 id="ticketModalSubject" class="text-base font-bold text-white mt-1 truncate">Subject</h3>
+                            <p id="ticketModalMeta" class="text-xs text-slate-400 mt-0.5 truncate">From: User</p>
+                        </div>
+                        <button type="button" onclick="closeTicketDetail()" class="text-slate-400 hover:text-white text-xl p-2">✕</button>
+                    </div>
+
+                    <!-- Message Thread Container -->
+                    <div id="ticketMessagesContainer" class="p-4 sm:p-5 overflow-y-auto flex-1 space-y-3 bg-slate-950/80">
+                        <div class="text-center text-slate-400 py-6 text-xs">Loading conversation history...</div>
+                    </div>
+
+                    <!-- Admin Reply Box -->
+                    <div class="p-4 border-t border-slate-800 bg-slate-900/40 space-y-3">
+                        <form id="ticketReplyForm" onsubmit="handleSendTicketReply(event)" class="space-y-2">
+                            <textarea id="ticketReplyMessage" rows="2" required placeholder="Type support response to merchant/user..." class="w-full rounded-xl bg-slate-900 border border-slate-700 p-2.5 text-xs text-white placeholder-slate-500 outline-none focus:border-sky-500"></textarea>
+                            <div class="flex flex-col sm:flex-row items-center justify-between gap-2">
+                                <div class="flex items-center gap-2 w-full sm:w-auto text-xs">
+                                    <span class="text-slate-400">Update Status:</span>
+                                    <select id="ticketReplyStatusSelect" class="rounded-lg bg-slate-900 border border-slate-700 px-2.5 py-1 text-xs text-white outline-none">
+                                        <option value="in_progress">Keep In Progress</option>
+                                        <option value="resolved">Mark Resolved</option>
+                                        <option value="closed">Close Ticket</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md">
+                                    <i class="fa-solid fa-reply"></i> Send Response
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CREATE SUPPORT TICKET MODAL -->
+            <div id="createTicketModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm p-4 flex items-center justify-center">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-headset text-sky-400"></i> <span>Open Support Ticket</span>
+                        </h3>
+                        <button type="button" onclick="closeCreateTicketModal()" class="text-slate-400 hover:text-white text-xl">✕</button>
+                    </div>
+                    <form id="createTicketForm" onsubmit="handleCreateTicket(event)" class="space-y-4 text-xs">
+                        <div>
+                            <label class="block font-semibold text-slate-300 uppercase mb-1">Subject *</label>
+                            <input id="newTicketSubject" type="text" required placeholder="e.g. Stall Payout Delay" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-white outline-none focus:border-sky-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-semibold text-slate-300 uppercase mb-1">Category</label>
+                                <select id="newTicketCategory" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-white outline-none">
+                                    <option value="catalog">Catalog & Products</option>
+                                    <option value="payouts">Payouts & Finance</option>
+                                    <option value="delivery">Delivery & Riders</option>
+                                    <option value="technical">Technical Support</option>
+                                    <option value="general">General Inquiries</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-slate-300 uppercase mb-1">Priority</label>
+                                <select id="newTicketPriority" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-white outline-none">
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="urgent">Urgent</option>
+                                    <option value="low">Low</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-300 uppercase mb-1">Associate Merchant / User ID</label>
+                            <input id="newTicketSellerId" type="number" value="3" placeholder="Seller User ID (e.g. 3)" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-white outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-300 uppercase mb-1">Initial Description / Note *</label>
+                            <textarea id="newTicketMessage" rows="3" required placeholder="Detail the inquiry or issue..." class="w-full rounded-lg bg-slate-900 border border-slate-700 p-3 text-white outline-none focus:border-sky-500"></textarea>
+                        </div>
+                        <div id="createTicketMsg" class="text-xs"></div>
+                        <div class="flex justify-end gap-3 pt-3 border-t border-slate-800">
+                            <button type="button" onclick="closeCreateTicketModal()" class="rounded-lg border border-slate-700 px-4 py-2 text-slate-300 hover:bg-slate-800">Cancel</button>
+                            <button type="submit" class="rounded-lg bg-sky-600 hover:bg-sky-500 px-5 py-2 font-bold text-white shadow-md">Create Ticket</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -5311,17 +5816,15 @@ document.getElementById("shipmentSearch")?.addEventListener("input",()=>{clearTi
 function showMarketingModule(moduleName) {
     const panels = {
         coupons: document.getElementById("marketingCouponsPanel"),
-        banners: document.getElementById("marketingBannersPanel"),
-        abandoned: document.getElementById("marketingAbandonedCartsPanel")
+        banners: document.getElementById("marketingBannersPanel")
     };
     const buttons = {
         coupons: document.querySelector('button[onclick="showMarketingModule(\'coupons\')"]'),
-        banners: document.querySelector('button[onclick="showMarketingModule(\'banners\')"]'),
-        abandoned: document.querySelector('button[onclick="showMarketingModule(\'abandoned\')"]')
+        banners: document.querySelector('button[onclick="showMarketingModule(\'banners\')"]')
     };
 
     if (!panels[moduleName]) {
-        console.error("Marketing panel not found for:", moduleName);
+        console.warn("Marketing panel not found for:", moduleName);
         return;
     }
 
@@ -5332,7 +5835,6 @@ function showMarketingModule(moduleName) {
     Object.entries(buttons).forEach(([name, button]) => {
         button?.classList.toggle("border-emerald-500", name === moduleName && name === "coupons");
         button?.classList.toggle("border-blue-500", name === moduleName && name === "banners");
-        button?.classList.toggle("border-amber-500", name === moduleName && name === "abandoned");
         button?.classList.toggle("border-slate-800", name !== moduleName);
     });
 
@@ -5340,166 +5842,15 @@ function showMarketingModule(moduleName) {
         loadMarketingCoupons();
     } else if (moduleName === "banners") {
         loadMarketingBanners();
-    } else if (moduleName === "abandoned") {
-        refreshAbandonedCartsPanel();
     }
 }
 
-
-let abandonedCartSearchTimer;
-
-async function refreshAbandonedCartsPanel() {
-    const message = document.getElementById("abandonedCartMessage");
-    const tbody = document.getElementById("abandonedCartsTableBody");
-    const countEl = document.getElementById("abandonedCartCount");
-    const revenueEl = document.getElementById("abandonedCartRevenue");
-    const searchEl = document.getElementById("abandonedCartSearch");
-
-    if (!tbody) return;
-
-    const token = sessionStorage.getItem("locallinkAdminToken");
-
-    if (!token) {
-        if (message) message.textContent = "Please log in again to view abandoned carts.";
-        return;
-    }
-
-    if (message) message.textContent = "Loading abandoned carts...";
-
-    const params = new URLSearchParams({
-        limit: "100",
-        search: searchEl?.value.trim() || ""
-    });
-
-    try {
-        const response = await fetch(
-            `http://localhost:5001/api/admin/marketing/abandoned-carts?${params}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        );
-
-        const result = await response.json();
-
-        if (!response.ok || !result.success) {
-            throw new Error(result.message || "Could not load abandoned carts.");
-        }
-
-        const data = result.data;
-        const carts = data.items || [];
-
-        if (countEl) {
-            countEl.textContent = Number(
-                data.pagination?.total ?? carts.length
-            ).toLocaleString("en-IN");
-        }
-
-        const totalValue = carts.reduce(
-            (sum, cart) => sum + Number(cart.cart_total || 0),
-            0
-        );
-
-        if (revenueEl) {
-            revenueEl.textContent = totalValue.toLocaleString("en-IN", {
-                style: "currency",
-                currency: "INR",
-                maximumFractionDigits: 2
-            });
-        }
-
-        tbody.replaceChildren();
-
-        if (carts.length === 0) {
-            const row = tbody.insertRow();
-            const cell = row.insertCell();
-            cell.colSpan = 5;
-            cell.className = "px-3 py-10 text-center text-slate-400";
-            cell.textContent = "No abandoned carts found.";
-
-            if (message) {
-                message.textContent = "No matching abandoned carts.";
-            }
-            return;
-        }
-
-        carts.forEach(cart => {
-            const row = tbody.insertRow();
-
-            const customerCell = row.insertCell();
-            customerCell.className = "px-3 py-4";
-
-            const name = document.createElement("div");
-            name.className = "font-semibold text-white";
-            name.textContent = cart.customer_name || "Unknown customer";
-
-            const cartId = document.createElement("div");
-            cartId.className = "text-xs text-slate-400 mt-1";
-            cartId.textContent = `Cart #${cart.cart_id}`;
-
-            const email = document.createElement("div");
-            email.className = "text-xs text-slate-400 mt-1";
-            email.textContent = cart.customer_email || "No email";
-
-            customerCell.append(name, cartId, email);
-
-            const itemsCell = row.insertCell();
-            itemsCell.className = "px-3 py-4 text-slate-300";
-            itemsCell.textContent = String(cart.item_count ?? 0);
-
-            const valueCell = row.insertCell();
-            valueCell.className = "px-3 py-4 text-white font-semibold";
-            valueCell.textContent = Number(cart.cart_total || 0)
-                .toLocaleString("en-IN", {
-                    style: "currency",
-                    currency: "INR"
-                });
-
-            const activityCell = row.insertCell();
-            activityCell.className = "px-3 py-4 text-slate-300";
-
-            const activityDate = cart.last_activity_at
-                ? new Date(String(cart.last_activity_at).replace(" ", "T"))
-                : null;
-
-            activityCell.textContent =
-                activityDate && !Number.isNaN(activityDate.getTime())
-                    ? activityDate.toLocaleString("en-IN")
-                    : "—";
-
-            const statusCell = row.insertCell();
-            statusCell.className = "px-3 py-4";
-
-            const status = document.createElement("span");
-            status.className =
-                "inline-block rounded-full bg-amber-500/10 text-amber-300 px-3 py-1 text-xs";
-            status.textContent = "Abandoned";
-            statusCell.appendChild(status);
-        });
-
-        if (message) {
-            message.textContent =
-                `Showing ${carts.length} cart(s). Total matching carts: ${data.pagination?.total ?? carts.length}.`;
-        }
-
-    } catch (error) {
-        console.error("Abandoned carts error:", error);
-
-        if (message) {
-            message.textContent =
-                error.message || "Failed to load abandoned carts.";
-        }
+// Legacy fallback redirected to Reports & Analytics
+function refreshAbandonedCartsPanel() {
+    if (typeof loadAbandonedCartReport === "function") {
+        loadAbandonedCartReport();
     }
 }
-
-document.getElementById("abandonedCartSearch")?.addEventListener("input", () => {
-    clearTimeout(abandonedCartSearchTimer);
-    abandonedCartSearchTimer = setTimeout(
-        refreshAbandonedCartsPanel,
-        300
-    );
-});
 
 </script>
 
@@ -5976,6 +6327,1037 @@ async function loadSettingsModule() {
     } catch (_) {
         el.textContent = "Unreachable";
         el.className = "font-bold text-rose-400";
+    }
+}
+
+// ==========================================
+// UTILITY HELPERS FOR NEW MODULES
+// ==========================================
+
+function adminSafeHtml(str) {
+    return String(str ?? "").replace(/[&<>"']/g, ch => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#39;"
+    }[ch]));
+}
+
+function adminFormatInr(amount) {
+    return Number(amount || 0).toLocaleString("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 2
+    });
+}
+
+function adminFormatDate(val) {
+    if (!val) return "—";
+    const d = new Date(String(val).replace(" ", "T"));
+    return isNaN(d.getTime()) ? String(val) : d.toLocaleString("en-IN", { dateStyle: "short", timeStyle: "short" });
+}
+
+// ==========================================
+// ABANDONED CARTS REPORTING (REPORTS TAB)
+// ==========================================
+
+let repAbandonedTimer = null;
+
+function debounceAbandonedSearch() {
+    clearTimeout(repAbandonedTimer);
+    repAbandonedTimer = setTimeout(loadAbandonedCartReport, 300);
+}
+
+async function loadAbandonedCartReport() {
+    const tbody = document.getElementById("repAbandonedTableBody");
+    const countEl = document.getElementById("repAbandonedCount");
+    const revenueEl = document.getElementById("repAbandonedRevenue");
+    const avgEl = document.getElementById("repAbandonedAvg");
+    const healthEl = document.getElementById("repFunnelHealth");
+    const searchEl = document.getElementById("repAbandonedSearch");
+    const statusEl = document.getElementById("repAbandonedStatusMsg");
+
+    if (!tbody) return;
+    const token = sessionStorage.getItem("locallinkAdminToken");
+    if (!token) return;
+
+    if (statusEl) statusEl.textContent = "Loading live cart drop-off data...";
+
+    const search = searchEl?.value.trim() || "";
+    const params = new URLSearchParams({ limit: "100" });
+    if (search) params.set("search", search);
+
+    try {
+        const res = await fetch(`http://localhost:5001/api/admin/marketing/abandoned-carts?${params}`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) throw new Error(result.message || "Failed to load drop-offs");
+
+        const carts = result.data?.items || [];
+        const totalCount = Number(result.data?.pagination?.total ?? carts.length);
+        const totalLost = carts.reduce((sum, c) => sum + Number(c.cart_total || 0), 0);
+        const avgValue = carts.length > 0 ? (totalLost / carts.length) : 0;
+
+        if (countEl) countEl.textContent = totalCount.toLocaleString("en-IN");
+        if (revenueEl) revenueEl.textContent = adminFormatInr(totalLost);
+        if (avgEl) avgEl.textContent = adminFormatInr(avgValue);
+        if (healthEl) {
+            healthEl.textContent = totalCount > 0 ? `${totalCount} Recoverable` : "Optimal (0 Drop-offs)";
+        }
+
+        tbody.innerHTML = "";
+        if (carts.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-slate-400">No abandoned shopping carts found.</td></tr>';
+            if (statusEl) statusEl.textContent = "All checkout funnels healthy.";
+            return;
+        }
+
+        carts.forEach(cart => {
+            const tr = document.createElement("tr");
+            tr.className = "hover:bg-slate-900/50 transition-colors";
+            tr.innerHTML = `
+                <td class="px-4 py-3">
+                    <div class="font-semibold text-white">${adminSafeHtml(cart.customer_name || "Guest / Unnamed")}</div>
+                    <div class="text-[11px] text-slate-400">Cart #${adminSafeHtml(cart.cart_id)} • ${adminSafeHtml(cart.customer_email || "No email")}</div>
+                </td>
+                <td class="px-4 py-3 text-slate-300">
+                    <span class="inline-block px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-medium text-xs">${Number(cart.item_count || 0)} items</span>
+                </td>
+                <td class="px-4 py-3 font-semibold text-rose-400">
+                    ${adminFormatInr(cart.cart_total)}
+                </td>
+                <td class="px-4 py-3 text-slate-400 text-xs">
+                    ${adminFormatDate(cart.last_activity_at)}
+                </td>
+                <td class="px-4 py-3 text-right">
+                    <button type="button" onclick="promptSendCartRecovery('${adminSafeHtml(cart.cart_id)}', '${adminSafeHtml(cart.customer_name || "")}', '${adminSafeHtml(cart.customer_email || "")}')" class="px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-xs font-semibold border border-amber-500/20 transition-all">
+                        <i class="fa-solid fa-bell mr-1"></i> Remind
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        if (statusEl) statusEl.textContent = `Showing ${carts.length} dropped cart(s). Total: ${totalCount}`;
+    } catch (err) {
+        console.error("Abandoned cart report error:", err);
+        if (statusEl) statusEl.textContent = "Error loading drop-offs: " + err.message;
+        tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-rose-400">${adminSafeHtml(err.message)}</td></tr>`;
+    }
+}
+
+function promptSendCartRecovery(cartId, name, email) {
+    openSendBroadcastModal({
+        title: `Complete Your Order #${cartId}`,
+        message: `Hello ${name || "Customer"}, your items are waiting in your cart! Complete your order today and enjoy fresh local delivery.`,
+        audience: "customers",
+        channel: "in_app",
+        type: "promotional"
+    });
+}
+
+// ==========================================
+// TAXES & GST COMPLIANCE MODULE
+// ==========================================
+
+let editingTaxRateId = null;
+let taxSearchTimer = null;
+let cachedGstr1Invoices = [];
+
+function debounceTaxSearch() {
+    clearTimeout(taxSearchTimer);
+    taxSearchTimer = setTimeout(loadTaxRates, 300);
+}
+
+async function loadTaxesModule() {
+    await Promise.all([loadTaxSummary(), loadTaxRates()]);
+}
+
+async function loadTaxSummary() {
+    const token = sessionStorage.getItem("locallinkAdminToken");
+    if (!token) return;
+
+    try {
+        const res = await fetch("http://localhost:5001/api/admin/taxes/summary", {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) throw new Error(result.message || "Failed to load tax summary");
+
+        const data = result.data || {};
+        const turnoverEl = document.getElementById("taxTurnover");
+        const totalColEl = document.getElementById("taxTotalCollected");
+        const cgstEl = document.getElementById("taxCgstCollected");
+        const sgstEl = document.getElementById("taxSgstCollected");
+
+        const grossVal = data.grossSales ?? data.gross_turnover ?? 0;
+        const totalColVal = data.totalTaxCollected ?? data.total_tax_collected ?? 0;
+        const cgstVal = data.cgstCollected ?? data.cgst_collected ?? 0;
+        const sgstVal = data.sgstCollected ?? data.sgst_collected ?? 0;
+
+        if (turnoverEl) turnoverEl.textContent = adminFormatInr(grossVal);
+        if (totalColEl) totalColEl.textContent = adminFormatInr(totalColVal);
+        if (cgstEl) cgstEl.textContent = adminFormatInr(cgstVal);
+        if (sgstEl) sgstEl.textContent = adminFormatInr(sgstVal);
+
+        cachedGstr1Invoices = data.recentInvoices || data.gstr1_invoices || [];
+        renderTaxInvoices(cachedGstr1Invoices);
+    } catch (err) {
+        console.error("Tax summary error:", err);
+    }
+}
+
+function renderTaxInvoices(invoices) {
+    const tbody = document.getElementById("taxInvoicesTableBody");
+    if (!tbody) return;
+
+    tbody.innerHTML = "";
+    if (!invoices || invoices.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="px-4 py-8 text-center text-slate-400">No fiscal tax invoices recorded yet. Completed orders will appear here automatically.</td></tr>';
+        return;
+    }
+
+    invoices.forEach(inv => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-slate-900/50 transition-colors";
+        const invNum = inv.orderNumber || inv.invoice_number || `INV-${inv.orderId || inv.order_id}`;
+        const ordId = inv.orderId || inv.order_id || "";
+        const invDate = inv.date || inv.invoice_date;
+        const custName = inv.customerName || inv.customer_name || "Walk-in Customer";
+        const taxableVal = inv.taxableAmount ?? inv.taxable_value ?? 0;
+        const cgstVal = inv.cgst ?? inv.cgst_amount ?? 0;
+        const sgstVal = inv.sgst ?? inv.sgst_amount ?? 0;
+        const totalTaxVal = inv.total_tax ?? (Number(cgstVal) + Number(sgstVal));
+        const grossVal = inv.grossAmount ?? inv.invoice_total ?? 0;
+
+        tr.innerHTML = `
+            <td class="px-4 py-3 font-semibold text-white whitespace-nowrap">
+                <span class="text-emerald-400">${adminSafeHtml(invNum)}</span>
+                <div class="text-[10px] text-slate-400">${ordId ? 'Order #' + adminSafeHtml(ordId) : ''}</div>
+            </td>
+            <td class="px-4 py-3 text-slate-400 text-xs whitespace-nowrap">
+                ${adminFormatDate(invDate)}
+            </td>
+            <td class="px-4 py-3">
+                <div class="font-medium text-slate-200 text-xs">${adminSafeHtml(custName)}</div>
+                <div class="text-[10px] text-slate-400">WB Intra-State (B2C)</div>
+            </td>
+            <td class="px-4 py-3 text-right text-slate-300 font-mono text-xs">
+                ${adminFormatInr(taxableVal)}
+            </td>
+            <td class="px-4 py-3 text-right text-sky-400 font-mono text-xs">
+                ${adminFormatInr(cgstVal)}
+            </td>
+            <td class="px-4 py-3 text-right text-amber-400 font-mono text-xs">
+                ${adminFormatInr(sgstVal)}
+            </td>
+            <td class="px-4 py-3 text-right text-emerald-400 font-mono text-xs font-semibold">
+                ${adminFormatInr(totalTaxVal)}
+            </td>
+            <td class="px-4 py-3 text-right text-white font-mono text-xs font-bold">
+                ${adminFormatInr(grossVal)}
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+async function loadTaxRates() {
+    const tbody = document.getElementById("taxRatesTableBody");
+    const countEl = document.getElementById("taxActiveSlabsCount");
+    const searchEl = document.getElementById("taxSearchInput");
+    const statusFilter = document.getElementById("taxStatusFilter");
+
+    if (!tbody) return;
+    const token = sessionStorage.getItem("locallinkAdminToken");
+    if (!token) return;
+
+    const params = new URLSearchParams();
+    if (searchEl?.value.trim()) params.set("search", searchEl.value.trim());
+    if (statusFilter?.value && statusFilter.value !== "all") params.set("status", statusFilter.value);
+
+    try {
+        const res = await fetch(`http://localhost:5001/api/admin/taxes/rates?${params}`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) throw new Error(result.message || "Failed to load tax rates");
+
+        const rates = result.data?.rates || result.data || [];
+        const activeCount = rates.filter(r => (r.isActive !== undefined ? r.isActive : r.is_active)).length;
+        if (countEl) countEl.textContent = activeCount;
+
+        tbody.innerHTML = "";
+        if (rates.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-slate-400">No tax rates found matching criteria.</td></tr>';
+            return;
+        }
+
+        rates.forEach(r => {
+            const tr = document.createElement("tr");
+            tr.className = "hover:bg-slate-900/50 transition-colors";
+            const rateId = r.id || r.rate_id;
+            const rateName = r.name || r.slab_name || "";
+            const hsn = r.hsnCode || r.hsn_code || "General";
+            const category = r.categoryName || r.category_name || "All Products";
+            const totalRate = Number(r.rate ?? r.rate_percentage ?? 0);
+            const cgst = Number(r.cgstRate ?? r.cgst_percentage ?? 0);
+            const sgst = Number(r.sgstRate ?? r.sgst_percentage ?? 0);
+            const isActive = Boolean(r.isActive !== undefined ? r.isActive : r.is_active);
+
+            tr.innerHTML = `
+                <td class="px-4 py-3">
+                    <div class="font-semibold text-white">${adminSafeHtml(rateName)}</div>
+                    <div class="text-[11px] text-slate-400 flex items-center gap-2 mt-0.5">
+                        <span class="px-1.5 py-0.2 rounded bg-slate-800 text-slate-300">HSN: ${adminSafeHtml(hsn)}</span>
+                        <span>•</span>
+                        <span>${adminSafeHtml(category)}</span>
+                    </div>
+                </td>
+                <td class="px-4 py-3 font-bold text-emerald-400 text-sm">
+                    ${totalRate.toFixed(2)}%
+                </td>
+                <td class="px-4 py-3 text-xs text-slate-300">
+                    <div>CGST: <span class="font-mono text-sky-400">${cgst.toFixed(2)}%</span></div>
+                    <div>SGST: <span class="font-mono text-amber-400">${sgst.toFixed(2)}%</span></div>
+                </td>
+                <td class="px-4 py-3">
+                    <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${isActive ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-slate-800 text-slate-400 border border-slate-700"}">
+                        ${isActive ? "Active" : "Disabled"}
+                    </span>
+                </td>
+                <td class="px-4 py-3 text-right space-x-1 whitespace-nowrap">
+                    <button type="button" onclick="toggleTaxRate(${rateId})" title="${isActive ? 'Disable' : 'Enable'}" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700 transition-all">
+                        <i class="fa-solid fa-power-off ${isActive ? 'text-emerald-400' : 'text-slate-500'}"></i>
+                    </button>
+                    <button type="button" onclick='openAddTaxModal(${JSON.stringify(r)})' title="Edit Tax Slab" class="px-2 py-1 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-xs text-sky-300 border border-sky-500/20 transition-all">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button type="button" onclick="deleteTaxRate(${rateId})" title="Delete Tax Slab" class="px-2 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-xs text-rose-300 border border-rose-500/20 transition-all">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (err) {
+        console.error("Tax rates error:", err);
+        tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-rose-400">${adminSafeHtml(err.message)}</td></tr>`;
+    }
+}
+
+function autoComputeGstSplit(val) {
+    const total = parseFloat(val) || 0;
+    const half = (total / 2).toFixed(2);
+    const cgstInput = document.getElementById("newTaxCgst");
+    const sgstInput = document.getElementById("newTaxSgst");
+    if (cgstInput) cgstInput.value = half;
+    if (sgstInput) sgstInput.value = half;
+}
+
+function openAddTaxModal(rate = null) {
+    const modal = document.getElementById("addTaxModal");
+    const title = document.getElementById("taxModalTitle");
+    const msg = document.getElementById("taxModalMsg");
+    if (!modal) return;
+
+    if (msg) msg.textContent = "";
+
+    if (rate) {
+        editingTaxRateId = rate.rate_id;
+        if (title) title.textContent = "Edit Tax Slab";
+        document.getElementById("newTaxName").value = rate.slab_name || "";
+        document.getElementById("newTaxRate").value = rate.rate_percentage ?? "";
+        document.getElementById("newTaxHsn").value = rate.hsn_code || "";
+        document.getElementById("newTaxCgst").value = rate.cgst_percentage ?? "";
+        document.getElementById("newTaxSgst").value = rate.sgst_percentage ?? "";
+        document.getElementById("newTaxCategory").value = rate.category_name || "";
+        document.getElementById("newTaxActive").checked = Boolean(rate.is_active);
+    } else {
+        editingTaxRateId = null;
+        if (title) title.textContent = "Add Tax Slab";
+        document.getElementById("createTaxForm")?.reset();
+        document.getElementById("newTaxActive").checked = true;
+    }
+
+    modal.classList.remove("hidden");
+}
+
+function closeAddTaxModal() {
+    const modal = document.getElementById("addTaxModal");
+    if (modal) modal.classList.add("hidden");
+    editingTaxRateId = null;
+}
+
+async function handleSaveTaxRate(e) {
+    e.preventDefault();
+    const token = sessionStorage.getItem("locallinkAdminToken");
+    const msg = document.getElementById("taxModalMsg");
+    if (!token) return;
+
+    const payload = {
+        slab_name: document.getElementById("newTaxName").value.trim(),
+        rate_percentage: parseFloat(document.getElementById("newTaxRate").value),
+        hsn_code: document.getElementById("newTaxHsn").value.trim() || null,
+        cgst_percentage: parseFloat(document.getElementById("newTaxCgst").value) || 0,
+        sgst_percentage: parseFloat(document.getElementById("newTaxSgst").value) || 0,
+        category_name: document.getElementById("newTaxCategory").value.trim() || null,
+        is_active: document.getElementById("newTaxActive").checked ? 1 : 0
+    };
+
+    if (msg) {
+        msg.className = "text-xs text-sky-400";
+        msg.textContent = "Saving tax slab...";
+    }
+
+    try {
+        const url = editingTaxRateId 
+            ? `http://localhost:5001/api/admin/taxes/rates/${editingTaxRateId}`
+            : "http://localhost:5001/api/admin/taxes/rates";
+        const method = editingTaxRateId ? "PUT" : "POST";
+
+        const res = await fetch(url, {
+            method,
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) throw new Error(result.message || "Failed to save rate");
+
+        closeAddTaxModal();
+        await Promise.all([loadTaxRates(), loadTaxSummary()]);
+    } catch (err) {
+        if (msg) {
+            msg.className = "text-xs text-rose-400";
+            msg.textContent = err.message;
+        }
+    }
+}
+
+async function toggleTaxRate(rateId) {
+    const token = sessionStorage.getItem("locallinkAdminToken");
+    if (!token) return;
+
+    try {
+        const res = await fetch(`http://localhost:5001/api/admin/taxes/rates/${rateId}/toggle`, {
+            method: "PATCH",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) throw new Error(result.message || "Toggle failed");
+        await Promise.all([loadTaxRates(), loadTaxSummary()]);
+    } catch (err) {
+        alert(err.message || "Could not toggle rate status");
+    }
+}
+
+async function deleteTaxRate(rateId) {
+    if (!confirm("Are you sure you want to delete this tax slab?")) return;
+    const token = sessionStorage.getItem("locallinkAdminToken");
+    if (!token) return;
+
+    try {
+        const res = await fetch(`http://localhost:5001/api/admin/taxes/rates/${rateId}`, {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) throw new Error(result.message || "Delete failed");
+        await Promise.all([loadTaxRates(), loadTaxSummary()]);
+    } catch (err) {
+        alert(err.message || "Could not delete tax rate");
+    }
+}
+
+function exportGstr1Csv() {
+    if (!cachedGstr1Invoices || cachedGstr1Invoices.length === 0) {
+        alert("No fiscal invoice data available to export.");
+        return;
+    }
+
+    const headers = ["Invoice No", "Date", "Customer", "State", "Taxable Value (INR)", "CGST (INR)", "SGST (INR)", "Total GST (INR)", "Invoice Total (INR)"];
+    const rows = cachedGstr1Invoices.map(inv => [
+        `"${inv.invoice_number}"`,
+        `"${inv.invoice_date}"`,
+        `"${inv.customer_name || 'Walk-in'}"`,
+        `"West Bengal"`,
+        Number(inv.taxable_value || 0).toFixed(2),
+        Number(inv.cgst_amount || 0).toFixed(2),
+        Number(inv.sgst_amount || 0).toFixed(2),
+        Number(inv.total_tax || 0).toFixed(2),
+        Number(inv.invoice_total || 0).toFixed(2)
+    ]);
+
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `GSTR1_LocalLink_Fiscal_Ledger_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// ==========================================
+// NOTIFICATIONS & BROADCAST HUB
+// ==========================================
+
+let notifSearchTimer = null;
+
+function debounceNotifSearch() {
+    clearTimeout(notifSearchTimer);
+    notifSearchTimer = setTimeout(loadNotificationLogs, 300);
+}
+
+async function loadNotificationsModule() {
+    await Promise.all([loadNotificationLogs(), loadNotificationTemplates()]);
+}
+
+async function loadNotificationLogs() {
+    const tbody = document.getElementById("notifLogsTableBody");
+    const totalEl = document.getElementById("notifTotalSent");
+    const reachEl = document.getElementById("notifTotalReached");
+    const smsEl = document.getElementById("notifSmsCount");
+    const inAppEl = document.getElementById("notifInAppCount");
+
+    const searchEl = document.getElementById("notifSearchInput");
+    const audFilter = document.getElementById("notifAudienceFilter");
+    const chFilter = document.getElementById("notifChannelFilter");
+
+    if (!tbody) return;
+    const token = sessionStorage.getItem("locallinkAdminToken");
+    if (!token) return;
+
+    const params = new URLSearchParams({ limit: "50" });
+    if (searchEl?.value.trim()) params.set("search", searchEl.value.trim());
+    if (audFilter?.value && audFilter.value !== "all") params.set("target_audience", audFilter.value);
+    if (chFilter?.value && chFilter.value !== "all") params.set("channel", chFilter.value);
+
+    try {
+        const res = await fetch(`http://localhost:5001/api/admin/notifications?${params}`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) throw new Error(result.message || "Failed to load notifications");
+
+        const data = result.data || {};
+        const items = data.notifications || data.items || [];
+        const stats = data.stats || {};
+
+        if (totalEl) totalEl.textContent = Number(stats.totalSent ?? stats.total ?? items.length).toLocaleString("en-IN");
+        if (reachEl) reachEl.textContent = Number(stats.totalReached ?? stats.totalDelivered ?? items.length).toLocaleString("en-IN");
+        if (smsEl) smsEl.textContent = Number(stats.smsCount ?? 0).toLocaleString("en-IN");
+        if (inAppEl) inAppEl.textContent = Number(stats.inAppCount ?? items.length).toLocaleString("en-IN");
+
+        tbody.innerHTML = "";
+        if (items.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-slate-400">No broadcasts found. Dispatch a new notification above.</td></tr>';
+            return;
+        }
+
+        const audienceColors = {
+            all: "bg-purple-500/10 text-purple-300 border-purple-500/20",
+            sellers: "bg-amber-500/10 text-amber-300 border-amber-500/20",
+            riders: "bg-sky-500/10 text-sky-300 border-sky-500/20",
+            customers: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
+            staff: "bg-rose-500/10 text-rose-300 border-rose-500/20"
+        };
+
+        const channelIcons = {
+            in_app: '<i class="fa-solid fa-bell text-amber-400"></i> In-App',
+            sms: '<i class="fa-solid fa-comment-sms text-sky-400"></i> SMS/WA',
+            email: '<i class="fa-solid fa-envelope text-indigo-400"></i> Email',
+            push: '<i class="fa-solid fa-mobile-screen text-emerald-400"></i> Push'
+        };
+
+        items.forEach(item => {
+            const tr = document.createElement("tr");
+            tr.className = "hover:bg-slate-900/50 transition-colors";
+            const notifId = item.id || item.notification_id;
+            const aud = String(item.targetAudience || item.target_audience || "all").toLowerCase();
+            const badgeClass = audienceColors[aud] || "bg-slate-800 text-slate-300 border-slate-700";
+            const channelHtml = channelIcons[item.channel] || item.channel || "in_app";
+            const notifDate = item.createdAt || item.created_at;
+
+            tr.innerHTML = `
+                <td class="px-4 py-3">
+                    <span class="inline-block px-2 py-0.5 rounded text-[11px] font-bold uppercase border ${badgeClass}">
+                        ${adminSafeHtml(aud.toUpperCase())}
+                    </span>
+                </td>
+                <td class="px-4 py-3 max-w-xs">
+                    <div class="font-semibold text-white text-xs truncate">${adminSafeHtml(item.title)}</div>
+                    <div class="text-[11px] text-slate-400 line-clamp-1 mt-0.5">${adminSafeHtml(item.message)}</div>
+                </td>
+                <td class="px-4 py-3 text-xs text-slate-300 whitespace-nowrap">
+                    ${channelHtml}
+                </td>
+                <td class="px-4 py-3 text-xs text-slate-400 whitespace-nowrap">
+                    ${adminFormatDate(notifDate)}
+                </td>
+                <td class="px-4 py-3 text-right">
+                    <button type="button" onclick="deleteNotificationLog(${notifId})" title="Delete broadcast log" class="px-2 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-xs text-rose-300 border border-rose-500/20 transition-all">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (err) {
+        console.error("Notification logs error:", err);
+        tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-rose-400">${adminSafeHtml(err.message)}</td></tr>`;
+    }
+}
+
+async function loadNotificationTemplates() {
+    const container = document.getElementById("notifTemplatesContainer");
+    if (!container) return;
+    const token = sessionStorage.getItem("locallinkAdminToken");
+    if (!token) return;
+
+    try {
+        const res = await fetch("http://localhost:5001/api/admin/notifications/templates", {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) return;
+
+        const templates = result.data || [];
+        container.innerHTML = "";
+
+        templates.forEach(tpl => {
+            const card = document.createElement("div");
+            card.className = "bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all";
+            card.innerHTML = `
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-white">${adminSafeHtml(tpl.event_name)}</span>
+                        <span class="text-[10px] uppercase px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300 font-semibold border border-emerald-500/20">${adminSafeHtml(tpl.category || 'System')}</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-2">${adminSafeHtml(tpl.description || '')}</p>
+                    <div class="bg-slate-950/70 border border-slate-800/80 rounded-lg p-2.5 text-[11px] text-slate-300 font-mono mb-3">
+                        "${adminSafeHtml(tpl.sample_body || '')}"
+                    </div>
+                </div>
+                <div class="flex items-center justify-between pt-2 border-t border-slate-800/80">
+                    <span class="text-[10px] text-slate-400">Channels: ${(tpl.channels || ['in_app']).join(', ')}</span>
+                    <button type="button" onclick='openSendBroadcastModal({ title: "${adminSafeHtml(tpl.event_name)}", message: "${adminSafeHtml(tpl.sample_body)}", type: "${adminSafeHtml(tpl.category || 'operational')}" })' class="px-2.5 py-1 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-300 text-xs font-semibold border border-emerald-500/30 transition-all">
+                        Use Template
+                    </button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    } catch (err) {
+        console.error("Templates error:", err);
+    }
+}
+
+function openSendBroadcastModal(prefill = null) {
+    const modal = document.getElementById("sendBroadcastModal");
+    const msg = document.getElementById("broadcastModalMsg");
+    if (!modal) return;
+
+    if (msg) msg.textContent = "";
+
+    if (prefill) {
+        if (prefill.title) document.getElementById("newBroadTitle").value = prefill.title;
+        if (prefill.message) document.getElementById("newBroadMessage").value = prefill.message;
+        if (prefill.audience) document.getElementById("newBroadAudience").value = prefill.audience;
+        if (prefill.channel) document.getElementById("newBroadChannel").value = prefill.channel;
+        if (prefill.type) document.getElementById("newBroadType").value = prefill.type;
+    } else {
+        document.getElementById("createBroadcastForm")?.reset();
+    }
+
+    modal.classList.remove("hidden");
+}
+
+function closeSendBroadcastModal() {
+    const modal = document.getElementById("sendBroadcastModal");
+    if (modal) modal.classList.add("hidden");
+}
+
+async function handleSendBroadcast(e) {
+    e.preventDefault();
+    const token = sessionStorage.getItem("locallinkAdminToken");
+    const msg = document.getElementById("broadcastModalMsg");
+    if (!token) return;
+
+    const payload = {
+        title: document.getElementById("newBroadTitle").value.trim(),
+        message: document.getElementById("newBroadMessage").value.trim(),
+        target_audience: document.getElementById("newBroadAudience").value,
+        channel: document.getElementById("newBroadChannel").value,
+        notification_type: document.getElementById("newBroadType").value
+    };
+
+    if (msg) {
+        msg.className = "text-xs text-sky-400";
+        msg.textContent = "Dispatching notification broadcast across channels...";
+    }
+
+    try {
+        const res = await fetch("http://localhost:5001/api/admin/notifications/broadcast", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) throw new Error(result.message || "Broadcast failed");
+
+        closeSendBroadcastModal();
+        await loadNotificationLogs();
+    } catch (err) {
+        if (msg) {
+            msg.className = "text-xs text-rose-400";
+            msg.textContent = err.message;
+        }
+    }
+}
+
+async function deleteNotificationLog(id) {
+    if (!confirm("Remove this broadcast record?")) return;
+    const token = sessionStorage.getItem("locallinkAdminToken");
+    if (!token) return;
+
+    try {
+        const res = await fetch(`http://localhost:5001/api/admin/notifications/${id}`, {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) throw new Error(result.message || "Delete failed");
+        await loadNotificationLogs();
+    } catch (err) {
+        alert(err.message || "Could not delete notification log");
+    }
+}
+
+// ==========================================
+// SUPPORT & HELPDESK TICKETING MODULE
+// ==========================================
+
+let suppSearchTimer = null;
+let activeTicketId = null;
+
+function debounceSupportSearch() {
+    clearTimeout(suppSearchTimer);
+    suppSearchTimer = setTimeout(loadSupportTickets, 300);
+}
+
+async function loadSupportModule() {
+    await loadSupportTickets();
+}
+
+async function loadSupportTickets() {
+    const tbody = document.getElementById("suppTicketsTableBody");
+    const totalEl = document.getElementById("suppTotalTickets");
+    const openEl = document.getElementById("suppOpenCount");
+    const inProgEl = document.getElementById("suppInProgressCount");
+    const resEl = document.getElementById("suppResolvedCount");
+    const urgEl = document.getElementById("suppUrgentCount");
+
+    const searchEl = document.getElementById("suppSearchInput");
+    const stFilter = document.getElementById("suppStatusFilter");
+    const priFilter = document.getElementById("suppPriorityFilter");
+    const catFilter = document.getElementById("suppCategoryFilter");
+
+    if (!tbody) return;
+    const token = sessionStorage.getItem("locallinkAdminToken");
+    if (!token) return;
+
+    const params = new URLSearchParams({ limit: "50" });
+    if (searchEl?.value.trim()) params.set("search", searchEl.value.trim());
+    if (stFilter?.value && stFilter.value !== "all") params.set("status", stFilter.value);
+    if (priFilter?.value && priFilter.value !== "all") params.set("priority", priFilter.value);
+    if (catFilter?.value && catFilter.value !== "all") params.set("category", catFilter.value);
+
+    try {
+        const res = await fetch(`http://localhost:5001/api/admin/support/tickets?${params}`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) throw new Error(result.message || "Failed to load support tickets");
+
+        const data = result.data || {};
+        const tickets = data.tickets || [];
+        const stats = data.stats || {};
+
+        if (totalEl) totalEl.textContent = Number(stats.totalTickets ?? stats.total ?? tickets.length);
+        if (openEl) openEl.textContent = Number(stats.openCount ?? stats.open ?? 0);
+        if (inProgEl) inProgEl.textContent = Number(stats.inProgressCount ?? stats.in_progress ?? 0);
+        if (resEl) resEl.textContent = Number(stats.resolvedCount ?? stats.resolved ?? 0);
+        if (urgEl) urgEl.textContent = Number(stats.urgentCount ?? stats.urgent ?? 0);
+
+        tbody.innerHTML = "";
+        if (tickets.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-slate-400">No support tickets found matching current filters.</td></tr>';
+            return;
+        }
+
+        const priorityBadges = {
+            urgent: "bg-rose-500/10 text-rose-300 border-rose-500/20 font-bold",
+            high: "bg-amber-500/10 text-amber-300 border-amber-500/20 font-semibold",
+            medium: "bg-sky-500/10 text-sky-300 border-sky-500/20 font-medium",
+            low: "bg-slate-800 text-slate-400 border-slate-700 font-normal"
+        };
+
+        const statusBadges = {
+            open: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+            in_progress: "bg-sky-500/10 text-sky-400 border-sky-500/20",
+            waiting_seller: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+            resolved: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+            closed: "bg-slate-800 text-slate-400 border-slate-700"
+        };
+
+        tickets.forEach(ticket => {
+            const tr = document.createElement("tr");
+            tr.className = "hover:bg-slate-900/50 transition-colors";
+
+            const priBadge = priorityBadges[ticket.priority] || priorityBadges.medium;
+            const stBadge = statusBadges[ticket.status] || statusBadges.open;
+            const tId = ticket.ticketId || ticket.ticket_id;
+            const tNum = ticket.ticketNumber || ticket.ticket_number || `TCK-${tId}`;
+            const sName = ticket.userName || ticket.seller_name || ("Merchant #" + (ticket.sellerId || ticket.seller_id));
+            const shopName = ticket.shopName ? ` (${ticket.shopName})` : "";
+            const tDate = ticket.updatedAt || ticket.updated_at || ticket.createdAt || ticket.created_at;
+
+            tr.innerHTML = `
+                <td class="px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <span class="font-mono text-xs font-bold text-sky-400">${adminSafeHtml(tNum)}</span>
+                    </div>
+                    <div class="font-semibold text-white text-xs mt-0.5">${adminSafeHtml(ticket.subject)}</div>
+                    <div class="text-[11px] text-slate-400">From: ${adminSafeHtml(sName)}${adminSafeHtml(shopName)}</div>
+                </td>
+                <td class="px-4 py-3">
+                    <span class="inline-block px-2 py-0.5 rounded text-[11px] uppercase bg-slate-800 text-slate-300 border border-slate-700">
+                        ${adminSafeHtml(ticket.category)}
+                    </span>
+                </td>
+                <td class="px-4 py-3">
+                    <span class="inline-block px-2 py-0.5 rounded text-[11px] uppercase border ${priBadge}">
+                        ${adminSafeHtml(ticket.priority)}
+                    </span>
+                </td>
+                <td class="px-4 py-3">
+                    <span class="inline-block px-2 py-0.5 rounded text-[11px] uppercase border ${stBadge}">
+                        ${adminSafeHtml(ticket.status.replace('_', ' '))}
+                    </span>
+                </td>
+                <td class="px-4 py-3 text-xs text-slate-400 whitespace-nowrap">
+                    ${adminFormatDate(tDate)}
+                </td>
+                <td class="px-4 py-3 text-right space-x-1 whitespace-nowrap">
+                    <button type="button" onclick="openTicketDetail(${tId})" class="px-2.5 py-1 rounded-lg bg-sky-600/20 hover:bg-sky-600/40 text-sky-300 text-xs font-semibold border border-sky-500/30 transition-all">
+                        <i class="fa-solid fa-comments mr-1"></i> View & Reply
+                    </button>
+                    <select onchange="updateTicketQuickStatus(${tId}, this.value)" class="rounded-lg bg-slate-900 border border-slate-700 px-2 py-1 text-[11px] text-slate-300 outline-none">
+                        <option value="" disabled selected>Status...</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (err) {
+        console.error("Support tickets error:", err);
+        tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-rose-400">${adminSafeHtml(err.message)}</td></tr>`;
+    }
+}
+
+async function openTicketDetail(ticketId) {
+    const modal = document.getElementById("ticketDetailModal");
+    const container = document.getElementById("ticketMessagesContainer");
+    if (!modal) return;
+
+    activeTicketId = ticketId;
+    modal.classList.remove("hidden");
+
+    if (container) {
+        container.innerHTML = '<div class="text-center text-slate-400 py-6 text-xs">Loading conversation history...</div>';
+    }
+
+    const token = sessionStorage.getItem("locallinkAdminToken");
+    if (!token) return;
+
+    try {
+        const res = await fetch(`http://localhost:5001/api/admin/support/tickets/${ticketId}`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) throw new Error(result.message || "Failed to load ticket");
+
+        const ticket = result.data?.ticket || result.data || {};
+        const tNum = ticket.ticketNumber || ticket.ticket_number || `TCK-${ticketId}`;
+        const sName = ticket.userName || ticket.seller_name || ("Merchant #" + (ticket.sellerId || ticket.seller_id));
+        const sEmail = ticket.userEmail || ticket.seller_email || "No email";
+
+        document.getElementById("ticketModalNumber").textContent = tNum;
+        document.getElementById("ticketModalSubject").textContent = ticket.subject || "Support Inquiry";
+        document.getElementById("ticketModalStatusBadge").textContent = (ticket.status || "open").toUpperCase();
+        document.getElementById("ticketModalPriorityBadge").textContent = (ticket.priority || "medium").toUpperCase();
+        document.getElementById("ticketModalMeta").textContent = `Merchant: ${sName} (${sEmail}) • Category: ${ticket.category}`;
+
+        const statusSelect = document.getElementById("ticketReplyStatusSelect");
+        if (statusSelect) {
+            statusSelect.value = ticket.status === "open" ? "in_progress" : ticket.status;
+        }
+
+        const messages = ticket.messages || [];
+        container.innerHTML = "";
+
+        if (messages.length === 0) {
+            container.innerHTML = '<div class="text-center text-slate-400 py-6 text-xs">No message thread history found for this ticket.</div>';
+            return;
+        }
+
+        messages.forEach(msg => {
+            const isAdmin = msg.sender_role === "admin";
+            const bubble = document.createElement("div");
+            bubble.className = `flex flex-col ${isAdmin ? "items-end" : "items-start"} space-y-1`;
+            bubble.innerHTML = `
+                <div class="flex items-center gap-2 text-[10px] text-slate-400">
+                    <span class="font-bold ${isAdmin ? "text-sky-400" : "text-amber-400"}">${isAdmin ? "LocalLink Admin Desk" : adminSafeHtml(msg.sender_name || "Merchant")}</span>
+                    <span>•</span>
+                    <span>${adminFormatDate(msg.created_at)}</span>
+                </div>
+                <div class="max-w-[85%] rounded-2xl p-3 text-xs leading-relaxed ${isAdmin ? "bg-sky-600/20 border border-sky-500/30 text-sky-100 rounded-tr-none" : "bg-slate-900 border border-slate-800 text-slate-200 rounded-tl-none"}">
+                    ${adminSafeHtml(msg.message)}
+                </div>
+            `;
+            container.appendChild(bubble);
+        });
+
+        container.scrollTop = container.scrollHeight;
+    } catch (err) {
+        if (container) {
+            container.innerHTML = `<div class="text-center text-rose-400 py-6 text-xs">${adminSafeHtml(err.message)}</div>`;
+        }
+    }
+}
+
+function closeTicketDetail() {
+    const modal = document.getElementById("ticketDetailModal");
+    if (modal) modal.classList.add("hidden");
+    activeTicketId = null;
+    document.getElementById("ticketReplyMessage").value = "";
+}
+
+async function handleSendTicketReply(e) {
+    e.preventDefault();
+    if (!activeTicketId) return;
+
+    const token = sessionStorage.getItem("locallinkAdminToken");
+    const replyInput = document.getElementById("ticketReplyMessage");
+    const statusSelect = document.getElementById("ticketReplyStatusSelect");
+    if (!token || !replyInput?.value.trim()) return;
+
+    const message = replyInput.value.trim();
+    const status = statusSelect?.value || "in_progress";
+
+    try {
+        const res = await fetch(`http://localhost:5001/api/admin/support/tickets/${activeTicketId}/reply`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message, status })
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) throw new Error(result.message || "Reply failed");
+
+        replyInput.value = "";
+        await openTicketDetail(activeTicketId);
+        await loadSupportTickets();
+    } catch (err) {
+        alert(err.message || "Failed to submit reply");
+    }
+}
+
+async function updateTicketQuickStatus(ticketId, status) {
+    if (!status) return;
+    const token = sessionStorage.getItem("locallinkAdminToken");
+    if (!token) return;
+
+    try {
+        const res = await fetch(`http://localhost:5001/api/admin/support/tickets/${ticketId}/status`, {
+            method: "PATCH",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ status })
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) throw new Error(result.message || "Status update failed");
+        await loadSupportTickets();
+    } catch (err) {
+        alert(err.message || "Failed to update status");
+    }
+}
+
+function openCreateTicketModal() {
+    const modal = document.getElementById("createTicketModal");
+    const msg = document.getElementById("createTicketMsg");
+    if (!modal) return;
+    if (msg) msg.textContent = "";
+    document.getElementById("createTicketForm")?.reset();
+    modal.classList.remove("hidden");
+}
+
+function closeCreateTicketModal() {
+    const modal = document.getElementById("createTicketModal");
+    if (modal) modal.classList.add("hidden");
+}
+
+async function handleCreateTicket(e) {
+    e.preventDefault();
+    const token = sessionStorage.getItem("locallinkAdminToken");
+    const msg = document.getElementById("createTicketMsg");
+    if (!token) return;
+
+    const payload = {
+        subject: document.getElementById("newTicketSubject").value.trim(),
+        category: document.getElementById("newTicketCategory").value,
+        priority: document.getElementById("newTicketPriority").value,
+        seller_id: parseInt(document.getElementById("newTicketSellerId").value, 10) || 3,
+        message: document.getElementById("newTicketMessage").value.trim()
+    };
+
+    if (msg) {
+        msg.className = "text-xs text-sky-400";
+        msg.textContent = "Creating support desk ticket...";
+    }
+
+    try {
+        const res = await fetch("http://localhost:5001/api/admin/support/tickets", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) throw new Error(result.message || "Ticket creation failed");
+
+        closeCreateTicketModal();
+        await loadSupportTickets();
+    } catch (err) {
+        if (msg) {
+            msg.className = "text-xs text-rose-400";
+            msg.textContent = err.message;
+        }
     }
 }
 </script>

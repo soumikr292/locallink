@@ -67,6 +67,7 @@ async function initCloudDb() {
   const backendDir = path.join(__dirname, "..");
   const schemaPath = path.join(backendDir, "database", "schema.sql");
   const sellerMigrationPath = path.join(backendDir, "database", "seller_migrations.sql");
+  const adminMigrationPath = path.join(backendDir, "database", "admin_enhancements_migration.sql");
   const forceSeed = process.argv.includes("--force-seed");
 
   let conn;
@@ -96,6 +97,43 @@ async function initCloudDb() {
         await conn.query(stmt);
       }
       console.log("Seller migration tables verified/created.");
+    }
+
+    // 2b. Apply admin enhancements schema idempotently
+    if (fs.existsSync(adminMigrationPath)) {
+      const adminSql = fs.readFileSync(adminMigrationPath, "utf8");
+      for (const stmt of splitSqlStatements(adminSql)) {
+        await conn.query(stmt);
+      }
+      console.log("Admin enhancement tables verified/created.");
+    }
+
+    // Seed default tax slabs if empty
+    const taxCount = await conn.query("SELECT COUNT(*) AS cnt FROM tax_rates");
+    if (Number(taxCount[0]?.cnt || 0) === 0) {
+      await conn.query(`
+        INSERT INTO tax_rates (slab_name, rate_percentage, hsn_code, cgst_percentage, sgst_percentage, igst_percentage, category_name, is_active)
+        VALUES
+          ('Fresh Produce & Marine (0% Nil)', 0.00, '0302', 0.00, 0.00, 0.00, 'Vegetables & Fish', 1),
+          ('Essential Edibles (5% GST)', 5.00, '1508', 2.50, 2.50, 5.00, 'Groceries & Spices', 1),
+          ('Dairy, Sweets & Bakery (12% GST)', 12.00, '0405', 6.00, 6.00, 12.00, 'Dairy & Bakery', 1),
+          ('Packaged Retail & Sundries (18% GST)', 18.00, '2106', 9.00, 9.00, 18.00, 'Snacks & Packaged Food', 1),
+          ('Municipal Market Sanitation Cess (1%)', 1.00, '9985', 0.50, 0.50, 1.00, 'Market Services', 1)
+      `);
+      console.log("Seeded default commodity GST slabs.");
+    }
+
+    // Seed default notifications if empty
+    const notifCount = await conn.query("SELECT COUNT(*) AS cnt FROM platform_notifications");
+    if (Number(notifCount[0]?.cnt || 0) === 0) {
+      await conn.query(`
+        INSERT INTO platform_notifications (title, message, target_audience, channel, notification_type, status)
+        VALUES
+          ('Durga Puja Local Fair Schedule', 'Rajpur & Sonarpur morning stalls will operate 6:00 AM to 11:30 PM throughout the festival week.', 'all', 'in_app', 'announcement', 'sent'),
+          ('Cold Chain Seafood Payouts Cleared', 'Weekly vendor sales settlements for October cycle have been credited to registered bank accounts.', 'sellers', 'sms', 'payout', 'delivered'),
+          ('Monsoon Rider Safety Advisory', 'Rain shields & safety kits available at Sonarpur hub. Low visibility hazard protocols active.', 'riders', 'push', 'safety', 'delivered')
+      `);
+      console.log("Seeded default platform notifications.");
     }
 
     // 3. Ensure extended marketplace columns used by customer/seller flows exist
