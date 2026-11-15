@@ -99,7 +99,23 @@ async function initCloudDb() {
       console.log("Seller migration tables verified/created.");
     }
 
-    // 2b. Apply admin enhancements schema idempotently
+    // 2b. Ensure admin enhancement tables match canonical schema
+    try {
+      const taxCols = await conn.query("SHOW COLUMNS FROM `tax_rates` LIKE 'rate_id'");
+      if (taxCols.length > 0) {
+        await conn.query("DROP TABLE `tax_rates`");
+        console.log("Realigning tax_rates table to canonical schema.");
+      }
+    } catch (_) {}
+
+    try {
+      const notifCols = await conn.query("SHOW COLUMNS FROM `platform_notifications` LIKE 'notification_id'");
+      if (notifCols.length > 0) {
+        await conn.query("DROP TABLE `platform_notifications`");
+        console.log("Realigning platform_notifications table to canonical schema.");
+      }
+    } catch (_) {}
+
     if (fs.existsSync(adminMigrationPath)) {
       const adminSql = fs.readFileSync(adminMigrationPath, "utf8");
       for (const stmt of splitSqlStatements(adminSql)) {
@@ -112,13 +128,13 @@ async function initCloudDb() {
     const taxCount = await conn.query("SELECT COUNT(*) AS cnt FROM tax_rates");
     if (Number(taxCount[0]?.cnt || 0) === 0) {
       await conn.query(`
-        INSERT INTO tax_rates (slab_name, rate_percentage, hsn_code, cgst_percentage, sgst_percentage, igst_percentage, category_name, is_active)
+        INSERT INTO tax_rates (name, rate, cgst_rate, sgst_rate, igst_rate, hsn_code, category_name, is_active)
         VALUES
-          ('Fresh Produce & Marine (0% Nil)', 0.00, '0302', 0.00, 0.00, 0.00, 'Vegetables & Fish', 1),
-          ('Essential Edibles (5% GST)', 5.00, '1508', 2.50, 2.50, 5.00, 'Groceries & Spices', 1),
-          ('Dairy, Sweets & Bakery (12% GST)', 12.00, '0405', 6.00, 6.00, 12.00, 'Dairy & Bakery', 1),
-          ('Packaged Retail & Sundries (18% GST)', 18.00, '2106', 9.00, 9.00, 18.00, 'Snacks & Packaged Food', 1),
-          ('Municipal Market Sanitation Cess (1%)', 1.00, '9985', 0.50, 0.50, 1.00, 'Market Services', 1)
+          ('Fresh Produce & Marine (0% Nil)', 0.00, 0.00, 0.00, 0.00, '0302', 'Vegetables & Fish', 1),
+          ('Essential Edibles (5% GST)', 5.00, 2.50, 2.50, 5.00, '1508', 'Groceries & Spices', 1),
+          ('Dairy, Sweets & Bakery (12% GST)', 12.00, 6.00, 6.00, 12.00, 'Dairy & Bakery', 1),
+          ('Packaged Retail & Sundries (18% GST)', 18.00, 9.00, 9.00, 18.00, 'Snacks & Packaged Food', 1),
+          ('Municipal Market Sanitation Cess (1%)', 1.00, 0.50, 0.50, 1.00, '9985', 'Market Services', 1)
       `);
       console.log("Seeded default commodity GST slabs.");
     }
@@ -127,11 +143,11 @@ async function initCloudDb() {
     const notifCount = await conn.query("SELECT COUNT(*) AS cnt FROM platform_notifications");
     if (Number(notifCount[0]?.cnt || 0) === 0) {
       await conn.query(`
-        INSERT INTO platform_notifications (title, message, target_audience, channel, notification_type, status)
+        INSERT INTO platform_notifications (title, message, target_audience, channel, type, status, recipients_count, created_by)
         VALUES
-          ('Durga Puja Local Fair Schedule', 'Rajpur & Sonarpur morning stalls will operate 6:00 AM to 11:30 PM throughout the festival week.', 'all', 'in_app', 'announcement', 'sent'),
-          ('Cold Chain Seafood Payouts Cleared', 'Weekly vendor sales settlements for October cycle have been credited to registered bank accounts.', 'sellers', 'sms', 'payout', 'delivered'),
-          ('Monsoon Rider Safety Advisory', 'Rain shields & safety kits available at Sonarpur hub. Low visibility hazard protocols active.', 'riders', 'push', 'safety', 'delivered')
+          ('Durga Puja Local Fair Schedule', 'Rajpur & Sonarpur morning stalls will operate 6:00 AM to 11:30 PM throughout the festival week.', 'all', 'in_app', 'announcement', 'sent', 125, 'Platform Operations'),
+          ('Cold Chain Seafood Payouts Cleared', 'Weekly vendor sales settlements for October cycle have been credited to registered bank accounts.', 'sellers', 'sms', 'payout', 'sent', 18, 'Finance Desk'),
+          ('Monsoon Rider Safety Advisory', 'Rain shields & safety kits available at Sonarpur hub. Low visibility hazard protocols active.', 'riders', 'push', 'safety', 'sent', 32, 'Dispatch Hub')
       `);
       console.log("Seeded default platform notifications.");
     }
