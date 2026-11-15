@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Allow: /customer
+Allow: /marketplace
+Allow: /seller
+Allow: /seller-login
+Allow: /delivery
+Allow: /privacy-policy
+Disallow: /admin
+Disallow: /admin.html
+Disallow: /api/admin/
+
+Sitemap: https://locallink-web-production.up.railway.app/sitemap.xml

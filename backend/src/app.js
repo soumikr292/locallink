@@ -284,6 +284,17 @@ app.get(["/privacy-policy", "/privacy"], (req, res) => {
   res.sendFile(path.join(frontendPath, "privacy-policy.html"));
 });
 
+// Google Search Engine & Crawler Routes
+app.get("/robots.txt", (req, res) => {
+  res.type("text/plain");
+  res.sendFile(path.join(frontendPath, "robots.txt"));
+});
+
+app.get("/sitemap.xml", (req, res) => {
+  res.type("application/xml");
+  res.sendFile(path.join(frontendPath, "sitemap.xml"));
+});
+
 app.get("/.well-known/assetlinks.json", (req, res) => {
   const packageName = process.env.ANDROID_PACKAGE_NAME || "com.locallink.marketplace";
   const rawFingerprints = process.env.ANDROID_SHA256_FINGERPRINT || "";

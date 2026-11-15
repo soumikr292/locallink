@@ -77,7 +77,11 @@ function printStartupBanner(lanIps, hasHttps) {
 
 async function startServer() {
     try {
-        await testDatabaseConnection();
+        try {
+            await testDatabaseConnection();
+        } catch (dbErr) {
+            console.warn("⚠️ Database connection check failed on startup. Continuing server initialization...", dbErr.message);
+        }
 
         const lanIps = getLanIps();
         const tlsCreds = ensureLocalTlsCerts(lanIps);
