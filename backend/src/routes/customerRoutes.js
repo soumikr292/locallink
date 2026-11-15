@@ -10,7 +10,9 @@ const {
   placeOrder,
   listOrders,
   trackOrder,
-  addReview
+  addReview,
+  parsePaperList,
+  getBazaarStories
 } = require("../controllers/customerController");
 const { authenticateToken, requireCustomer } = require("../middleware/authMiddleware");
 
@@ -20,10 +22,12 @@ const router = express.Router();
 router.post("/auth/login", loginCustomer);
 router.post("/auth/register", registerCustomer);
 
-// Public Marketplace Browsing, Price Compare & AI Bargain preview
+// Public Marketplace Browsing, Price Compare, AI Bargain, Paper List & Live Stories
 router.get("/products", listProducts);
 router.get("/compare", comparePrices);
 router.post("/bargain", bargainChat);
+router.post("/parse-list", parsePaperList);
+router.get("/bazaar-stories", getBazaarStories);
 
 // Protected Customer Account, Orders, Tracking & Reviews
 router.get("/profile", authenticateToken, requireCustomer, getProfile);

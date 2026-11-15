@@ -189,9 +189,12 @@
       <div class="flex-1 min-w-[240px] max-w-3xl mx-2 sm:mx-4 hidden md:block relative">
         <div class="relative flex items-center">
           <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400 text-sm sm:text-base pointer-events-none transition-colors"></i>
-          <input type="text" id="marketSearchInput" oninput="handleMarketSearch(this.value)" onkeydown="if(event.key==='Enter')handleMarketSearchSubmit()" placeholder="Search fresh fish, country potatoes, oil, rice, turmeric, or stall name..." style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; background-color: #020617 !important;" class="w-full text-white placeholder-slate-400 text-sm sm:text-base font-semibold px-4 py-2.5 sm:py-3 pl-11 sm:pl-12 pr-20 rounded-2xl bg-slate-950 border border-slate-700/80 hover:border-slate-600 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 outline-none shadow-inner tracking-wide transition-all caret-emerald-400">
-          <button type="button" id="marketSearchClearBtn" onclick="clearMarketSearch()" class="hidden absolute right-12 w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white flex items-center justify-center text-xs font-bold transition-all shadow" title="Clear search">✕</button>
-          <button type="button" id="marketVoiceSearchBtn" onclick="openVoiceSearchModal()" class="absolute right-3.5 w-7 h-7 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all shadow group" title="Voice Search (English, বাংলা, हिन्दी)">
+          <input type="text" id="marketSearchInput" oninput="handleMarketSearch(this.value)" onkeydown="if(event.key==='Enter')handleMarketSearchSubmit()" placeholder="Search fresh fish, country potatoes, oil, rice, turmeric, or stall name..." style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; background-color: #020617 !important;" class="w-full text-white placeholder-slate-400 text-sm sm:text-base font-semibold px-4 py-2.5 sm:py-3 pl-11 sm:pl-12 pr-28 rounded-2xl bg-slate-950 border border-slate-700/80 hover:border-slate-600 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 outline-none shadow-inner tracking-wide transition-all caret-emerald-400">
+          <button type="button" id="marketSearchClearBtn" onclick="clearMarketSearch()" class="hidden absolute right-20 w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white flex items-center justify-center text-xs font-bold transition-all shadow" title="Clear search">✕</button>
+          <button type="button" id="marketPaperListBtn" onclick="openPaperListModal()" class="absolute right-11 w-7 h-7 rounded-full bg-purple-950/80 hover:bg-purple-600 border border-purple-500/40 text-purple-300 hover:text-white flex items-center justify-center text-xs transition-all shadow group" title="কাগজের চিরকুট স্ক্যানার (Upload Paper Slip)">
+            <i class="fa-solid fa-camera text-purple-400 group-hover:text-white transition-colors"></i>
+          </button>
+          <button type="button" id="marketVoiceSearchBtn" onclick="openVoiceSearchModal()" class="absolute right-2.5 w-7 h-7 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all shadow group" title="Voice Search (English, বাংলা, हिन्दी)">
             <i class="fa-solid fa-microphone text-emerald-400 group-hover:text-white transition-colors"></i>
           </button>
         </div>
@@ -376,9 +379,12 @@
       <div class="relative">
         <div class="relative flex items-center">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-slate-400 text-sm pointer-events-none"></i>
-          <input type="text" id="mobileMarketSearchInput" oninput="handleMarketSearch(this.value)" onkeydown="if(event.key==='Enter')handleMarketSearchSubmit()" placeholder="Search fresh fish, country potatoes, oil, rice, stalls..." style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; background-color: #020617 !important;" class="w-full text-white placeholder-slate-400 text-sm font-semibold px-4 py-3 pl-11 pr-20 rounded-2xl bg-slate-950 border border-slate-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 shadow-inner outline-none tracking-wide caret-emerald-400">
-          <button type="button" id="mobileMarketSearchClearBtn" onclick="clearMarketSearch()" class="hidden absolute right-11 w-6 h-6 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white flex items-center justify-center text-xs font-bold transition-all shadow" title="Clear search">✕</button>
-          <button type="button" id="mobileVoiceSearchBtn" onclick="openVoiceSearchModal()" class="absolute right-3 w-6 h-6 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all shadow group" title="Voice Search (English, বাংলা, हिन्दी)">
+          <input type="text" id="mobileMarketSearchInput" oninput="handleMarketSearch(this.value)" onkeydown="if(event.key==='Enter')handleMarketSearchSubmit()" placeholder="Search fresh fish, country potatoes, oil, rice, stalls..." style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; background-color: #020617 !important;" class="w-full text-white placeholder-slate-400 text-sm font-semibold px-4 py-3 pl-11 pr-28 rounded-2xl bg-slate-950 border border-slate-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 shadow-inner outline-none tracking-wide caret-emerald-400">
+          <button type="button" id="mobileMarketSearchClearBtn" onclick="clearMarketSearch()" class="hidden absolute right-20 w-6 h-6 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white flex items-center justify-center text-xs font-bold transition-all shadow" title="Clear search">✕</button>
+          <button type="button" id="mobilePaperListBtn" onclick="openPaperListModal()" class="absolute right-10 w-7 h-7 rounded-full bg-purple-950/80 hover:bg-purple-600 border border-purple-500/40 text-purple-300 hover:text-white flex items-center justify-center text-xs transition-all shadow group" title="কাগজের চিরকুট স্ক্যানার (Upload Paper Slip)">
+            <i class="fa-solid fa-camera text-purple-400 group-hover:text-white text-[11px] transition-colors"></i>
+          </button>
+          <button type="button" id="mobileVoiceSearchBtn" onclick="openVoiceSearchModal()" class="absolute right-2.5 w-7 h-7 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all shadow group" title="Voice Search (English, বাংলা, हिन्दी)">
             <i class="fa-solid fa-microphone text-emerald-400 group-hover:text-white text-[11px] transition-colors"></i>
           </button>
         </div>
@@ -412,6 +418,52 @@
     <!-- ============================================== -->
     <div id="page-home" class="customer-page space-y-6">
       
+      <!-- Live 6:00 AM Morning Market Stories (P3) -->
+      <div id="bazaarStoriesSection" class="p-4 sm:p-5 bg-slate-900/90 border border-slate-800 rounded-3xl shadow-xl space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="flex h-3 w-3 relative">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
+            </span>
+            <h3 class="text-white font-black text-sm sm:text-base tracking-wide flex items-center gap-2" data-i18n="bazaar_stories_title">
+              🔴 আজকের সকালের তাজা বাজার (৬:০০ AM লাইভ)
+            </h3>
+          </div>
+          <span class="px-2.5 py-0.5 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 text-[10px] font-bold">
+            Live Daily
+          </span>
+        </div>
+        <p class="text-slate-400 text-xs" data-i18n="bazaar_stories_subtitle">
+          সোনারপুরের স্থানীয় বাজার থেকে সকালের তাজা মাছ ও শাকসবজির লাইভ আপডেট
+        </p>
+
+        <!-- Horizontal scrollable stories tray -->
+        <div id="bazaarStoriesList" class="flex gap-4 overflow-x-auto pb-2 pt-1 no-scrollbar scroll-smooth">
+          <div class="text-xs text-slate-500 py-2">Loading morning market stories...</div>
+        </div>
+      </div>
+
+      <!-- Handwritten Paper List AI Scanner Quick Banner (P2) -->
+      <div class="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-purple-950/70 via-slate-900 to-indigo-950/70 border border-purple-500/40 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-500/40 text-purple-300 flex items-center justify-center text-xl shrink-0">
+            <i class="fa-solid fa-file-lines"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-bold rounded-full" data-i18n="paper_list_banner_badge">স্মার্ট এআই স্ক্যানার</span>
+              <h3 class="text-white font-black text-sm sm:text-base" data-i18n="paper_list_banner_title">কাগজের চিরকুট বা খাতার বাজারের ফর্দ স্ক্যান করুন</h3>
+            </div>
+            <p class="text-slate-300 text-xs mt-0.5" data-i18n="paper_list_banner_desc">হাতে লেখা চিরকুট বা ফর্দের ছবি তুলুন — সব সামগ্রী নিজে থেকেই খুঁজে ১ ক্লিকে কার্টে তুলে দেবে!</p>
+          </div>
+        </div>
+        <button onclick="openPaperListModal()" class="w-full md:w-auto px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl shadow-lg shadow-purple-600/30 text-xs flex items-center justify-center gap-2 whitespace-nowrap transition-all">
+          <i class="fa-solid fa-camera"></i>
+          <span data-i18n="paper_list_btn">ফর্দ স্ক্যান করুন</span>
+        </button>
+      </div>
+
       <!-- Hero Banner -->
       <div class="w-full bg-gradient-to-r from-emerald-900/60 via-slate-900 to-slate-900 border border-emerald-500/20 rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-2xl flex flex-col justify-center min-h-[190px]">
         <div class="absolute right-6 -bottom-6 opacity-10 text-emerald-400 text-9xl pointer-events-none">
@@ -1657,6 +1709,245 @@
     </div>
   </div>
 
+  <!-- ============================================== -->
+  <!-- 🐟 1. FISH & MEAT CUTTING PREFERENCE MODAL (P1)-->
+  <!-- ============================================== -->
+  <div id="fishCutModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
+    <div class="bg-slate-900 border border-blue-500/30 w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-4 animate-scaleIn">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-fish"></i>
+          </div>
+          <div>
+            <h3 class="text-white font-bold text-base" data-i18n="fish_cut_title">🐟 মাছ ও মাংস কাটার ধরন</h3>
+            <p id="fishCutProductName" class="text-blue-400 text-xs font-semibold">Ruhi Fish (রুই মাছ)</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeFishCutModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
+      </div>
+
+      <p class="text-xs text-slate-300" data-i18n="fish_cut_desc">দোকানদার কীভাবে মাছটি কেটে দেবেন তা বেছে নিন:</p>
+
+      <div class="space-y-2.5" id="fishCutOptionsList">
+        <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-950 border border-emerald-500/50 cursor-pointer hover:border-emerald-400 transition-all">
+          <div class="flex items-center gap-3">
+            <input type="radio" name="fishCutOption" value="পেটি ও গাদা (Bengali Curry Cut)" checked class="text-emerald-500 focus:ring-emerald-500 w-4 h-4 bg-slate-900 border-slate-700">
+            <div>
+              <span class="text-white font-bold text-xs block" data-i18n="cut_curry">পেটি ও গাদা (Curry Cut)</span>
+              <span class="text-slate-400 text-[11px]">আদর্শ ঝোল ও কালিয়ার জন্য সেরা মাঝারি টুকরো</span>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">জনপ্রিয়</span>
+        </label>
+
+        <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer hover:border-slate-700 transition-all">
+          <div class="flex items-center gap-3">
+            <input type="radio" name="fishCutOption" value="পাতলা ঝোলের টুকরো (Thin Jhol Cut)" class="text-emerald-500 focus:ring-emerald-500 w-4 h-4 bg-slate-900 border-slate-700">
+            <div>
+              <span class="text-white font-bold text-xs block" data-i18n="cut_jhol">পাতলা ঝোলের টুকরো (Thin Jhol Cut)</span>
+              <span class="text-slate-400 text-[11px]">হালকা জিরা-আদা বাটির ঝোলের জন্য নিখুঁত পাতলা টুকরো</span>
+            </div>
+          </div>
+        </label>
+
+        <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer hover:border-slate-700 transition-all">
+          <div class="flex items-center gap-3">
+            <input type="radio" name="fishCutOption" value="ফ্রাই কাট / ফিলে (Fish Fry Fillet Cut)" class="text-emerald-500 focus:ring-emerald-500 w-4 h-4 bg-slate-900 border-slate-700">
+            <div>
+              <span class="text-white font-bold text-xs block" data-i18n="cut_fry">ফ্রাই কাট / ফিলে (Fish Fry Fillet Cut)</span>
+              <span class="text-slate-400 text-[11px]">কাঁটাহীন পাতলা ফিলে বা তেল ভাজার কাট</span>
+            </div>
+          </div>
+        </label>
+
+        <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer hover:border-slate-700 transition-all">
+          <div class="flex items-center gap-3">
+            <input type="radio" name="fishCutOption" value="গোটা মাছ পরিষ্কার ও আঁশ ছাড়ানো (Whole Cleaned)" class="text-emerald-500 focus:ring-emerald-500 w-4 h-4 bg-slate-900 border-slate-700">
+            <div>
+              <span class="text-white font-bold text-xs block" data-i18n="cut_cleaned">গোটা মাছ পরিষ্কার ও আঁশ ছাড়ানো</span>
+              <span class="text-slate-400 text-[11px]">পেট কাটা ও ফুলকা বাদ দিয়ে আস্ত মাছ রাখা হবে</span>
+            </div>
+          </div>
+        </label>
+
+        <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer hover:border-slate-700 transition-all">
+          <div class="flex items-center gap-3">
+            <input type="radio" name="fishCutOption" value="গোটা সম্পূর্ণ (Whole Uncut)" class="text-emerald-500 focus:ring-emerald-500 w-4 h-4 bg-slate-900 border-slate-700">
+            <div>
+              <span class="text-white font-bold text-xs block" data-i18n="cut_whole">গোটা সম্পূর্ণ (Whole Uncut)</span>
+              <span class="text-slate-400 text-[11px]">কোনো কাটা বা আঁচড় ছাড়াই সম্পূর্ণ আস্ত মাছ</span>
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2">
+        <button type="button" onclick="closeFishCutModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition-colors">
+          বাতিল
+        </button>
+        <button type="button" onclick="confirmFishCutAndAddToCart()" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-cart-plus"></i>
+          <span>কার্টে যোগ করুন</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- 📝 2. HANDWRITTEN PAPER LIST AI SCANNER (P2)   -->
+  <!-- ============================================== -->
+  <div id="paperListModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/85 backdrop-blur-md">
+    <div class="bg-slate-900 border border-purple-500/30 w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4 animate-scaleIn">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-file-pen"></i>
+          </div>
+          <div>
+            <h3 class="text-white font-bold text-base" data-i18n="paper_list_banner_title">কাগজের চিরকুট / ফর্দ স্ক্যানার</h3>
+            <p class="text-purple-400 text-xs">AI Handwritten Grocery Slip Scanner</p>
+          </div>
+        </div>
+        <button type="button" onclick="closePaperListModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
+      </div>
+
+      <!-- Mode Tabs (Photo vs Text) -->
+      <div class="flex p-1 bg-slate-950 rounded-2xl border border-slate-800 text-xs">
+        <button type="button" id="tabBtnPaperPhoto" onclick="switchPaperListTab('photo')" class="flex-1 py-2 font-bold rounded-xl bg-purple-600 text-white shadow transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-camera"></i>
+          <span>ছবি আপলোড / ক্যামেরা</span>
+        </button>
+        <button type="button" id="tabBtnPaperText" onclick="switchPaperListTab('text')" class="flex-1 py-2 font-bold rounded-xl text-slate-400 hover:text-white transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-keyboard"></i>
+          <span>ফর্দ টাইপ / পেস্ট করুন</span>
+        </button>
+      </div>
+
+      <!-- Tab 1: Photo Upload -->
+      <div id="paperPhotoSection" class="space-y-3">
+        <div class="border-2 border-dashed border-purple-500/30 hover:border-purple-500/60 rounded-2xl p-6 text-center bg-slate-950/60 transition-colors">
+          <input type="file" id="paperImageInput" accept="image/*" capture="environment" onchange="handlePaperImageSelected(this)" class="hidden">
+          <div id="paperImagePreviewPlaceholder" class="space-y-2 cursor-pointer" onclick="document.getElementById('paperImageInput').click()">
+            <div class="w-14 h-14 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center mx-auto text-2xl">
+              <i class="fa-solid fa-camera"></i>
+            </div>
+            <p class="text-white font-bold text-xs sm:text-sm">কাগজের চিরকুট বা খাতার পাতার ছবি তুলুন</p>
+            <p class="text-slate-400 text-[11px]">ক্যামেরা চালু করতে অথবা ফাইল বাছাই করতে ট্যাপ করুন (PNG, JPG)</p>
+          </div>
+          <div id="paperImagePreviewContainer" class="hidden relative">
+            <img id="paperImagePreview" src="" alt="Slip Preview" class="max-h-56 mx-auto rounded-xl border border-purple-500/40 object-contain shadow-lg">
+            <button type="button" onclick="clearPaperImage()" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-rose-600 text-white text-xs font-bold flex items-center justify-center shadow">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Text / Manual List -->
+      <div id="paperTextSection" class="hidden space-y-2">
+        <div class="flex items-center justify-between">
+          <label class="text-xs text-slate-300 font-semibold">হাতে লেখা তালিকার টেক্সট লিখুন বা পেস্ট করুন:</label>
+          <button type="button" onclick="loadSamplePaperListText()" class="text-[11px] text-purple-400 hover:text-purple-300 underline font-bold">
+            + নমুনা ফর্দ টেস্ট করুন
+          </button>
+        </div>
+        <textarea id="paperListTextInput" rows="5" placeholder="যেমন:&#10;১ কেজি রুই মাছ&#10;২ কেজি আলু&#10;১ লিটার সরিষার তেল&#10;৫০০ গ্রাম গোবিন্দভোগ চাল&#10;১২ পিস ডিম" class="w-full bg-slate-950 border border-slate-700 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 text-white placeholder-slate-500 text-xs sm:text-sm p-3 rounded-2xl outline-none font-mono"></textarea>
+      </div>
+
+      <!-- Analyze Button -->
+      <button type="button" id="btnExecutePaperScan" onclick="executePaperListScan()" class="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black rounded-2xl text-xs sm:text-sm shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 transition-all">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>এআই দিয়ে ফর্দ শনাক্ত ও পণ্য খুঁজুন</span>
+      </button>
+
+      <!-- Scan Results View -->
+      <div id="paperScanResultsContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
+        <div class="flex items-center justify-between">
+          <h4 class="text-white font-bold text-xs flex items-center gap-2">
+            <i class="fa-solid fa-circle-check text-emerald-400"></i>
+            <span>শনাক্তকৃত পণ্যের তালিকা (<span id="paperMatchedCount">0</span>টি পণ্য পাওয়া গেছে)</span>
+          </h4>
+          <span id="paperEstimatedTotal" class="text-emerald-400 font-black text-sm">₹ 0</span>
+        </div>
+
+        <div id="paperParsedItemsList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+          <!-- Filled dynamically -->
+        </div>
+
+        <!-- Add All to Cart CTA -->
+        <button type="button" onclick="addAllPaperListItemsToCart()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl text-xs sm:text-sm shadow-xl shadow-emerald-600/30 flex items-center justify-center gap-2 transition-all">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span>এক ক্লিকে সব কার্টে যোগ করুন (Add All to Cart)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- 📸 3. 6:00 AM LIVE MORNING BAZAAR STORIES (P3) -->
+  <!-- ============================================== -->
+  <div id="bazaarStoryModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/95 backdrop-blur-lg">
+    <div class="relative w-full max-w-md h-[92vh] max-h-[750px] bg-slate-900 rounded-3xl overflow-hidden shadow-2xl flex flex-col border border-slate-800">
+      
+      <!-- Story Top Progress Bars -->
+      <div id="storyProgressBars" class="absolute top-3 left-3 right-3 z-30 flex gap-1.5">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Story Header Overlay -->
+      <div class="absolute top-7 left-3 right-3 z-30 flex items-center justify-between text-white drop-shadow-md">
+        <div class="flex items-center gap-2.5 bg-slate-950/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+          <img id="storyVendorAvatar" src="" class="w-7 h-7 rounded-full object-cover border border-emerald-400" alt="Vendor">
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span id="storyVendorName" class="font-bold text-xs">Shyamal Fish Stall</span>
+              <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i>
+            </div>
+            <div class="flex items-center gap-2 text-[10px] text-slate-300">
+              <span id="storyTimestamp">আজ সকাল ৬:১৫</span>
+              <span>•</span>
+              <span class="text-rose-400 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span> লাইভ</span>
+            </div>
+          </div>
+        </div>
+        <button type="button" onclick="closeBazaarStoryModal()" class="w-8 h-8 rounded-full bg-slate-950/70 hover:bg-slate-900 border border-white/20 text-white flex items-center justify-center text-xs font-bold transition-all shadow">
+          ✕
+        </button>
+      </div>
+
+      <!-- Story Media Background -->
+      <div class="relative flex-1 bg-black flex items-center justify-center overflow-hidden cursor-pointer" onclick="handleStoryAreaClick(event)">
+        <img id="storyMediaImage" src="" alt="Bazaar Live" class="w-full h-full object-cover">
+        
+        <!-- Story Tap navigation zones (left 30% prev, right 70% next) -->
+        <div class="absolute inset-y-0 left-0 w-1/3 z-10" onclick="event.stopPropagation(); prevBazaarStory();"></div>
+        <div class="absolute inset-y-0 right-0 w-2/3 z-10" onclick="event.stopPropagation(); nextBazaarStory();"></div>
+      </div>
+
+      <!-- Story Footer Overlay -->
+      <div class="absolute bottom-0 inset-x-0 z-30 p-4 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent space-y-3">
+        <div>
+          <span id="storyMarketTag" class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">
+            Sonarpur Central Bazaar
+          </span>
+          <p id="storyCaption" class="text-white text-xs sm:text-sm font-semibold mt-1.5 drop-shadow">
+            সকাল ৬টায় ক্যানিং থেকে এলো তাজা জ্যান্ত রুই ও কাতলা মাছ! সীমিত স্টক।
+          </p>
+        </div>
+
+        <div class="flex items-center justify-between gap-3 pt-1">
+          <div class="text-left">
+            <span class="text-[10px] text-slate-400 block">আজকের বিশেষ দর:</span>
+            <span id="storyPriceHighlight" class="text-emerald-400 font-black text-sm">₹২৪০ - ₹৩২০ / কেজি</span>
+          </div>
+          <button type="button" id="btnStoryShopStall" onclick="shopFromCurrentStoryStall()" class="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-2xl text-xs shadow-xl flex items-center gap-2 transition-all">
+            <i class="fa-solid fa-store"></i>
+            <span data-i18n="story_shop_btn">🛒 এই স্টলের সামগ্রী কিনুন</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Global Toast Feedback -->
   <div id="toast" class="fixed bottom-20 md:bottom-5 right-3 sm:right-5 z-50 bg-slate-900 border border-emerald-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
     <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
@@ -1838,6 +2129,7 @@
       await initializeCustomerAuth();
       await loadCustomerProducts();
       await loadCompareItems("all");
+      await loadBazaarStories();
     });
 
     // One-Time Login System: Checks saved persistent session (never auto-hijacks another user's account)
@@ -2640,6 +2932,81 @@
       }
     }
 
+    let pendingFishCutProductId = null;
+
+    function isFishOrMeatProduct(product) {
+      if (!product) return false;
+      const cat = (product.categoryKey || product.category || product.category_name || '').toLowerCase();
+      const name = (product.name || '').toLowerCase();
+      return cat === 'fish' || cat === 'meat' || /মাছ|fish|রুই|কাতলা|ভেটকি|ইলিশ|চিংড়ি|পাবদা|তেলাপিয়া|চিকেন|মাটন|chicken|mutton/i.test(name);
+    }
+
+    function openFishCutModal(productId) {
+      pendingFishCutProductId = Number(productId);
+      const product = currentProducts.find(p => Number(p.id) === pendingFishCutProductId);
+      const nameEl = document.getElementById("fishCutProductName");
+      if (nameEl) {
+        nameEl.textContent = product ? `${product.name} (${product.shopName || 'Local Stall'})` : 'Selected Fish Item';
+      }
+      const existingInCart = cart.find(i => Number(i.productId) === pendingFishCutProductId);
+      if (existingInCart && existingInCart.cutPreference) {
+        const matchingRadio = document.querySelector(`input[name="fishCutOption"][value="${existingInCart.cutPreference}"]`);
+        if (matchingRadio) matchingRadio.checked = true;
+      }
+      const modal = document.getElementById("fishCutModal");
+      if (modal) modal.classList.remove("hidden");
+    }
+
+    function closeFishCutModal() {
+      pendingFishCutProductId = null;
+      const modal = document.getElementById("fishCutModal");
+      if (modal) modal.classList.add("hidden");
+    }
+
+    function confirmFishCutAndAddToCart() {
+      if (!pendingFishCutProductId) {
+        closeFishCutModal();
+        return;
+      }
+
+      const selectedRadio = document.querySelector('input[name="fishCutOption"]:checked');
+      const selectedCut = selectedRadio ? selectedRadio.value : "পেটি ও গাদা (Bengali Curry Cut)";
+      const pid = pendingFishCutProductId;
+
+      const product = currentProducts.find(p => Number(p.id) === pid);
+      const name = product ? product.name : "Fresh Market Fish";
+      const shopName = product ? (product.shopName || product.shop_name) : "Sonarpur Stall";
+      const unitPrice = product ? Number(product.price) : 260;
+
+      const existingIndex = cart.findIndex(i => Number(i.productId) === pid);
+      if (existingIndex > -1) {
+        cart[existingIndex].cutPreference = selectedCut;
+        showToast(`Updated "${name}" cutting: [${selectedCut}]`);
+      } else {
+        cart.push({
+          productId: pid,
+          name,
+          shopName,
+          unitPrice,
+          agreedPrice: unitPrice,
+          quantity: 1,
+          cutPreference: selectedCut
+        });
+        showToast(`Added "${name}" [${selectedCut}] to cart!`);
+      }
+
+      closeFishCutModal();
+      saveCartToStorage();
+      updateCartBadge();
+      updateFloatingCartBar();
+      refreshAllProductAddControls(pid);
+
+      const cartPage = document.getElementById("page-cart");
+      if (cartPage && !cartPage.classList.contains("hidden")) {
+        renderCart();
+      }
+    }
+
     function changeProductCartQty(productId, delta, event) {
       if (event && event.stopPropagation) event.stopPropagation();
 
@@ -2659,6 +3026,11 @@
         }
       } else if (delta > 0) {
         const product = currentProducts.find(p => Number(p.id) === pid);
+        if (isFishOrMeatProduct(product)) {
+          openFishCutModal(pid);
+          return;
+        }
+
         const name = product ? product.name : "Local Market Item";
         const shopName = product ? product.shopName : "Sonarpur Stall";
         const unitPrice = product ? Number(product.price) : 95;
@@ -2854,6 +3226,14 @@
             <div>
               <h4 class="font-bold text-white text-sm">${item.name}</h4>
               <p class="text-slate-400 text-xs mt-0.5">${item.shopName}</p>
+              ${item.cutPreference ? `
+                <div class="mt-1 flex items-center gap-1.5 flex-wrap">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-500/20 border border-blue-500/30 text-blue-300 font-bold rounded text-[10px]">
+                    <i class="fa-solid fa-fish text-[9px]"></i> ${item.cutPreference}
+                  </span>
+                  <button type="button" onclick="openFishCutModal(${item.productId})" class="text-[10px] text-blue-400 hover:text-blue-300 underline font-semibold">কাটিং বদলান</button>
+                </div>
+              ` : ''}
               ${item.agreedPrice ? `
                 <span class="inline-block mt-1 px-2 py-0.5 bg-purple-500/20 text-purple-300 font-bold rounded text-[10px]">
                   <i class="fa-solid fa-robot mr-1"></i> ${dict.cart_bargain_rate || "AI Bargain Agreed Rate"}
@@ -3296,7 +3676,8 @@
           items: cart.map(i => ({
             productId: i.productId,
             quantity: i.quantity,
-            agreedPrice: i.agreedPrice
+            agreedPrice: i.agreedPrice,
+            cutPreference: i.cutPreference || null
           })),
           deliveryAddress,
           customerPhone,
@@ -4195,7 +4576,21 @@
         mob_nav_compare: "Compare",
         mob_nav_bargain: "Bargain",
         mob_nav_cart: "Cart",
-        mob_nav_orders: "Orders"
+        mob_nav_orders: "Orders",
+        bazaar_stories_title: "🔴 Today's 6:00 AM Live Bazaar Updates",
+        bazaar_stories_subtitle: "Fresh morning arrivals from verified local stalls in Sonarpur",
+        paper_list_banner_badge: "Smart AI Scanner",
+        paper_list_banner_title: "Scan Handwritten Paper Slip or Notebook List",
+        paper_list_banner_desc: "Have a handwritten market list? Snap a photo or paste text — auto-adds all items to cart!",
+        paper_list_btn: "Scan Market List",
+        fish_cut_title: "🐟 Select Fish/Meat Cut Style",
+        fish_cut_desc: "Select how you would like the stall to clean & slice this item:",
+        cut_curry: "পেটি ও গাদা (Bengali Curry Cut)",
+        cut_jhol: "পাতলা ঝোলের টুকরো (Thin Jhol Cut)",
+        cut_fry: "ফ্রাই কাট / ফিলে (Fish Fry Fillet Cut)",
+        cut_cleaned: "গোটা মাছ পরিষ্কার ও আঁশ ছাড়ানো (Whole Cleaned)",
+        cut_whole: "গোটা সম্পূর্ণ (Whole Uncut)",
+        story_shop_btn: "🛒 Shop from this Stall"
       },
       bn: {
         app_brand_sub: "লোকাল মার্কেট অ্যাপ",
@@ -4316,7 +4711,21 @@
         mob_nav_compare: "তুলনা",
         mob_nav_bargain: "দরদাম",
         mob_nav_cart: "কার্ট",
-        mob_nav_orders: "অর্ডার"
+        mob_nav_orders: "অর্ডার",
+        bazaar_stories_title: "🔴 আজকের সকালের তাজা বাজার (৬:০০ AM লাইভ)",
+        bazaar_stories_subtitle: "সোনারপুরের স্থানীয় বাজার থেকে সকালের তাজা মাছ ও শাকসবজির লাইভ আপডেট",
+        paper_list_banner_badge: "স্মার্ট এআই স্ক্যানার",
+        paper_list_banner_title: "কাগজের চিরকুট বা খাতার বাজারের ফর্দ স্ক্যান করুন",
+        paper_list_banner_desc: "হাতে লেখা চিরকুট বা ফর্দের ছবি তুলুন — সব সামগ্রী নিজে থেকেই খুঁজে ১ ক্লিকে কার্টে তুলে দেবে!",
+        paper_list_btn: "ফর্দ স্ক্যান করুন",
+        fish_cut_title: "🐟 মাছ ও মাংস কাটার ধরন",
+        fish_cut_desc: "দোকানদার কীভাবে মাছটি কেটে দেবেন তা বেছে নিন:",
+        cut_curry: "পেটি ও গাদা (Bengali Curry Cut)",
+        cut_jhol: "পাতলা ঝোলের টুকরো (Thin Jhol Cut)",
+        cut_fry: "ফ্রাই কাট / ফিলে (Fish Fry Fillet Cut)",
+        cut_cleaned: "গোটা মাছ পরিষ্কার ও আঁশ ছাড়ানো (Whole Cleaned)",
+        cut_whole: "গোটা সম্পূর্ণ (Whole Uncut)",
+        story_shop_btn: "🛒 এই স্টলের সামগ্রী কিনুন"
       },
       hi: {
         app_brand_sub: "लोकल मार्केट ऐप",
@@ -4437,7 +4846,21 @@
         mob_nav_compare: "तुलना",
         mob_nav_bargain: "मोलभाव",
         mob_nav_cart: "कार्ट",
-        mob_nav_orders: "ऑर्डर"
+        mob_nav_orders: "ऑर्डर",
+        bazaar_stories_title: "🔴 आज सुबह 6:00 AM लाइव बाज़ार अपडेट",
+        bazaar_stories_subtitle: "सोनारपुर के स्थानीय बाज़ारों से ताज़ा मछली और सब्जियों के लाइव अपडेट",
+        paper_list_banner_badge: "स्मार्ट एआई स्कैनर",
+        paper_list_banner_title: "कागज की पर्ची या डायरी की लिस्ट स्कैन करें",
+        paper_list_banner_desc: "हाथ से लिखी बाज़ार की पर्ची का फ़ोटो लें — सब सामान अपने आप 1 क्लिक में कार्ट में जोड़ेगा!",
+        paper_list_btn: "पर्ची स्कैन करें",
+        fish_cut_title: "🐟 मछली/मांस कटिंग स्टाइल चुनें",
+        fish_cut_desc: "दुकानदार इसे किस प्रकार काटकर तैयार करे:",
+        cut_curry: "पेटी व गादा (Curry Cut)",
+        cut_jhol: "पतली झोल कटिंग (Thin Jhol Cut)",
+        cut_fry: "फ्राई कट / फ़िले (Fish Fry Fillet Cut)",
+        cut_cleaned: "पूरी मछली साफ की हुई (Whole Cleaned)",
+        cut_whole: "पूरी बिना कटी (Whole Uncut)",
+        story_shop_btn: "🛒 इस दुकान का सामान खरीदें"
       }
     };
 
@@ -4888,6 +5311,396 @@
       if (indicator) indicator.textContent = "Detected: " + langInfo.label;
       submitVoiceSearch();
     }
+
+    // ==============================================
+    // 📝 P2: HANDWRITTEN PAPER LIST AI SCANNER
+    // ==============================================
+    let currentPaperListImageBase64 = null;
+    let parsedPaperItems = [];
+
+    function openPaperListModal() {
+      const modal = document.getElementById("paperListModal");
+      if (!modal) return;
+      modal.classList.remove("hidden");
+    }
+
+    function closePaperListModal() {
+      const modal = document.getElementById("paperListModal");
+      if (modal) modal.classList.add("hidden");
+    }
+
+    function switchPaperListTab(tab) {
+      const photoTabBtn = document.getElementById("tabBtnPaperPhoto");
+      const textTabBtn = document.getElementById("tabBtnPaperText");
+      const photoSec = document.getElementById("paperPhotoSection");
+      const textSec = document.getElementById("paperTextSection");
+
+      if (tab === "photo") {
+        photoTabBtn.className = "flex-1 py-2 font-bold rounded-xl bg-purple-600 text-white shadow transition-all flex items-center justify-center gap-2";
+        textTabBtn.className = "flex-1 py-2 font-bold rounded-xl text-slate-400 hover:text-white transition-all flex items-center justify-center gap-2";
+        photoSec.classList.remove("hidden");
+        textSec.classList.add("hidden");
+      } else {
+        textTabBtn.className = "flex-1 py-2 font-bold rounded-xl bg-purple-600 text-white shadow transition-all flex items-center justify-center gap-2";
+        photoTabBtn.className = "flex-1 py-2 font-bold rounded-xl text-slate-400 hover:text-white transition-all flex items-center justify-center gap-2";
+        textSec.classList.remove("hidden");
+        photoSec.classList.add("hidden");
+      }
+    }
+
+    function handlePaperImageSelected(input) {
+      if (!input || !input.files || !input.files[0]) return;
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        currentPaperListImageBase64 = e.target.result;
+        const previewImg = document.getElementById("paperImagePreview");
+        const previewContainer = document.getElementById("paperImagePreviewContainer");
+        const placeholder = document.getElementById("paperImagePreviewPlaceholder");
+        if (previewImg) previewImg.src = currentPaperListImageBase64;
+        if (previewContainer) previewContainer.classList.remove("hidden");
+        if (placeholder) placeholder.classList.add("hidden");
+        showToast("📷 কাগজের ফর্দের ছবি আপলোড সম্পন্ন হয়েছে!");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearPaperImage() {
+      currentPaperListImageBase64 = null;
+      const input = document.getElementById("paperImageInput");
+      if (input) input.value = "";
+      const previewContainer = document.getElementById("paperImagePreviewContainer");
+      const placeholder = document.getElementById("paperImagePreviewPlaceholder");
+      if (previewContainer) previewContainer.classList.add("hidden");
+      if (placeholder) placeholder.classList.remove("hidden");
+    }
+
+    function loadSamplePaperListText() {
+      const textarea = document.getElementById("paperListTextInput");
+      if (textarea) {
+        textarea.value = "১ কেজি রুই মাছ\n২ কেজি দেশি আলু\n১ লিটার সরিষার তেল\n৫০০ গ্রাম গোবিন্দভোগ চাল\n১২ পিস ডিম";
+        showToast("✓ নমুনা ফর্দ যুক্ত করা হয়েছে!");
+      }
+    }
+
+    async function executePaperListScan() {
+      const scanBtn = document.getElementById("btnExecutePaperScan");
+      const origHtml = scanBtn ? scanBtn.innerHTML : "";
+      if (scanBtn) {
+        scanBtn.disabled = true;
+        scanBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> এআই দিয়ে ফর্দ শনাক্ত হচ্ছে...`;
+      }
+
+      const text = document.getElementById("paperListTextInput") ? document.getElementById("paperListTextInput").value.trim() : "";
+      const image = currentPaperListImageBase64;
+
+      if (!text && !image) {
+        if (scanBtn) {
+          scanBtn.disabled = false;
+          scanBtn.innerHTML = origHtml;
+        }
+        showToast("অনুগ্রহ করে একটি ছবি তুলুন বা ফর্দের তালিকা টাইপ করুন", "error");
+        return;
+      }
+
+      try {
+        const res = await apiRequest("/api/customer/parse-list", {
+          method: "POST",
+          body: JSON.stringify({ text, image })
+        });
+
+        if (res && res.success && res.data) {
+          parsedPaperItems = res.data.items || [];
+          const totalEstimate = res.data.grandTotalEstimate || res.data.estimatedTotal || 0;
+          renderParsedPaperItems(parsedPaperItems, totalEstimate);
+          showToast(`✓ ফর্দ থেকে ${parsedPaperItems.length}টি পণ্য সফলভাবে শনাক্ত করা হয়েছে!`, "success");
+        } else {
+          showToast("ফর্দের পণ্য শনাক্ত করা যায়নি। দয়া করে আবার চেষ্টা করুন।", "error");
+        }
+      } catch (err) {
+        console.error("Paper list scan error:", err);
+        showToast("স্ক্যানিংয়ে ত্রুটি হয়েছে। দয়া করে পুনরায় চেষ্টা করুন।", "error");
+      } finally {
+        if (scanBtn) {
+          scanBtn.disabled = false;
+          scanBtn.innerHTML = origHtml;
+        }
+      }
+    }
+
+    function renderParsedPaperItems(items, estimatedTotal) {
+      const container = document.getElementById("paperScanResultsContainer");
+      const listEl = document.getElementById("paperParsedItemsList");
+      const countEl = document.getElementById("paperMatchedCount");
+      const totalEl = document.getElementById("paperEstimatedTotal");
+
+      if (!container || !listEl) return;
+      container.classList.remove("hidden");
+
+      if (countEl) countEl.textContent = items.length;
+      if (totalEl) totalEl.textContent = `₹ ${estimatedTotal || 0}`;
+
+      if (items.length === 0) {
+        listEl.innerHTML = `<div class="p-3 text-center text-slate-400 text-xs">কোনো পণ্য শনাক্ত করা যায়নি</div>`;
+        return;
+      }
+
+      listEl.innerHTML = items.map((it, idx) => {
+        const itemSub = it.itemTotal || it.itemSubtotal || ((it.unitPrice || 0) * (it.quantity || 1));
+        const itemName = it.name || it.matchedProduct || it.rawTerm || "পণ্য";
+        const cut = it.detectedCut || it.cutPreference;
+        return `
+          <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-6 h-6 rounded-lg bg-purple-500/20 text-purple-300 font-bold flex items-center justify-center text-[11px] shrink-0">
+                ${idx + 1}
+              </span>
+              <div class="min-w-0">
+                <h5 class="text-white font-bold truncate">${itemName}</h5>
+                <p class="text-slate-400 text-[11px]">${it.shopName || 'লোকাল স্টল'} • ${it.quantity} ${it.unit || 'কেজি'}</p>
+                ${cut ? `
+                  <span class="inline-block px-1.5 py-0.2 bg-blue-500/20 border border-blue-500/30 text-blue-300 text-[10px] rounded">
+                    🐟 ${cut}
+                  </span>
+                ` : ''}
+              </div>
+            </div>
+            <span class="text-emerald-400 font-bold shrink-0">₹ ${itemSub}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function addAllPaperListItemsToCart() {
+      if (!parsedPaperItems || parsedPaperItems.length === 0) {
+        showToast("কোনো শনাক্তকৃত পণ্য নেই!", "error");
+        return;
+      }
+
+      let addedCount = 0;
+      parsedPaperItems.forEach(it => {
+        const pid = Number(it.productId);
+        const existingIndex = cart.findIndex(i => Number(i.productId) === pid);
+        const qty = Number(it.quantity) || 1;
+        const itemName = it.name || it.matchedProduct || it.rawTerm;
+        const cut = it.detectedCut || it.cutPreference || (isFishOrMeatProduct({ name: itemName }) ? 'পেটি ও গাদা (Bengali Curry Cut)' : null);
+
+        if (existingIndex > -1) {
+          cart[existingIndex].quantity += qty;
+          if (cut && !cart[existingIndex].cutPreference) {
+            cart[existingIndex].cutPreference = cut;
+          }
+        } else {
+          cart.push({
+            productId: pid,
+            name: itemName,
+            shopName: it.shopName || "Sonarpur Stall",
+            unitPrice: Number(it.unitPrice) || 95,
+            agreedPrice: Number(it.unitPrice) || 95,
+            quantity: qty,
+            cutPreference: cut
+          });
+        }
+        addedCount++;
+        refreshAllProductAddControls(pid);
+      });
+
+      saveCartToStorage();
+      updateCartBadge();
+      updateFloatingCartBar();
+
+      closePaperListModal();
+      switchCustomerPage("cart");
+      showToast(`🛒 ${addedCount}টি পণ্য ফর্দ থেকে কার্টে যোগ করা হয়েছে!`, "success");
+    }
+
+    // ==============================================
+    // 📸 P3: LIVE 6:00 AM MORNING BAZAAR STORIES
+    // ==============================================
+    let bazaarStoriesData = [];
+    let currentStoryIndex = 0;
+    let storyAutoAdvanceTimer = null;
+    let storyProgressInterval = null;
+    let storyProgressPercent = 0;
+
+    async function loadBazaarStories() {
+      try {
+        const res = await apiRequest("/api/customer/bazaar-stories");
+        if (res && res.success && res.data) {
+          bazaarStoriesData = res.data.stories || [];
+          renderBazaarStoriesTray(bazaarStoriesData);
+        }
+      } catch (err) {
+        console.warn("Failed to load bazaar stories:", err);
+      }
+    }
+
+    function renderBazaarStoriesTray(stories) {
+      const container = document.getElementById("bazaarStoriesList");
+      if (!container) return;
+
+      if (!stories || stories.length === 0) {
+        container.innerHTML = `<div class="text-xs text-slate-500 py-2">আজকের সকালের গল্প লোড হচ্ছে...</div>`;
+        return;
+      }
+
+      container.innerHTML = stories.map((s, idx) => {
+        return `
+          <div onclick="openBazaarStory(${idx})" class="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 group transition-transform active:scale-95 w-20">
+            <div class="relative w-16 h-16 rounded-full p-[2.5px] bg-gradient-to-tr from-rose-500 via-amber-400 to-emerald-400 shadow-lg group-hover:scale-105 transition-transform">
+              <div class="w-full h-full rounded-full overflow-hidden bg-slate-900 border-2 border-slate-950">
+                <img src="${s.avatarUrl}" alt="${s.stallName}" class="w-full h-full object-cover">
+              </div>
+              <span class="absolute -bottom-1 -right-0.5 px-1.5 py-0.2 rounded-full bg-rose-600 text-[8px] font-black text-white uppercase tracking-wider border border-slate-900 shadow">
+                LIVE
+              </span>
+            </div>
+            <span class="text-white text-[11px] font-bold text-center leading-tight truncate w-full group-hover:text-emerald-400 transition-colors">
+              ${s.stallName.split(' ')[0]}
+            </span>
+            <span class="text-slate-400 text-[9px] text-center whitespace-nowrap">
+              ${s.timeAgo ? s.timeAgo.split(' ')[1] || '৬:১৫' : 'সকাল ৬টা'}
+            </span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function openBazaarStory(index) {
+      if (!bazaarStoriesData || bazaarStoriesData.length === 0) return;
+      currentStoryIndex = Math.max(0, Math.min(index, bazaarStoriesData.length - 1));
+      
+      const modal = document.getElementById("bazaarStoryModal");
+      if (modal) modal.classList.remove("hidden");
+
+      renderActiveStory();
+    }
+
+    function renderActiveStory() {
+      const story = bazaarStoriesData[currentStoryIndex];
+      if (!story) return;
+
+      // Update Header
+      const avatarEl = document.getElementById("storyVendorAvatar");
+      const nameEl = document.getElementById("storyVendorName");
+      const timeEl = document.getElementById("storyTimestamp");
+      const imageEl = document.getElementById("storyMediaImage");
+      const captionEl = document.getElementById("storyCaption");
+      const priceEl = document.getElementById("storyPriceHighlight");
+
+      if (avatarEl) avatarEl.src = story.avatarUrl;
+      if (nameEl) nameEl.textContent = story.stallName;
+      if (timeEl) timeEl.textContent = story.timeAgo;
+      if (imageEl) imageEl.src = story.storyImage;
+      if (captionEl) captionEl.textContent = story.caption;
+      if (priceEl) {
+        priceEl.textContent = story.category === 'fish' ? '₹২৪০ - ₹৩২০ / কেজি' :
+                             (story.category === 'meat' ? '₹২০০ - ₹২৮০ / কেজি' :
+                             (story.category === 'vegetables' ? '₹২৫ - ₹৪৫ / কেজি' : 'টাটকা লোকাল রেট'));
+      }
+
+      renderStoryProgressBars();
+      startStoryTimer();
+    }
+
+    function renderStoryProgressBars() {
+      const barsContainer = document.getElementById("storyProgressBars");
+      if (!barsContainer) return;
+
+      barsContainer.innerHTML = bazaarStoriesData.map((_, i) => {
+        let width = "0%";
+        if (i < currentStoryIndex) width = "100%";
+        else if (i === currentStoryIndex) width = `${storyProgressPercent}%`;
+
+        return `
+          <div class="flex-1 h-1 bg-white/30 rounded-full overflow-hidden">
+            <div id="storyProgressFill-${i}" class="h-full bg-white transition-all duration-100" style="width: ${width};"></div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function startStoryTimer() {
+      clearInterval(storyProgressInterval);
+      clearTimeout(storyAutoAdvanceTimer);
+      storyProgressPercent = 0;
+
+      const durationMs = 6000;
+      const stepMs = 50;
+      const stepPercent = (stepMs / durationMs) * 100;
+
+      storyProgressInterval = setInterval(() => {
+        storyProgressPercent += stepPercent;
+        const activeFill = document.getElementById(`storyProgressFill-${currentStoryIndex}`);
+        if (activeFill) {
+          activeFill.style.width = `${Math.min(100, storyProgressPercent)}%`;
+        }
+        if (storyProgressPercent >= 100) {
+          clearInterval(storyProgressInterval);
+          nextBazaarStory();
+        }
+      }, stepMs);
+    }
+
+    function nextBazaarStory() {
+      if (currentStoryIndex < bazaarStoriesData.length - 1) {
+        currentStoryIndex++;
+        renderActiveStory();
+      } else {
+        closeBazaarStoryModal();
+      }
+    }
+
+    function prevBazaarStory() {
+      if (currentStoryIndex > 0) {
+        currentStoryIndex--;
+        renderActiveStory();
+      } else {
+        renderActiveStory();
+      }
+    }
+
+    function closeBazaarStoryModal() {
+      clearInterval(storyProgressInterval);
+      clearTimeout(storyAutoAdvanceTimer);
+      const modal = document.getElementById("bazaarStoryModal");
+      if (modal) modal.classList.add("hidden");
+    }
+
+    function shopFromCurrentStoryStall() {
+      const story = bazaarStoriesData[currentStoryIndex];
+      closeBazaarStoryModal();
+      switchCustomerPage("home");
+
+      if (story) {
+        if (story.category) {
+          filterCategory(story.category);
+        }
+        showToast(`🛒 "${story.stallName}" এর আজকের তাজা সামগ্রী দেখাচ্ছে!`, "success");
+      }
+    }
+
+    function handleStoryAreaClick(event) {
+      // Managed by touch zones
+    }
+
+    // Keyboard navigation for modals
+    window.addEventListener("keydown", (e) => {
+      const storyModal = document.getElementById("bazaarStoryModal");
+      if (storyModal && !storyModal.classList.contains("hidden")) {
+        if (e.key === "ArrowRight") nextBazaarStory();
+        else if (e.key === "ArrowLeft") prevBazaarStory();
+        else if (e.key === "Escape") closeBazaarStoryModal();
+      }
+      const paperModal = document.getElementById("paperListModal");
+      if (paperModal && !paperModal.classList.contains("hidden")) {
+        if (e.key === "Escape") closePaperListModal();
+      }
+      const fishCutModal = document.getElementById("fishCutModal");
+      if (fishCutModal && !fishCutModal.classList.contains("hidden")) {
+        if (e.key === "Escape") closeFishCutModal();
+      }
+    });
   </script>
 </body>
 </html>

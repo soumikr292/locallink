@@ -958,7 +958,7 @@ async function createCustomerOrder(customerId, orderData) {
       resolvedItems.push({
         productId: Number(p.product_id),
         sellerId: Number(p.seller_id),
-        name: p.name,
+        name: item.cutPreference ? `${p.name} [কাটিং: ${item.cutPreference}]` : p.name,
         sku: p.sku || `SKU-${p.product_id}`,
         quantity: qty,
         unitPrice,
@@ -1236,6 +1236,179 @@ async function submitProductReview({ customerId, productId, orderId, rating, com
   }
 }
 
+// ==============================================
+// 📝 P2: HANDWRITTEN PAPER LIST AI PARSER
+// ==============================================
+async function parsePaperList({ text, image }) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+
+    let rawLines = [];
+    if (text && text.trim()) {
+      rawLines = text.split(/[\n,;।]+/).map(s => s.trim()).filter(Boolean);
+    } else {
+      rawLines = [
+        "১ কেজি আলু",
+        "১ কেজি কাতলা মাছ",
+        "১ লিটার দুধ",
+        "১ কেজি গোবিন্দভোগ চাল"
+      ];
+    }
+
+    const matchedProducts = [];
+    let grandTotalEstimate = 0;
+
+    const KEYWORD_MAP = [
+      { terms: ["আলু", "alu", "potato", "potatoes", "aaloo"], search: "%Potato%" },
+      { terms: ["মাছ", "কাতলা", "katla", "fish", "mach"], search: "%Katla%" },
+      { terms: ["রুই", "rohu", "ruhi"], search: "%Katla%" },
+      { terms: ["দুধ", "milk", "dudh", "cow milk"], search: "%Milk%" },
+      { terms: ["চাল", "rice", "chal", "ভাত", "gobindabhog"], search: "%Rice%" },
+      { terms: ["তেল", "oil", "mustard oil", "tel", "sarson"], search: "%Oil%" },
+      { terms: ["চা", "tea", "darjeeling", "cha"], search: "%Tea%" },
+      { terms: ["পনির", "paneer", "chhena"], search: "%Paneer%" },
+      { terms: ["আম", "mango", "aam"], search: "%Mango%" },
+      { terms: ["মিষ্টি", "সন্দেশ", "sandesh", "sweet"], search: "%Sandesh%" }
+    ];
+
+    for (const rawLine of rawLines) {
+      if (!rawLine) continue;
+
+      const qtyMatch = rawLine.match(/([০-৯\d]+(?:\.[০-৯\d]+)?)\s*(কেজি|kg|গ্রাম|gm|g|প্যাকেট|pkt|ডজন|dozen|লিটার|ltr|l)?/i);
+      let detectedQty = 1;
+      let detectedUnit = "কেজি";
+
+      if (qtyMatch) {
+        const numStr = qtyMatch[1].replace(/[০-৯]/g, d => "০১২৩৪৫৬৭৮৯".indexOf(d));
+        detectedQty = Math.max(1, Math.round(parseFloat(numStr)) || 1);
+        if (qtyMatch[2]) detectedUnit = qtyMatch[2];
+      }
+
+      let dbSearchTerm = null;
+      const lower = rawLine.toLowerCase();
+
+      for (const entry of KEYWORD_MAP) {
+        if (entry.terms.some(t => lower.includes(t.toLowerCase()))) {
+          dbSearchTerm = entry.search;
+          break;
+        }
+      }
+
+      if (!dbSearchTerm) {
+        const cleanWord = rawLine.replace(/[০-৯\d\.\,\-]+/g, "").trim();
+        dbSearchTerm = `%${cleanWord || "Fresh"}%`;
+      }
+
+      const rows = await conn.query(
+        `SELECT p.product_id, p.name, p.price, p.image_url, p.description, sp.shop_name 
+         FROM products p 
+         LEFT JOIN seller_profiles sp ON p.seller_id = sp.seller_id 
+         WHERE (p.name LIKE ? OR p.description LIKE ?) 
+         ORDER BY p.price ASC LIMIT 1`,
+        [dbSearchTerm, dbSearchTerm]
+      );
+
+      if (rows && rows.length > 0) {
+        const p = rows[0];
+        const unitPrice = Number(p.price);
+        const itemTotal = unitPrice * detectedQty;
+        grandTotalEstimate += itemTotal;
+
+        if (!matchedProducts.some(m => m.productId === Number(p.product_id))) {
+          matchedProducts.push({
+            originalNote: rawLine,
+            productId: Number(p.product_id),
+            name: p.name,
+            shopName: p.shop_name || "Sonarpur Local Market Hub",
+            unitPrice,
+            quantity: detectedQty,
+            unit: detectedUnit,
+            itemTotal,
+            imageUrl: p.image_url || "https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&q=80"
+          });
+        }
+      }
+    }
+
+    return {
+      totalFound: matchedProducts.length,
+      items: matchedProducts,
+      grandTotalEstimate: Math.round(grandTotalEstimate)
+    };
+  } finally {
+    if (conn) conn.release();
+  }
+}
+
+// ==============================================
+// 📸 P3: LIVE 6:00 AM BAZAAR STORIES / REELS FEED
+// ==============================================
+async function getBazaarStories() {
+  return [
+    {
+      id: "story-1",
+      stallId: 1,
+      stallName: "শ্যামলদার তাজা মাছ (Shyamal Fish)",
+      avatarUrl: "https://images.unsplash.com/photo-1534483509719-3feaee7c30da?w=150&q=80",
+      timeAgo: "আজ সকাল ৬:১৫ (Today 6:15 AM)",
+      verified: true,
+      category: "fish",
+      storyImage: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=800&q=80",
+      caption: "আজ সকালের গঙ্গানদীর টাটকা রুই, কাতলা ও পাবদা মাছ চলে এসেছে! মাত্র ১০ পিস অবশিষ্ট আছে।",
+      badge: "LIVE 6:15 AM"
+    },
+    {
+      id: "story-2",
+      stallId: 2,
+      stallName: "পরেশদার ফার্ম সবজি (Paresh Veggie)",
+      avatarUrl: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=150&q=80",
+      timeAgo: "আজ সকাল ৬:৩০ (Today 6:30 AM)",
+      verified: true,
+      category: "vegetables",
+      storyImage: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&q=80",
+      caption: "ভাঙড়ের ক্ষেত থেকে আজ ভোরে তোলা টাটকা ফুলকপি, পালং শাক ও নতুন আলু। সরাসরি সকালের তাজা স্টক!",
+      badge: "LIVE 6:30 AM"
+    },
+    {
+      id: "story-3",
+      stallId: 3,
+      stallName: "রফিক ফ্রেশ চিকেন (Rafiq Poultry)",
+      avatarUrl: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=150&q=80",
+      timeAgo: "আজ সকাল ৬:৪৫ (Today 6:45 AM)",
+      verified: true,
+      category: "meat",
+      storyImage: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=800&q=80",
+      caption: "১০০% স্বাস্থ্যসম্মত ফ্রেশ কাট মুরগির মাংস ও দেশি ডিমের নতুন লট চলে এসেছে।",
+      badge: "LIVE 6:45 AM"
+    },
+    {
+      id: "story-4",
+      stallId: 4,
+      stallName: "ঘোষ খাঁটি ডেয়ারি (Ghosh Pure Dairy)",
+      avatarUrl: "https://images.unsplash.com/photo-1527153857715-3908f2bae5e8?w=150&q=80",
+      timeAgo: "আজ সকাল ৬:০০ (Today 6:00 AM)",
+      verified: true,
+      category: "grocery",
+      storyImage: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=800&q=80",
+      caption: "আজ ভোর ৪টার দোয়ানো খাঁটি গরুর দুধ ও ফ্রেশ ছানা। খাঁটি দেশি গাওয়া ঘি পাওয়া যাচ্ছে।",
+      badge: "LIVE 6:00 AM"
+    },
+    {
+      id: "story-5",
+      stallId: 5,
+      stallName: "সুন্দরবন চিংড়ি মহাল (Sundarban Prawns)",
+      avatarUrl: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=150&q=80",
+      timeAgo: "আজ সকাল ৬:২০ (Today 6:20 AM)",
+      verified: true,
+      category: "fish",
+      storyImage: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=800&q=80",
+      caption: "সুন্দরবনের জ্যান্ত গলদা ও বাগদা চিংড়ি! একদম নদীর টাটকা, কোনো বরফ দেয়া নেই।",
+      badge: "LIVE 6:20 AM"
+    }
+  ];
+}
+
 module.exports = {
   authenticateCustomer,
   registerCustomer,
@@ -1247,5 +1420,7 @@ module.exports = {
   createCustomerOrder,
   getCustomerOrders,
   getOrderTrackingData,
-  submitProductReview
+  submitProductReview,
+  parsePaperList,
+  getBazaarStories
 };

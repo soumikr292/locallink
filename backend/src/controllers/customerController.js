@@ -152,6 +152,32 @@ async function addReview(req, res, next) {
   }
 }
 
+async function parsePaperList(req, res, next) {
+  try {
+    const { text, image } = req.body || {};
+    const result = await customerService.parsePaperList({ text, image });
+    return res.status(200).json({
+      success: true,
+      message: `Parsed ${result.totalFound} items from list`,
+      data: result
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getBazaarStories(req, res, next) {
+  try {
+    const stories = await customerService.getBazaarStories();
+    return res.status(200).json({
+      success: true,
+      data: { stories }
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   loginCustomer,
   registerCustomer,
@@ -163,5 +189,7 @@ module.exports = {
   placeOrder,
   listOrders,
   trackOrder,
-  addReview
+  addReview,
+  parsePaperList,
+  getBazaarStories
 };
