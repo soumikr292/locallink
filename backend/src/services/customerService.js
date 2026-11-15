@@ -1263,6 +1263,7 @@ async function parsePaperList({ text, image }) {
       { terms: ["আলু", "alu", "potato", "potatoes", "aaloo"], search: "%Potato%" },
       { terms: ["মাছ", "কাতলা", "katla", "fish", "mach"], search: "%Katla%" },
       { terms: ["রুই", "rohu", "ruhi"], search: "%Katla%" },
+      { terms: ["ডিম", "egg", "eggs", "anda", "dim"], search: "%Egg%" },
       { terms: ["দুধ", "milk", "dudh", "cow milk"], search: "%Milk%" },
       { terms: ["চাল", "rice", "chal", "ভাত", "gobindabhog"], search: "%Rice%" },
       { terms: ["তেল", "oil", "mustard oil", "tel", "sarson"], search: "%Oil%" },
@@ -1275,7 +1276,7 @@ async function parsePaperList({ text, image }) {
     for (const rawLine of rawLines) {
       if (!rawLine) continue;
 
-      const qtyMatch = rawLine.match(/([০-৯\d]+(?:\.[০-৯\d]+)?)\s*(কেজি|kg|গ্রাম|gm|g|প্যাকেট|pkt|ডজন|dozen|লিটার|ltr|l)?/i);
+      const qtyMatch = rawLine.match(/([০-৯\d]+(?:\.[০-৯\d]+)?)\s*(কেজি|kg|গ্রাম|gm|g|প্যাকেট|pkt|ডজন|dozen|লিটার|ltr|l|পিস|pc|pcs)?/i);
       let detectedQty = 1;
       let detectedUnit = "কেজি";
 
@@ -1283,6 +1284,20 @@ async function parsePaperList({ text, image }) {
         const numStr = qtyMatch[1].replace(/[০-৯]/g, d => "০১২৩৪৫৬৭৮৯".indexOf(d));
         detectedQty = Math.max(1, Math.round(parseFloat(numStr)) || 1);
         if (qtyMatch[2]) detectedUnit = qtyMatch[2];
+      }
+
+      // Check for cutting style in handwritten note
+      let detectedCut = null;
+      if (/পেটি|গাদা|curry cut/i.test(rawLine)) {
+        detectedCut = "পেটি ও গাদা (Bengali Curry Cut)";
+      } else if (/পাতলা|ঝোল|thin jhol/i.test(rawLine)) {
+        detectedCut = "পাতলা ঝোলের টুকরো (Thin Jhol Cut)";
+      } else if (/ফ্রাই|ফিলে|fry cut|fillet/i.test(rawLine)) {
+        detectedCut = "ফ্রাই কাট / ফিলে (Fish Fry Fillet Cut)";
+      } else if (/গোটা পরিষ্কার|whole cleaned/i.test(rawLine)) {
+        detectedCut = "গোটা মাছ পরিষ্কার ও আঁশ ছাড়ানো (Whole Cleaned)";
+      } else if (/গোটা সম্পূর্ণ|uncut/i.test(rawLine)) {
+        detectedCut = "গোটা সম্পূর্ণ (Whole Uncut)";
       }
 
       let dbSearchTerm = null;
@@ -1296,7 +1311,7 @@ async function parsePaperList({ text, image }) {
       }
 
       if (!dbSearchTerm) {
-        const cleanWord = rawLine.replace(/[০-৯\d\.\,\-]+/g, "").trim();
+        const cleanWord = rawLine.replace(/[০-৯\d\.\,\-\[\]\(\)]+/g, "").trim();
         dbSearchTerm = `%${cleanWord || "Fresh"}%`;
       }
 
@@ -1312,7 +1327,15 @@ async function parsePaperList({ text, image }) {
       if (rows && rows.length > 0) {
         const p = rows[0];
         const unitPrice = Number(p.price);
-        const itemTotal = unitPrice * detectedQty;
+        let cartQty = detectedQty;
+        let itemTotal = unitPrice * detectedQty;
+
+        if (["গ্রাম", "gm", "g"].includes(detectedUnit.toLowerCase())) {
+          const fraction = detectedQty / 1000;
+          itemTotal = Math.round(unitPrice * fraction);
+          cartQty = 1;
+        }
+
         grandTotalEstimate += itemTotal;
 
         if (!matchedProducts.some(m => m.productId === Number(p.product_id))) {
@@ -1322,8 +1345,9 @@ async function parsePaperList({ text, image }) {
             name: p.name,
             shopName: p.shop_name || "Sonarpur Local Market Hub",
             unitPrice,
-            quantity: detectedQty,
+            quantity: cartQty,
             unit: detectedUnit,
+            detectedCut,
             itemTotal,
             imageUrl: p.image_url || "https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&q=80"
           });
