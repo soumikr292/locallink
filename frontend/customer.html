@@ -2807,8 +2807,45 @@
       }
 
       let subtotal = 0;
+      const uniqueStores = [...new Set(cart.map(i => i.shopName || "Local Stall").filter(Boolean))];
 
-      container.innerHTML = cart.map((item, index) => {
+      let consolidationHtml = "";
+      if (uniqueStores.length > 1) {
+        consolidationHtml = `
+          <div class="mb-3 p-3.5 rounded-2xl bg-gradient-to-r from-emerald-950/70 via-slate-900 to-teal-950/70 border border-emerald-500/40 shadow-lg space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-sm shrink-0">
+                  <i class="fa-solid fa-layer-group"></i>
+                </span>
+                <div>
+                  <h4 class="font-bold text-white text-xs sm:text-sm">
+                    ${currentAppLanguage === 'bn' ? '⚡ বাজার এক্সপ্রেস ড্রপ-র‍্যাক কনসোলিডেশন' : (currentAppLanguage === 'hi' ? '⚡ बाज़ार एक्सप्रेस ड्रॉप-रैक कंसोलिडेशन' : '⚡ Bazaar Express Gate-Rack Consolidation')}
+                  </h4>
+                  <p class="text-[11px] text-emerald-300">
+                    ${currentAppLanguage === 'bn' ? `${uniqueStores.length}টি ভিন্ন স্টলের সামগ্রী • ১ জন রাইডার ১৫ মিনিটে একসাথে পৌঁছে দেবে` : (currentAppLanguage === 'hi' ? `${uniqueStores.length} अलग दुकानों का सामान • 1 राइडर 15 मिनट में पहुँचाएगा` : `${uniqueStores.length} different local stalls • 1 Rider delivers in 15 mins`)}
+                  </p>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full text-[10px] font-black uppercase tracking-wider shrink-0">
+                ${currentAppLanguage === 'bn' ? 'স্মার্ট ক্লাস্টার' : (currentAppLanguage === 'hi' ? 'स्मार्ट क्लस्टर' : 'Smart Cluster')}
+              </span>
+            </div>
+            <div class="p-2 rounded-xl bg-slate-950/70 border border-slate-800 text-[11px] text-slate-300 flex items-center gap-2">
+              <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i>
+              <span>
+                ${currentAppLanguage === 'bn' 
+                  ? 'সব দোকানদার সমান্তরালে প্যাক করে সেন্ট্রাল গেটের ড্রপ-র‍্যাকে এক বক্সে রাখবেন — রাইডার এক স্টপেই সমস্ত তুলে নেবে, তাই কোনো অতিরিক্ত ডেলিভারি ফি নেই!'
+                  : (currentAppLanguage === 'hi'
+                  ? 'सभी दुकानें समानांतर में पैक करके सेंट्रल गेट ड्रॉप-रैक में रखेंगी — राइडर एक ही स्टॉप पर सब उठा लेगा, कोई एक्स्ट्रा चार्ज नहीं!'
+                  : 'All stalls pack simultaneously into the Central Gate Drop Rack — 1 rider collects all in one single stop with zero extra fee!')}
+              </span>
+            </div>
+          </div>
+        `;
+      }
+
+      const itemsHtml = cart.map((item, index) => {
         const itemTotal = item.unitPrice * item.quantity;
         subtotal += itemTotal;
 
@@ -2841,6 +2878,8 @@
           </div>
         `;
       }).join("");
+
+      container.innerHTML = consolidationHtml + itemsHtml;
 
       const deliveryFee = subtotal >= 500 ? 0 : 30;
       const grandTotal = subtotal + deliveryFee;

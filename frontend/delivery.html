@@ -674,13 +674,14 @@
         document.getElementById("activeDispatchBadge").className = "px-2.5 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded-lg border border-emerald-500/20";
 
         const isPickedUp = activeDeliveryData.deliveryStatus === "out_for_delivery";
+        const binNumber = (activeDeliveryData.orderId % 5) + 1;
 
         container.innerHTML = `
           <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3 shadow-xl">
             <div class="flex justify-between items-start text-xs border-b border-slate-900 pb-3">
               <div>
                 <span class="font-bold text-white text-sm">Order #${activeDeliveryData.orderNumber || ('LL-' + activeDeliveryData.orderId)}</span>
-                <p class="text-slate-400 text-[11px] mt-0.5">${activeDeliveryData.pickupAddress.split(",")[0]} &rarr; ${activeDeliveryData.customerAddress.split(",")[0]}</p>
+                <p class="text-slate-400 text-[11px] mt-0.5">Gate Drop Rack (Bin #${binNumber}) &rarr; ${activeDeliveryData.customerAddress.split(",")[0]}</p>
               </div>
               <span class="px-2.5 py-1 font-bold rounded-full text-[10px] ${
                 isPickedUp ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
@@ -689,10 +690,24 @@
               </span>
             </div>
 
+            <!-- Gate Drop-Rack Consolidated Point -->
+            <div class="p-2.5 rounded-xl bg-gradient-to-r from-emerald-950/70 to-slate-900 border border-emerald-500/30 flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-boxes-stacked text-emerald-400"></i>
+                <div>
+                  <strong class="text-white">মার্কেট গেট ড্রপ র‍্যাক: বিন #${binNumber}</strong>
+                  <div class="text-[10px] text-emerald-300">Central Market Gate Drop Rack • Bin #${binNumber} (Consolidated Package)</div>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-black">
+                ১-স্টপ পিকআপ
+              </span>
+            </div>
+
             <div class="space-y-2 text-xs text-slate-300 bg-slate-900/60 p-3 rounded-xl border border-slate-800">
-              <p class="flex items-center gap-2">
-                <i class="fa-solid fa-store text-emerald-400 w-4"></i>
-                <span><strong>Pickup:</strong> ${activeDeliveryData.pickupAddress}</span>
+              <p class="flex items-start gap-2">
+                <i class="fa-solid fa-store text-emerald-400 w-4 mt-0.5 shrink-0"></i>
+                <span><strong>Pickup Point:</strong> Sonarpur Central Market Gate Drop Rack (Bin #${binNumber}) &bull; <span class="text-slate-400">${activeDeliveryData.pickupAddress}</span></span>
               </p>
               <p class="flex items-center gap-2">
                 <i class="fa-solid fa-location-dot text-rose-500 w-4"></i>
@@ -755,21 +770,24 @@
           return;
         }
 
-        container.innerHTML = orders.map(ord => `
+        container.innerHTML = orders.map(ord => {
+          const binNo = (ord.orderId % 5) + 1;
+          return `
           <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl flex justify-between items-center text-xs">
             <div class="space-y-0.5">
               <div class="flex items-center gap-1.5">
                 <span class="font-bold text-white text-xs">${ord.orderNumber || ('#LL-' + ord.orderId)}</span>
-                <span class="px-1.5 py-0.2 rounded text-[9px] bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">READY FOR PICKUP</span>
+                <span class="px-1.5 py-0.2 rounded text-[9px] bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">GATE BIN #${binNo}</span>
               </div>
-              <p class="font-medium text-slate-300 text-[11px]">${ord.pickup.split(",")[0]} &rarr; ${ord.drop.split(",")[0]}</p>
+              <p class="font-medium text-slate-300 text-[11px]">Gate Rack (Bin #${binNo}) &rarr; ${ord.drop.split(",")[0]}</p>
               <p class="text-slate-400 text-[10px]">Distance: ${ord.distanceKm} km | Fee: <strong class="text-emerald-400 font-bold">₹${ord.deliveryFee}</strong></p>
             </div>
             <button onclick="acceptOrder(${ord.deliveryId})" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow-md transition-all text-xs flex items-center gap-1.5 shrink-0">
               <i class="fa-solid fa-hand-holding-box"></i> Accept
             </button>
           </div>
-        `).join("");
+        `;
+        }).join("");
 
       } catch (e) {
         container.innerHTML = `<div class="p-3 text-center text-rose-400 text-xs">Failed to load pool orders</div>`;

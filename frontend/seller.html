@@ -428,13 +428,72 @@
         <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div>
-              <h3 class="font-bold text-lg text-white">Incoming Customer Orders</h3>
-              <p class="text-xs text-slate-400 mt-0.5">Real-time marketplace orders ready for preparation and packing</p>
+              <h3 class="font-bold text-lg text-white" data-i18n="seller_incoming_orders">Incoming Customer Orders</h3>
+              <p class="text-xs text-slate-400 mt-0.5" data-i18n="seller_incoming_sub">Real-time marketplace orders ready for preparation and packing</p>
             </div>
             <div class="flex items-center gap-2">
               <button onclick="loadSellerOrders()" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl transition-all">
                 <i class="fa-solid fa-rotate-right mr-1"></i> Refresh
               </button>
+            </div>
+          </div>
+
+          <!-- 📢 VENDOR VOICE SOUNDBOX & GATE DROP-RACK ASSISTANT (Paytm/PhonePe Style Voice Box) -->
+          <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-slate-900 to-teal-950/80 border border-emerald-500/40 shadow-xl space-y-3">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow-inner">
+                  <i class="fa-solid fa-volume-high text-xl animate-pulse"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-black text-white text-sm" id="soundboxTitleHeading">
+                      স্মার্ট ভয়েস সাউন্ডবক্স (Voice Soundbox)
+                    </h4>
+                    <span id="soundboxStatusIndicator" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> সক্রিয় (Active)
+                    </span>
+                  </div>
+                  <p class="text-slate-400 text-xs mt-0.5" id="soundboxDescSub">
+                    অশিক্ষিত ও সাধারণ দোকানদারদের জন্য প্রতিটি নতুন অর্ডার স্পিকারে বলে দেবে এবং গেট ড্রপ র‍্যাক নম্বর জানিয়ে দেবে
+                  </p>
+                </div>
+              </div>
+
+              <!-- Controls: Language, Auto-Announce toggle & Test button -->
+              <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
+                <!-- Soundbox Language Switcher -->
+                <div class="flex items-center bg-slate-950 border border-slate-800 rounded-xl p-1 text-xs font-bold">
+                  <button type="button" onclick="setSoundboxLanguage('bn')" id="btnSoundboxBn" class="px-2.5 py-1 rounded-lg text-xs bg-emerald-600 text-white shadow">বাংলা</button>
+                  <button type="button" onclick="setSoundboxLanguage('hi')" id="btnSoundboxHi" class="px-2.5 py-1 rounded-lg text-xs text-slate-400 hover:text-white">हिन्दी</button>
+                  <button type="button" onclick="setSoundboxLanguage('en')" id="btnSoundboxEn" class="px-2.5 py-1 rounded-lg text-xs text-slate-400 hover:text-white">English</button>
+                </div>
+
+                <button type="button" onclick="toggleAutoSoundbox()" id="btnToggleAutoSoundbox" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-950 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-950/40 transition-all flex items-center gap-1.5 shadow">
+                  <i class="fa-solid fa-bullhorn text-emerald-400" id="autoSoundboxIcon"></i>
+                  <span id="autoSoundboxStatusLabel">অটো-ঘোষণা: চালু</span>
+                </button>
+
+                <button type="button" onclick="testSoundboxAnnouncement()" class="px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg transition-all flex items-center gap-1.5">
+                  <i class="fa-solid fa-play"></i>
+                  <span>টেস্ট সাউন্ডবক্স</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Gate Drop-Rack Visual Legend -->
+            <div class="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+              <span class="text-slate-300 font-semibold flex items-center gap-1.5">
+                <i class="fa-solid fa-boxes-stacked text-emerald-400"></i>
+                <span>সেন্ট্রাল মার্কেট গেট ড্রপ র‍্যাক (Market Gate Drop Rack):</span>
+              </span>
+              <div class="flex flex-wrap items-center gap-2 font-bold">
+                <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">বিন #১ (সবুজ)</span>
+                <span class="px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 border border-blue-500/40">বিন #২ (নীল)</span>
+                <span class="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/40">বিন #৩ (বেগুনী)</span>
+                <span class="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/40">বিন #৪ (হলুদ)</span>
+                <span class="px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-300 border border-rose-500/40">বিন #৫ (লাল)</span>
+              </div>
             </div>
           </div>
 
@@ -1075,9 +1134,18 @@
     // ==============================================
     window.addEventListener("DOMContentLoaded", async () => {
       initSellerLanguage();
+      if (typeof updateSoundboxControlsUI === "function") updateSoundboxControlsUI();
       await initializeSellerSession();
       loadDashboardData();
       switchTab('dashboard');
+
+      // Periodic orders background polling for soundbox auto-announcements
+      setInterval(() => {
+        const ordersTab = document.getElementById("orders");
+        if (ordersTab && !ordersTab.classList.contains("hidden") && typeof loadSellerOrders === "function") {
+          loadSellerOrders(true);
+        }
+      }, 10000);
     });
 
     async function initializeSellerSession() {
@@ -1640,9 +1708,237 @@
     }
 
     // ==============================================
-    // 🚚 4. INCOMING ORDERS
+    // 🚚 4. INCOMING ORDERS & VENDOR VOICE SOUNDBOX
     // ==============================================
-    async function loadSellerOrders() {
+    let soundboxLanguage = localStorage.getItem("locallink_soundbox_lang") || "bn";
+    let soundboxAutoAnnounce = localStorage.getItem("locallink_soundbox_auto") !== "false";
+    let announcedOrderIds = new Set();
+    let isSoundboxSpeaking = false;
+
+    // Map gate drop rack bin number (1-5) to distinct color and labels
+    const BIN_COLOR_MAP = {
+      1: { badge: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40", nameBn: "বিন #১ (সবুজ)", nameHi: "बिन #१ (हरा)", nameEn: "Bin #1 (Green)" },
+      2: { badge: "bg-blue-500/20 text-blue-300 border-blue-500/40", nameBn: "বিন #২ (নীল)", nameHi: "बिन #२ (नीला)", nameEn: "Bin #2 (Blue)" },
+      3: { badge: "bg-purple-500/20 text-purple-300 border-purple-500/40", nameBn: "বিন #৩ (বেগুনী)", nameHi: "बिन #३ (बैंगनी)", nameEn: "Bin #3 (Purple)" },
+      4: { badge: "bg-amber-500/20 text-amber-300 border-amber-500/40", nameBn: "বিন #৪ (হলুদ)", nameHi: "बिन #४ (पीला)", nameEn: "Bin #4 (Amber)" },
+      5: { badge: "bg-rose-500/20 text-rose-300 border-rose-500/40", nameBn: "বিন #৫ (লাল)", nameHi: "बिन #५ (लाल)", nameEn: "Bin #5 (Red)" }
+    };
+
+    function setSoundboxLanguage(lang) {
+      soundboxLanguage = lang;
+      localStorage.setItem("locallink_soundbox_lang", lang);
+      updateSoundboxControlsUI();
+
+      const msgs = {
+        bn: "সাউন্ডবক্সের ভাষা বাংলা নির্বাচিত হয়েছে।",
+        hi: "साउंडबॉक्स की भाषा हिन्दी चुनी गई है।",
+        en: "Soundbox language set to English."
+      };
+      showToast(msgs[lang] || msgs.en);
+      speakSellerText(msgs[lang] || msgs.en, lang);
+      loadSellerOrders(true);
+    }
+
+    function toggleAutoSoundbox() {
+      soundboxAutoAnnounce = !soundboxAutoAnnounce;
+      localStorage.setItem("locallink_soundbox_auto", soundboxAutoAnnounce ? "true" : "false");
+      updateSoundboxControlsUI();
+
+      const msgs = {
+        bn: soundboxAutoAnnounce ? "অটো-ঘোষণা চালু করা হয়েছে।" : "অটো-ঘোষণা বন্ধ করা হয়েছে।",
+        hi: soundboxAutoAnnounce ? "ऑटो-घोषणा चालू कर दी गई है।" : "ऑटो-घोषणा बंद कर दी गई है।",
+        en: soundboxAutoAnnounce ? "Auto announcement turned ON." : "Auto announcement turned OFF."
+      };
+      showToast(msgs[soundboxLanguage] || msgs.en);
+      speakSellerText(msgs[soundboxLanguage] || msgs.en, soundboxLanguage);
+    }
+
+    function updateSoundboxControlsUI() {
+      const btnBn = document.getElementById("btnSoundboxBn");
+      const btnHi = document.getElementById("btnSoundboxHi");
+      const btnEn = document.getElementById("btnSoundboxEn");
+      const activeClass = "px-2.5 py-1 rounded-lg text-xs bg-emerald-600 text-white shadow font-bold";
+      const inactiveClass = "px-2.5 py-1 rounded-lg text-xs text-slate-400 hover:text-white font-bold";
+
+      if (btnBn) btnBn.className = soundboxLanguage === "bn" ? activeClass : inactiveClass;
+      if (btnHi) btnHi.className = soundboxLanguage === "hi" ? activeClass : inactiveClass;
+      if (btnEn) btnEn.className = soundboxLanguage === "en" ? activeClass : inactiveClass;
+
+      const autoLabel = document.getElementById("autoSoundboxStatusLabel");
+      const autoBtn = document.getElementById("btnToggleAutoSoundbox");
+      const autoIcon = document.getElementById("autoSoundboxIcon");
+
+      if (autoLabel) {
+        if (soundboxLanguage === "bn") {
+          autoLabel.textContent = soundboxAutoAnnounce ? "অটো-ঘোষণা: চালু" : "অটো-ঘোষণা: বন্ধ";
+        } else if (soundboxLanguage === "hi") {
+          autoLabel.textContent = soundboxAutoAnnounce ? "ऑटो-घोषणा: चालू" : "ऑटो-घोषणा: बंद";
+        } else {
+          autoLabel.textContent = soundboxAutoAnnounce ? "Auto: ON" : "Auto: OFF";
+        }
+      }
+
+      if (autoBtn) {
+        if (soundboxAutoAnnounce) {
+          autoBtn.className = "px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-950 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-950/40 transition-all flex items-center gap-1.5 shadow";
+          if (autoIcon) autoIcon.className = "fa-solid fa-bullhorn text-emerald-400";
+        } else {
+          autoBtn.className = "px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-950 border border-slate-800 text-slate-500 hover:text-slate-400 transition-all flex items-center gap-1.5";
+          if (autoIcon) autoIcon.className = "fa-solid fa-bullhorn text-slate-600";
+        }
+      }
+
+      const titleEl = document.getElementById("soundboxTitleHeading");
+      const descEl = document.getElementById("soundboxDescSub");
+      if (titleEl) {
+        titleEl.textContent = soundboxLanguage === "bn" ? "স্মার্ট ভয়েস সাউন্ডবক্স (Voice Soundbox)" :
+                              (soundboxLanguage === "hi" ? "स्मार्ट वॉयस साउंडबॉक्स (Voice Soundbox)" : "Smart Voice Soundbox");
+      }
+      if (descEl) {
+        descEl.textContent = soundboxLanguage === "bn" ? "অশিক্ষিত ও সাধারণ দোকানদারদের জন্য প্রতিটি নতুন অর্ডার স্পিকারে বলে দেবে এবং গেট ড্রপ র‍্যাক নম্বর জানিয়ে দেবে" :
+                             (soundboxLanguage === "hi" ? "दुकानदारों के लिए हर नया आर्डर बोलकर सुनाएगा और गेट ड्रॉप रैक नंबर बताएगा" : "Speaks aloud new incoming customer orders and market gate drop rack bin numbers");
+      }
+    }
+
+    function speakSellerText(text, lang) {
+      if (!('speechSynthesis' in window)) {
+        console.warn("Speech synthesis not supported in this browser");
+        return;
+      }
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        const targetLang = lang || soundboxLanguage || "bn";
+
+        utterance.rate = 0.92;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+
+        if (targetLang === "bn") {
+          utterance.lang = "bn-IN";
+        } else if (targetLang === "hi") {
+          utterance.lang = "hi-IN";
+        } else {
+          utterance.lang = "en-IN";
+        }
+
+        const voices = window.speechSynthesis.getVoices();
+        if (voices && voices.length > 0) {
+          const matched = voices.find(v => {
+            const vLang = (v.lang || "").toLowerCase();
+            if (targetLang === "bn") return vLang.includes("bn") || vLang.includes("bengali");
+            if (targetLang === "hi") return vLang.includes("hi") || vLang.includes("hindi");
+            return vLang.includes("en-in") || vLang.includes("en_in") || vLang.includes("en");
+          });
+          if (matched) utterance.voice = matched;
+        }
+
+        utterance.onstart = () => { isSoundboxSpeaking = true; };
+        utterance.onend = () => { isSoundboxSpeaking = false; };
+        utterance.onerror = () => { isSoundboxSpeaking = false; };
+
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.error("Speech synthesis error:", err);
+      }
+    }
+
+    function announceSellerOrder(order, lang) {
+      if (!order) return;
+      const targetLang = lang || soundboxLanguage || "bn";
+      const binNo = (order.orderId % 5) + 1;
+      const earnings = Math.round(order.sellerSubtotal || 0);
+
+      const itemsDesc = (order.items && order.items.length)
+        ? order.items.map(it => `${it.quantity} ${it.productName}`).join(", ")
+        : (targetLang === "bn" ? "নতুন পণ্য" : (targetLang === "hi" ? "नया सामान" : "Items"));
+
+      let speech = "";
+      if (targetLang === "bn") {
+        speech = `নতুন অর্ডার এসেছে! মোট আয় ${earnings} টাকা। সামগ্রী: ${itemsDesc}। প্যাক করে সেন্ট্রাল গেটের ড্রপ র‍্যাকের ${binNo} নম্বর বক্সে রাখুন।`;
+      } else if (targetLang === "hi") {
+        speech = `नया आर्डर आया है! कुल कमाई ${earnings} रुपये। सामान: ${itemsDesc}। पैक करके सेंट्रल गेट के ड्रॉप रैक के ${binNo} नंबर बॉक्स में रखें।`;
+      } else {
+        speech = `New Order received! Total earnings ${earnings} rupees. Items: ${itemsDesc}. Please pack and place into Central Market Gate Drop Bin number ${binNo}.`;
+      }
+
+      speakSellerText(speech, targetLang);
+    }
+
+    function announceSellerOrderById(orderId) {
+      const order = currentOrders.find(o => o.orderId === orderId);
+      if (order) {
+        announceSellerOrder(order, soundboxLanguage);
+      }
+    }
+
+    function testSoundboxAnnouncement() {
+      const binNo = 3;
+      let text = "";
+      if (soundboxLanguage === "bn") {
+        text = `স্থানীয় লিংক ভয়েস সাউন্ডবক্স সক্রিয় আছে! নতুন অর্ডার: ২ কেজি রুই মাছ এবং ১ প্যাকেট মসুর ডাল। মোট আয় ৩২০ টাকা। প্যাক করে সেন্ট্রাল গেটের ড্রপ র‍্যাকের ${binNo} নম্বর বক্সে রাখুন।`;
+      } else if (soundboxLanguage === "hi") {
+        text = `लोकल लिंक वॉयस साउंडबॉक्स सक्रिय है! नया आर्डर: २ किलो मछली और १ पैकेट दाल। कुल कमाई ३२० रुपये। पैक करके सेंट्रल गेट ड्रॉप रैक के ${binNo} नंबर बॉक्स में रखें।`;
+      } else {
+        text = `LocalLink Voice Soundbox is active! New order: 2 kg fresh fish and 1 packet lentils. Total earnings 320 rupees. Please pack and place into Central Market Gate Drop Bin number ${binNo}.`;
+      }
+      showToast("🔊 " + (soundboxLanguage === "bn" ? "সাউন্ডবক্স ঘোষণা বাজছে..." : (soundboxLanguage === "hi" ? "साउंडबॉक्स घोषणा बज रही है..." : "Playing soundbox announcement...")));
+      speakSellerText(text, soundboxLanguage);
+    }
+
+    async function handleAcceptAndPack(orderId, binNo) {
+      try {
+        const res = await apiRequest(`/api/seller/orders/${orderId}/status`, {
+          method: "PATCH",
+          body: JSON.stringify({ status: "processing" })
+        });
+        if (res && res.success) {
+          showToast(`✓ Order #${orderId} accepted! Pack into Gate Drop Bin #${binNo}`);
+          loadSellerOrders(true);
+          loadDashboardData();
+
+          let voiceMsg = "";
+          if (soundboxLanguage === "bn") {
+            voiceMsg = `অর্ডার গ্রহণ করা হয়েছে! প্যাক করে গেট ড্রপ র‍্যাকের ${binNo} নম্বর বক্সে রাখুন।`;
+          } else if (soundboxLanguage === "hi") {
+            voiceMsg = `आर्डर स्वीकार कर लिया गया है! सामान पैक करके गेट ड्रॉप रैक के ${binNo} नंबर बॉक्स में रखें।`;
+          } else {
+            voiceMsg = `Order accepted! Please pack and place in Gate Drop Bin number ${binNo}.`;
+          }
+          speakSellerText(voiceMsg, soundboxLanguage);
+        }
+      } catch (e) {
+        showToast("Action failed: " + e.message, "error");
+      }
+    }
+
+    async function handleReadyForRider(orderId, binNo) {
+      try {
+        const res = await apiRequest(`/api/seller/orders/${orderId}/status`, {
+          method: "PATCH",
+          body: JSON.stringify({ status: "ready_for_pickup" })
+        });
+        if (res && res.success) {
+          showToast(`📦 Order #${orderId} marked ready in Bin #${binNo}! Rider notified.`);
+          loadSellerOrders(true);
+          loadDashboardData();
+
+          let voiceMsg = "";
+          if (soundboxLanguage === "bn") {
+            voiceMsg = `পণ্য তৈরি! গেট ড্রপ র‍্যাকের ${binNo} নম্বর বক্সে রাখা সম্পন্ন। রাইডারের কাছে বার্তা পাঠানো হয়েছে।`;
+          } else if (soundboxLanguage === "hi") {
+            voiceMsg = `सामान तैयार है! गेट ड्रॉप रैक के ${binNo} नंबर बॉक्स में रखा गया। राइडर को सूचित कर दिया गया है।`;
+          } else {
+            voiceMsg = `Order ready! Placed in Gate Drop Bin number ${binNo}. Nearby rider has been notified.`;
+          }
+          speakSellerText(voiceMsg, soundboxLanguage);
+        }
+      } catch (e) {
+        showToast("Action failed: " + e.message, "error");
+      }
+    }
+
+    async function loadSellerOrders(isSilent = false) {
       const container = document.getElementById("ordersContainer");
       try {
         const endpoint = currentOrderFilter ? `/api/seller/orders?status=${currentOrderFilter}` : "/api/seller/orders";
@@ -1650,6 +1946,20 @@
         if (!res || !res.success) return;
 
         currentOrders = res.data.orders || [];
+
+        // Check if there are newly arrived pending orders for Auto-Soundbox announcement
+        if (soundboxAutoAnnounce && currentOrders.length > 0) {
+          const freshPending = currentOrders.filter(o => 
+            (o.orderStatus === "pending" || o.orderStatus === "confirmed") && 
+            !announcedOrderIds.has(o.orderId)
+          );
+
+          if (freshPending.length > 0) {
+            freshPending.forEach(o => announcedOrderIds.add(o.orderId));
+            // Announce the newest one
+            announceSellerOrder(freshPending[0], soundboxLanguage);
+          }
+        }
 
         if (currentOrders.length === 0) {
           container.innerHTML = `
@@ -1662,26 +1972,62 @@
         }
 
         container.innerHTML = currentOrders.map(order => {
+          const binNo = (order.orderId % 5) + 1;
+          const binInfo = BIN_COLOR_MAP[binNo] || BIN_COLOR_MAP[1];
+          const binName = soundboxLanguage === "bn" ? binInfo.nameBn : (soundboxLanguage === "hi" ? binInfo.nameHi : binInfo.nameEn);
+
           let actionButton = "";
           if (order.orderStatus === "pending") {
-            actionButton = `<button onclick="updateOrderStatus(${order.orderId}, 'processing')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all flex items-center gap-1.5"><i class="fa-solid fa-check"></i> Accept & Prepare</button>`;
+            actionButton = `
+              <button onclick="handleAcceptAndPack(${order.orderId}, ${binNo})" class="w-full sm:w-auto px-5 py-3 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-black rounded-2xl text-xs sm:text-sm shadow-xl flex items-center justify-center gap-2 transform active:scale-95 transition-all">
+                <i class="fa-solid fa-circle-check text-base"></i>
+                <div class="text-left">
+                  <div class="leading-tight">${soundboxLanguage === 'bn' ? '✓ গ্রহণ ও প্যাক করুন' : (soundboxLanguage === 'hi' ? '✓ स्वीकार व पैक करें' : '✓ Accept & Pack')}</div>
+                  <div class="text-[10px] opacity-90 font-bold">${binName}</div>
+                </div>
+              </button>
+            `;
           } else if (order.orderStatus === "confirmed" || order.orderStatus === "processing") {
-            actionButton = `<button onclick="updateOrderStatus(${order.orderId}, 'ready_for_pickup')" class="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all flex items-center gap-1.5"><i class="fa-solid fa-box-open"></i> Mark Ready for Rider</button>`;
+            actionButton = `
+              <button onclick="handleReadyForRider(${order.orderId}, ${binNo})" class="w-full sm:w-auto px-5 py-3 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white font-black rounded-2xl text-xs sm:text-sm shadow-xl flex items-center justify-center gap-2 transform active:scale-95 transition-all">
+                <i class="fa-solid fa-box-open text-base"></i>
+                <div class="text-left">
+                  <div class="leading-tight">${soundboxLanguage === 'bn' ? '📦 রাইডারের জন্য প্রস্তুত' : (soundboxLanguage === 'hi' ? '📦 राइडर हेतु तैयार' : '📦 Ready for Rider')}</div>
+                  <div class="text-[10px] opacity-90 font-bold">${binName}</div>
+                </div>
+              </button>
+            `;
           } else if (order.orderStatus === "ready_for_pickup") {
-            actionButton = `<span class="px-3 py-1.5 bg-amber-500/10 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5"><i class="fa-solid fa-tower-broadcast animate-pulse"></i> Ready & Broadcasted to Nearby Riders</span>`;
+            actionButton = `
+              <div class="px-3.5 py-2 bg-amber-500/10 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-bold flex items-center gap-2">
+                <i class="fa-solid fa-tower-broadcast animate-pulse text-amber-400"></i>
+                <span>${soundboxLanguage === 'bn' ? `গেট ড্রপ ${binName}-এ প্রস্তুত • রাইডার আসছে` : (soundboxLanguage === 'hi' ? `गेट ड्रॉप ${binName} में तैयार • राइडर आ रहा है` : `Ready in ${binName} • Rider en route`)}</span>
+              </div>
+            `;
           } else if (order.orderStatus === "out_for_delivery") {
-            actionButton = `<span class="px-3 py-1.5 bg-sky-500/10 text-sky-400 border border-sky-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5"><i class="fa-solid fa-motorcycle"></i> Out for Delivery</span>`;
+            actionButton = `
+              <span class="px-3 py-1.5 bg-sky-500/10 text-sky-400 border border-sky-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-motorcycle"></i> ${soundboxLanguage === 'bn' ? 'রাইডার নিয়ে বেরিয়েছে' : (soundboxLanguage === 'hi' ? 'डिलीवरी हेतु रवाना' : 'Out for Delivery')}
+              </span>
+            `;
           } else if (order.orderStatus === "delivered") {
-            actionButton = `<span class="px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> Delivered Successfully</span>`;
+            actionButton = `
+              <span class="px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-check"></i> ${soundboxLanguage === 'bn' ? 'সফল ডেলিভারি' : (soundboxLanguage === 'hi' ? 'सफल डिलीवरी' : 'Delivered')}
+              </span>
+            `;
           } else {
             actionButton = `<span class="text-xs text-slate-400 font-bold uppercase">${order.orderStatus}</span>`;
           }
 
+          const listenLabel = soundboxLanguage === "bn" ? "🔊 শুনুন" : (soundboxLanguage === "hi" ? "🔊 सुनें" : "🔊 Listen");
+
           return `
-            <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs">
-              <div class="space-y-1.5 flex-1">
+            <div class="p-4 sm:p-5 bg-slate-900 border border-slate-800 rounded-2xl flex flex-col gap-4 text-xs shadow-lg hover:border-slate-700 transition-all">
+              <!-- Order Header & Gate Drop-Rack Tag -->
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
                 <div class="flex items-center gap-2">
-                  <span class="font-bold text-white text-sm">${order.orderNumber || ('#LL-' + order.orderId)}</span>
+                  <span class="font-black text-white text-base">${order.orderNumber || ('#LL-' + order.orderId)}</span>
                   <span class="text-slate-500">&bull;</span>
                   <span class="text-slate-400">${new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                   <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
@@ -1691,19 +2037,62 @@
                     'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                   }">${order.orderStatus.replace(/_/g, ' ').toUpperCase()}</span>
                 </div>
+
+                <!-- Gate Drop-Rack Bin Tag & Audio Listen Button -->
+                <div class="flex items-center gap-2">
+                  <span class="px-2.5 py-1 rounded-xl text-xs font-black border ${binInfo.badge} flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <span>গেট ড্রপ: ${binName}</span>
+                  </span>
+
+                  <button type="button" onclick="announceSellerOrderById(${order.orderId})" class="px-3 py-1 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/50 text-emerald-300 rounded-xl text-xs font-black flex items-center gap-1.5 shadow active:scale-95 transition-all">
+                    <i class="fa-solid fa-volume-high text-emerald-400"></i>
+                    <span>${listenLabel}</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Order Info: Customer & Earnings -->
+              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs">
                 <p class="text-slate-300">
                   Customer: <strong class="text-white">${order.customerName || 'Local Buyer'}</strong> 
                   ${order.deliveryAddress ? `&bull; <span class="text-slate-400">${order.deliveryAddress}</span>` : ''}
                 </p>
-                <p class="text-slate-400">Total Stall Earnings: <strong class="text-emerald-400 font-bold">₹ ${Number(order.sellerSubtotal).toLocaleString("en-IN")}</strong> &bull; <span class="text-slate-500 font-semibold">${order.paymentStatus === 'paid' ? 'Paid via UPI' : 'Cash on Delivery'}</span></p>
-                ${order.items && order.items.length ? `
-                  <div class="mt-2 p-2 bg-slate-950/70 rounded-lg border border-slate-800 text-[11px] text-slate-300">
-                    <strong class="text-white">Items to Pack:</strong> ${order.items.map(it => `${it.productName} (x${it.quantity})`).join(", ")}
-                  </div>
-                ` : ''}
+                <p class="text-slate-300">
+                  Total Stall Earnings: <strong class="text-emerald-400 font-black text-sm">₹ ${Number(order.sellerSubtotal).toLocaleString("en-IN")}</strong>
+                  &bull; <span class="text-slate-400 font-semibold">${order.paymentStatus === 'paid' ? 'Paid via UPI' : 'Cash on Delivery'}</span>
+                </p>
               </div>
 
-              <div class="shrink-0">
+              <!-- Visual Zero-Text Product Cards (For Illiterate / Quick Sight Recognition) -->
+              ${order.items && order.items.length ? `
+                <div class="space-y-1.5">
+                  <div class="text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
+                    <i class="fa-solid fa-image text-emerald-400"></i>
+                    <span>${soundboxLanguage === 'bn' ? 'ছবি দেখে পণ্য প্যাক করুন (Items with Photos):' : (soundboxLanguage === 'hi' ? 'फ़ोटो देखकर सामान पैक करें:' : 'Items to Pack (with Visuals):')}</span>
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                    ${order.items.map(it => {
+                      const itemImg = it.imageUrl || it.image || it.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&q=80';
+                      return `
+                        <div class="flex items-center gap-2.5 p-2 bg-slate-950 rounded-xl border border-slate-800">
+                          <img src="${itemImg}" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&q=80'" class="w-14 h-14 rounded-lg object-cover border border-slate-700 shrink-0" alt="${it.productName}" />
+                          <div class="min-w-0 flex-1">
+                            <div class="flex items-center justify-between gap-1">
+                              <span class="text-xs font-bold text-white truncate">${it.productName}</span>
+                              <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg text-xs font-black shrink-0">x${it.quantity}</span>
+                            </div>
+                            <p class="text-emerald-400 font-extrabold text-xs mt-1">₹ ${it.finalPrice || (it.unitPrice * it.quantity)}</p>
+                          </div>
+                        </div>
+                      `;
+                    }).join("")}
+                  </div>
+                </div>
+              ` : ''}
+
+              <!-- Action Buttons Area -->
+              <div class="pt-2 flex flex-col sm:flex-row justify-end items-stretch sm:items-center gap-2">
                 ${actionButton}
               </div>
             </div>
@@ -1711,7 +2100,9 @@
         }).join("");
 
       } catch (e) {
-        container.innerHTML = `<div class="p-4 text-center text-rose-400">Error loading orders</div>`;
+        if (!isSilent) {
+          container.innerHTML = `<div class="p-4 text-center text-rose-400">Error loading orders: ${e.message}</div>`;
+        }
       }
     }
 
@@ -2129,7 +2520,9 @@
         seller_nav_bargain: "AI Bargain Rules",
         seller_nav_earnings: "Payouts & Earnings",
         seller_nav_reviews: "Ratings & Buyer Photos",
-        seller_nav_settings: "Store Settings"
+        seller_nav_settings: "Store Settings",
+        seller_incoming_orders: "Incoming Customer Orders",
+        seller_incoming_sub: "Real-time marketplace orders ready for preparation and packing"
       },
       bn: {
         seller_title: "বিক্রেতা প্যানেল",
@@ -2146,7 +2539,9 @@
         seller_nav_bargain: "এআই দরদামের নিয়ম",
         seller_nav_earnings: "উপার্জন ও পেমেন্ট",
         seller_nav_reviews: "রেটিং ও ক্রেতার ছবি",
-        seller_nav_settings: "দোকানের সেটিংস"
+        seller_nav_settings: "দোকানের সেটিংস",
+        seller_incoming_orders: "নতুন গ্রাহক অর্ডারসমূহ",
+        seller_incoming_sub: "প্যাকিং ও গেট ড্রপ র‍্যাকে রাখার জন্য রিয়েল-টাইম অর্ডার তালিকা"
       },
       hi: {
         seller_title: "विक्रेता सुइट",
@@ -2163,7 +2558,9 @@
         seller_nav_bargain: "एआई मोलभाव नियम",
         seller_nav_earnings: "कमाई और भुगतान",
         seller_nav_reviews: "रेटिंग और समीक्षा",
-        seller_nav_settings: "स्टोर सेटिंग्स"
+        seller_nav_settings: "स्टोर सेटिंग्स",
+        seller_incoming_orders: "आने वाले ग्राहक ऑर्डर",
+        seller_incoming_sub: "पैकिंग व गेट ड्रॉप रैक में रखने के लिए रियल-टाइम आर्डर सूची"
       }
     };
 
