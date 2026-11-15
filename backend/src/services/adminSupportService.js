@@ -210,7 +210,12 @@ async function replyToTicket(ticketId, { message, senderId, newStatus }) {
     const text = (message || "").trim();
     if (!text) throw Object.assign(new Error("Message content cannot be empty"), { statusCode: 400 });
 
-    const adminId = Number(senderId) || 1;
+    let adminId = Number(senderId);
+    const [adminExists] = await connection.query("SELECT user_id FROM users WHERE user_id = ? LIMIT 1", [adminId]);
+    if (!adminExists) {
+      const [anyAdmin] = await connection.query("SELECT user_id FROM users WHERE role IN ('admin', 'super_admin') LIMIT 1");
+      adminId = anyAdmin?.user_id || 1;
+    }
 
     const res = await connection.query(
       `INSERT INTO seller_support_messages (ticket_id, sender_id, sender_role, message)
@@ -278,7 +283,18 @@ async function createTicket(data) {
   try {
     connection = await pool.getConnection();
 
-    const sellerId = Number(data.sellerId) || 3;
+    let sellerId = Number(data.sellerId);
+    const [sellerExists] = await connection.query("SELECT user_id FROM users WHERE user_id = ? LIMIT 1", [sellerId]);
+    if (!sellerExists) {
+      const [firstSeller] = await connection.query("SELECT user_id FROM users WHERE role = 'seller' LIMIT 1");
+      if (firstSeller) {
+        sellerId = firstSeller.user_id;
+      } else {
+        const [anyUser] = await connection.query("SELECT user_id FROM users LIMIT 1");
+        sellerId = anyUser?.user_id || 1;
+      }
+    }
+
     const ticketNumber = `TCK-${Math.floor(1000 + Math.random() * 9000)}-WB`;
     const subject = (data.subject || "").trim();
     const category = (data.category || "general").trim();
@@ -294,10 +310,17 @@ async function createTicket(data) {
     const ticketId = Number(res.insertId);
 
     if (initialMessage) {
+      let adminId = Number(data.adminId);
+      const [adminExists] = await connection.query("SELECT user_id FROM users WHERE user_id = ? LIMIT 1", [adminId]);
+      if (!adminExists) {
+        const [anyAdmin] = await connection.query("SELECT user_id FROM users WHERE role IN ('admin', 'super_admin') LIMIT 1");
+        adminId = anyAdmin?.user_id || sellerId;
+      }
+
       await connection.query(
         `INSERT INTO seller_support_messages (ticket_id, sender_id, sender_role, message)
          VALUES (?, ?, 'admin', ?)`,
-        [ticketId, Number(data.adminId) || 1, initialMessage]
+        [ticketId, adminId, initialMessage]
       );
     }
 
