@@ -1585,17 +1585,15 @@
         <p class="text-xs text-slate-400" data-i18n="voice_subtitle">Speak clearly in Bangla, English, or Hindi to find any product</p>
       </div>
 
-      <!-- Language Selector Chips inside Modal (No Flags) -->
-      <div class="flex items-center justify-center gap-2 p-1 bg-slate-950 rounded-2xl border border-slate-800">
-        <button type="button" onclick="setVoiceRecognitionLanguage('bn-IN', 'bn')" id="btnVoiceLangBn" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white">
-          বাংলা
-        </button>
-        <button type="button" onclick="setVoiceRecognitionLanguage('en-IN', 'en')" id="btnVoiceLangEn" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white shadow">
-          English
-        </button>
-        <button type="button" onclick="setVoiceRecognitionLanguage('hi-IN', 'hi')" id="btnVoiceLangHi" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white">
-          हिन्दी
-        </button>
+      <!-- Automatic Multi-Language Detection Banner (No Manual Buttons) -->
+      <div class="flex items-center justify-between gap-2 px-3.5 py-2 bg-slate-950 rounded-2xl border border-slate-800 text-xs">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-slate-300 font-bold" data-i18n="voice_auto_detect">Auto-Detecting Language</span>
+        </div>
+        <span id="voiceDetectedLangBadge" class="px-2.5 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black uppercase tracking-wider">
+          বাংলা • English • हिन्दी
+        </span>
       </div>
 
       <!-- Animated Mic Circle -->
@@ -1620,9 +1618,14 @@
 
       <!-- Status & Live Transcription Box -->
       <div class="space-y-2">
-        <p id="voiceSearchStatusText" class="text-xs font-bold text-emerald-400 tracking-wide" data-i18n="voice_listening">
-          Listening... Speak now!
-        </p>
+        <div class="flex items-center justify-between text-xs px-1">
+          <p id="voiceSearchStatusText" class="font-bold text-emerald-400 tracking-wide" data-i18n="voice_listening">
+            Listening... Speak now!
+          </p>
+          <span id="voiceLiveLanguageIndicator" class="text-[10px] font-bold text-slate-400">
+            Auto-Detecting
+          </span>
+        </div>
         <div class="min-h-[58px] p-3.5 bg-slate-950 border border-slate-800 rounded-2xl flex items-center justify-center">
           <p id="voiceLiveTranscript" class="text-sm font-semibold text-white italic">
             "..."
@@ -1630,14 +1633,15 @@
         </div>
       </div>
 
-      <!-- Quick Example Voice Hints -->
+      <!-- Quick Example Voice Hints (Mixed Multilingual) -->
       <div class="text-[11px] text-slate-400">
         <span class="font-bold text-slate-300" data-i18n="voice_try_saying">Try saying:</span>
         <div class="flex flex-wrap items-center justify-center gap-1.5 mt-1.5" id="voiceSuggestionsContainer">
-          <button type="button" onclick="applyVoiceText('Fresh Rohu Fish')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px]">🐟 Fresh Rohu Fish</button>
-          <button type="button" onclick="applyVoiceText('দেশি আলু')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px]">🥔 দেশি আলু</button>
-          <button type="button" onclick="applyVoiceText('सरसों का तेल')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px]">🛢️ सरसों का तेल</button>
-          <button type="button" onclick="applyVoiceText('Fortune Mustard Oil')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px]">🌾 Mustard Oil</button>
+          <button type="button" onclick="applyVoiceText('রুই মাছ')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] flex items-center gap-1 transition-all">🐟 <span>রুই মাছ</span></button>
+          <button type="button" onclick="applyVoiceText('দেশি আলু')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] flex items-center gap-1 transition-all">🥔 <span>দেশি আলু</span></button>
+          <button type="button" onclick="applyVoiceText('सरसों का तेल')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] flex items-center gap-1 transition-all">🛢️ <span>सरसों का तेल</span></button>
+          <button type="button" onclick="applyVoiceText('Gobindabhog Rice')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] flex items-center gap-1 transition-all">🍚 <span>Gobindabhog Rice</span></button>
+          <button type="button" onclick="applyVoiceText('ডিম')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] flex items-center gap-1 transition-all">🥚 <span>তাজা ডিম</span></button>
         </div>
       </div>
 
@@ -4142,6 +4146,7 @@
         voice_badge: "AI Voice Search Assistant",
         voice_title: "Search by Voice",
         voice_subtitle: "Speak clearly in Bangla, English, or Hindi to find any product",
+        voice_auto_detect: "Auto-Detecting Language",
         voice_listening: "Listening... Speak now!",
         voice_try_saying: "Try saying:",
         voice_cancel: "Cancel",
@@ -4262,6 +4267,7 @@
         voice_badge: "এআই ভয়েস সার্চ সহকারী",
         voice_title: "মুখে বলে খুঁজুন",
         voice_subtitle: "বাংলা, ইংরেজি বা হিন্দিতে যেকোনো পণ্যের নাম বলুন",
+        voice_auto_detect: "স্বয়ংক্রিয় ভাষা সনাক্তকরণ",
         voice_listening: "শুনছি... এখন মুখে বলুন!",
         voice_try_saying: "মুখে বলতে পারেন:",
         voice_cancel: "বাতিল",
@@ -4382,6 +4388,7 @@
         voice_badge: "एआई वॉयस सर्च असिस्टेंट",
         voice_title: "आवाज़ से खोजें",
         voice_subtitle: "बांग्ला, अंग्रेज़ी या हिन्दी में किसी भी उत्पाद का नाम बोलें",
+        voice_auto_detect: "स्वचालित भाषा पहचान",
         voice_listening: "सुन रहा हूँ... अब बोलिए!",
         voice_try_saying: "बोल कर देखें:",
         voice_cancel: "रद्द करें",
@@ -4597,28 +4604,71 @@
     });
 
     // =========================================================================
-    // VOICE SEARCH ASSISTANT CONTROLLER (BANGLA, ENGLISH, HINDI)
+    // VOICE SEARCH ASSISTANT CONTROLLER (AUTO-DETECT: BANGLA, ENGLISH, HINDI)
     // =========================================================================
     let speechRecognitionInstance = null;
     let currentVoiceLang = "en-IN";
     let isVoiceListening = false;
     let currentVoiceTranscript = "";
+    let detectedSpokenLangMeta = { code: "auto", short: "Auto", label: "Auto-Detecting" };
+    let voiceLangCycleIndex = 0;
+    const VOICE_SUPPORTED_LANGS = ["bn-IN", "en-IN", "hi-IN"];
+
+    function detectSpokenLanguage(text) {
+      if (!text || typeof text !== "string") {
+        return { code: "auto", short: "Auto", label: "Auto-Detecting", badge: "বাংলা • English • हिन्दी" };
+      }
+      const trimmed = text.trim();
+      // Unicode block for Bengali: U+0980 to U+09FF
+      const hasBengali = /[\u0980-\u09FF]/.test(trimmed);
+      // Unicode block for Devanagari (Hindi): U+0900 to U+097F
+      const hasHindi = /[\u0900-\u097F]/.test(trimmed);
+
+      if (hasBengali) {
+        return { code: "bn", short: "বাংলা", label: "বাংলা (Bengali)", badge: "বাংলা (Bengali)" };
+      }
+      if (hasHindi) {
+        return { code: "hi", short: "हिन्दी", label: "हिन्दी (Hindi)", badge: "हिन्दी (Hindi)" };
+      }
+
+      // Transliterated keyword heuristics
+      const lower = trimmed.toLowerCase();
+      const bengaliKeywords = /\b(rui|katla|maach|mach|ilish|sorshe|sarson|alu|chal|dim|taza|deshi|mangsho|murgi|khasi|ponir|dudh)\b/i;
+      const hindiKeywords = /\b(machli|rohu|sarson|tel|aloo|chawal|anda|taaza|desi|paneer|doodh|masala)\b/i;
+
+      if (bengaliKeywords.test(lower)) {
+        return { code: "bn", short: "বাংলা", label: "বাংলা / Transliterated", badge: "বাংলা (Bengali)" };
+      }
+      if (hindiKeywords.test(lower)) {
+        return { code: "hi", short: "हिन्दी", label: "हिन्दी / Transliterated", badge: "हिन्दी (Hindi)" };
+      }
+
+      return { code: "en", short: "English", label: "English", badge: "English" };
+    }
 
     function openVoiceSearchModal() {
       const modal = document.getElementById("voiceSearchModal");
       if (!modal) return;
       modal.classList.remove("hidden");
       currentVoiceTranscript = "";
-      
+      detectedSpokenLangMeta = { code: "auto", short: "Auto", label: "Auto-Detecting" };
+
       const transcriptEl = document.getElementById("voiceLiveTranscript");
       if (transcriptEl) transcriptEl.textContent = '"..."';
 
-      // Pick shortcode from current app language
-      const short = currentAppLanguage === "bn" ? "bn" : (currentAppLanguage === "hi" ? "hi" : "en");
-      currentVoiceLang = short === "bn" ? "bn-IN" : (short === "hi" ? "hi-IN" : "en-IN");
+      const badge = document.getElementById("voiceDetectedLangBadge");
+      if (badge) {
+        badge.textContent = "বাংলা • English • हिन्दी";
+        badge.className = "px-2.5 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black uppercase tracking-wider";
+      }
 
-      updateVoiceLangSelectorUI(short);
-      updateVoiceSuggestionsForLang(short);
+      const indicator = document.getElementById("voiceLiveLanguageIndicator");
+      if (indicator) indicator.textContent = "Auto-Detecting";
+
+      // Initialize base recognition language prioritizing app preference
+      if (currentAppLanguage === "bn") currentVoiceLang = "bn-IN";
+      else if (currentAppLanguage === "hi") currentVoiceLang = "hi-IN";
+      else currentVoiceLang = "en-IN";
 
       stopVoiceListening();
       setTimeout(() => {
@@ -4630,65 +4680,6 @@
       stopVoiceListening();
       const modal = document.getElementById("voiceSearchModal");
       if (modal) modal.classList.add("hidden");
-    }
-
-    function updateVoiceLangSelectorUI(shortCode) {
-      ["bn", "en", "hi"].forEach(l => {
-        const btn = document.getElementById("btnVoiceLang" + l.charAt(0).toUpperCase() + l.slice(1));
-        if (btn) {
-          if (l === shortCode) {
-            btn.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white shadow";
-          } else {
-            btn.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white";
-          }
-        }
-      });
-    }
-
-    function setVoiceRecognitionLanguage(langCode, shortCode) {
-      currentVoiceLang = langCode;
-      updateVoiceLangSelectorUI(shortCode);
-      updateVoiceSuggestionsForLang(shortCode);
-
-      stopVoiceListening();
-      setTimeout(() => {
-        startVoiceListening();
-      }, 150);
-    }
-
-    function updateVoiceSuggestionsForLang(lang) {
-      const container = document.getElementById("voiceSuggestionsContainer");
-      if (!container) return;
-
-      const suggestions = {
-        en: [
-          { text: "Fresh Rohu Fish", icon: "🐟", label: "Fresh Rohu Fish" },
-          { text: "Country Potatoes", icon: "🥔", label: "Country Potatoes" },
-          { text: "Fortune Mustard Oil", icon: "🛢️", label: "Mustard Oil" },
-          { text: "Gobindabhog Rice", icon: "🌾", label: "Gobindabhog Rice" }
-        ],
-        bn: [
-          { text: "রুই মাছ", icon: "🐟", label: "রুই মাছ" },
-          { text: "দেশি আলু", icon: "🥔", label: "দেশি আলু" },
-          { text: "সর্ষের তেল", icon: "🛢️", label: "সর্ষের তেল" },
-          { text: "গোবিন্দভোগ চাল", icon: "🍚", label: "গোবিন্দভোগ চাল" },
-          { text: "ডিম", icon: "🥚", label: "তাজা ডিম" }
-        ],
-        hi: [
-          { text: "ताज़ी मछली", icon: "🐟", label: "ताज़ी मछली" },
-          { text: "देसी आलू", icon: "🥔", label: "देसी आलू" },
-          { text: "सरसों का तेल", icon: "🛢️", label: "सरसों का तेल" },
-          { text: "चावल", icon: "🍚", label: "चावल" },
-          { text: "अंडे", icon: "🥚", label: "ताजा अंडा" }
-        ]
-      };
-
-      const list = suggestions[lang] || suggestions.en;
-      container.innerHTML = list.map(item => `
-        <button type="button" onclick="applyVoiceText('${item.text}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] flex items-center gap-1 transition-all">
-          <span>${item.icon}</span> <span>${item.label}</span>
-        </button>
-      `).join("");
     }
 
     function startVoiceListening() {
@@ -4743,6 +4734,18 @@
             currentVoiceTranscript = text;
             const el = document.getElementById("voiceLiveTranscript");
             if (el) el.textContent = `"${text}"`;
+
+            // Real-time automatic language detection
+            detectedSpokenLangMeta = detectSpokenLanguage(text);
+            const badge = document.getElementById("voiceDetectedLangBadge");
+            if (badge) {
+              badge.textContent = detectedSpokenLangMeta.badge;
+              badge.className = "px-2.5 py-0.5 rounded-lg bg-emerald-500/30 text-emerald-300 border border-emerald-400 text-[10px] font-black uppercase tracking-wider animate-pulse";
+            }
+            const indicator = document.getElementById("voiceLiveLanguageIndicator");
+            if (indicator) {
+              indicator.textContent = "Detected: " + detectedSpokenLangMeta.label;
+            }
           }
         };
 
@@ -4755,7 +4758,10 @@
             if (event.error === "not-allowed") {
               statusEl.textContent = "Microphone permission denied. Please allow microphone in browser.";
             } else if (event.error === "no-speech") {
-              statusEl.textContent = "No speech heard. Tap microphone to speak.";
+              // Rotate to next language model on silence to cover multi-lingual users
+              voiceLangCycleIndex = (voiceLangCycleIndex + 1) % VOICE_SUPPORTED_LANGS.length;
+              currentVoiceLang = VOICE_SUPPORTED_LANGS[voiceLangCycleIndex];
+              statusEl.textContent = "No speech heard. Listening in Bangla, English & Hindi...";
             } else {
               statusEl.textContent = `Recognition error (${event.error}). Tap to retry.`;
             }
@@ -4768,7 +4774,7 @@
           if (currentVoiceTranscript && currentVoiceTranscript.trim().length > 0) {
             setTimeout(() => {
               submitVoiceSearch();
-            }, 500);
+            }, 450);
           }
         };
 
@@ -4822,6 +4828,8 @@
       closeVoiceSearchModal();
       if (!query) return;
 
+      const langInfo = detectSpokenLanguage(query);
+
       const desktopInput = document.getElementById("marketSearchInput");
       const mobileInput = document.getElementById("mobileMarketSearchInput");
       if (desktopInput) desktopInput.value = query;
@@ -4829,11 +4837,16 @@
 
       switchCustomerPage("home");
       loadCustomerProducts("all", query);
-      showToast(`🎙️ Voice search: "${query}"`, "success");
+      showToast(`🎙️ [${langInfo.short}] Voice Search: "${query}"`, "success");
     }
 
     function applyVoiceText(text) {
       currentVoiceTranscript = text;
+      const langInfo = detectSpokenLanguage(text);
+      const badge = document.getElementById("voiceDetectedLangBadge");
+      if (badge) badge.textContent = langInfo.badge;
+      const indicator = document.getElementById("voiceLiveLanguageIndicator");
+      if (indicator) indicator.textContent = "Detected: " + langInfo.label;
       submitVoiceSearch();
     }
   </script>

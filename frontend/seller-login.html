@@ -94,11 +94,14 @@
         <i class="fa-solid fa-arrow-right"></i>
       </button>
 
-      <!-- Quick Test Fill button for seamless review -->
-      <div class="p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl flex items-center justify-between text-xs">
-        <span class="text-slate-400">Demo Active Seller: <strong class="text-emerald-400">testseller@locallink.com</strong></span>
-        <button type="button" onclick="fillTestSeller()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-lg text-[11px] transition-all">
-          Auto-Fill
+      <!-- Quick 1-Click Demo Login for seamless access -->
+      <div class="p-3 bg-emerald-950/40 border border-emerald-800/60 rounded-xl flex items-center justify-between text-xs">
+        <div>
+          <span class="font-bold text-emerald-300 block">Fast Demo Seller Access</span>
+          <span class="text-[10px] text-slate-400">testseller@locallink.com &bull; Pass: <strong class="text-emerald-400">seller123</strong></span>
+        </div>
+        <button type="button" onclick="quickFillAndLoginSeller()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-[11px] shadow transition-all flex items-center gap-1">
+          <i class="fa-solid fa-bolt"></i> 1-Click Login
         </button>
       </div>
     </form>
@@ -325,6 +328,13 @@
     function fillTestSeller() {
       document.getElementById("loginIdentifier").value = "testseller@locallink.com";
       document.getElementById("loginPassword").value = "seller123";
+    }
+
+    function quickFillAndLoginSeller() {
+      fillTestSeller();
+      document.getElementById("rememberMe").checked = true;
+      const fakeEvent = { preventDefault: () => {} };
+      handleLogin(fakeEvent);
     }
 
     // 1. Handle Login

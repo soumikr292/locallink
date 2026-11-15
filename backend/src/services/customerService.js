@@ -402,21 +402,40 @@ async function getCustomerProducts({ category, search, locality, city, address, 
         adrak: "ginger",
         lonka: "chilli",
         mirchi: "chilli",
+        rui: "fish",
+        rohu: "fish",
+        katla: "fish",
+        sarson: "mustard",
+        sarso: "mustard",
+        sorshe: "mustard",
+        sorsher: "mustard",
+        gobindabhog: "gobindabhog",
+        deshi: "country",
+        desi: "country",
+        paneer: "paneer",
+        ponir: "paneer",
+        doodh: "milk",
+        dudh: "milk",
+        masala: "spice",
+        moshla: "spice",
 
         // Native Bengali Script (বাংলা লিপি)
         "মাছ": "fish",
         "মাছের": "fish",
-        "রুই": "rohu",
-        "কাতলা": "katla",
-        "ইলিশ": "ilish",
+        "রুই": "fish",
+        "কাতলা": "fish",
+        "ইলিশ": "fish",
         "চিংড়ি": "prawn",
         "চিংরি": "prawn",
         "আলু": "potato",
         "তেল": "oil",
         "সর্ষে": "mustard",
         "সর্ষের": "mustard",
+        "সরিষা": "mustard",
+        "সরিষার": "mustard",
         "চাল": "rice",
         "ভাত": "rice",
+        "গোবিন্দভোগ": "gobindabhog",
         "ডিম": "egg",
         "মুরগি": "chicken",
         "ঘি": "ghee",
@@ -445,13 +464,21 @@ async function getCustomerProducts({ category, search, locality, city, address, 
         "চিনি": "sugar",
         "চা": "tea",
         "লেবু": "lemon",
+        "তাজা": "fresh",
+        "দেশি": "country",
+        "পনির": "paneer",
+        "মশলা": "spice",
+        "তরকারি": "vegetable",
 
         // Native Hindi Devanagari Script (हिन्दी लिपि)
         "मछली": "fish",
         "मछलियां": "fish",
+        "रोहू": "fish",
+        "कतला": "fish",
         "आलू": "potato",
         "तेल": "oil",
         "सरसों": "mustard",
+        "सरसो": "mustard",
         "चावल": "rice",
         "अंडा": "egg",
         "अंडे": "egg",
@@ -479,14 +506,28 @@ async function getCustomerProducts({ category, search, locality, city, address, 
         "सूजी": "suji",
         "चीनी": "sugar",
         "चाय": "tea",
-        "नींबू": "lemon"
+        "नींबू": "lemon",
+        "ताजा": "fresh",
+        "ताज़ी": "fresh",
+        "देसी": "country",
+        "पनीर": "paneer",
+        "मसाला": "spice",
+        "मसाले": "spice"
       };
+
+      const STOP_WORDS = new Set([
+        "का", "के", "की", "को", "में", "से", "और", "या", "चाहिए", "दीजिए", "दिखाइए", "लाओ", "देना", "एक", "दो", "वाला", "वाली",
+        "এর", "র", "তে", "এ", "এবং", "ও", "বা", "চাই", "দিন", "দেখান", "একটা", "দুটো", "দেবেন",
+        "a", "an", "the", "in", "on", "of", "for", "and", "or", "to", "give", "show", "want", "need", "please", "can", "you", "me"
+      ]);
 
       const rawSearch = search.trim().toLowerCase();
       // Separate glued units like 1kg -> 1 kg, 500g -> 500 g, 1l -> 1 l, remove punctuation
       const separated = rawSearch.replace(/(\d+)(kg|g|gm|l|ml|ltr)/gi, "$1 $2");
       const cleanedSearch = separated.replace(/[()[\]{}.,+_-]/g, " ");
-      const words = cleanedSearch.split(/\s+/).filter(Boolean);
+      const rawWords = cleanedSearch.split(/\s+/).filter(Boolean);
+      const filteredWords = rawWords.filter(w => !STOP_WORDS.has(w));
+      const words = filteredWords.length > 0 ? filteredWords : rawWords;
 
       if (words.length > 0) {
         for (const word of words) {
@@ -643,12 +684,26 @@ async function getCompareItems(itemName = "") {
     } else {
       // Search matching term across product name, description, brand, or category
       const synonymMap = {
-        mach: "fish", macher: "fish", alu: "potato", aloo: "potato", tel: "oil", chal: "rice", chawal: "rice",
-        "মাছ": "fish", "মাছের": "fish", "রুই": "rohu", "কাতলা": "katla", "আলু": "potato", "তেল": "oil", "চাল": "rice", "ডিম": "egg",
-        "मछली": "fish", "आलू": "potato", "तेल": "oil", "चावल": "rice", "अंडा": "egg"
+        mach: "fish", macher: "fish", maach: "fish", machli: "fish", alu: "potato", aloo: "potato", tel: "oil", chal: "rice", chawal: "rice",
+        rui: "fish", rohu: "fish", katla: "fish", sarson: "mustard", sorshe: "mustard", sorsher: "mustard", dim: "egg", murgi: "chicken", paneer: "paneer",
+        "মাছ": "fish", "মাছের": "fish", "রুই": "fish", "কাতলা": "fish", "আলু": "potato", "তেল": "oil", "সর্ষের": "mustard", "সরিষা": "mustard", "চাল": "rice", "ডিম": "egg", "পনির": "paneer",
+        "मछली": "fish", "रोहू": "fish", "कतला": "fish", "आलू": "potato", "तेल": "oil", "सरसों": "mustard", "चावल": "rice", "अंडा": "egg", "पनीर": "paneer"
       };
-      const translated = synonymMap[queryTerm] || queryTerm;
-      const searchTerm = `%${queryTerm}%`;
+
+      const STOP_WORDS = new Set([
+        "का", "के", "की", "को", "में", "से", "और", "या", "चाहिए", "दीजिए", "दिखाइए", "लाओ", "देना", "एक", "दो", "वाला", "वाली",
+        "এর", "র", "তে", "এ", "এবং", "ও", "বা", "চাই", "দিন", "দেখান", "একটা", "দুটো", "দেবেন",
+        "a", "an", "the", "in", "on", "of", "for", "and", "or", "to", "give", "show", "want", "need", "please", "can", "you", "me"
+      ]);
+
+      const cleanedCompareQuery = queryTerm.replace(/[()[\]{}.,+_-]/g, " ");
+      const rawCompareWords = cleanedCompareQuery.split(/\s+/).filter(Boolean);
+      const meaningfulWords = rawCompareWords.filter(w => !STOP_WORDS.has(w));
+      const compareWords = meaningfulWords.length > 0 ? meaningfulWords : rawCompareWords;
+
+      const firstWord = compareWords[0] || queryTerm;
+      const translated = synonymMap[firstWord] || synonymMap[queryTerm] || queryTerm;
+      const searchTerm = `%${firstWord}%`;
       const searchTranslated = `%${translated}%`;
       rows = await conn.query(
         `SELECT
