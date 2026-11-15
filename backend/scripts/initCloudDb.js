@@ -132,8 +132,8 @@ async function initCloudDb() {
         VALUES
           ('Fresh Produce & Marine (0% Nil)', 0.00, 0.00, 0.00, 0.00, '0302', 'Vegetables & Fish', 1),
           ('Essential Edibles (5% GST)', 5.00, 2.50, 2.50, 5.00, '1508', 'Groceries & Spices', 1),
-          ('Dairy, Sweets & Bakery (12% GST)', 12.00, 6.00, 6.00, 12.00, 'Dairy & Bakery', 1),
-          ('Packaged Retail & Sundries (18% GST)', 18.00, 9.00, 9.00, 18.00, 'Snacks & Packaged Food', 1),
+          ('Dairy, Sweets & Bakery (12% GST)', 12.00, 6.00, 6.00, 12.00, '0405', 'Dairy & Bakery', 1),
+          ('Packaged Retail & Sundries (18% GST)', 18.00, 9.00, 9.00, 18.00, '2106', 'Snacks & Packaged Food', 1),
           ('Municipal Market Sanitation Cess (1%)', 1.00, 0.50, 0.50, 1.00, '9985', 'Market Services', 1)
       `);
       console.log("Seeded default commodity GST slabs.");
