@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>LocalLink - Comprehensive Admin Control Center</title>
+    <script>
+        (function() {
+            try {
+                var adminToken = sessionStorage.getItem("locallinkAdminToken") || localStorage.getItem("locallinkAdminToken");
+                if (!adminToken) {
+                    window.location.replace("login.html");
+                }
+            } catch (e) {
+                window.location.replace("login.html");
+            }
+        })();
+    </script>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#059669">
     <script src="js/build-env.js"></script>
@@ -2796,6 +2808,8 @@ function showCatalogModule(module) {
     function logoutAdmin() {
         sessionStorage.removeItem("locallinkAdminToken");
         sessionStorage.removeItem("locallinkAdminUser");
+        localStorage.removeItem("locallinkAdminToken");
+        localStorage.removeItem("locallinkAdminUser");
         window.location.href = "login.html";
     }
 

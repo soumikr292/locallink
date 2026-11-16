@@ -380,6 +380,20 @@
     const roleButtonsHtml = roles
       .map((r) => {
         const isActive = r.id === currentRole;
+        let authBadge = "";
+        if (r.id === "seller") {
+          const hasSeller = localStorage.getItem("locallinkSellerToken") || sessionStorage.getItem("locallinkSellerToken");
+          authBadge = hasSeller ? "Signed In" : "Login Required";
+        } else if (r.id === "rider") {
+          const hasRider = localStorage.getItem("locallinkRiderToken");
+          authBadge = hasRider ? "Signed In" : "Login Required";
+        } else if (r.id === "admin") {
+          const hasAdmin = localStorage.getItem("locallinkAdminToken") || sessionStorage.getItem("locallinkAdminToken");
+          authBadge = hasAdmin ? "Signed In" : "Login Required";
+        } else if (r.id === "customer") {
+          const hasCust = localStorage.getItem("locallinkCustomerToken");
+          authBadge = hasCust ? "Signed In" : "Guest Mode";
+        }
         return `
           <button type="button" onclick="window.LocalLinkApp.goToRole('${r.id}')"
             style="width:100%;display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;border:1px solid ${
@@ -396,7 +410,7 @@
                 ${
                   isActive
                     ? `<span style="font-size:9px;font-weight:800;padding:2px 6px;border-radius:999px;background:${r.accent};color:#020617;">ACTIVE</span>`
-                    : ""
+                    : `<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:999px;background:rgba(255,255,255,0.08);color:#94a3b8;">${authBadge}</span>`
                 }
               </div>
               <p style="font-size:11px;color:#94a3b8;margin:2px 0 0 0;line-height:1.3;">${r.desc}</p>

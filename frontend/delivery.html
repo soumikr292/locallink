@@ -43,10 +43,10 @@
           <i class="fa-solid fa-motorcycle text-base sm:text-lg"></i>
         </div>
         <div class="min-w-0">
-          <h2 id="riderHeaderName" class="font-bold text-white text-sm truncate">Kamal Hossain</h2>
-          <p id="riderStatusIndicator" class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1.5 cursor-pointer" onclick="toggleOnlineStatus()">
-            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-            <span id="riderStatusText">Active Rider (Online)</span>
+          <h2 id="riderHeaderName" class="font-bold text-white text-sm truncate">Delivery Partner</h2>
+          <p id="riderStatusIndicator" class="text-[10px] text-slate-400 font-semibold flex items-center gap-1.5 cursor-pointer" onclick="toggleOnlineStatus()">
+            <span class="w-2 h-2 bg-slate-500 rounded-full"></span>
+            <span id="riderStatusText">Sign In Required</span>
           </p>
         </div>
       </div>
@@ -58,7 +58,7 @@
         </button>
         <div class="text-right bg-slate-900 px-2.5 py-1 rounded-xl border border-slate-800">
           <span class="text-[8px] text-slate-400 uppercase tracking-wider block font-bold">Payout</span>
-          <span id="headerTodayPayout" class="text-xs font-black text-emerald-400">₹ 960</span>
+          <span id="headerTodayPayout" class="text-xs font-black text-emerald-400">₹ 0</span>
         </div>
       </div>
     </header>
@@ -273,10 +273,10 @@
             <p class="text-[11px] text-slate-400">Sign in or register as a neighborhood delivery partner</p>
           </div>
         </div>
-        <button type="button" onclick="window.LocalLinkApp && window.LocalLinkApp.openRoleSwitcher ? window.LocalLinkApp.openRoleSwitcher() : closeRiderAuthModal()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-[10px] font-bold flex items-center gap-1 transition-colors" title="Switch App Role">
-          <i class="fa-solid fa-layer-group text-emerald-400"></i>
-          <span>Roles</span>
-        </button>
+        <a href="customer.html" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-[10px] font-bold flex items-center gap-1 transition-colors" title="Back to Customer App">
+          <i class="fa-solid fa-arrow-left text-emerald-400"></i>
+          <span>Market</span>
+        </a>
       </div>
 
       <div class="grid grid-cols-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-bold">
@@ -504,6 +504,11 @@
     }
 
     function closeRiderAuthModal() {
+      const token = localStorage.getItem("locallinkRiderToken");
+      if (!token) {
+        window.location.href = "customer.html";
+        return;
+      }
       const modal = document.getElementById("riderAuthModal");
       if (modal) modal.classList.add("hidden");
     }
