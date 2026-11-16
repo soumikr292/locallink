@@ -284,9 +284,7 @@
   }
 
   function goToRole(role) {
-    const url = getRoleTargetUrl(role);
-    closeRoleSwitcher();
-    window.location.href = url;
+    window.location.href = "unified-login.html";
   }
 
   // Native Geolocation wrapper (Capacitor Geolocation -> navigator.geolocation)
@@ -329,188 +327,11 @@
     offlineBanner.style.cssText =
       "display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#e11d48;color:#fff;text-align:center;font-size:11px;font-weight:700;padding:6px 12px;box-shadow:0 4px 12px rgba(0,0,0,0.4);";
     offlineBanner.innerHTML =
-      '<i class="fa-solid fa-wifi mr-1"></i> No internet connection or backend unreachable — <button onclick="window.LocalLinkApp.openRoleSwitcher()" style="text-decoration:underline;margin-left:6px;background:none;border:none;color:#fff;font-weight:800;cursor:pointer;">Check Server Settings</button>';
+      '<i class="fa-solid fa-wifi mr-1"></i> No internet connection or backend unreachable — please check your network connection';
     document.body.appendChild(offlineBanner);
 
-    // Role Switcher & Server Config Modal
-    const modal = document.createElement("div");
-    modal.id = "llRoleSwitcherModal";
-    modal.style.cssText =
-      "display:none;position:fixed;inset:0;z-index:9998;background:rgba(2,6,23,0.82);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;";
-
-    const roles = [
-      {
-        id: "customer",
-        title: "Customer Marketplace",
-        desc: "Browse nearby local stalls, AI Bargain & live GPS tracking",
-        icon: "fa-bag-shopping",
-        accent: "#10b981",
-        bg: "rgba(16,185,129,0.12)",
-        border: "rgba(16,185,129,0.35)"
-      },
-      {
-        id: "seller",
-        title: "Seller Shopkeeper Hub",
-        desc: "Upload live morning photos, manage inventory & stall orders",
-        icon: "fa-store",
-        accent: "#f59e0b",
-        bg: "rgba(245,158,11,0.12)",
-        border: "rgba(245,158,11,0.35)"
-      },
-      {
-        id: "rider",
-        title: "Delivery Partner Console",
-        desc: "Accept nearby dispatches, live route map & OTP completion",
-        icon: "fa-motorcycle",
-        accent: "#38bdf8",
-        bg: "rgba(56,189,248,0.12)",
-        border: "rgba(56,189,248,0.35)"
-      },
-      {
-        id: "admin",
-        title: "Admin Control Center",
-        desc: "Approve sellers, moderate marketplace catalog & payouts",
-        icon: "fa-shield-halved",
-        accent: "#a78bfa",
-        bg: "rgba(167,139,250,0.12)",
-        border: "rgba(167,139,250,0.35)"
-      }
-    ];
-
-    const roleButtonsHtml = roles
-      .map((r) => {
-        const isActive = r.id === currentRole;
-        let authBadge = "";
-        if (r.id === "seller") {
-          const hasSeller = localStorage.getItem("locallinkSellerToken") || sessionStorage.getItem("locallinkSellerToken");
-          authBadge = hasSeller ? "Signed In" : "Login Required";
-        } else if (r.id === "rider") {
-          const hasRider = localStorage.getItem("locallinkRiderToken");
-          authBadge = hasRider ? "Signed In" : "Login Required";
-        } else if (r.id === "admin") {
-          const hasAdmin = localStorage.getItem("locallinkAdminToken") || sessionStorage.getItem("locallinkAdminToken");
-          authBadge = hasAdmin ? "Signed In" : "Login Required";
-        } else if (r.id === "customer") {
-          const hasCust = localStorage.getItem("locallinkCustomerToken");
-          authBadge = hasCust ? "Signed In" : "Guest Mode";
-        }
-        return `
-          <button type="button" onclick="window.LocalLinkApp.goToRole('${r.id}')"
-            style="width:100%;display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;border:1px solid ${
-              isActive ? r.accent : "rgba(30,41,59,1)"
-            };background:${isActive ? r.bg : "#020617"};color:#f8fafc;text-align:left;cursor:pointer;transition:all 0.15s;">
-            <div style="width:40px;height:40px;border-radius:12px;background:${r.bg};border:1px solid ${
-          r.border
-        };display:flex;align-items:center;justify-content:center;color:${r.accent};font-size:16px;flex-shrink:0;">
-              <i class="fa-solid ${r.icon}"></i>
-            </div>
-            <div style="flex:1;min-width:0;">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <span style="font-weight:800;font-size:13px;color:#fff;">${r.title}</span>
-                ${
-                  isActive
-                    ? `<span style="font-size:9px;font-weight:800;padding:2px 6px;border-radius:999px;background:${r.accent};color:#020617;">ACTIVE</span>`
-                    : `<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:999px;background:rgba(255,255,255,0.08);color:#94a3b8;">${authBadge}</span>`
-                }
-              </div>
-              <p style="font-size:11px;color:#94a3b8;margin:2px 0 0 0;line-height:1.3;">${r.desc}</p>
-            </div>
-            <i class="fa-solid fa-chevron-right" style="color:#64748b;font-size:11px;"></i>
-          </button>
-        `;
-      })
-      .join("");
-
-    modal.innerHTML = `
-      <div style="background:#0f172a;border:1px solid #1e293b;border-radius:20px;max-width:440px;width:100%;padding:20px;box-shadow:0 25px 50px rgba(0,0,0,0.65);font-family:system-ui,-apple-system,sans-serif;max-height:92vh;overflow-y:auto;">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid #1e293b;margin-bottom:14px;">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#059669,#2dd4bf);display:flex;align-items:center;justify-content:center;color:#020617;font-size:16px;">
-              <i class="fa-solid fa-layer-group"></i>
-            </div>
-            <div>
-              <h3 style="margin:0;font-size:15px;font-weight:800;color:#fff;">LocalLink Role Switcher</h3>
-              <p style="margin:0;font-size:11px;color:#94a3b8;">Switch between Customer, Seller, Rider & Admin</p>
-            </div>
-          </div>
-          <button type="button" onclick="window.LocalLinkApp.closeRoleSwitcher()" style="background:#1e293b;border:none;color:#cbd5e1;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:14px;">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-
-        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
-          ${roleButtonsHtml}
-        </div>
-
-        <!-- Backend Connection Settings (Essential for Capacitor Phones & Emulators) -->
-        <div style="background:#020617;border:1px solid #1e293b;border-radius:14px;padding:12px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-            <span style="font-size:11px;font-weight:700;color:#cbd5e1;">
-              <i class="fa-solid fa-server" style="color:#10b981;margin-right:4px;"></i> Backend API Connection
-            </span>
-            <span id="llServerStatusBadge" style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;background:#1e293b;color:#94a3b8;">Checking...</span>
-          </div>
-
-          <div style="display:flex;gap:6px;margin-bottom:8px;">
-            <input id="llServerUrlInput" type="url" value="${activeApiBase}" placeholder="http://192.168.x.x:5001"
-              style="flex:1;background:#0f172a;border:1px solid #334155;border-radius:10px;padding:7px 10px;color:#fff;font-size:11px;outline:none;" />
-            <button type="button" onclick="window.LocalLinkApp.applyCustomServerUrl()"
-              style="background:#059669;color:#fff;border:none;border-radius:10px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">
-              Connect
-            </button>
-          </div>
-
-          <div style="display:flex;flex-wrap:wrap;gap:6px;font-size:10px;">
-            ${
-              env.defaultServerUrl
-                ? `<button type="button" onclick="document.getElementById('llServerUrlInput').value='${normalizeUrl(env.defaultServerUrl)}';window.LocalLinkApp.applyCustomServerUrl();" style="background:#1e293b;color:#a7f3d0;border:1px solid #334155;border-radius:8px;padding:4px 8px;cursor:pointer;font-weight:700;">Cloud Server</button>`
-                : ""
-            }
-            ${
-              env.lanUrl
-                ? `<button type="button" onclick="document.getElementById('llServerUrlInput').value='${env.lanUrl}';window.LocalLinkApp.applyCustomServerUrl();" style="background:#1e293b;color:#34d399;border:1px solid #334155;border-radius:8px;padding:4px 8px;cursor:pointer;font-weight:700;">Wi-Fi LAN (${env.lanUrl.replace('http://','')})</button>`
-                : ""
-            }
-            <button type="button" onclick="document.getElementById('llServerUrlInput').value='http://10.0.2.2:5001';window.LocalLinkApp.applyCustomServerUrl();" style="background:#1e293b;color:#38bdf8;border:1px solid #334155;border-radius:8px;padding:4px 8px;cursor:pointer;font-weight:700;">Android Emu (10.0.2.2)</button>
-            <button type="button" onclick="document.getElementById('llServerUrlInput').value='http://localhost:5001';window.LocalLinkApp.applyCustomServerUrl();" style="background:#1e293b;color:#cbd5e1;border:1px solid #334155;border-radius:8px;padding:4px 8px;cursor:pointer;font-weight:700;">Localhost</button>
-            <button type="button" onclick="window.LocalLinkApp.autoDetectAndNotify()" style="background:#1e293b;color:#fbbf24;border:1px solid #334155;border-radius:8px;padding:4px 8px;cursor:pointer;font-weight:700;">Auto-Detect</button>
-          </div>
-        </div>
-
-        ${
-          !isCapacitorNative() && !isStandaloneInstalled()
-            ? `<div style="margin-top:12px;background:linear-gradient(135deg,rgba(5,150,105,0.16),rgba(14,165,233,0.12));border:1px solid rgba(16,185,129,0.35);border-radius:14px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
-                <div style="min-width:0;">
-                  <div style="font-size:12px;font-weight:800;color:#fff;">Install LocalLink App</div>
-                  <div style="font-size:10px;color:#cbd5e1;">Add LocalLink icon directly to your home screen</div>
-                </div>
-                <button type="button" onclick="window.LocalLinkApp.promptInstallPwa()" style="background:#10b981;color:#020617;border:none;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:900;cursor:pointer;white-space:nowrap;">
-                  <i class="fa-solid fa-download" style="margin-right:4px;"></i>Install
-                </button>
-              </div>`
-            : ""
-        }
-      </div>
-    `;
-
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) closeRoleSwitcher();
-    });
-    document.body.appendChild(modal);
-
-    // Also provide subtle floating Role Switcher button if page doesn't have its own visible trigger on mobile
-    if (!document.querySelector("[data-ll-role-trigger]")) {
-      const fab = document.createElement("button");
-      fab.id = "llFloatingRoleBtn";
-      fab.type = "button";
-      fab.setAttribute("data-ll-role-trigger", "true");
-      fab.onclick = openRoleSwitcher;
-      fab.title = "Switch Role (Customer / Seller / Rider / Admin)";
-      fab.style.cssText =
-        "position:fixed;bottom:76px;right:14px;z-index:9990;background:rgba(15,23,42,0.92);backdrop-filter:blur(8px);border:1px solid rgba(16,185,129,0.45);color:#fff;padding:8px 12px;border-radius:9999px;font-size:11px;font-weight:800;display:flex;align-items:center;gap:6px;box-shadow:0 8px 25px rgba(0,0,0,0.45);cursor:pointer;";
-      fab.innerHTML = `<span id="llFabDot" style="width:7px;height:7px;border-radius:999px;background:#10b981;"></span><i class="fa-solid fa-layer-group" style="color:#34d399;"></i><span>Switch Role</span>`;
-      document.body.appendChild(fab);
-    }
+    updateServerStatusUI();
+  }  }
 
     updateServerStatusUI();
   }
@@ -556,16 +377,11 @@
   }
 
   function openRoleSwitcher() {
-    injectRoleSwitcherUI();
-    const modal = document.getElementById("llRoleSwitcherModal");
-    if (modal) modal.style.display = "flex";
-    const input = document.getElementById("llServerUrlInput");
-    if (input) input.value = activeApiBase;
+    window.location.href = "unified-login.html";
   }
 
   function closeRoleSwitcher() {
-    const modal = document.getElementById("llRoleSwitcherModal");
-    if (modal) modal.style.display = "none";
+    // Disabled in favor of unified-login.html
   }
 
   async function applyCustomServerUrl() {

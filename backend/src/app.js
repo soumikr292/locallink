@@ -52,6 +52,8 @@ const sellerReportRoutes = require("./routes/sellerReportRoutes");
 const customerRoutes = require("./routes/customerRoutes");
 const riderRoutes = require("./routes/riderRoutes");
 const ttsRoutes = require("./routes/ttsRoutes");
+const unifiedAuthRoutes = require("./routes/unifiedAuthRoutes");
+const wholesalerRoutes = require("./routes/wholesalerRoutes");
 
 const { errorHandler } = require("./middleware/errorMiddleware");
 
@@ -123,6 +125,12 @@ app.get("/api/test", (req, res) => {
     message: "LocalLink API is working"
   });
 });
+
+// ===============================
+// Unified Universal Authentication (All Roles)
+// ===============================
+app.use("/api/auth", unifiedAuthRoutes);
+app.use("/api/wholesaler", wholesalerRoutes);
 
 // ===============================
 // Admin Authentication
@@ -254,8 +262,12 @@ app.get(["/seller", "/seller/dashboard"], (req, res) => {
   res.sendFile(path.join(frontendPath, "seller.html"));
 });
 
+app.get(["/wholesaler", "/mandi"], (req, res) => {
+  res.sendFile(path.join(frontendPath, "wholesaler.html"));
+});
+
 app.get(["/seller-login", "/seller/login"], (req, res) => {
-  res.sendFile(path.join(frontendPath, "seller-login.html"));
+  res.sendFile(path.join(frontendPath, "unified-login.html"));
 });
 
 app.get(["/customer", "/marketplace"], (req, res) => {
@@ -266,17 +278,17 @@ app.get(["/delivery", "/rider", "/partner"], (req, res) => {
   res.sendFile(path.join(frontendPath, "delivery.html"));
 });
 
-app.get(["/admin", "/admin/login"], (req, res) => {
-  res.sendFile(path.join(frontendPath, "login.html"));
+app.get(["/admin/login", "/login.html", "/login"], (req, res) => {
+  res.sendFile(path.join(frontendPath, "unified-login.html"));
 });
 
-app.get(["/index.html", "/admin.html", "/admin/dashboard"], (req, res) => {
+app.get(["/admin", "/admin/dashboard", "/admin.html"], (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
 
-// Root route serves Customer Marketplace Home App
-app.get(["/", "/app"], (req, res) => {
-  res.sendFile(path.join(frontendPath, "customer.html"));
+// Universal Default Entry Point: Unified Access Portal (Sign in / Register)
+app.get(["/", "/app", "/auth", "/unified-login"], (req, res) => {
+  res.sendFile(path.join(frontendPath, "unified-login.html"));
 });
 
 // Play Store Privacy Policy & Android App Links (TWA / App Verification)

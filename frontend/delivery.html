@@ -8,6 +8,21 @@
   <meta name="theme-color" content="#059669">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <!-- Delivery Partner Unified Auth Guard -->
+  <script>
+    (function() {
+      try {
+        var token = localStorage.getItem("locallinkRiderToken") || sessionStorage.getItem("locallinkRiderToken");
+        if (!token) {
+          window.location.replace("unified-login.html");
+        }
+      } catch (e) {
+        window.location.replace("unified-login.html");
+      }
+    })();
+  </script>
+
   <script src="js/build-env.js"></script>
   <script src="js/app-bridge.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -51,11 +66,6 @@
         </div>
       </div>
       <div class="flex items-center gap-2 flex-shrink-0">
-        <button type="button" data-ll-role-trigger="true" onclick="window.LocalLinkApp.openRoleSwitcher()" class="px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 border border-emerald-500/40 text-emerald-300 rounded-xl text-[10px] font-bold flex items-center gap-1 transition-all" title="Switch Role">
-          <span id="llHeaderConnectionDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-          <i class="fa-solid fa-layer-group"></i>
-          <span>Role</span>
-        </button>
         <div class="text-right bg-slate-900 px-2.5 py-1 rounded-xl border border-slate-800">
           <span class="text-[8px] text-slate-400 uppercase tracking-wider block font-bold">Payout</span>
           <span id="headerTodayPayout" class="text-xs font-black text-emerald-400">₹ 0</span>
@@ -220,20 +230,6 @@
           </div>
         </div>
 
-        <!-- Cross Portal Access -->
-        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-2.5 text-xs shadow-xl">
-          <h4 class="font-bold text-slate-300">Marketplace Portals</h4>
-          <div class="grid grid-cols-2 gap-2">
-            <a href="customer.html" onclick="window.LocalLinkApp.goToRole('customer');return false;" class="p-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500 rounded-xl flex items-center gap-2 text-slate-300 font-bold transition-all">
-              <i class="fa-solid fa-bag-shopping text-emerald-400"></i>
-              <span>Customer Store</span>
-            </a>
-            <a href="seller.html" onclick="window.LocalLinkApp.goToRole('seller');return false;" class="p-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500 rounded-xl flex items-center gap-2 text-slate-300 font-bold transition-all">
-              <i class="fa-solid fa-store text-amber-400"></i>
-              <span>Seller Hub</span>
-            </a>
-          </div>
-        </div>
       </div>
 
     </main>
@@ -506,7 +502,7 @@
     function closeRiderAuthModal() {
       const token = localStorage.getItem("locallinkRiderToken");
       if (!token) {
-        window.location.href = "customer.html";
+        window.location.href = "unified-login.html";
         return;
       }
       const modal = document.getElementById("riderAuthModal");
@@ -634,14 +630,7 @@
     function logoutRider() {
       localStorage.removeItem("locallinkRiderToken");
       localStorage.removeItem("locallinkRiderUser");
-      const headerEl = document.getElementById("riderHeaderName");
-      if (headerEl) headerEl.textContent = "Sign In Required";
-      const container = document.getElementById("activeDeliveryCardContainer");
-      if (container) {
-        container.innerHTML = `<div class="p-6 text-center text-slate-400 bg-slate-950 rounded-2xl border border-slate-800 text-xs space-y-2"><p class="font-bold text-white">Signed Out</p><button onclick="openRiderAuthModal('signin')" class="px-4 py-2 bg-emerald-600 text-slate-950 rounded-xl font-black">Sign In to Dispatch</button></div>`;
-      }
-      openRiderAuthModal("signin");
-      showToast("Signed out of Rider Console");
+      window.location.href = "unified-login.html";
     }
 
     async function initializeRiderSession() {

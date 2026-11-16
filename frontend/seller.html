@@ -9,10 +9,10 @@
       try {
         var token = localStorage.getItem("locallinkSellerToken") || sessionStorage.getItem("locallinkSellerToken");
         if (!token) {
-          window.location.replace("seller-login.html");
+          window.location.replace("unified-login.html");
         }
       } catch (e) {
-        window.location.replace("seller-login.html");
+        window.location.replace("unified-login.html");
       }
     })();
   </script>
@@ -121,23 +121,6 @@
         </div>
       </div>
       <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-        <!-- Portal Navigation Shortcuts (Native Safe) -->
-        <a href="customer.html" onclick="window.LocalLinkApp.goToRole('customer');return false;" class="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl transition-all" title="View Customer Marketplace">
-          <i class="fa-solid fa-bag-shopping text-emerald-400"></i>
-          <span data-i18n="seller_customer_store">Customer Store</span>
-        </a>
-        <a href="delivery.html" onclick="window.LocalLinkApp.goToRole('rider');return false;" class="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl transition-all" title="View Rider Console">
-          <i class="fa-solid fa-motorcycle text-sky-400"></i>
-          <span data-i18n="seller_rider_console">Rider Console</span>
-        </a>
-
-        <!-- Role Switcher Pill (Visible on Mobile + Desktop) -->
-        <button type="button" data-ll-role-trigger="true" onclick="window.LocalLinkApp.openRoleSwitcher()" class="px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 border border-emerald-500/40 text-emerald-300 rounded-xl text-[11px] font-bold flex items-center gap-1.5 transition-all" title="Switch Role (Customer / Seller / Rider / Admin)">
-          <span id="llHeaderConnectionDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-          <i class="fa-solid fa-layer-group"></i>
-          <span class="hidden sm:inline" data-i18n="seller_switch_role">Switch Role</span>
-        </button>
-
         <!-- Seller Language Switcher Pill (EN | বাংলা | हिन्दी) -->
         <div class="flex items-center p-0.5 bg-slate-900 border border-slate-800 rounded-xl text-[11px] font-bold">
           <button type="button" onclick="setSellerLanguage('en')" id="btnSellerLangEn" class="px-2 py-1 rounded-lg transition-all bg-emerald-600 text-white shadow">
@@ -1067,7 +1050,7 @@
     async function apiRequest(endpoint, options = {}) {
       const token = getStoredToken();
       if (!token) {
-        window.location.href = "seller-login.html";
+        window.location.href = "unified-login.html";
         return null;
       }
 
@@ -1110,7 +1093,7 @@
         if (!response.ok) {
           if (response.status === 401) {
             removeStoredToken();
-            window.location.href = "seller-login.html";
+            window.location.href = "unified-login.html";
             return null;
           }
           throw new Error(data.message || `Request failed with status ${response.status}`);
@@ -1215,7 +1198,7 @@
         removeStoredToken();
         showToast("Logged out successfully");
         setTimeout(() => {
-          window.location.href = "seller-login.html";
+          window.location.href = "unified-login.html";
         }, 500);
       }
     }

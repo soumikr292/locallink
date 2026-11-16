@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>LocalLink - Unified Access Portal</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#059669">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <script src="js/build-env.js"></script>
+  <script src="js/app-bridge.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.25); }
+      50% { box-shadow: 0 0 45px rgba(16, 185, 129, 0.45); }
+    }
+    .role-card-active {
+      border-color: #10b981 !important;
+      background: rgba(16, 185, 129, 0.12) !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-950 font-sans text-slate-100 flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950">
+
+  <!-- Top Ambient Glow -->
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[250px] bg-gradient-to-b from-emerald-600/20 via-teal-500/10 to-transparent blur-3xl pointer-events-none -z-10"></div>
+
+  <!-- Main Container -->
+  <div class="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div class="w-full max-w-xl bg-slate-900/95 backdrop-blur-2xl border border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6">
+
+      <!-- Header & Branding -->
+      <div class="text-center space-y-2">
+        <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 bg-slate-950 border border-slate-800 rounded-full text-xs font-bold text-emerald-400 mb-1">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Single Unified Gateway</span>
+        </div>
+
+        <div class="flex items-center justify-center gap-3">
+          <div class="w-12 h-12 bg-gradient-to-tr from-emerald-600 to-teal-400 rounded-2xl flex items-center justify-center text-slate-950 text-2xl font-black shadow-lg shadow-emerald-500/20">
+            <i class="fa-solid fa-link"></i>
+          </div>
+          <div class="text-left">
+            <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">LocalLink</h1>
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Neighborhood Commerce Platform</p>
+          </div>
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-300 max-w-md mx-auto pt-1">
+          One secure account gateway for Customers, Sellers, Wholesalers, Delivery Partners, Staff, and Administrators.
+        </p>
+      </div>
+
+      <!-- Auth Mode Switcher (Sign In vs Register) -->
+      <div class="grid grid-cols-2 bg-slate-950 p-1.5 rounded-2xl border border-slate-800 text-xs font-bold text-center">
+        <button type="button" id="tabBtnSignIn" onclick="setAuthMode('signin')" class="py-2.5 rounded-xl transition-all bg-emerald-600 text-slate-950 font-black shadow-md">
+          <i class="fa-solid fa-right-to-bracket mr-1.5"></i> Sign In to Account
+        </button>
+        <button type="button" id="tabBtnRegister" onclick="setAuthMode('register')" class="py-2.5 rounded-xl transition-all text-slate-400 hover:text-white font-bold">
+          <i class="fa-solid fa-user-plus mr-1.5"></i> Register New Account
+        </button>
+      </div>
+
+      <!-- Global Notification Box -->
+      <div id="alertBox" class="hidden p-3.5 rounded-2xl text-xs font-semibold flex items-start gap-2.5 transition-all">
+        <i id="alertIcon" class="fa-solid fa-circle-info text-sm mt-0.5"></i>
+        <span id="alertMessage" class="flex-1 leading-relaxed"></span>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- 1. UNIFIED SIGN IN FORM                        -->
+      <!-- ============================================== -->
+      <form id="signInForm" onsubmit="handleUnifiedSignIn(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Email or Phone Number</label>
+          <div class="relative">
+            <i class="fa-solid fa-envelope absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+            <input id="loginIdentifier" type="text" required placeholder="e.g. yourname@domain.com or +919830..."
+              class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none transition-all">
+          </div>
+          <p class="text-[10px] text-slate-500 mt-1">Works for all account types. The system will detect your role automatically.</p>
+        </div>
+
+        <div>
+          <div class="flex justify-between items-center mb-1.5">
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Password</label>
+            <button type="button" onclick="showForgotPasswordHelp()" class="text-xs text-emerald-400 hover:underline">Forgot password?</button>
+          </div>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+            <input id="loginPassword" type="password" required placeholder="••••••••"
+              class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl pl-10 pr-10 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none transition-all">
+            <button type="button" onclick="togglePasswordVisibility('loginPassword', 'loginEyeIcon')" class="absolute right-3.5 top-3 text-slate-500 hover:text-slate-300">
+              <i id="loginEyeIcon" class="fa-solid fa-eye text-sm"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <input id="rememberMe" type="checkbox" checked class="accent-emerald-500 rounded">
+            <span>Keep me signed in</span>
+          </label>
+          <span class="text-[11px] text-slate-500">Auto-routes to your panel</span>
+        </div>
+
+        <button id="btnSubmitSignIn" type="submit"
+          class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-slate-950 font-black rounded-xl text-sm shadow-lg shadow-emerald-950/60 transition-all flex items-center justify-center gap-2">
+          <span>Sign In & Enter Dashboard</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <!-- ============================================== -->
+      <!-- 2. UNIFIED REGISTRATION FORM (WITH ROLE PICKER)-->
+      <!-- ============================================== -->
+      <form id="registerForm" onsubmit="handleUnifiedRegister(event)" class="hidden space-y-4">
+        
+        <!-- Step 1: Role Card Selection -->
+        <div>
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+            1. Select Your Role / Account Type
+          </label>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            
+            <!-- Customer -->
+            <button type="button" onclick="selectRegistrationRole('customer')" id="roleCard-customer"
+              class="role-card role-card-active p-3 bg-slate-950 border border-slate-800 rounded-2xl text-left transition-all flex flex-col justify-between">
+              <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-2">
+                <i class="fa-solid fa-bag-shopping"></i>
+              </div>
+              <div>
+                <p class="font-bold text-xs text-white">Customer</p>
+                <p class="text-[9px] text-slate-400 leading-tight">Daily Buyer</p>
+              </div>
+            </button>
+
+            <!-- Retail Seller -->
+            <button type="button" onclick="selectRegistrationRole('seller')" id="roleCard-seller"
+              class="role-card p-3 bg-slate-950 border border-slate-800 rounded-2xl text-left transition-all flex flex-col justify-between">
+              <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-2">
+                <i class="fa-solid fa-store"></i>
+              </div>
+              <div>
+                <p class="font-bold text-xs text-white">Retail Seller</p>
+                <p class="text-[9px] text-slate-400 leading-tight">Bazaar Stall</p>
+              </div>
+            </button>
+
+            <!-- Wholesaler -->
+            <button type="button" onclick="selectRegistrationRole('wholesaler')" id="roleCard-wholesaler"
+              class="role-card p-3 bg-slate-950 border border-slate-800 rounded-2xl text-left transition-all flex flex-col justify-between">
+              <div class="w-8 h-8 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center mb-2">
+                <i class="fa-solid fa-boxes-packing"></i>
+              </div>
+              <div>
+                <p class="font-bold text-xs text-white">Wholesaler</p>
+                <p class="text-[9px] text-slate-400 leading-tight">Mandi Trader</p>
+              </div>
+            </button>
+
+            <!-- Delivery Partner -->
+            <button type="button" onclick="selectRegistrationRole('delivery_partner')" id="roleCard-delivery_partner"
+              class="role-card p-3 bg-slate-950 border border-slate-800 rounded-2xl text-left transition-all flex flex-col justify-between">
+              <div class="w-8 h-8 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center mb-2">
+                <i class="fa-solid fa-motorcycle"></i>
+              </div>
+              <div>
+                <p class="font-bold text-xs text-white">Delivery Partner</p>
+                <p class="text-[9px] text-slate-400 leading-tight">Dispatch Rider</p>
+              </div>
+            </button>
+
+            <!-- Staff -->
+            <button type="button" onclick="selectRegistrationRole('staff')" id="roleCard-staff"
+              class="role-card p-3 bg-slate-950 border border-slate-800 rounded-2xl text-left transition-all flex flex-col justify-between">
+              <div class="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center mb-2">
+                <i class="fa-solid fa-clipboard-user"></i>
+              </div>
+              <div>
+                <p class="font-bold text-xs text-white">Market Staff</p>
+                <p class="text-[9px] text-slate-400 leading-tight">Floor Supervisor</p>
+              </div>
+            </button>
+
+            <!-- Admin -->
+            <button type="button" onclick="selectRegistrationRole('admin')" id="roleCard-admin"
+              class="role-card p-3 bg-slate-950 border border-slate-800 rounded-2xl text-left transition-all flex flex-col justify-between">
+              <div class="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center mb-2">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <div>
+                <p class="font-bold text-xs text-white">Administrator</p>
+                <p class="text-[9px] text-slate-400 leading-tight">Governance</p>
+              </div>
+            </button>
+
+          </div>
+          <input type="hidden" id="selectedRegRole" value="customer">
+        </div>
+
+        <!-- Step 2: Personal & Role Details -->
+        <div class="space-y-3 pt-1">
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+            2. Personal & Account Credentials
+          </label>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 mb-1">Full Name</label>
+              <input id="regName" type="text" required placeholder="e.g. Ramesh Ghosh"
+                class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 mb-1">Mobile Phone</label>
+              <input id="regPhone" type="tel" placeholder="+91 98765 43210"
+                class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 mb-1">Email Address</label>
+            <input id="regEmail" type="email" required placeholder="you@example.com"
+              class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none">
+          </div>
+
+          <!-- Dynamic Role-Specific Fields -->
+          <div id="dynamicShopFields" class="hidden space-y-3 p-3 bg-slate-950/60 border border-slate-800 rounded-2xl">
+            <div>
+              <label id="lblShopName" class="block text-[11px] font-bold text-amber-400 mb-1">Stall / Shop / Business Name</label>
+              <input id="regShopName" type="text" placeholder="e.g. Ghosh Fresh Fish Stall #12"
+                class="w-full bg-slate-900 border border-slate-800 focus:border-amber-500 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-amber-400 mb-1">Market Address / Stall Number</label>
+              <input id="regShopAddress" type="text" placeholder="Stall #12, Sonarpur Main Bazaar, Block C"
+                class="w-full bg-slate-900 border border-slate-800 focus:border-amber-500 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none">
+            </div>
+          </div>
+
+          <div id="dynamicRiderFields" class="hidden space-y-3 p-3 bg-slate-950/60 border border-slate-800 rounded-2xl">
+            <div>
+              <label class="block text-[11px] font-bold text-sky-400 mb-1">Dispatch Vehicle Type</label>
+              <select id="regVehicleType" class="w-full bg-slate-900 border border-slate-800 focus:border-sky-500 rounded-xl px-3 py-2 text-xs text-white outline-none">
+                <option value="Motorcycle">Motorcycle / Bike</option>
+                <option value="Scooter">Scooter / Scooty</option>
+                <option value="Bicycle">Bicycle (Local Eco-Delivery)</option>
+                <option value="E-Rickshaw">E-Rickshaw / Toto</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 mb-1">Create Password (min. 6 characters)</label>
+            <div class="relative">
+              <input id="regPassword" type="password" required placeholder="Create a strong password"
+                class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl pl-3.5 pr-10 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none">
+              <button type="button" onclick="togglePasswordVisibility('regPassword', 'regEyeIcon')" class="absolute right-3.5 top-2.5 text-slate-500 hover:text-slate-300">
+                <i id="regEyeIcon" class="fa-solid fa-eye text-sm"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button id="btnSubmitRegister" type="submit"
+          class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-slate-950 font-black rounded-xl text-sm shadow-lg shadow-emerald-950/60 transition-all flex items-center justify-center gap-2">
+          <span>Complete Registration & Open Dashboard</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <!-- ============================================== -->
+      <!-- 3. FAST 1-CLICK DEMO TEST ACCOUNTS             -->
+      <!-- ============================================== -->
+      <div class="pt-2 border-t border-slate-800/80">
+        <div class="flex items-center justify-between mb-2.5">
+          <span class="text-[11px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-bolt text-amber-400"></i>
+            <span>Quick 1-Click Role Testing</span>
+          </span>
+          <span class="text-[10px] text-slate-500">Auto-fills & logs in instantly</span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          
+          <button type="button" onclick="autoFillDemo('customer')" class="p-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/50 rounded-xl text-left transition-all group">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xs group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-bag-shopping"></i>
+              </span>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-white truncate">Customer</p>
+                <p class="text-[9px] text-emerald-400 truncate">Buyer Portal</p>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" onclick="autoFillDemo('seller')" class="p-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/50 rounded-xl text-left transition-all group">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-xs group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-store"></i>
+              </span>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-white truncate">Retail Seller</p>
+                <p class="text-[9px] text-amber-400 truncate">Stall Hub</p>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" onclick="autoFillDemo('wholesaler')" class="p-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-orange-500/50 rounded-xl text-left transition-all group">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center text-xs group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-boxes-packing"></i>
+              </span>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-white truncate">Wholesaler</p>
+                <p class="text-[9px] text-orange-400 truncate">Mandi Supply</p>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" onclick="autoFillDemo('delivery_partner')" class="p-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-sky-500/50 rounded-xl text-left transition-all group">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center text-xs group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-motorcycle"></i>
+              </span>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-white truncate">Delivery Rider</p>
+                <p class="text-[9px] text-sky-400 truncate">Rider Console</p>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" onclick="autoFillDemo('staff')" class="p-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-indigo-500/50 rounded-xl text-left transition-all group">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-xs group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-clipboard-user"></i>
+              </span>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-white truncate">Operations</p>
+                <p class="text-[9px] text-indigo-400 truncate">Staff Support</p>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" onclick="autoFillDemo('admin')" class="p-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-purple-500/50 rounded-xl text-left transition-all group">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center text-xs group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-shield-halved"></i>
+              </span>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-white truncate">Super Admin</p>
+                <p class="text-[9px] text-purple-400 truncate">Control Center</p>
+              </div>
+            </div>
+          </button>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom Footer -->
+  <footer class="p-4 text-center text-slate-600 text-xs">
+    <p>&copy; 2026 LocalLink Unified System. Single Sign-On across all roles.</p>
+  </footer>
+
+  <!-- ============================================== -->
+  <!-- JAVASCRIPT LOGIC & API CONTROLLER              -->
+  <!-- ============================================== -->
+  <script>
+    // Dynamic API Base resolution via LocalLinkApp bridge
+    const getApiBase = () => {
+      if (window.LocalLinkApp && typeof window.LocalLinkApp.getApiBase === "function") {
+        return window.LocalLinkApp.getApiBase();
+      }
+      const host = window.location.hostname;
+      const port = window.location.port;
+      const isPrivate = !host || host === "localhost" || host === "127.0.0.1" || /^(192\.168\.|10\.|172\.)/.test(host);
+      if (window.location && (window.location.protocol === "http:" || window.location.protocol === "https:")) {
+        if (isPrivate && port && port !== "5001") {
+          const backendHost = (host === "127.0.0.1" || host === "localhost") ? "localhost" : host;
+          return `http://${backendHost}:5001`;
+        }
+        return window.location.origin;
+      }
+      return "http://localhost:5001";
+    };
+
+    // Mode Switcher: 'signin' | 'register'
+    function setAuthMode(mode) {
+      const btnIn = document.getElementById("tabBtnSignIn");
+      const btnReg = document.getElementById("tabBtnRegister");
+      const formIn = document.getElementById("signInForm");
+      const formReg = document.getElementById("registerForm");
+      hideAlert();
+
+      if (mode === "register") {
+        btnIn.className = "py-2.5 rounded-xl transition-all text-slate-400 hover:text-white font-bold";
+        btnReg.className = "py-2.5 rounded-xl transition-all bg-emerald-600 text-slate-950 font-black shadow-md";
+        formIn.classList.add("hidden");
+        formReg.classList.remove("hidden");
+      } else {
+        btnIn.className = "py-2.5 rounded-xl transition-all bg-emerald-600 text-slate-950 font-black shadow-md";
+        btnReg.className = "py-2.5 rounded-xl transition-all text-slate-400 hover:text-white font-bold";
+        formIn.classList.remove("hidden");
+        formReg.classList.add("hidden");
+      }
+    }
+
+    // Role Selection for Registration
+    function selectRegistrationRole(role) {
+      document.getElementById("selectedRegRole").value = role;
+      document.querySelectorAll(".role-card").forEach(el => el.classList.remove("role-card-active"));
+      const activeEl = document.getElementById("roleCard-" + role);
+      if (activeEl) activeEl.classList.add("role-card-active");
+
+      const shopFields = document.getElementById("dynamicShopFields");
+      const riderFields = document.getElementById("dynamicRiderFields");
+      const lblShopName = document.getElementById("lblShopName");
+
+      if (role === "seller") {
+        shopFields.classList.remove("hidden");
+        riderFields.classList.add("hidden");
+        lblShopName.textContent = "Retail Stall / Shop Name";
+      } else if (role === "wholesaler") {
+        shopFields.classList.remove("hidden");
+        riderFields.classList.add("hidden");
+        lblShopName.textContent = "Wholesale Business / Mandi Trading Name";
+      } else if (role === "delivery_partner") {
+        shopFields.classList.add("hidden");
+        riderFields.classList.remove("hidden");
+      } else {
+        shopFields.classList.add("hidden");
+        riderFields.classList.add("hidden");
+      }
+    }
+
+    // Password visibility toggle
+    function togglePasswordVisibility(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (!input || !icon) return;
+      if (input.type === "password") {
+        input.type = "text";
+        icon.className = "fa-solid fa-eye-slash text-sm text-emerald-400";
+      } else {
+        input.type = "password";
+        icon.className = "fa-solid fa-eye text-sm text-slate-500";
+      }
+    }
+
+    // Alert Notification Display
+    function showAlert(message, type = "error") {
+      const box = document.getElementById("alertBox");
+      const icon = document.getElementById("alertIcon");
+      const text = document.getElementById("alertMessage");
+      if (!box || !text) return;
+
+      text.textContent = message;
+      box.classList.remove("hidden");
+
+      if (type === "success") {
+        box.className = "p-3.5 rounded-2xl text-xs font-semibold flex items-start gap-2.5 bg-emerald-950/80 border border-emerald-800 text-emerald-300";
+        icon.className = "fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5";
+      } else {
+        box.className = "p-3.5 rounded-2xl text-xs font-semibold flex items-start gap-2.5 bg-rose-950/80 border border-rose-800 text-rose-300";
+        icon.className = "fa-solid fa-circle-exclamation text-rose-400 text-sm mt-0.5";
+      }
+    }
+
+    function hideAlert() {
+      const box = document.getElementById("alertBox");
+      if (box) box.classList.add("hidden");
+    }
+
+    function showForgotPasswordHelp() {
+      showAlert("Password reset: Please contact your platform administrator or enter your registered email to receive an authorization link.", "success");
+    }
+
+    // Handle Unified Sign In
+    async function handleUnifiedSignIn(e) {
+      e.preventDefault();
+      hideAlert();
+
+      const btn = document.getElementById("btnSubmitSignIn");
+      const origContent = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Verifying Account...';
+
+      const identifier = document.getElementById("loginIdentifier").value.trim();
+      const password = document.getElementById("loginPassword").value;
+      const remember = document.getElementById("rememberMe").checked;
+
+      try {
+        const response = await fetch(`${getApiBase()}/api/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ identifier, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || "Invalid credentials or unauthorized account.");
+        }
+
+        const authData = data.data;
+
+        // Store tokens across session and local storage
+        if (authData.storageKey) {
+          localStorage.setItem(authData.storageKey, authData.token);
+          if (remember) sessionStorage.setItem(authData.storageKey, authData.token);
+        }
+        if (authData.userKey) {
+          localStorage.setItem(authData.userKey, JSON.stringify(authData.user));
+          if (remember) sessionStorage.setItem(authData.userKey, JSON.stringify(authData.user));
+        }
+
+        showAlert(data.message || `Welcome back! Opening your ${authData.roleLabel}...`, "success");
+
+        btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Entering ${authData.roleLabel}...`;
+
+        setTimeout(() => {
+          window.location.href = authData.redirectUrl || "customer.html";
+        }, 650);
+
+      } catch (err) {
+        showAlert(err.message || "Failed to sign in. Please verify your connection.", "error");
+        btn.disabled = false;
+        btn.innerHTML = origContent;
+      }
+    }
+
+    // Handle Unified Registration
+    async function handleUnifiedRegister(e) {
+      e.preventDefault();
+      hideAlert();
+
+      const btn = document.getElementById("btnSubmitRegister");
+      const origContent = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Registering Account...';
+
+      const role = document.getElementById("selectedRegRole").value;
+      const name = document.getElementById("regName").value.trim();
+      const email = document.getElementById("regEmail").value.trim();
+      const phone = document.getElementById("regPhone").value.trim();
+      const password = document.getElementById("regPassword").value;
+      const shopName = document.getElementById("regShopName").value.trim();
+      const shopAddress = document.getElementById("regShopAddress").value.trim();
+      const vehicleType = document.getElementById("regVehicleType").value;
+
+      try {
+        const response = await fetch(`${getApiBase()}/api/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            email,
+            phone,
+            password,
+            role,
+            shopName,
+            shopAddress,
+            vehicleType
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || "Registration failed.");
+        }
+
+        const authData = data.data;
+
+        if (authData.storageKey) {
+          localStorage.setItem(authData.storageKey, authData.token);
+          sessionStorage.setItem(authData.storageKey, authData.token);
+        }
+        if (authData.userKey) {
+          localStorage.setItem(authData.userKey, JSON.stringify(authData.user));
+          sessionStorage.setItem(authData.userKey, JSON.stringify(authData.user));
+        }
+
+        showAlert(data.message || `Account created successfully! Launching your portal...`, "success");
+        btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Launching Dashboard...`;
+
+        setTimeout(() => {
+          window.location.href = authData.redirectUrl || "customer.html";
+        }, 750);
+
+      } catch (err) {
+        showAlert(err.message || "Registration error. Please check your information.", "error");
+        btn.disabled = false;
+        btn.innerHTML = origContent;
+      }
+    }
+
+    // 1-Click Fast Demo Autofill & Login
+    const demoCredentials = {
+      customer: { email: "amit.sen@example.com", pass: "Customer@123" },
+      seller: { email: "testseller@locallink.com", pass: "Seller@123" },
+      wholesaler: { email: "wholesaler@locallink.com", pass: "Wholesale@123" },
+      delivery_partner: { email: "kamal@locallink.com", pass: "Rider@123" },
+      staff: { email: "staff@locallink.com", pass: "Admin@12345678" },
+      admin: { email: "superadmin123@gmail.com", pass: "Admin@12345678" }
+    };
+
+    function autoFillDemo(role) {
+      const creds = demoCredentials[role];
+      if (!creds) return;
+
+      setAuthMode("signin");
+      document.getElementById("loginIdentifier").value = creds.email;
+      document.getElementById("loginPassword").value = creds.pass;
+
+      showAlert(`Autofilled demo credentials for ${role.toUpperCase().replace('_', ' ')}. Signing in...`, "success");
+      
+      setTimeout(() => {
+        const form = document.getElementById("signInForm");
+        if (form) form.requestSubmit();
+      }, 350);
+    }
+  </script>
+
+</body>
+</html>

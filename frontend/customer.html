@@ -89,6 +89,21 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <!-- Customer Unified Auth Guard -->
+  <script>
+    (function() {
+      try {
+        var token = localStorage.getItem("locallinkCustomerToken") || sessionStorage.getItem("locallinkCustomerToken");
+        if (!token) {
+          window.location.replace("unified-login.html");
+        }
+      } catch (e) {
+        window.location.replace("unified-login.html");
+      }
+    })();
+  </script>
+
   <script src="js/build-env.js"></script>
   <script src="js/app-bridge.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -304,52 +319,6 @@
           <span id="cartCountBadge" class="w-4 h-4 bg-emerald-500 text-slate-950 rounded-full text-[9px] font-black flex items-center justify-center">0</span>
         </button>
 
-        <!-- Built-in Role Switcher Button (Houses Customer, Seller Hub, Rider Console, Admin) -->
-        <div class="relative group" id="roleSwitcherContainer">
-          <button type="button" data-ll-role-trigger="true" onclick="toggleRoleDropdown(event)" class="px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-950 hover:bg-slate-800 border border-emerald-500/50 hover:border-emerald-400 text-emerald-300 hover:text-emerald-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm flex-shrink-0" title="Switch Portal (Customer, Seller Hub, Rider Console, Admin)">
-            <span id="llHeaderConnectionDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <i class="fa-solid fa-layer-group text-emerald-400"></i>
-            <span class="hidden sm:inline" data-i18n="nav_roles">Switch Role</span>
-            <span class="sm:hidden">Roles</span>
-            <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 transition-transform group-hover:rotate-180"></i>
-          </button>
-
-          <!-- Quick Role Dropdown Menu -->
-          <div id="quickRoleDropdown" class="hidden group-hover:block absolute right-0 top-full mt-1.5 w-60 bg-slate-900/95 backdrop-blur-xl border border-slate-700/90 rounded-2xl shadow-2xl p-2 z-50 space-y-1">
-            <a href="customer.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-bold text-xs">
-              <i class="fa-solid fa-bag-shopping text-emerald-400 w-4"></i>
-              <div>
-                <span class="block text-white" data-i18n="role_customer_app">Customer App</span>
-                <span class="text-[9px] text-emerald-400 font-normal" data-i18n="role_customer_sub">Active (Local Buyer)</span>
-              </div>
-            </a>
-            <a href="seller-login.html" onclick="window.LocalLinkApp.goToRole('seller');return false;" class="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 font-bold text-xs transition-colors">
-              <i class="fa-solid fa-store text-amber-400 w-4"></i>
-              <div>
-                <span class="block text-white" data-i18n="role_seller_app">Seller Shopkeeper Hub</span>
-                <span class="text-[9px] text-amber-400/90 font-normal"><i class="fa-solid fa-lock text-[8px] mr-1"></i>Seller Login Required</span>
-              </div>
-            </a>
-            <a href="delivery.html" onclick="window.LocalLinkApp.goToRole('rider');return false;" class="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 font-bold text-xs transition-colors">
-              <i class="fa-solid fa-motorcycle text-sky-400 w-4"></i>
-              <div>
-                <span class="block text-white" data-i18n="role_rider_app">Delivery Partner (Rider)</span>
-                <span class="text-[9px] text-sky-400/90 font-normal"><i class="fa-solid fa-lock text-[8px] mr-1"></i>Rider Login Required</span>
-              </div>
-            </a>
-            <a href="login.html" onclick="window.LocalLinkApp.goToRole('admin');return false;" class="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 font-bold text-xs transition-colors">
-              <i class="fa-solid fa-shield-halved text-purple-400 w-4"></i>
-              <div>
-                <span class="block text-white" data-i18n="role_admin_app">Admin Control Center</span>
-                <span class="text-[9px] text-purple-400/90 font-normal"><i class="fa-solid fa-lock text-[8px] mr-1"></i>Admin Login Required</span>
-              </div>
-            </a>
-            <button type="button" onclick="window.LocalLinkApp.openRoleSwitcher()" class="w-full text-center text-[10px] text-slate-400 hover:text-emerald-400 py-1.5 border-t border-slate-800 font-bold block transition-colors">
-              <i class="fa-solid fa-gear mr-1"></i> <span data-i18n="role_settings">Role & Server Settings</span>
-            </button>
-          </div>
-        </div>
-
         <!-- Customer Account & Profile Button -->
         <button onclick="openCustomerProfileModal()" id="customerProfileNavBtn" class="flex items-center gap-1.5 pl-1 pr-2 py-1 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/40 rounded-xl text-slate-200 transition-all" title="View Profile & Account Details">
           <img id="navCustomerAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Avatar" class="w-7 h-7 rounded-lg object-cover border border-emerald-500/60">
@@ -415,20 +384,6 @@
                   हिन्दी
                 </button>
               </div>
-            </div>
-
-            <div class="border-t border-slate-800/80 my-1"></div>
-
-            <!-- Portals Links -->
-            <div class="space-y-0.5">
-              <a href="seller.html" class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300 font-semibold text-[11px]">
-                <i class="fa-solid fa-store text-amber-400 w-3.5"></i>
-                <span data-i18n="menu_seller">Seller Hub</span>
-              </a>
-              <a href="delivery.html" class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300 font-semibold text-[11px]">
-                <i class="fa-solid fa-motorcycle text-sky-400 w-3.5"></i>
-                <span data-i18n="menu_rider">Delivery Partner (Rider)</span>
-              </a>
             </div>
 
             <div class="border-t border-slate-800/80 my-1"></div>
@@ -2679,32 +2634,6 @@
       }
     });
 
-    // Role Switcher Dropdown & Modal Toggle
-    function toggleRoleDropdown(e) {
-      if (e) e.stopPropagation();
-      const dropdown = document.getElementById("quickRoleDropdown");
-      if (window.innerWidth < 768) {
-        if (window.LocalLinkApp && window.LocalLinkApp.openRoleSwitcher) {
-          window.LocalLinkApp.openRoleSwitcher();
-        }
-      } else {
-        if (dropdown) {
-          dropdown.classList.toggle("hidden");
-        } else if (window.LocalLinkApp && window.LocalLinkApp.openRoleSwitcher) {
-          window.LocalLinkApp.openRoleSwitcher();
-        }
-      }
-    }
-
-    // Close role dropdown on click outside
-    document.addEventListener("click", (e) => {
-      const container = document.getElementById("roleSwitcherContainer");
-      const dropdown = document.getElementById("quickRoleDropdown");
-      if (dropdown && container && !container.contains(e.target)) {
-        dropdown.classList.add("hidden");
-      }
-    });
-
     function switchShopStall(stallName) {
       showToast(`Switched catalog view to: ${stallName}`);
       document.getElementById("missingItemAlert").classList.add("hidden");
@@ -4459,11 +4388,10 @@
       if (confirm("Are you sure you want to sign out of your customer account?")) {
         localStorage.removeItem("locallinkCustomerToken");
         localStorage.removeItem("locallinkCustomerUser");
+        sessionStorage.removeItem("locallinkCustomerToken");
+        sessionStorage.removeItem("locallinkCustomerUser");
         currentCustomerUser = null;
-        updateNavForGuest();
-        closeCustomerProfileModal();
-        showToast("Signed out successfully");
-        openCustomerAuthModal();
+        window.location.href = "unified-login.html";
       }
     }
 
@@ -4707,7 +4635,7 @@
         mob_nav_bargain: "Bargain",
         mob_nav_cart: "Cart",
         mob_nav_orders: "Orders",
-        bazaar_stories_title: "🔴 Today's 6:00 AM Live Bazaar Updates",
+        bazaar_stories_title: "🔴 Today's morning Live Bazaar Updates",
         bazaar_stories_subtitle: "Fresh morning arrivals from verified local stalls in Sonarpur",
         paper_list_banner_badge: "Smart AI Scanner",
         paper_list_banner_title: "Scan Handwritten Paper Slip or Notebook List",

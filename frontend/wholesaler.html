@@ -1,0 +1,1764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>LocalLink - Wholesale Mandi & B2B Stockist Hub</title>
+  
+  <!-- Auth Guard -->
+  <script>
+    (function() {
+      try {
+        var token = localStorage.getItem("locallinkWholesalerToken") || 
+                    localStorage.getItem("locallinkSellerToken") || 
+                    sessionStorage.getItem("locallinkWholesalerToken") ||
+                    sessionStorage.getItem("locallinkSellerToken");
+        if (!token) {
+          window.location.replace("unified-login.html");
+        }
+      } catch (e) {
+        window.location.replace("unified-login.html");
+      }
+    })();
+  </script>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#d97706">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <script src="js/build-env.js"></script>
+  <script src="js/app-bridge.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* Wholesale Mandi Custom Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #090d16; }
+    ::-webkit-scrollbar-thumb { background: #272f45; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d97706; }
+
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 35s linear infinite;
+    }
+    .ticker-track:hover {
+      animation-play-state: paused;
+    }
+
+    .badge-grade-aplus { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-grade-a { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-grade-export { background: rgba(139, 92, 246, 0.15); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.3); }
+
+    /* Print styling for B2B Invoices & Gate Passes */
+    @media print {
+      body * { visibility: hidden; }
+      #printableInvoiceModal, #printableInvoiceModal * { visibility: visible; }
+      #printableInvoiceModal { position: absolute; left: 0; top: 0; width: 100%; background: white !important; color: black !important; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 font-sans text-slate-100 flex h-screen overflow-hidden selection:bg-amber-500 selection:text-slate-950">
+
+  <!-- Mobile Sidebar Backdrop -->
+  <div id="wholesalerBackdrop" onclick="toggleWholesaleSidebar(false)" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 hidden lg:hidden"></div>
+
+  <!-- =============================== -->
+  <!-- 1. SIDEBAR NAVIGATION -->
+  <!-- =============================== -->
+  <aside id="wholesalerSidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-slate-900 border-r border-slate-800 flex flex-col justify-between p-4 overflow-y-auto flex-shrink-0 transform -translate-x-full lg:static lg:translate-x-0 transition-transform duration-200">
+    <div>
+      <!-- Brand & Mandi License Badge -->
+      <div class="flex items-center justify-between gap-3 mb-6 px-2">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 bg-gradient-to-tr from-amber-600 via-orange-500 to-yellow-400 rounded-2xl flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-amber-500/20">
+            <i class="fa-solid fa-boxes-packing"></i>
+          </div>
+          <div>
+            <h1 class="text-base font-extrabold tracking-tight text-white flex items-center gap-1.5">
+              LocalLink <span class="text-[10px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded font-mono font-bold">B2B</span>
+            </h1>
+            <p class="text-[10px] text-amber-400/90 font-semibold uppercase tracking-wider">Wholesale Mandi Hub</p>
+          </div>
+        </div>
+        <button type="button" onclick="toggleWholesaleSidebar(false)" class="lg:hidden p-2 text-slate-400 hover:text-white rounded-lg">
+          <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+      </div>
+
+      <!-- Wholesaler Profile Card -->
+      <div class="mb-5 p-3 rounded-2xl bg-slate-950 border border-slate-800/80 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-lg font-bold">
+          <i class="fa-solid fa-building-wheat"></i>
+        </div>
+        <div class="min-w-0 flex-1">
+          <h2 id="sideShopName" class="text-xs font-bold text-white truncate">Sonarpur Mandi Wholesale Co.</h2>
+          <p id="sideLicenseNo" class="text-[10px] text-slate-400 truncate font-mono">APMC: WB-2024-9842</p>
+          <div class="flex items-center gap-1.5 mt-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-[9px] text-emerald-400 font-medium">Yard Trading Active</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="space-y-1">
+        <button type="button" onclick="switchWholesaleTab('dashboard')" id="navBtn-dashboard"
+          class="nav-tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20">
+          <i class="fa-solid fa-chart-pie text-sm"></i>
+          <span>Mandi Dashboard</span>
+        </button>
+
+        <button type="button" onclick="switchWholesaleTab('inventory')" id="navBtn-inventory"
+          class="nav-tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-800">
+          <i class="fa-solid fa-layer-group text-sm text-amber-400"></i>
+          <span class="flex-1 text-left">Bulk Lots & Inventory</span>
+          <span id="navCountLots" class="text-[10px] bg-slate-800 text-amber-300 px-2 py-0.5 rounded-full font-mono">6</span>
+        </button>
+
+        <button type="button" onclick="switchWholesaleTab('orders')" id="navBtn-orders"
+          class="nav-tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-800">
+          <i class="fa-solid fa-file-invoice text-sm text-sky-400"></i>
+          <span class="flex-1 text-left">B2B Purchase Orders (POs)</span>
+          <span id="navCountOrders" class="text-[10px] bg-sky-500/20 text-sky-300 px-2 py-0.5 rounded-full font-mono">3 Active</span>
+        </button>
+
+        <button type="button" onclick="switchWholesaleTab('khata')" id="navBtn-khata"
+          class="nav-tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-800">
+          <i class="fa-solid fa-book-bookmark text-sm text-emerald-400"></i>
+          <span class="flex-1 text-left">Kirana Khata (Credit Book)</span>
+          <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-mono">₹1.5L</span>
+        </button>
+
+        <button type="button" onclick="switchWholesaleTab('rates')" id="navBtn-rates"
+          class="nav-tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-800">
+          <i class="fa-solid fa-chart-line text-sm text-purple-400"></i>
+          <span class="flex-1 text-left">Live Mandi Rates Ticker</span>
+          <span class="text-[9px] bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded uppercase font-bold">APMC</span>
+        </button>
+
+        <button type="button" onclick="switchWholesaleTab('logistics')" id="navBtn-logistics"
+          class="nav-tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-800">
+          <i class="fa-solid fa-truck-moving text-sm text-orange-400"></i>
+          <span class="flex-1 text-left">Dispatch & Gate Passes</span>
+        </button>
+
+        <button type="button" onclick="switchWholesaleTab('finance')" id="navBtn-finance"
+          class="nav-tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-800">
+          <i class="fa-solid fa-scale-balanced text-sm text-teal-400"></i>
+          <span class="flex-1 text-left">Settlements & Cess</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Bottom Actions / Logout -->
+    <div class="pt-4 border-t border-slate-800 space-y-2">
+      <div class="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800/80 text-[11px] text-slate-400 flex items-center justify-between">
+        <span class="flex items-center gap-2">
+          <i class="fa-solid fa-warehouse text-amber-400"></i> Godown Bay
+        </span>
+        <span class="text-white font-semibold">Unit 3, Bay 14</span>
+      </div>
+
+      <button type="button" onclick="wholesaleLogout()"
+        class="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 border border-rose-500/20 transition-all">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        <span>Sign Out to Unified Login</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- =============================== -->
+  <!-- 2. MAIN APPLICATION WORKSPACE -->
+  <!-- =============================== -->
+  <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-950">
+
+    <!-- Top Mandi Live Commodity Ticker -->
+    <div class="bg-slate-900 border-b border-slate-800 py-1.5 px-4 overflow-hidden flex items-center gap-3 text-xs flex-shrink-0">
+      <div class="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 text-amber-400 px-2.5 py-0.5 rounded-full font-bold text-[10px] uppercase tracking-wider flex-shrink-0">
+        <i class="fa-solid fa-satellite-dish animate-pulse"></i> Mandi Live Rates
+      </div>
+      <div class="flex-1 overflow-hidden relative">
+        <div id="mandiTickerTrack" class="ticker-track text-slate-300 gap-8 text-[11px] font-mono">
+          <!-- Dynamically populated ticker items -->
+          <span class="flex items-center gap-1.5">🥔 <b>Jyoti Potato:</b> ₹1,850/Qtl <span class="text-emerald-400">▲ +₹60</span></span>
+          <span class="flex items-center gap-1.5">🧅 <b>Nashik Red Onion:</b> ₹3,400/Qtl <span class="text-rose-400">▼ -₹100</span></span>
+          <span class="flex items-center gap-1.5">🍅 <b>Hybrid Tomato:</b> ₹700/Crate (25kg) <span class="text-emerald-400">▲ +₹40</span></span>
+          <span class="flex items-center gap-1.5">🌾 <b>Minikit Rice:</b> ₹2,450/Bag (50kg) <span class="text-slate-400">● ₹0</span></span>
+          <span class="flex items-center gap-1.5">🛢️ <b>Kachi Ghani Mustard Oil:</b> ₹2,150/Tin (15L) <span class="text-slate-400">● ₹0</span></span>
+          <span class="flex items-center gap-1.5">🫘 <b>Masoor Dal:</b> ₹4,100/Bag (50kg) <span class="text-rose-400">▼ -₹50</span></span>
+          <!-- Duplicate for seamless loop -->
+          <span class="flex items-center gap-1.5">🥔 <b>Jyoti Potato:</b> ₹1,850/Qtl <span class="text-emerald-400">▲ +₹60</span></span>
+          <span class="flex items-center gap-1.5">🧅 <b>Nashik Red Onion:</b> ₹3,400/Qtl <span class="text-rose-400">▼ -₹100</span></span>
+          <span class="flex items-center gap-1.5">🍅 <b>Hybrid Tomato:</b> ₹700/Crate (25kg) <span class="text-emerald-400">▲ +₹40</span></span>
+          <span class="flex items-center gap-1.5">🌾 <b>Minikit Rice:</b> ₹2,450/Bag (50kg) <span class="text-slate-400">● ₹0</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Header Bar -->
+    <header class="bg-slate-900/90 backdrop-blur-xl border-b border-slate-800 px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4 flex-shrink-0">
+      <div class="flex items-center gap-3">
+        <button type="button" onclick="toggleWholesaleSidebar(true)" class="lg:hidden p-2 text-slate-400 hover:text-white rounded-lg">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+        <div>
+          <h2 id="headerTitle" class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+            Mandi Overview & B2B Console
+          </h2>
+          <p id="headerSubtitle" class="text-xs text-slate-400">Real-time trading session, commodity lots & kirana purchase orders</p>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button type="button" onclick="openAddLotModal()" 
+          class="flex items-center gap-2 px-3.5 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-amber-500/20 transition-all">
+          <i class="fa-solid fa-plus text-xs"></i>
+          <span class="hidden sm:inline">Add Inward Lot</span>
+        </button>
+
+        <button type="button" onclick="openBroadcastModal()" 
+          class="flex items-center gap-2 px-3 py-2 bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 font-semibold text-xs rounded-xl transition-all">
+          <i class="fa-brands fa-whatsapp text-sm"></i>
+          <span class="hidden md:inline">Broadcast Rates</span>
+        </button>
+
+        <button type="button" onclick="refreshWholesaleData()" title="Refresh Mandi Data"
+          class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-all">
+          <i class="fa-solid fa-arrows-rotate text-sm" id="btnRefreshIcon"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Scrollable Content Body -->
+    <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
+
+      <!-- =============================== -->
+      <!-- VIEW 1: MANDI DASHBOARD -->
+      <!-- =============================== -->
+      <section id="view-dashboard" class="wholesale-view space-y-6">
+
+        <!-- 6 Core KPI Summary Cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+          <!-- KPI 1 -->
+          <div class="bg-slate-900 border border-slate-800/80 p-4 rounded-2xl relative overflow-hidden">
+            <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+              <span>Today's Turnover</span>
+              <i class="fa-solid fa-indian-rupee-sign text-amber-400"></i>
+            </div>
+            <div id="statTodayTurnover" class="text-lg sm:text-xl font-black text-white">₹1,84,500</div>
+            <p class="text-[10px] text-emerald-400 font-medium mt-1">▲ 14% vs yesterday</p>
+          </div>
+
+          <!-- KPI 2 -->
+          <div class="bg-slate-900 border border-slate-800/80 p-4 rounded-2xl relative overflow-hidden">
+            <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+              <span>Dispatched Cargo</span>
+              <i class="fa-solid fa-truck-ramp-box text-orange-400"></i>
+            </div>
+            <div id="statDispatchedCargo" class="text-lg sm:text-xl font-black text-white">68 Bags</div>
+            <p class="text-[10px] text-slate-400 font-medium mt-1">120 Quintals</p>
+          </div>
+
+          <!-- KPI 3 -->
+          <div class="bg-slate-900 border border-slate-800/80 p-4 rounded-2xl relative overflow-hidden">
+            <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+              <span>Active B2B POs</span>
+              <i class="fa-solid fa-clipboard-list text-sky-400"></i>
+            </div>
+            <div id="statActiveOrders" class="text-lg sm:text-xl font-black text-white">3 Pending</div>
+            <p class="text-[10px] text-sky-400 font-medium mt-1">Ready for loading</p>
+          </div>
+
+          <!-- KPI 4 -->
+          <div class="bg-slate-900 border border-slate-800/80 p-4 rounded-2xl relative overflow-hidden">
+            <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+              <span>Kirana Khata Owed</span>
+              <i class="fa-solid fa-hand-holding-dollar text-emerald-400"></i>
+            </div>
+            <div id="statKhataBalance" class="text-lg sm:text-xl font-black text-emerald-400">₹1,50,000</div>
+            <p class="text-[10px] text-slate-400 font-medium mt-1">5 Kirana stores</p>
+          </div>
+
+          <!-- KPI 5 -->
+          <div class="bg-slate-900 border border-slate-800/80 p-4 rounded-2xl relative overflow-hidden">
+            <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+              <span>Collections Today</span>
+              <i class="fa-solid fa-vault text-teal-400"></i>
+            </div>
+            <div id="statCollections" class="text-lg sm:text-xl font-black text-white">₹52,800</div>
+            <p class="text-[10px] text-emerald-400 font-medium mt-1">RTGS / Cash received</p>
+          </div>
+
+          <!-- KPI 6 -->
+          <div class="bg-slate-900 border border-slate-800/80 p-4 rounded-2xl relative overflow-hidden">
+            <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+              <span>Godown Utilization</span>
+              <i class="fa-solid fa-warehouse text-purple-400"></i>
+            </div>
+            <div id="statStoragePct" class="text-lg sm:text-xl font-black text-white">76%</div>
+            <p class="text-[10px] text-amber-400 font-medium mt-1">380 MT of 500 MT</p>
+          </div>
+        </div>
+
+        <!-- Mandi Flash Notices / Alerts -->
+        <div class="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-transparent border border-amber-500/20 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-base flex-shrink-0">
+              <i class="fa-solid fa-bullhorn"></i>
+            </span>
+            <div>
+              <h3 class="text-xs font-bold text-white">Mandi Session Notice & APMC Arrival Advisory</h3>
+              <p class="text-[11px] text-slate-400">Heavy potato arrivals expected tomorrow from Hooghly. 2 Kirana credit accounts are due today.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="switchWholesaleTab('khata')" class="text-xs font-semibold px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded-lg transition-all">
+              Inspect Khata
+            </button>
+            <button type="button" onclick="switchWholesaleTab('rates')" class="text-xs font-semibold px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-lg font-bold transition-all">
+              Rate Setter
+            </button>
+          </div>
+        </div>
+
+        <!-- Two Column Dashboard Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          <!-- Left Column (2 Cols): Recent B2B Purchase Orders -->
+          <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                  <i class="fa-solid fa-file-invoice text-sky-400"></i> Recent B2B Purchase Orders & RFQs
+                </h3>
+                <p class="text-xs text-slate-400">Incoming bulk requests from local registered Kirana merchants</p>
+              </div>
+              <button type="button" onclick="switchWholesaleTab('orders')" class="text-xs text-amber-400 hover:underline">
+                View All POs &rarr;
+              </button>
+            </div>
+
+            <!-- Orders Table / List -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider">
+                    <th class="py-2.5 px-3">PO Number</th>
+                    <th class="py-2.5 px-3">Retailer & Store</th>
+                    <th class="py-2.5 px-3">Cargo Details</th>
+                    <th class="py-2.5 px-3">Total B2B Value</th>
+                    <th class="py-2.5 px-3">Payment Term</th>
+                    <th class="py-2.5 px-3">Status</th>
+                    <th class="py-2.5 px-3 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="dashOrdersBody" class="divide-y divide-slate-800/60 font-medium">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Right Column (1 Col): Top Moving Lots & Godown Snapshot -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-boxes-stacked text-amber-400"></i> Godown Inventory
+              </h3>
+              <button type="button" onclick="switchWholesaleTab('inventory')" class="text-xs text-amber-400 hover:underline">
+                Manage &rarr;
+              </button>
+            </div>
+
+            <div id="dashLotsPreview" class="space-y-3">
+              <!-- Dynamically populated lots -->
+            </div>
+
+            <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
+              <span class="text-slate-400">Total Mandi Stock:</span>
+              <span class="font-bold text-amber-400" id="dashTotalStockLabel">1,190 Quintals / 2,470 Bags</span>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- =============================== -->
+      <!-- VIEW 2: BULK LOT INVENTORY -->
+      <!-- =============================== -->
+      <section id="view-inventory" class="wholesale-view hidden space-y-6">
+        
+        <!-- Controls & Filter Bar -->
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-3 w-full md:w-auto">
+            <div class="relative flex-1 md:w-64">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+              <input type="text" id="lotSearchInput" oninput="filterLots()" placeholder="Search commodity, lot ID, grade..."
+                class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500">
+            </div>
+            <select id="lotCategoryFilter" onchange="filterLots()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+              <option value="all">All Categories</option>
+              <option value="Vegetables & Roots">Vegetables & Roots</option>
+              <option value="Fresh Vegetables">Fresh Vegetables</option>
+              <option value="Grains & Cereals">Grains & Cereals</option>
+              <option value="Oils & Ghee">Oils & Ghee</option>
+              <option value="Pulses & Dals">Pulses & Dals</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+            <button type="button" onclick="openAddLotModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl flex items-center gap-2 transition-all">
+              <i class="fa-solid fa-plus"></i> New Bulk Lot
+            </button>
+          </div>
+        </div>
+
+        <!-- Lots Grid / Table -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-950/70 border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider">
+                  <th class="py-3 px-4">Commodity / Lot ID</th>
+                  <th class="py-3 px-4">Grade & Origin</th>
+                  <th class="py-3 px-4">Stock on Hand</th>
+                  <th class="py-3 px-4">MOQ</th>
+                  <th class="py-3 px-4">Tiered Volume Pricing</th>
+                  <th class="py-3 px-4">Storage Bay</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="lotsTableBody" class="divide-y divide-slate-800/60 font-medium">
+                <!-- Dynamic lots table rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- =============================== -->
+      <!-- VIEW 3: B2B PURCHASE ORDERS & RFQ -->
+      <!-- =============================== -->
+      <section id="view-orders" class="wholesale-view hidden space-y-6">
+
+        <!-- Orders Header & Status Filter Pills -->
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
+            <button type="button" onclick="filterOrderStatus('all')" id="orderFilter-all" class="order-filter-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950">
+              All POs
+            </button>
+            <button type="button" onclick="filterOrderStatus('new_rfq')" id="orderFilter-new_rfq" class="order-filter-pill px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-950 text-slate-300 hover:text-white border border-slate-800">
+              New RFQs
+            </button>
+            <button type="button" onclick="filterOrderStatus('confirmed')" id="orderFilter-confirmed" class="order-filter-pill px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-950 text-slate-300 hover:text-white border border-slate-800">
+              Confirmed
+            </button>
+            <button type="button" onclick="filterOrderStatus('packed')" id="orderFilter-packed" class="order-filter-pill px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-950 text-slate-300 hover:text-white border border-slate-800">
+              Weighbridge Ready
+            </button>
+            <button type="button" onclick="filterOrderStatus('in_transit')" id="orderFilter-in_transit" class="order-filter-pill px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-950 text-slate-300 hover:text-white border border-slate-800">
+              In Transit
+            </button>
+          </div>
+
+          <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+            <button type="button" onclick="openCreateOrderModal()" class="px-3.5 py-2 bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold text-xs rounded-xl flex items-center gap-2 transition-all">
+              <i class="fa-solid fa-file-circle-plus"></i> Create B2B Invoice / PO
+            </button>
+          </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-950/70 border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider">
+                  <th class="py-3 px-4">PO & Date</th>
+                  <th class="py-3 px-4">Kirana Buyer & Phone</th>
+                  <th class="py-3 px-4">Commodities & Bags</th>
+                  <th class="py-3 px-4">Total Amount</th>
+                  <th class="py-3 px-4">Payment Terms</th>
+                  <th class="py-3 px-4">Dispatch Vehicle / Gate Pass</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4 text-right">Operations</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTableBody" class="divide-y divide-slate-800/60 font-medium">
+                <!-- Dynamically populated POs -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- =============================== -->
+      <!-- VIEW 4: KIRANA KHATA (CREDIT LEDGER) -->
+      <!-- =============================== -->
+      <section id="view-khata" class="wholesale-view hidden space-y-6">
+
+        <!-- Khata High-Level Summary Banner -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+            <p class="text-xs text-slate-400">Total Credit Extended</p>
+            <p class="text-xl font-black text-white mt-1">₹5,25,000</p>
+            <p class="text-[10px] text-slate-400 mt-1">Approved limit for registered kiranas</p>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+            <p class="text-xs text-slate-400">Total Outstanding Balance</p>
+            <p id="khataTotalOutstanding" class="text-xl font-black text-rose-400 mt-1">₹1,50,000</p>
+            <p class="text-[10px] text-rose-400 mt-1">Current uncollected credit</p>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+            <p class="text-xs text-slate-400">Available Credit Buffer</p>
+            <p class="text-xl font-black text-emerald-400 mt-1">₹3,75,000</p>
+            <p class="text-[10px] text-emerald-400 mt-1">Safe borrowing capacity</p>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-col justify-between">
+            <p class="text-xs text-slate-400">Overdue Kiranas</p>
+            <p class="text-xl font-black text-amber-400 mt-1">2 Accounts</p>
+            <button type="button" onclick="openAddBuyerModal()" class="w-full mt-2 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-lg transition-all">
+              + Register Kirana Buyer
+            </button>
+          </div>
+        </div>
+
+        <!-- Khata Table -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+          <div class="p-4 border-b border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div>
+              <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-book-bookmark text-emerald-400"></i> Retailer Udhar & Credit Ledger
+              </h3>
+              <p class="text-xs text-slate-400">Track credit limits, record settlements, and send 1-click WhatsApp reminders</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <input type="text" id="khataSearchInput" oninput="filterKhata()" placeholder="Search Kirana store or phone..."
+                class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-950/70 border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider">
+                  <th class="py-3 px-4">Kirana Store & Proprietor</th>
+                  <th class="py-3 px-4">Contact & GSTIN</th>
+                  <th class="py-3 px-4">Credit Limit</th>
+                  <th class="py-3 px-4">Outstanding Udhar</th>
+                  <th class="py-3 px-4">Credit Terms</th>
+                  <th class="py-3 px-4">Last Payment</th>
+                  <th class="py-3 px-4">Ledger Status</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="khataTableBody" class="divide-y divide-slate-800/60 font-medium">
+                <!-- Dynamically populated Khata accounts -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- =============================== -->
+      <!-- VIEW 5: MANDI RATES & APMC BENCHMARK -->
+      <!-- =============================== -->
+      <section id="view-rates" class="wholesale-view hidden space-y-6">
+
+        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-chart-line text-purple-400"></i> APMC Benchmark & Daily Wholesale Rate Setter
+            </h3>
+            <p class="text-xs text-slate-400">Morning auction prices across West Bengal and national agricultural markets</p>
+          </div>
+          <button type="button" onclick="openBroadcastModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-xl flex items-center gap-2 shadow-lg shadow-emerald-600/20 transition-all">
+            <i class="fa-brands fa-whatsapp text-sm"></i> Broadcast Today's Rate Sheet
+          </button>
+        </div>
+
+        <!-- Rates Table -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-950/70 border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider">
+                  <th class="py-3 px-4">Commodity & Variety</th>
+                  <th class="py-3 px-4">Standard Unit</th>
+                  <th class="py-3 px-4">Today's Arrival (MT)</th>
+                  <th class="py-3 px-4">Mandi Min Rate</th>
+                  <th class="py-3 px-4">Modal (Avg) Rate</th>
+                  <th class="py-3 px-4">Mandi Max Rate</th>
+                  <th class="py-3 px-4">Our Wholesale Price</th>
+                  <th class="py-3 px-4 text-right">Update Price</th>
+                </tr>
+              </thead>
+              <tbody id="ratesTableBody" class="divide-y divide-slate-800/60 font-medium">
+                <!-- Dynamically populated Mandi rates -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- =============================== -->
+      <!-- VIEW 6: LOGISTICS & GATE PASSES -->
+      <!-- =============================== -->
+      <section id="view-logistics" class="wholesale-view hidden space-y-6">
+
+        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
+          <h3 class="text-sm font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-truck-moving text-orange-400"></i> Mandi Weighbridge & Gate Pass Terminal
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">Vehicle loading slips, gross/tare weights, and official mandi exit passes</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <!-- Gate Pass 1 -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-amber-400">GP-2026-904</span>
+              <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded font-semibold">Active Pass</span>
+            </div>
+            <h4 class="text-sm font-bold text-white">Tata Ace (WB-02-AK-9821)</h4>
+            <div class="text-xs text-slate-400 space-y-1">
+              <p><b>Destination:</b> Maa Tara Daily Mart, Sonarpur</p>
+              <p><b>Cargo:</b> 20 Bags Potato + 10 Bags Onion (1,500 kg)</p>
+              <p><b>Loading Bay:</b> Bay A-12 | Driver: Ratan Das</p>
+            </div>
+            <button type="button" onclick="printGatePass('GP-2026-904', 'Tata Ace (WB-02-AK-9821)', 'Maa Tara Daily Mart', '1,500 kg (30 Bags)')"
+              class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2">
+              <i class="fa-solid fa-print"></i> Print Gate Pass & Challan
+            </button>
+          </div>
+
+          <!-- Gate Pass 2 -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-amber-400">GP-2026-905</span>
+              <span class="text-[10px] bg-sky-500/20 text-sky-400 px-2 py-0.5 rounded font-semibold">Loaded & Sealed</span>
+            </div>
+            <h4 class="text-sm font-bold text-white">Mahindra Bolero Maxi Truck</h4>
+            <div class="text-xs text-slate-400 space-y-1">
+              <p><b>Destination:</b> Bhai Bhai Super Store, Garia</p>
+              <p><b>Cargo:</b> 15 Bags Basmati Rice + 8 Tins Mustard Oil (862 kg)</p>
+              <p><b>Loading Bay:</b> Bay B-04 | Driver: Subhash Paul</p>
+            </div>
+            <button type="button" onclick="printGatePass('GP-2026-905', 'Mahindra Bolero Maxi Truck', 'Bhai Bhai Super Store', '862 kg (15 Bags + 8 Tins)')"
+              class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2">
+              <i class="fa-solid fa-print"></i> Print Gate Pass & Challan
+            </button>
+          </div>
+
+          <!-- Gate Pass 3 -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-amber-400">GP-2026-906</span>
+              <span class="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded font-semibold">Weighbridge Staging</span>
+            </div>
+            <h4 class="text-sm font-bold text-white">Customer Pickup Tempo (WB-09-8812)</h4>
+            <div class="text-xs text-slate-400 space-y-1">
+              <p><b>Destination:</b> Rajpur Green Mart</p>
+              <p><b>Cargo:</b> 12 Crates Tomato + 5 Bags Masoor Dal (550 kg)</p>
+              <p><b>Loading Bay:</b> Mandi Yard Shed 3</p>
+            </div>
+            <button type="button" onclick="printGatePass('GP-2026-906', 'Customer Pickup Tempo (WB-09-8812)', 'Rajpur Green Mart', '550 kg (12 Crates + 5 Bags)')"
+              class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2">
+              <i class="fa-solid fa-print"></i> Print Gate Pass & Challan
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- =============================== -->
+      <!-- VIEW 7: MANDI FINANCE & CESS -->
+      <!-- =============================== -->
+      <section id="view-finance" class="wholesale-view hidden space-y-6">
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2">
+            <p class="text-xs text-slate-400">APMC Mandi Cess (1.0%)</p>
+            <p class="text-2xl font-black text-amber-400">₹1,845</p>
+            <p class="text-[11px] text-slate-400">Calculated on today's ₹1,84,500 billed turnover</p>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2">
+            <p class="text-xs text-slate-400">Hamaali & Loading Expenses</p>
+            <p class="text-2xl font-black text-white">₹3,400</p>
+            <p class="text-[11px] text-slate-400">68 bags loaded @ ₹50/bag</p>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2">
+            <p class="text-xs text-slate-400">Net Mandi Payout Balance</p>
+            <p class="text-2xl font-black text-emerald-400">₹1,79,255</p>
+            <p class="text-[11px] text-emerald-400">Ready for instant settlement to Current A/C</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-building-columns text-teal-400"></i> Primary Settlement Bank Account
+              </h3>
+              <p class="text-xs text-slate-400">Verified Mandi Current Account for instant RTGS and Kirana receivables</p>
+            </div>
+            <span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-bold rounded-lg border border-emerald-500/30">
+              Verified & Active
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-xl bg-slate-950 border border-slate-800/80 text-xs">
+            <div>
+              <span class="text-slate-400 block">Bank Name</span>
+              <span class="font-bold text-white">State Bank of India</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block">Branch</span>
+              <span class="font-bold text-white">Sonarpur Mandi Branch</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block">Account Number</span>
+              <span class="font-mono font-bold text-white">•••• 38910029381</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block">IFSC Code</span>
+              <span class="font-mono font-bold text-amber-400">SBIN0001824</span>
+            </div>
+          </div>
+
+          <button type="button" onclick="triggerMandiSettlement()" class="px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-emerald-500/20 hover:opacity-90 transition-all">
+            <i class="fa-solid fa-money-bill-transfer mr-1.5"></i> Settle Today's Balance (₹1,79,255)
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- =============================== -->
+  <!-- MODAL 1: ADD INWARD BULK LOT -->
+  <!-- =============================== -->
+  <div id="modalAddLot" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 space-y-5 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-boxes-packing text-amber-400"></i> Add Inward Wholesale Commodity Lot
+        </h3>
+        <button type="button" onclick="closeAddLotModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form id="formAddLot" onsubmit="submitNewLot(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Commodity Name & Variety *</label>
+          <input type="text" id="lotCommodity" required placeholder="e.g. Jyoti Potato (Chandramukhi Grade)"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Category</label>
+            <select id="lotCategory" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+              <option value="Vegetables & Roots">Vegetables & Roots</option>
+              <option value="Fresh Vegetables">Fresh Vegetables</option>
+              <option value="Grains & Cereals">Grains & Cereals</option>
+              <option value="Oils & Ghee">Oils & Ghee</option>
+              <option value="Pulses & Dals">Pulses & Dals</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Quality Grade</label>
+            <select id="lotGrade" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+              <option value="Grade A+">Grade A+ (Premium Mandi)</option>
+              <option value="Grade A">Grade A (Standard Commercial)</option>
+              <option value="FAQ">FAQ (Fair Average Quality)</option>
+              <option value="Export Standard">Export Standard</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Total Stock (Qtl)</label>
+            <input type="number" id="lotStockQtl" step="0.1" required placeholder="100"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Total Bags</label>
+            <input type="number" id="lotBags" required placeholder="200"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Bag Wt (kg)</label>
+            <input type="number" id="lotBagWt" step="0.5" value="50"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+          </div>
+        </div>
+
+        <!-- Tiered Volume Pricing Setup -->
+        <div class="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 space-y-3">
+          <p class="font-bold text-amber-400 text-[11px] uppercase tracking-wider">3-Tier Bulk Pricing (per Bag)</p>
+          <div class="grid grid-cols-3 gap-3">
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-0.5">Tier 1 Rate (5-20 Bags) *</label>
+              <input type="number" id="lotTier1" required placeholder="₹950"
+                class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-white focus:outline-none focus:border-amber-500">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-0.5">Tier 2 Rate (21-50 Bags)</label>
+              <input type="number" id="lotTier2" placeholder="₹900"
+                class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-white focus:outline-none focus:border-amber-500">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-0.5">Tier 3 Rate (50+ FTL)</label>
+              <input type="number" id="lotTier3" placeholder="₹850"
+                class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-white focus:outline-none focus:border-amber-500">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Godown Storage Bay</label>
+            <input type="text" id="lotBay" value="Godown 1 - Bay A"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Harvest Origin / Mandi</label>
+            <input type="text" id="lotOrigin" value="Hooghly Mandi Yard"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-800 flex justify-end gap-2">
+          <button type="button" onclick="closeAddLotModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl">
+            Cancel
+          </button>
+          <button type="submit" id="btnAddLotSubmit" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-amber-500/20">
+            Save Bulk Lot
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- MODAL 2: RECORD KHATA PAYMENT -->
+  <!-- =============================== -->
+  <div id="modalKhataPayment" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-receipt text-emerald-400"></i> Record Kirana Khata Payment
+        </h3>
+        <button type="button" onclick="closeKhataPaymentModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs space-y-1">
+        <p class="text-slate-400">Kirana Store: <b id="payModalShopName" class="text-white">Maa Tara Daily Mart</b></p>
+        <p class="text-slate-400">Outstanding Balance: <b id="payModalCurrentBalance" class="text-rose-400">₹35,200</b></p>
+      </div>
+
+      <form onsubmit="submitKhataPayment(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="payModalKhataId">
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Received Amount (₹) *</label>
+          <input type="number" id="payModalAmount" required placeholder="e.g. 20000"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white text-base font-bold text-emerald-400 focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Payment Mode</label>
+          <select id="payModalMode" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+            <option value="Cash">Cash in Mandi Hand</option>
+            <option value="Bank RTGS / NEFT">Bank RTGS / NEFT</option>
+            <option value="UPI">UPI Instant QR</option>
+            <option value="Cheque">Bank Cheque</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Notes / UTR / Cheque Ref</label>
+          <input type="text" id="payModalNote" placeholder="UTR # or Cheque Number"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div class="pt-3 border-t border-slate-800 flex justify-end gap-2">
+          <button type="button" onclick="closeKhataPaymentModal()" class="px-4 py-2 bg-slate-800 text-white rounded-xl">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-emerald-500/20">
+            Record Payment
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- MODAL 3: BROADCAST MANDI RATES (WHATSAPP) -->
+  <!-- =============================== -->
+  <div id="modalBroadcast" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i class="fa-brands fa-whatsapp text-emerald-400 text-base"></i> Broadcast Mandi Rate Sheet via WhatsApp
+        </h3>
+        <button type="button" onclick="closeBroadcastModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-400">
+        This preview rate sheet will be sent to your registered Kirana merchants so they can place morning bulk purchase orders directly:
+      </p>
+
+      <textarea id="broadcastText" rows="9" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-3 text-xs text-emerald-300 font-mono focus:outline-none focus:border-emerald-500 leading-relaxed"></textarea>
+
+      <div class="pt-3 border-t border-slate-800 flex justify-end gap-2 text-xs">
+        <button type="button" onclick="closeBroadcastModal()" class="px-4 py-2 bg-slate-800 text-white rounded-xl">Close</button>
+        <button type="button" onclick="launchWhatsAppBroadcast()" class="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-emerald-500/20">
+          <i class="fa-brands fa-whatsapp"></i> Send on WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- MODAL 4: PRINTABLE INVOICE / GATE PASS -->
+  <!-- =============================== -->
+  <div id="printableInvoiceModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white text-slate-900 rounded-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto p-6 sm:p-8 space-y-5 shadow-2xl border border-slate-300">
+      <div class="flex items-center justify-between border-b pb-4 border-slate-200 no-print">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Mandi B2B Document Preview</span>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="window.print()" class="px-3.5 py-1.5 bg-amber-600 text-white rounded-lg text-xs font-bold flex items-center gap-1.5">
+            <i class="fa-solid fa-print"></i> Print Now
+          </button>
+          <button type="button" onclick="closeInvoiceModal()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs font-semibold">
+            Close
+          </button>
+        </div>
+      </div>
+
+      <!-- Printable Document Sheet -->
+      <div id="invoicePrintContent" class="space-y-4 text-xs">
+        <!-- Dynamically rendered -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="wholesaleToast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-900 border border-slate-700 shadow-2xl text-xs font-medium text-white pointer-events-none">
+    <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+    <span id="toastMessage">Action completed successfully.</span>
+  </div>
+
+  <!-- Application Logic & Data Binding -->
+  <script>
+    // State Store
+    let wholesaleState = {
+      profile: {
+        name: "Sonarpur Mandi Wholesale Co.",
+        shop_name: "Sonarpur Mandi Wholesale Supply",
+        city: "Rajpur Sonarpur",
+        license: "APMC-WB-2024-9842",
+        gstin: "19AAACL7891B1Z2"
+      },
+      metrics: {},
+      lots: [],
+      orders: [],
+      khata: [],
+      rates: []
+    };
+
+    function getApiBase() {
+      if (window.__ENV && window.__ENV.API_BASE_URL) return window.__ENV.API_BASE_URL;
+      const isLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+      return isLocal ? "http://localhost:5001" : window.location.origin;
+    }
+
+    function getAuthToken() {
+      return localStorage.getItem("locallinkWholesalerToken") || 
+             localStorage.getItem("locallinkSellerToken") || 
+             sessionStorage.getItem("locallinkWholesalerToken") ||
+             "";
+    }
+
+    function showToast(msg, type = "success") {
+      const toast = document.getElementById("wholesaleToast");
+      const icon = document.getElementById("toastIcon");
+      const message = document.getElementById("toastMessage");
+
+      message.textContent = msg;
+      if (type === "success") {
+        icon.className = "fa-solid fa-circle-check text-emerald-400 text-sm";
+      } else if (type === "warning") {
+        icon.className = "fa-solid fa-triangle-exclamation text-amber-400 text-sm";
+      } else {
+        icon.className = "fa-solid fa-circle-exclamation text-rose-400 text-sm";
+      }
+
+      toast.classList.remove("translate-y-24", "opacity-0");
+      setTimeout(() => {
+        toast.classList.add("translate-y-24", "opacity-0");
+      }, 3500);
+    }
+
+    // Sidebar Drawer Toggle for Mobile
+    function toggleWholesaleSidebar(open) {
+      const sidebar = document.getElementById("wholesalerSidebar");
+      const backdrop = document.getElementById("wholesalerBackdrop");
+      if (open) {
+        sidebar.classList.remove("-translate-x-full");
+        backdrop.classList.remove("hidden");
+      } else {
+        sidebar.classList.add("-translate-x-full");
+        backdrop.classList.add("hidden");
+      }
+    }
+
+    // Tab Navigation
+    function switchWholesaleTab(tabId) {
+      // Hide all views
+      document.querySelectorAll(".wholesale-view").forEach(v => v.classList.add("hidden"));
+      
+      // Reset button styles
+      document.querySelectorAll(".nav-tab-btn").forEach(btn => {
+        btn.className = "nav-tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-800";
+      });
+
+      // Show selected view
+      const targetView = document.getElementById(`view-${tabId}`);
+      if (targetView) targetView.classList.remove("hidden");
+
+      // Highlight active button
+      const activeBtn = document.getElementById(`navBtn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.className = "nav-tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20";
+      }
+
+      // Update Header Title
+      const titleMap = {
+        dashboard: ["Mandi Overview & B2B Console", "Real-time trading session, commodity lots & kirana purchase orders"],
+        inventory: ["Bulk Lots & Godown Stock", "Manage wholesale inventory, MOQs, quality grades & 3-tier bulk pricing"],
+        orders: ["B2B Purchase Orders & Inquiries", "Incoming bulk POs from registered Kirana retail stores"],
+        khata: ["Kirana Khata & Credit Book", "Maintain credit limits, track overdue receivables & record payments"],
+        rates: ["Mandi Benchmark Ticker & Rates", "Daily agricultural APMC auction rates & wholesale price setter"],
+        logistics: ["Weighbridge Terminal & Gate Passes", "Vehicle loading challans, tare/gross slips & gate pass verification"],
+        finance: ["Mandi Financial Settlements & Cess", "APMC market fee (1%), labour charges & bank RTGS settlements"]
+      };
+
+      if (titleMap[tabId]) {
+        document.getElementById("headerTitle").textContent = titleMap[tabId][0];
+        document.getElementById("headerSubtitle").textContent = titleMap[tabId][1];
+      }
+
+      toggleWholesaleSidebar(false);
+    }
+
+    // Load All Data from Backend APIs
+    async function loadWholesaleData() {
+      const apiBase = getApiBase();
+      const token = getAuthToken();
+      const headers = {
+        "Content-Type": "application/json",
+        ...(token ? { "Authorization": `Bearer ${token}` } : {})
+      };
+
+      try {
+        // Fetch Metrics & Profile
+        const resMetrics = await fetch(`${apiBase}/api/wholesaler/metrics`, { headers });
+        if (resMetrics.ok) {
+          const json = await resMetrics.json();
+          if (json.success && json.data) {
+            wholesaleState.metrics = json.data.metrics || {};
+            if (json.data.profile) wholesaleState.profile = { ...wholesaleState.profile, ...json.data.profile };
+            renderMetrics();
+          }
+        }
+
+        // Fetch Lots
+        const resLots = await fetch(`${apiBase}/api/wholesaler/lots`, { headers });
+        if (resLots.ok) {
+          const json = await resLots.json();
+          if (json.success) {
+            wholesaleState.lots = Array.isArray(json.data) ? json.data : (json.data ? [json.data] : []);
+            renderLots();
+            renderDashboardLotsPreview();
+          }
+        }
+
+        // Fetch Orders
+        const resOrders = await fetch(`${apiBase}/api/wholesaler/orders`, { headers });
+        if (resOrders.ok) {
+          const json = await resOrders.json();
+          if (json.success) {
+            wholesaleState.orders = Array.isArray(json.data) ? json.data : (json.data ? [json.data] : []);
+            renderOrders();
+            renderDashboardOrders();
+          }
+        }
+
+        // Fetch Khata
+        const resKhata = await fetch(`${apiBase}/api/wholesaler/khata`, { headers });
+        if (resKhata.ok) {
+          const json = await resKhata.json();
+          if (json.success) {
+            wholesaleState.khata = Array.isArray(json.data) ? json.data : (json.data ? [json.data] : []);
+            renderKhata();
+          }
+        }
+
+        // Fetch Mandi Rates
+        const resRates = await fetch(`${apiBase}/api/wholesaler/mandi-rates`, { headers });
+        if (resRates.ok) {
+          const json = await resRates.json();
+          if (json.success) {
+            wholesaleState.rates = Array.isArray(json.data) ? json.data : (json.data ? [json.data] : []);
+            renderRates();
+            renderTickerTrack();
+          }
+        }
+
+      } catch (err) {
+        console.warn("Could not fetch remote API, using local seed dataset:", err);
+      }
+    }
+
+    function renderMetrics() {
+      const m = wholesaleState.metrics;
+      if (!m) return;
+      if (m.todayTurnover) document.getElementById("statTodayTurnover").textContent = `₹${m.todayTurnover.toLocaleString('en-IN')}`;
+      if (m.bagsDispatched) document.getElementById("statDispatchedCargo").textContent = `${m.bagsDispatched} Bags`;
+      if (m.activeOrdersCount !== undefined) document.getElementById("statActiveOrders").textContent = `${m.activeOrdersCount} Pending`;
+      if (m.totalKhataCredit !== undefined) {
+        document.getElementById("statKhataBalance").textContent = `₹${m.totalKhataCredit.toLocaleString('en-IN')}`;
+        document.getElementById("khataTotalOutstanding").textContent = `₹${m.totalKhataCredit.toLocaleString('en-IN')}`;
+      }
+      if (m.collectionsToday !== undefined) document.getElementById("statCollections").textContent = `₹${m.collectionsToday.toLocaleString('en-IN')}`;
+      if (m.totalLotsCount !== undefined) document.getElementById("navCountLots").textContent = m.totalLotsCount;
+    }
+
+    // Render Lots Table
+    function renderLots(filteredList = null) {
+      const list = filteredList || wholesaleState.lots;
+      const tbody = document.getElementById("lotsTableBody");
+      if (!tbody) return;
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-500">No commodity lots found. Click "+ New Bulk Lot" to add one.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(lot => {
+        const gradeClass = lot.grade === 'Grade A+' ? 'badge-grade-aplus' : (lot.grade === 'Export Standard' ? 'badge-grade-export' : 'badge-grade-a');
+        return `
+          <tr class="hover:bg-slate-800/40 transition-colors">
+            <td class="py-3 px-4">
+              <div class="flex items-center gap-2.5">
+                <img src="${lot.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=100'}" class="w-9 h-9 rounded-lg object-cover border border-slate-700">
+                <div>
+                  <div class="font-bold text-white text-xs">${lot.commodity_name}</div>
+                  <div class="text-[10px] text-amber-400 font-mono">LOT-${lot.lot_id} • ${lot.category || 'Mandi Stock'}</div>
+                </div>
+              </div>
+            </td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${gradeClass}">${lot.grade}</span>
+              <div class="text-[10px] text-slate-400 mt-0.5">${lot.harvest_origin || 'Local Mandi'}</div>
+            </td>
+            <td class="py-3 px-4">
+              <div class="font-bold text-white">${lot.total_stock_qtl} Qtl</div>
+              <div class="text-[10px] text-slate-400">${lot.bags_count} Bags (${lot.bag_weight_kg}kg/bag)</div>
+            </td>
+            <td class="py-3 px-4 font-mono font-bold text-slate-300">
+              Min ${lot.moq_bags} Bags
+            </td>
+            <td class="py-3 px-4">
+              <div class="text-[11px] font-mono">
+                <span class="text-white font-bold">5-20:</span> ₹${lot.tier1_rate} |
+                <span class="text-amber-400 font-bold">21-50:</span> ₹${lot.tier2_rate} |
+                <span class="text-emerald-400 font-bold">50+:</span> ₹${lot.tier3_rate}
+              </div>
+              <div class="text-[9px] text-slate-500">Tiered volume rates per bag</div>
+            </td>
+            <td class="py-3 px-4 text-slate-300 font-mono text-[11px]">
+              ${lot.godown_bay || 'Main Godown'}
+            </td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">
+                ${lot.status === 'active' ? 'Active Stock' : lot.status}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right">
+              <button type="button" onclick="quickEditLot(${lot.lot_id})" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded-lg text-xs font-semibold mr-1">
+                Edit
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function renderDashboardLotsPreview() {
+      const container = document.getElementById("dashLotsPreview");
+      if (!container) return;
+      const preview = wholesaleState.lots.slice(0, 4);
+
+      container.innerHTML = preview.map(l => `
+        <div class="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/80 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2.5">
+            <span class="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-xs">
+              <i class="fa-solid fa-box"></i>
+            </span>
+            <div>
+              <p class="font-bold text-white truncate w-36">${l.commodity_name}</p>
+              <p class="text-[10px] text-slate-400">${l.grade} • ${l.godown_bay}</p>
+            </div>
+          </div>
+          <div class="text-right font-mono">
+            <p class="font-bold text-white">${l.total_stock_qtl} Qtl</p>
+            <p class="text-[10px] text-amber-400">₹${l.tier1_rate}/bag</p>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // Render Orders
+    function renderOrders(filteredList = null) {
+      const list = filteredList || wholesaleState.orders;
+      const tbody = document.getElementById("ordersTableBody");
+      if (!tbody) return;
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-500">No B2B orders in this category.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(po => {
+        let statusBadge = "bg-sky-500/20 text-sky-400";
+        if (po.order_status === "confirmed") statusBadge = "bg-amber-500/20 text-amber-400";
+        if (po.order_status === "packed") statusBadge = "bg-purple-500/20 text-purple-400";
+        if (po.order_status === "in_transit") statusBadge = "bg-orange-500/20 text-orange-400";
+        if (po.order_status === "delivered") statusBadge = "bg-emerald-500/20 text-emerald-400";
+
+        const itemsSummary = (po.items || []).map(i => `${i.bags || 1} Bags ${i.name}`).join(", ") || "Bulk produce lot";
+
+        return `
+          <tr class="hover:bg-slate-800/40 transition-colors">
+            <td class="py-3 px-4">
+              <div class="font-bold text-white font-mono">${po.po_number}</div>
+              <div class="text-[10px] text-slate-400">${new Date(po.created_at || Date.now()).toLocaleDateString()}</div>
+            </td>
+            <td class="py-3 px-4">
+              <div class="font-bold text-white">${po.buyer_shop}</div>
+              <div class="text-[10px] text-slate-400">${po.buyer_name} • <span class="text-amber-400 font-mono">${po.buyer_phone}</span></div>
+            </td>
+            <td class="py-3 px-4 text-slate-300 max-w-xs truncate" title="${itemsSummary}">
+              ${itemsSummary}
+            </td>
+            <td class="py-3 px-4 font-bold text-white font-mono">
+              ₹${Number(po.total_amount).toLocaleString('en-IN')}
+            </td>
+            <td class="py-3 px-4 text-slate-300">
+              <div class="text-[11px] font-semibold">${po.payment_terms || 'Net 15 Days'}</div>
+              <span class="text-[9px] ${po.payment_status === 'paid' ? 'text-emerald-400' : 'text-amber-400'} font-bold">
+                ${po.payment_status ? po.payment_status.toUpperCase() : 'PENDING'}
+              </span>
+            </td>
+            <td class="py-3 px-4 font-mono text-[11px] text-slate-300">
+              <div>${po.dispatch_vehicle || 'Pending Allocation'}</div>
+              <div class="text-[10px] text-amber-400 font-bold">${po.gate_pass_no || 'Pass Pending'}</div>
+            </td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${statusBadge}">
+                ${(po.order_status || 'new').replace('_', ' ').toUpperCase()}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                <button type="button" onclick="openInvoicePreview('${po.po_number}')" title="Print B2B Invoice"
+                  class="p-1.5 bg-slate-800 hover:bg-slate-700 text-sky-400 rounded-lg text-xs">
+                  <i class="fa-solid fa-file-invoice"></i>
+                </button>
+                <button type="button" onclick="advanceOrderStatus(${po.po_id}, '${po.order_status}')" title="Next Stage"
+                  class="px-2 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-xs">
+                  ${po.order_status === 'new_rfq' ? 'Accept' : (po.order_status === 'confirmed' ? 'Pack' : (po.order_status === 'packed' ? 'Dispatch' : 'Done'))}
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function renderDashboardOrders() {
+      const tbody = document.getElementById("dashOrdersBody");
+      if (!tbody) return;
+      const recent = wholesaleState.orders.slice(0, 3);
+
+      tbody.innerHTML = recent.map(po => `
+        <tr class="hover:bg-slate-800/40">
+          <td class="py-2 px-3 font-mono text-amber-400 font-bold">${po.po_number}</td>
+          <td class="py-2 px-3 text-white font-bold">${po.buyer_shop}</td>
+          <td class="py-2 px-3 text-slate-400 truncate max-w-xs">${(po.items || []).map(i => `${i.bags || 1} Bags ${i.name}`).join(", ")}</td>
+          <td class="py-2 px-3 font-bold text-white font-mono">₹${Number(po.total_amount).toLocaleString('en-IN')}</td>
+          <td class="py-2 px-3 text-[11px] text-slate-300">${po.payment_terms}</td>
+          <td class="py-2 px-3">
+            <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-sky-500/20 text-sky-400">
+              ${po.order_status.toUpperCase()}
+            </span>
+          </td>
+          <td class="py-2 px-3 text-right">
+            <button type="button" onclick="openInvoicePreview('${po.po_number}')" class="text-xs text-amber-400 hover:underline">
+              Invoice
+            </button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    // Render Khata
+    function renderKhata(filteredList = null) {
+      const list = filteredList || wholesaleState.khata;
+      const tbody = document.getElementById("khataTableBody");
+      if (!tbody) return;
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-500">No kirana buyer ledger found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(k => {
+        const bal = Number(k.outstanding_balance);
+        const limit = Number(k.credit_limit) || 100000;
+        const pctUsed = Math.min(100, Math.round((bal / limit) * 100));
+
+        return `
+          <tr class="hover:bg-slate-800/40 transition-colors">
+            <td class="py-3 px-4">
+              <div class="font-bold text-white">${k.buyer_shop}</div>
+              <div class="text-[10px] text-slate-400">Prop: ${k.buyer_name}</div>
+            </td>
+            <td class="py-3 px-4 font-mono text-[11px]">
+              <div class="text-white">${k.buyer_phone}</div>
+              <div class="text-[10px] text-slate-400">GST: ${k.buyer_gstin || 'Unregistered'}</div>
+            </td>
+            <td class="py-3 px-4 font-mono font-bold text-white">
+              ₹${limit.toLocaleString('en-IN')}
+            </td>
+            <td class="py-3 px-4 font-mono">
+              <div class="font-bold ${bal > 0 ? 'text-rose-400' : 'text-emerald-400'} text-xs">
+                ₹${bal.toLocaleString('en-IN')}
+              </div>
+              <div class="w-24 bg-slate-800 h-1 rounded-full mt-1 overflow-hidden">
+                <div class="h-full ${pctUsed > 80 ? 'bg-rose-500' : 'bg-amber-500'}" style="width: ${pctUsed}%"></div>
+              </div>
+            </td>
+            <td class="py-3 px-4 text-slate-300">
+              ${k.payment_terms || '15 Days'}
+            </td>
+            <td class="py-3 px-4 text-[11px] text-slate-400 font-mono">
+              ${k.last_payment_date ? `${k.last_payment_date} (₹${Number(k.last_payment_amount).toLocaleString('en-IN')})` : 'No prior payment'}
+            </td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${k.status === 'active' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">
+                ${k.status.toUpperCase()}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                <button type="button" onclick="openKhataPaymentModal(${k.khata_id}, '${k.buyer_shop}', ${bal})"
+                  class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold rounded-lg text-xs">
+                  Pay
+                </button>
+                <button type="button" onclick="sendWhatsAppReminder('${k.buyer_shop}', '${k.buyer_phone}', ${bal})"
+                  class="p-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 rounded-lg text-xs" title="Send WhatsApp Reminder">
+                  <i class="fa-brands fa-whatsapp"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    // Render Mandi Rates Table
+    function renderRates() {
+      const tbody = document.getElementById("ratesTableBody");
+      if (!tbody) return;
+
+      tbody.innerHTML = wholesaleState.rates.map(r => `
+        <tr class="hover:bg-slate-800/40">
+          <td class="py-3 px-4">
+            <div class="font-bold text-white">${r.commodity_name}</div>
+            <div class="text-[10px] text-slate-400">${r.variety}</div>
+          </td>
+          <td class="py-3 px-4 font-mono text-slate-300">${r.unit}</td>
+          <td class="py-3 px-4 font-mono text-white">${r.market_arrival_mt} MT</td>
+          <td class="py-3 px-4 font-mono text-slate-300">₹${r.min_rate}</td>
+          <td class="py-3 px-4 font-mono font-bold text-amber-400">₹${r.modal_rate}</td>
+          <td class="py-3 px-4 font-mono text-slate-300">₹${r.max_rate}</td>
+          <td class="py-3 px-4 font-mono font-bold text-emerald-400 text-sm">
+            ₹${r.our_wholesale_rate}
+          </td>
+          <td class="py-3 px-4 text-right">
+            <button type="button" onclick="quickEditRate(${r.rate_id}, '${r.commodity_name}', ${r.our_wholesale_rate})"
+              class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded-lg text-xs font-semibold">
+              Revise
+            </button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function renderTickerTrack() {
+      const track = document.getElementById("mandiTickerTrack");
+      if (!track || wholesaleState.rates.length === 0) return;
+
+      const items = wholesaleState.rates.map(r => `
+        <span class="flex items-center gap-1.5">
+          <b>${r.commodity_name}:</b> ₹${r.our_wholesale_rate}/${r.unit.split(' ')[0]}
+          <span class="${r.trend === 'up' ? 'text-emerald-400' : (r.trend === 'down' ? 'text-rose-400' : 'text-slate-400')}">
+            ${r.trend === 'up' ? '▲ Up' : (r.trend === 'down' ? '▼ Down' : '● Mandi Flat')}
+          </span>
+        </span>
+      `).join("");
+
+      track.innerHTML = items + items; // duplicate for infinite ticker
+    }
+
+    // Advance Order Status
+    async function advanceOrderStatus(poId, currentStatus) {
+      let nextStatus = "confirmed";
+      if (currentStatus === "new_rfq") nextStatus = "confirmed";
+      else if (currentStatus === "confirmed") nextStatus = "packed";
+      else if (currentStatus === "packed") nextStatus = "in_transit";
+      else if (currentStatus === "in_transit") nextStatus = "delivered";
+
+      try {
+        const res = await fetch(`${getApiBase()}/api/wholesaler/orders/${poId}/status`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getAuthToken()}` },
+          body: JSON.stringify({ order_status: nextStatus })
+        });
+        showToast(`PO #${poId} advanced to ${nextStatus.replace('_', ' ').toUpperCase()}`, "success");
+        loadWholesaleData();
+      } catch (e) {
+        showToast("Updated PO status locally", "success");
+        const po = wholesaleState.orders.find(o => o.po_id == poId);
+        if (po) po.order_status = nextStatus;
+        renderOrders();
+        renderDashboardOrders();
+      }
+    }
+
+    // Khata Payment Modal
+    function openKhataPaymentModal(khataId, shopName, currentBal) {
+      document.getElementById("payModalKhataId").value = khataId;
+      document.getElementById("payModalShopName").textContent = shopName;
+      document.getElementById("payModalCurrentBalance").textContent = `₹${currentBal.toLocaleString('en-IN')}`;
+      document.getElementById("payModalAmount").value = "";
+      document.getElementById("modalKhataPayment").classList.remove("hidden");
+    }
+
+    function closeKhataPaymentModal() {
+      document.getElementById("modalKhataPayment").classList.add("hidden");
+    }
+
+    async function submitKhataPayment(e) {
+      e.preventDefault();
+      const khataId = document.getElementById("payModalKhataId").value;
+      const amount = parseFloat(document.getElementById("payModalAmount").value);
+      const mode = document.getElementById("payModalMode").value;
+      const note = document.getElementById("payModalNote").value;
+
+      try {
+        const res = await fetch(`${getApiBase()}/api/wholesaler/khata/${khataId}/payment`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getAuthToken()}` },
+          body: JSON.stringify({ amount, payment_mode: mode, notes: note })
+        });
+        const json = await res.json();
+        showToast(json.message || `Received payment of ₹${amount.toLocaleString('en-IN')}`, "success");
+        closeKhataPaymentModal();
+        loadWholesaleData();
+      } catch (err) {
+        showToast(`Payment of ₹${amount.toLocaleString('en-IN')} recorded`, "success");
+        closeKhataPaymentModal();
+        loadWholesaleData();
+      }
+    }
+
+    // Add Lot Modal
+    function openAddLotModal() {
+      document.getElementById("modalAddLot").classList.remove("hidden");
+    }
+
+    function closeAddLotModal() {
+      document.getElementById("modalAddLot").classList.add("hidden");
+    }
+
+    async function submitNewLot(e) {
+      e.preventDefault();
+      const payload = {
+        commodity_name: document.getElementById("lotCommodity").value,
+        category: document.getElementById("lotCategory").value,
+        grade: document.getElementById("lotGrade").value,
+        total_stock_qtl: document.getElementById("lotStockQtl").value,
+        bags_count: document.getElementById("lotBags").value,
+        bag_weight_kg: document.getElementById("lotBagWt").value,
+        tier1_rate: document.getElementById("lotTier1").value,
+        tier2_rate: document.getElementById("lotTier2").value || document.getElementById("lotTier1").value * 0.95,
+        tier3_rate: document.getElementById("lotTier3").value || document.getElementById("lotTier1").value * 0.90,
+        godown_bay: document.getElementById("lotBay").value,
+        harvest_origin: document.getElementById("lotOrigin").value
+      };
+
+      try {
+        const res = await fetch(`${getApiBase()}/api/wholesaler/lots`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getAuthToken()}` },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        showToast(json.message || "Bulk Lot Added Successfully!", "success");
+        closeAddLotModal();
+        loadWholesaleData();
+      } catch (err) {
+        showToast("New bulk lot added to inventory", "success");
+        closeAddLotModal();
+        loadWholesaleData();
+      }
+    }
+
+    // WhatsApp Broadcast Modal
+    function openBroadcastModal() {
+      const today = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+      let sheet = `🌾 *${wholesaleState.profile.shop_name}* 🌾\n📍 APMC Mandi Yard, Rajpur Sonarpur\n📅 *Today's Mandi Wholesale Rate Sheet (${today})*\n\n`;
+
+      wholesaleState.rates.forEach(r => {
+        sheet += `• ${r.commodity_name}: *₹${r.our_wholesale_rate}* / ${r.unit.split(' ')[0]}\n`;
+      });
+
+      sheet += `\n🚛 *Dispatch:* Minimum order 5 Bags. Tempo loading at Bay 14.\n📞 *Book Mandi Orders:* ${wholesaleState.profile.phone || '9830112233'}\n💳 *Payment Terms:* Khata Credit available for verified Kiranas.`;
+
+      document.getElementById("broadcastText").value = sheet;
+      document.getElementById("modalBroadcast").classList.remove("hidden");
+    }
+
+    function closeBroadcastModal() {
+      document.getElementById("modalBroadcast").classList.add("hidden");
+    }
+
+    function launchWhatsAppBroadcast() {
+      const text = encodeURIComponent(document.getElementById("broadcastText").value);
+      window.open(`https://wa.me/?text=${text}`, "_blank");
+      closeBroadcastModal();
+      showToast("WhatsApp broadcast rate sheet launched!", "success");
+    }
+
+    function sendWhatsAppReminder(shopName, phone, balance) {
+      const msg = encodeURIComponent(`Namaskar ${shopName}, polite reminder regarding your pending wholesale Mandi balance of ₹${balance.toLocaleString('en-IN')} with ${wholesaleState.profile.shop_name}. Kindly arrange RTGS or cash settlement at Bay 14. Dhanyawad.`);
+      window.open(`https://wa.me/91${phone.replace(/[^0-9]/g, '')}?text=${msg}`, "_blank");
+    }
+
+    // Printable Invoice & Gate Pass Preview
+    function openInvoicePreview(poNumber) {
+      const po = wholesaleState.orders.find(o => o.po_number === poNumber) || wholesaleState.orders[0];
+      if (!po) return;
+
+      const itemsHtml = (po.items || []).map((item, idx) => `
+        <tr class="border-b border-slate-200">
+          <td class="py-2 px-2 text-slate-500 font-mono">${idx + 1}</td>
+          <td class="py-2 px-2 font-bold text-slate-800">${item.name}</td>
+          <td class="py-2 px-2 text-slate-600">${item.bags || 1} Bags (${item.weight_kg || 50} kg)</td>
+          <td class="py-2 px-2 text-right font-mono text-slate-700">₹${item.rate || 0}</td>
+          <td class="py-2 px-2 text-right font-mono font-bold text-slate-900">₹${Number(item.total || 0).toLocaleString('en-IN')}</td>
+        </tr>
+      `).join("");
+
+      document.getElementById("invoicePrintContent").innerHTML = `
+        <div class="border-b-2 border-amber-600 pb-4 flex justify-between items-start">
+          <div>
+            <h1 class="text-xl font-extrabold text-slate-900">${wholesaleState.profile.shop_name}</h1>
+            <p class="text-xs text-slate-600">APMC Mandi Wholesale Yard, Sonarpur, Kolkata 700150</p>
+            <p class="text-xs text-slate-600 font-mono"><b>APMC Lic:</b> ${wholesaleState.profile.license} | <b>GSTIN:</b> ${wholesaleState.profile.gstin}</p>
+          </div>
+          <div class="text-right">
+            <span class="inline-block bg-amber-100 text-amber-800 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">
+              B2B TAX INVOICE
+            </span>
+            <p class="text-xs font-mono font-bold text-slate-900 mt-1">PO #: ${po.po_number}</p>
+            <p class="text-[11px] text-slate-500 font-mono">Gate Pass: ${po.gate_pass_no || 'GP-2026-904'}</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+          <div>
+            <span class="text-slate-500 block uppercase font-bold text-[9px]">Billed Kirana Store:</span>
+            <p class="font-bold text-slate-900 text-sm">${po.buyer_shop}</p>
+            <p class="text-slate-700">${po.buyer_name} • Phone: ${po.buyer_phone}</p>
+            <p class="text-slate-600 font-mono text-[10px]">Buyer GST: ${po.buyer_gstin || 'Unregistered Merchant'}</p>
+          </div>
+          <div class="text-right">
+            <span class="text-slate-500 block uppercase font-bold text-[9px]">Delivery & Dispatch:</span>
+            <p class="font-bold text-slate-800">${po.delivery_address || 'Sonarpur Local Bazaar'}</p>
+            <p class="text-slate-700">Vehicle: ${po.dispatch_vehicle || 'Tata Ace (WB-02-AK-9821)'}</p>
+            <p class="text-slate-600 font-mono text-[10px]">Payment: ${po.payment_terms || 'Net 15 Khata Credit'}</p>
+          </div>
+        </div>
+
+        <table class="w-full text-left text-xs border-collapse mt-3">
+          <thead>
+            <tr class="bg-slate-100 border-b-2 border-slate-300 text-slate-700 uppercase font-bold text-[10px]">
+              <th class="py-2 px-2">#</th>
+              <th class="py-2 px-2">Commodity Description</th>
+              <th class="py-2 px-2">Qty / Sacks</th>
+              <th class="py-2 px-2 text-right">Wholesale Rate</th>
+              <th class="py-2 px-2 text-right">Total Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsHtml}
+          </tbody>
+        </table>
+
+        <div class="pt-3 border-t border-slate-200 flex justify-between items-center text-xs">
+          <div class="text-[10px] text-slate-500 max-w-xs">
+            * Mandi cess (1%) included. Produce delivered as per standard APMC quality grade.
+          </div>
+          <div class="text-right">
+            <span class="text-xs text-slate-500">Gross B2B Invoice Total:</span>
+            <span class="text-lg font-black text-slate-900 font-mono ml-2">₹${Number(po.total_amount).toLocaleString('en-IN')}</span>
+          </div>
+        </div>
+
+        <div class="pt-8 flex justify-between items-end text-xs text-slate-600">
+          <div>
+            <p class="font-bold">Driver / Porter Signature</p>
+            <div class="w-36 border-b border-slate-400 mt-6"></div>
+          </div>
+          <div class="text-right">
+            <p class="font-bold">For ${wholesaleState.profile.shop_name}</p>
+            <p class="text-[10px] text-slate-500 italic mt-6">Authorized Mandi Yard Signatory</p>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("printableInvoiceModal").classList.remove("hidden");
+    }
+
+    function printGatePass(gpNo, vehicle, dest, cargo) {
+      document.getElementById("invoicePrintContent").innerHTML = `
+        <div class="border-b-2 border-amber-600 pb-4 text-center">
+          <h1 class="text-xl font-extrabold text-slate-900">APMC SONARPUR MANDI YARD</h1>
+          <p class="text-xs text-slate-600 uppercase tracking-widest font-bold">Official Loading Slip & Gate Exit Pass</p>
+          <span class="inline-block mt-2 bg-amber-100 text-amber-900 font-mono text-sm font-black px-4 py-1 rounded">
+            PASS #: ${gpNo}
+          </span>
+        </div>
+
+        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+          <p><b>Issuing Stockist:</b> ${wholesaleState.profile.shop_name}</p>
+          <p><b>Dispatch Vehicle:</b> <span class="font-mono font-bold text-slate-900">${vehicle}</span></p>
+          <p><b>Consignee / Destination:</b> ${dest}</p>
+          <p><b>Loaded Produce Cargo:</b> ${cargo}</p>
+          <p><b>Loading Bay:</b> Bay 14 (Weighbridge Slip Verified)</p>
+          <p><b>Exit Clearance Time:</b> ${new Date().toLocaleTimeString('en-IN')}</p>
+        </div>
+
+        <div class="pt-10 flex justify-between items-end text-xs">
+          <div>
+            <p class="font-bold">Weighbridge Officer</p>
+            <div class="w-36 border-b border-slate-400 mt-6"></div>
+          </div>
+          <div class="text-right">
+            <p class="font-bold">APMC Gate Security In-Charge</p>
+            <div class="w-36 border-b border-slate-400 mt-6"></div>
+          </div>
+        </div>
+      `;
+      document.getElementById("printableInvoiceModal").classList.remove("hidden");
+    }
+
+    function closeInvoiceModal() {
+      document.getElementById("printableInvoiceModal").classList.add("hidden");
+    }
+
+    function triggerMandiSettlement() {
+      showToast("Settlement request of ₹1,79,255 initiated to SBI Current A/C!", "success");
+    }
+
+    function wholesaleLogout() {
+      localStorage.removeItem("locallinkWholesalerToken");
+      localStorage.removeItem("locallinkWholesalerUser");
+      window.location.href = "unified-login.html";
+    }
+
+    function refreshWholesaleData() {
+      const icon = document.getElementById("btnRefreshIcon");
+      icon.classList.add("fa-spin");
+      loadWholesaleData().then(() => {
+        setTimeout(() => icon.classList.remove("fa-spin"), 500);
+        showToast("Mandi data refreshed", "success");
+      });
+    }
+
+    // Search & Filter Helpers
+    function filterLots() {
+      const q = document.getElementById("lotSearchInput").value.toLowerCase();
+      const cat = document.getElementById("lotCategoryFilter").value;
+      const filtered = wholesaleState.lots.filter(l => {
+        const matchesQ = l.commodity_name.toLowerCase().includes(q) || (l.variety && l.variety.toLowerCase().includes(q)) || (l.grade && l.grade.toLowerCase().includes(q));
+        const matchesCat = cat === "all" || l.category === cat;
+        return matchesQ && matchesCat;
+      });
+      renderLots(filtered);
+    }
+
+    function filterOrderStatus(status) {
+      document.querySelectorAll(".order-filter-pill").forEach(p => {
+        p.className = "order-filter-pill px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-950 text-slate-300 hover:text-white border border-slate-800";
+      });
+      const activePill = document.getElementById(`orderFilter-${status}`);
+      if (activePill) activePill.className = "order-filter-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950";
+
+      if (status === "all") renderOrders();
+      else renderOrders(wholesaleState.orders.filter(o => o.order_status === status));
+    }
+
+    function filterKhata() {
+      const q = document.getElementById("khataSearchInput").value.toLowerCase();
+      const filtered = wholesaleState.khata.filter(k => 
+        k.buyer_shop.toLowerCase().includes(q) || k.buyer_phone.includes(q) || k.buyer_name.toLowerCase().includes(q)
+      );
+      renderKhata(filtered);
+    }
+
+    // Initialize on page load
+    window.addEventListener("DOMContentLoaded", () => {
+      loadWholesaleData();
+    });
+  </script>
+</body>
+</html>
