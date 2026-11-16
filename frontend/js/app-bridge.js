@@ -72,13 +72,28 @@
     const host = window.location.hostname;
     const port = window.location.port;
 
-    // In any standard web browser over HTTP or HTTPS, always use the current origin that served the app!
+    // In any standard web browser over HTTP or HTTPS:
     if (!isCapacitorNative() && (proto === "http:" || proto === "https:")) {
       const saved = normalizeUrl(localStorage.getItem(STORAGE_KEY_SERVER) || "");
-      // Only override if the user explicitly configured a custom server in settings that isn't localhost/127.0.0.1
-      if (saved && !saved.includes("localhost:5001") && !saved.includes("127.0.0.1:5001") && saved !== window.location.origin) {
-        return saved;
+      // Clean up saved URL if it accidentally points to a static dev server port (e.g. 5500)
+      if (saved) {
+        try {
+          const u = new URL(saved);
+          if (isPrivateHost(u.hostname) && u.port && u.port !== DEFAULT_PORT) {
+            localStorage.removeItem(STORAGE_KEY_SERVER);
+          } else if (!saved.includes("localhost:5001") && !saved.includes("127.0.0.1:5001") && saved !== window.location.origin) {
+            return saved;
+          }
+        } catch (_) {}
       }
+
+      // If on a private host (localhost, 127.0.0.1, LAN IP) with a static dev server port (e.g. VS Code Live Server 5500, Vite 5173, etc. not 5001),
+      // target the backend Express API server on port 5001!
+      if (isPrivateHost(host) && port && port !== DEFAULT_PORT) {
+        const backendHost = (host === "127.0.0.1" || host === "localhost") ? "localhost" : host;
+        return `http://${backendHost}:${DEFAULT_PORT}`;
+      }
+
       return window.location.origin;
     }
 
@@ -136,6 +151,11 @@
           input = base + input.slice("http://localhost:5001".length);
         } else if (input.startsWith("http://127.0.0.1:5001")) {
           input = base + input.slice("http://127.0.0.1:5001".length);
+        } else if (window.location && window.location.origin && input.startsWith(window.location.origin + "/api/")) {
+          // If called with window.location.origin on a static dev server port (e.g. :5500), rewrite to base
+          if (base && !input.startsWith(base)) {
+            input = base + input.slice(window.location.origin.length);
+          }
         } else if (input.startsWith("/api/")) {
           input = base + input;
         }
@@ -143,6 +163,14 @@
         if (input.url.startsWith("http://localhost:5001")) {
           const rewritten = base + input.url.slice("http://localhost:5001".length);
           input = new Request(rewritten, input);
+        } else if (input.url.startsWith("http://127.0.0.1:5001")) {
+          const rewritten = base + input.url.slice("http://127.0.0.1:5001".length);
+          input = new Request(rewritten, input);
+        } else if (window.location && window.location.origin && input.url.startsWith(window.location.origin + "/api/")) {
+          if (base && !input.url.startsWith(base)) {
+            const rewritten = base + input.url.slice(window.location.origin.length);
+            input = new Request(rewritten, input);
+          }
         }
       }
     } catch (_) {}

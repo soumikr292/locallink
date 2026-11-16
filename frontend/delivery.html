@@ -401,12 +401,28 @@
       };
 
       try {
-        const response = await fetch(`${getApiBase()}${endpoint}`, {
+        let response = await fetch(`${getApiBase()}${endpoint}`, {
           ...options,
           headers
         });
 
-        const rawText = await response.text();
+        let rawText = await response.text();
+
+        // If the server returned an HTML error page (e.g. 404 from a static dev server port), auto-heal by retrying on port 5001
+        if ((response.status === 404 || !response.ok) && rawText.trim().startsWith("<")) {
+          try {
+            const retryRes = await fetch(`http://localhost:5001${endpoint}`, {
+              ...options,
+              headers
+            });
+            const retryText = await retryRes.text();
+            if (!retryText.trim().startsWith("<")) {
+              response = retryRes;
+              rawText = retryText;
+            }
+          } catch (_) {}
+        }
+
         let data = {};
         try {
           data = rawText ? JSON.parse(rawText) : {};

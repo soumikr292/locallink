@@ -2132,7 +2132,14 @@
       if (window.LocalLinkApp && typeof window.LocalLinkApp.getApiBase === "function") {
         return window.LocalLinkApp.getApiBase();
       }
+      const host = window.location.hostname;
+      const port = window.location.port;
+      const isPrivate = !host || host === "localhost" || host === "127.0.0.1" || /^(192\.168\.|10\.|172\.)/.test(host);
       if (window.location && (window.location.protocol === "http:" || window.location.protocol === "https:")) {
+        if (isPrivate && port && port !== "5001") {
+          const backendHost = (host === "127.0.0.1" || host === "localhost") ? "localhost" : host;
+          return `http://${backendHost}:5001`;
+        }
         return window.location.origin;
       }
       return "http://localhost:5001";
@@ -2177,13 +2184,30 @@
         ...(options.headers || {})
       };
 
+      const primaryBase = getApiBase();
       try {
-        const response = await fetch(`${getApiBase()}${endpoint}`, {
+        let response = await fetch(`${primaryBase}${endpoint}`, {
           ...options,
           headers
         });
 
-        const rawText = await response.text();
+        let rawText = await response.text();
+
+        // If the server returned an HTML error page (e.g. 404 from a static dev server port), auto-heal by retrying on port 5001
+        if ((response.status === 404 || !response.ok) && rawText.trim().startsWith("<") && primaryBase !== "http://localhost:5001") {
+          try {
+            const retryRes = await fetch(`http://localhost:5001${endpoint}`, {
+              ...options,
+              headers
+            });
+            const retryText = await retryRes.text();
+            if (!retryText.trim().startsWith("<")) {
+              response = retryRes;
+              rawText = retryText;
+            }
+          } catch (_) {}
+        }
+
         let data = {};
         try {
           data = rawText ? JSON.parse(rawText) : {};
