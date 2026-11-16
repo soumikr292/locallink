@@ -2128,7 +2128,15 @@
   <!-- JAVASCRIPT LOGIC & API CLIENT                  -->
   <!-- ============================================== -->
   <script>
-    const getApiBase = () => (window.LocalLinkApp ? window.LocalLinkApp.getApiBase() : "http://localhost:5001");
+    const getApiBase = () => {
+      if (window.LocalLinkApp && typeof window.LocalLinkApp.getApiBase === "function") {
+        return window.LocalLinkApp.getApiBase();
+      }
+      if (window.location && (window.location.protocol === "http:" || window.location.protocol === "https:")) {
+        return window.location.origin;
+      }
+      return "http://localhost:5001";
+    };
 
     let currentProducts = [];
     let cart = [];
@@ -2161,7 +2169,7 @@
     }
 
     // Authenticated API Fetch Wrapper
-    async function apiRequest(endpoint, options = {}) {
+    async function apiRequest(endpoint, options = {}, suppressToast = false) {
       const token = localStorage.getItem("locallinkCustomerToken");
       const headers = {
         "Content-Type": "application/json",
@@ -2189,7 +2197,9 @@
 
         return data;
       } catch (err) {
-        showToast(err.message || "Network error", "error");
+        if (!suppressToast) {
+          showToast(err.message || "Network error", "error");
+        }
         throw err;
       }
     }
@@ -2206,10 +2216,26 @@
     window.addEventListener("DOMContentLoaded", async () => {
       initAppThemeAndLanguage();
       loadCartFromStorage();
-      await initializeCustomerAuth();
-      await loadCustomerProducts();
-      await loadCompareItems("all");
-      await loadBazaarStories();
+      try {
+        await initializeCustomerAuth();
+      } catch (e) {
+        console.warn("Auth init error:", e);
+      }
+      try {
+        await loadCustomerProducts();
+      } catch (e) {
+        console.warn("Products load error:", e);
+      }
+      try {
+        await loadCompareItems("all");
+      } catch (e) {
+        console.warn("Compare load error:", e);
+      }
+      try {
+        await loadBazaarStories();
+      } catch (e) {
+        console.warn("Stories load error:", e);
+      }
     });
 
     // One-Time Login System: Checks saved persistent session (never auto-hijacks another user's account)
@@ -2218,7 +2244,7 @@
       
       if (token) {
         try {
-          const res = await apiRequest("/api/customer/profile");
+          const res = await apiRequest("/api/customer/profile", {}, true);
           if (res && res.success && res.data) {
             currentCustomerUser = res.data;
             localStorage.setItem("locallinkCustomerUser", JSON.stringify(currentCustomerUser));

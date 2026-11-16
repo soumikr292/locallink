@@ -72,18 +72,18 @@
     const host = window.location.hostname;
     const port = window.location.port;
 
-    // On a public domain (Railway, Render, custom HTTPS domain), always use same-origin cleanly
-    if (isPublicWebContext()) {
+    // In any standard web browser over HTTP or HTTPS, always use the current origin that served the app!
+    if (!isCapacitorNative() && (proto === "http:" || proto === "https:")) {
+      const saved = normalizeUrl(localStorage.getItem(STORAGE_KEY_SERVER) || "");
+      // Only override if the user explicitly configured a custom server in settings that isn't localhost/127.0.0.1
+      if (saved && !saved.includes("localhost:5001") && !saved.includes("127.0.0.1:5001") && saved !== window.location.origin) {
+        return saved;
+      }
       return window.location.origin;
     }
 
     const saved = normalizeUrl(localStorage.getItem(STORAGE_KEY_SERVER) || "");
     if (saved) return saved;
-
-    // If served directly from Express backend on port 5001 or local dev web server
-    if (!isCapacitorNative() && (proto === "http:" || proto === "https:") && port === DEFAULT_PORT) {
-      return window.location.origin;
-    }
 
     const env = getBuildEnv();
     const platform = getCapacitorPlatform();
