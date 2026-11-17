@@ -267,6 +267,9 @@
           <div class="min-w-0">
             <h1 class="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-1.5">
               LocalLink <span class="hidden sm:inline text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30">Sonarpur</span>
+              <button type="button" onclick="event.stopPropagation(); openProjectInfoModal();" class="w-5 h-5 rounded-full bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-[10px] transition-all hover:scale-110 ml-0.5" title="About LocalLink Project">
+                <i class="fa-solid fa-circle-info"></i>
+              </button>
             </h1>
             <p class="text-[8px] sm:text-[9px] text-slate-400 font-bold uppercase tracking-wider truncate" data-i18n="app_brand_sub">Local Market App</p>
           </div>
@@ -319,6 +322,13 @@
           <span id="cartCountBadge" class="w-4 h-4 bg-emerald-500 text-slate-950 rounded-full text-[9px] font-black flex items-center justify-center">0</span>
         </button>
 
+        <!-- Smart Grocery List Button (Always accessible with live item count) -->
+        <button onclick="openVoiceShoppingListModal()" id="nav-btn-grocery-list" class="flex px-2.5 sm:px-3 py-1.5 sm:py-2 bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-300 border border-emerald-500/40 rounded-xl items-center gap-1.5 relative transition-all shadow-sm" title="বাজারের ফর্দ (View Grocery List)">
+          <i class="fa-solid fa-clipboard-list text-emerald-400 text-sm"></i>
+          <span class="hidden sm:inline font-bold" data-i18n="nav_grocery_list">List</span>
+          <span id="groceryListCountBadge" class="min-w-4 h-4 px-1 bg-emerald-500 text-slate-950 rounded-full text-[9px] font-black flex items-center justify-center">0</span>
+        </button>
+
         <!-- Customer Account & Profile Button -->
         <button onclick="openCustomerProfileModal()" id="customerProfileNavBtn" class="flex items-center gap-1.5 pl-1 pr-2 py-1 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/40 rounded-xl text-slate-200 transition-all" title="View Profile & Account Details">
           <img id="navCustomerAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Avatar" class="w-7 h-7 rounded-lg object-cover border border-emerald-500/60">
@@ -340,6 +350,18 @@
                 <span class="block text-white" data-i18n="menu_profile">My Profile & Account</span>
                 <span class="text-[10px] text-slate-400 font-normal" data-i18n="menu_profile_sub">Personal info, address & stats</span>
               </div>
+            </button>
+
+            <!-- My Grocery List shortcut -->
+            <button type="button" onclick="openVoiceShoppingListModal(); closeThreeDotMenu();" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 transition-colors font-bold text-left">
+              <div class="flex items-center gap-2.5">
+                <i class="fa-solid fa-clipboard-list text-emerald-400 w-4 text-center"></i>
+                <div>
+                  <span class="block text-white" data-i18n="menu_grocery_list_title">Smart Grocery List</span>
+                  <span class="text-[10px] text-slate-400 font-normal" data-i18n="menu_grocery_list_sub">Saved grocery items & estimate</span>
+                </div>
+              </div>
+              <span id="threeDotGroceryListBadge" class="px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-mono font-black text-[10px]">0</span>
             </button>
 
             <div class="border-t border-slate-800/80 my-1"></div>
@@ -513,6 +535,25 @@
         </div>
       </div>
 
+      <!-- Mandi Wholesale Direct Customer Banner -->
+      <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-950/40 via-slate-900 to-orange-950/40 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-lg font-black shrink-0">
+            <i class="fa-solid fa-boxes-packing"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-bold rounded-full uppercase">Wholesale Direct to Customer</span>
+              <h3 class="text-white font-bold text-xs sm:text-sm">Buy Whole Sacks, Tins & Crates at Mandi Rates</h3>
+            </div>
+            <p class="text-slate-300 text-[11px] mt-0.5">Families & community kitchens can purchase 25kg/50kg potato bags, onion sacks & oil tins directly from Sonarpur Mandi Wholesaler.</p>
+          </div>
+        </div>
+        <button onclick="filterCategory('wholesale')" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl text-xs flex items-center gap-1.5 shrink-0 transition-all shadow-md shadow-amber-500/20">
+          <i class="fa-solid fa-cart-flatbed"></i> Browse Wholesale Lots
+        </button>
+      </div>
+
       <!-- Neighborhood Proximity & Category Bar -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 p-3 bg-slate-900 border border-slate-800 rounded-2xl">
         <!-- Category Filter Pills -->
@@ -528,6 +569,10 @@
           </button>
           <button onclick="filterCategory('grocery')" class="cat-btn px-4 py-2 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 transition-all whitespace-nowrap" data-cat="grocery">
             <i class="fa-solid fa-bowl-rice mr-1 text-amber-300"></i> <span data-i18n="cat_grocery">Groceries & Spices</span>
+          </button>
+          <button onclick="filterCategory('wholesale')" class="cat-btn px-4 py-2 bg-slate-950 hover:bg-slate-800 text-amber-300 font-bold rounded-xl border border-amber-500/40 hover:border-amber-400 transition-all whitespace-nowrap flex items-center gap-1.5" data-cat="wholesale">
+            <i class="fa-solid fa-boxes-stacked text-amber-400"></i> <span>Mandi Wholesale (Bulk Direct)</span>
+            <span class="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono font-bold">SAVE 35%</span>
           </button>
         </div>
 
@@ -1509,6 +1554,101 @@
     </div>
   </div>
 
+  <!-- Modal: About LocalLink Project Information -->
+  <div id="projectInfoModal" onclick="if(event.target === this) closeProjectInfoModal()" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl text-xs">
+      
+      <!-- Header -->
+      <div class="flex items-start justify-between pb-4 border-b border-slate-800 gap-4">
+        <div class="flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-emerald-400 text-slate-950 flex items-center justify-center text-2xl font-black shadow-lg shadow-emerald-500/20 shrink-0">
+            <i class="fa-solid fa-store"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="font-black text-lg text-white tracking-tight">LocalLink Platform Ecosystem</h3>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                v2.0 APMC
+              </span>
+            </div>
+            <p class="text-xs text-slate-400 mt-0.5">Hyperlocal Neighborhood Marketplace & Direct Mandi Sourcing Network</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeProjectInfoModal()" class="text-slate-400 hover:text-white p-1.5 hover:bg-slate-800 rounded-xl transition-colors">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Section 1: Executive Mission -->
+      <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-slate-950 to-slate-950 border border-emerald-500/30 space-y-2">
+        <h4 class="font-bold text-white text-sm flex items-center gap-2">
+          <i class="fa-solid fa-bullseye text-emerald-400"></i>
+          <span>Project Vision & Mission</span>
+        </h4>
+        <p class="text-slate-300 leading-relaxed">
+          <b>LocalLink</b> transforms traditional neighborhood street wet-markets, local fishmongers, vegetable vendors, and Kirana stores in <b>Rajpur Sonarpur, Kolkata</b> into a connected digital commerce ecosystem. It cuts out predatory middlemen by giving daily street vendors real-time digital broadcast tools and linking them directly with <b>APMC Sonarpur Mandi Yard</b> wholesale godowns.
+        </p>
+      </div>
+
+      <!-- Section 2: Four Core Ecosystem Pillars -->
+      <div class="space-y-3">
+        <h4 class="font-bold text-white text-xs uppercase tracking-wider text-slate-400">Integrated Multi-Tier Ecosystem</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl space-y-1.5">
+            <div class="flex items-center gap-2 text-emerald-400 font-bold">
+              <i class="fa-solid fa-bag-shopping"></i>
+              <span>1. Customer Marketplace</span>
+            </div>
+            <p class="text-slate-400 text-[11px] leading-snug">
+              Hyperlocal 15-minute delivery, handwritten shopping slip AI OCR scanner, custom Bengali fish cuts (Gada, Peti, Ring), multi-stall basket, and live morning stall stories.
+            </p>
+          </div>
+
+          <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl space-y-1.5">
+            <div class="flex items-center gap-2 text-amber-400 font-bold">
+              <i class="fa-solid fa-store"></i>
+              <span>2. Retail Merchant Suite</span>
+            </div>
+            <p class="text-slate-400 text-[11px] leading-snug">
+              Daily morning fresh catch photo broadcast, Kirana inventory depletion radar, Paytm/PhonePe style voice soundbox alerts, and contactless gate drop-rack bin dispatch.
+            </p>
+          </div>
+
+          <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl space-y-1.5">
+            <div class="flex items-center gap-2 text-orange-400 font-bold">
+              <i class="fa-solid fa-warehouse"></i>
+              <span>3. Wholesale Mandi Hub</span>
+            </div>
+            <p class="text-slate-400 text-[11px] leading-snug">
+              Direct APMC Yard B2B trading, live godown stock lots, 3-tier wholesale pricing (Standard, Tier 2, Super Bulk), Kirana Khata & Credit book, and tempo gate passes.
+            </p>
+          </div>
+
+          <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl space-y-1.5">
+            <div class="flex items-center gap-2 text-purple-400 font-bold">
+              <i class="fa-solid fa-robot"></i>
+              <span>4. Autonomous AI Engines</span>
+            </div>
+            <p class="text-slate-400 text-[11px] leading-snug">
+              Algorithmic live bargaining engine that defends wholesale floor margins while offering volume discounts, plus multilingual voice synthesizers (English, Bengali, Hindi).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center justify-between pt-2 border-t border-slate-800 gap-3">
+        <a href="privacy-policy.html" class="text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1.5 transition-colors">
+          <i class="fa-solid fa-file-shield"></i> View Privacy Policy
+        </a>
+        <button type="button" onclick="closeProjectInfoModal()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg transition-all">
+          Close Info
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Modal 3: Customer Account Profile, Information & Picture -->
   <div id="customerProfileModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
@@ -1672,75 +1812,257 @@
         <p class="text-xs text-slate-400" data-i18n="voice_subtitle">Speak clearly in Bangla, English, or Hindi to find any product</p>
       </div>
 
-      <!-- Automatic Multi-Language Detection Banner (No Manual Buttons) -->
-      <div class="flex items-center justify-between gap-2 px-3.5 py-2 bg-slate-950 rounded-2xl border border-slate-800 text-xs">
-        <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="text-slate-300 font-bold" data-i18n="voice_auto_detect">Auto-Detecting Language</span>
+      <!-- Interactive Language Switcher Chips & Detection Status (No Country Flags) -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between text-xs px-1">
+          <span class="text-slate-400 font-bold flex items-center gap-1.5 text-[11px]">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span data-i18n="voice_lang_lbl">Select Spoken Language</span>
+          </span>
+          <span id="voiceDetectedLangBadge" class="px-2.5 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black uppercase tracking-wider">
+            বাংলা (BN)
+          </span>
         </div>
-        <span id="voiceDetectedLangBadge" class="px-2.5 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black uppercase tracking-wider">
-          বাংলা • English • हिन्दी
-        </span>
+        <div class="grid grid-cols-4 gap-1.5 p-1 bg-slate-950 border border-slate-800 rounded-2xl text-[11px] font-bold">
+          <button type="button" id="btnVoiceLangBn" onclick="switchVoiceLanguage('bn-IN')" class="py-1.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1 bg-emerald-600 text-white font-black shadow-md border border-emerald-400">
+            <span>বাংলা</span>
+          </button>
+          <button type="button" id="btnVoiceLangEn" onclick="switchVoiceLanguage('en-IN')" class="py-1.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1 text-slate-400 hover:text-white hover:bg-slate-800 font-bold">
+            <span>English</span>
+          </button>
+          <button type="button" id="btnVoiceLangHi" onclick="switchVoiceLanguage('hi-IN')" class="py-1.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1 text-slate-400 hover:text-white hover:bg-slate-800 font-bold">
+            <span>हिन्दी</span>
+          </button>
+          <button type="button" id="btnVoiceLangAuto" onclick="switchVoiceLanguage('auto')" class="py-1.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1 text-slate-400 hover:text-white hover:bg-slate-800 font-bold">
+            <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i> <span data-i18n="voice_lang_auto">Auto</span>
+          </button>
+        </div>
       </div>
 
       <!-- Animated Mic Circle -->
-      <div class="relative py-4 flex items-center justify-center">
+      <div class="relative py-3 flex items-center justify-center">
         <!-- Radiating Pulse Rings -->
-        <div id="voiceMicPulseRings" class="absolute w-32 h-32 rounded-full bg-emerald-500/20 animate-ping pointer-events-none"></div>
+        <div id="voiceMicPulseRings" class="absolute w-28 h-28 rounded-full bg-emerald-500/20 animate-ping pointer-events-none transition-transform duration-100"></div>
         <div class="relative z-10">
-          <button type="button" id="voiceMicActionButton" onclick="toggleVoiceListening()" class="w-24 h-24 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white flex items-center justify-center text-3xl shadow-xl shadow-emerald-500/30 transition-transform active:scale-95 group">
+          <button type="button" id="voiceMicActionButton" onclick="toggleVoiceListening()" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white flex items-center justify-center text-2xl sm:text-3xl shadow-xl shadow-emerald-500/30 transition-transform active:scale-95 group">
             <i id="voiceMicIcon" class="fa-solid fa-microphone"></i>
           </button>
         </div>
       </div>
 
-      <!-- Waveform Visualizer -->
-      <div id="voiceAudioWaveform" class="flex items-center justify-center gap-1.5 h-6">
-        <span class="w-1 bg-emerald-400 rounded-full animate-bounce" style="height: 12px; animation-delay: 0.1s;"></span>
-        <span class="w-1 bg-emerald-400 rounded-full animate-bounce" style="height: 22px; animation-delay: 0.2s;"></span>
-        <span class="w-1 bg-emerald-400 rounded-full animate-bounce" style="height: 16px; animation-delay: 0.3s;"></span>
-        <span class="w-1 bg-emerald-400 rounded-full animate-bounce" style="height: 26px; animation-delay: 0.4s;"></span>
-        <span class="w-1 bg-emerald-400 rounded-full animate-bounce" style="height: 14px; animation-delay: 0.5s;"></span>
+      <!-- Live Dynamic Real Audio Waveform Visualizer -->
+      <div id="voiceAudioWaveform" class="flex items-center justify-center gap-1.5 h-8">
+        <span id="waveformBar1" class="w-1.5 bg-emerald-400 rounded-full transition-all duration-75" style="height: 8px;"></span>
+        <span id="waveformBar2" class="w-1.5 bg-emerald-400 rounded-full transition-all duration-75" style="height: 18px;"></span>
+        <span id="waveformBar3" class="w-1.5 bg-emerald-400 rounded-full transition-all duration-75" style="height: 12px;"></span>
+        <span id="waveformBar4" class="w-1.5 bg-emerald-400 rounded-full transition-all duration-75" style="height: 22px;"></span>
+        <span id="waveformBar5" class="w-1.5 bg-emerald-400 rounded-full transition-all duration-75" style="height: 10px;"></span>
       </div>
 
-      <!-- Status & Live Transcription Box -->
-      <div class="space-y-2">
+      <!-- Status & Interactive Editable Live Transcription Box -->
+      <div class="space-y-1.5">
         <div class="flex items-center justify-between text-xs px-1">
-          <p id="voiceSearchStatusText" class="font-bold text-emerald-400 tracking-wide" data-i18n="voice_listening">
-            Listening... Speak now!
+          <p id="voiceSearchStatusText" class="font-bold text-emerald-400 tracking-wide flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="voiceSearchStatusLabel">Listening... Speak now!</span>
           </p>
           <span id="voiceLiveLanguageIndicator" class="text-[10px] font-bold text-slate-400">
-            Auto-Detecting
+            মোড: বাংলা
           </span>
         </div>
-        <div class="min-h-[58px] p-3.5 bg-slate-950 border border-slate-800 rounded-2xl flex items-center justify-center">
-          <p id="voiceLiveTranscript" class="text-sm font-semibold text-white italic">
-            "..."
-          </p>
+        <div class="relative">
+          <input type="text" id="voiceSearchTextInput" 
+            class="w-full pl-4 pr-10 py-3 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-xs sm:text-sm focus:border-emerald-500 focus:outline-none transition-all placeholder:text-slate-500 placeholder:italic shadow-inner"
+            placeholder="মুখে বলুন বা এখানে লিখুন (যেমন: মুসুর ডাল ১ কেজি, চাল ২ কেজি)..."
+            oninput="handleVoiceManualInput(this.value)"
+            onkeydown="if(event.key === 'Enter') submitVoiceSearch(this.value)">
+          <button type="button" id="btnClearVoiceInput" onclick="clearVoiceInput()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white p-1 rounded-lg">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+        <div class="flex items-center justify-between px-2 text-[11px] text-emerald-400/80 min-h-[18px]">
+          <span id="voiceLiveInterimPreview" class="italic truncate"></span>
+          <span class="text-[10px] text-slate-500 shrink-0" data-i18n="voice_silence_hint">Auto searches after a 2.5 second pause</span>
         </div>
       </div>
 
-      <!-- Quick Example Voice Hints (Mixed Multilingual) -->
+      <!-- Quick Example Voice Hints (Single items & Multi-item Lists) -->
       <div class="text-[11px] text-slate-400">
-        <span class="font-bold text-slate-300" data-i18n="voice_try_saying">Try saying:</span>
+        <span class="font-bold text-slate-300" data-i18n="voice_try_saying">বলুন বা ক্লিক করুন (Try Saying):</span>
         <div class="flex flex-wrap items-center justify-center gap-1.5 mt-1.5" id="voiceSuggestionsContainer">
-          <button type="button" onclick="applyVoiceText('রুই মাছ')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] flex items-center gap-1 transition-all">🐟 <span>রুই মাছ</span></button>
-          <button type="button" onclick="applyVoiceText('দেশি আলু')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] flex items-center gap-1 transition-all">🥔 <span>দেশি আলু</span></button>
-          <button type="button" onclick="applyVoiceText('सरसों का तेल')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] flex items-center gap-1 transition-all">🛢️ <span>सरसों का तेल</span></button>
-          <button type="button" onclick="applyVoiceText('Gobindabhog Rice')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] flex items-center gap-1 transition-all">🍚 <span>Gobindabhog Rice</span></button>
-          <button type="button" onclick="applyVoiceText('ডিম')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] flex items-center gap-1 transition-all">🥚 <span>তাজা ডিম</span></button>
+          <button type="button" onclick="applyVoiceText('মুসুর ডাল ১ কেজি, চাল ২ কেজি')" class="px-2.5 py-1 rounded-lg bg-emerald-950/60 border border-emerald-500/30 hover:bg-emerald-800/80 text-emerald-300 text-[10px] font-bold flex items-center gap-1 transition-all">📋 <span>মুসুর ডাল ১ কেজি, চাল ২ কেজি</span></button>
+          <button type="button" onclick="applyVoiceText('dal 1kg , rice 2kg')" class="px-2.5 py-1 rounded-lg bg-sky-950/60 border border-sky-500/30 hover:bg-sky-800/80 text-sky-300 text-[10px] font-bold flex items-center gap-1 transition-all">📋 <span>dal 1kg , rice 2kg</span></button>
+          <button type="button" onclick="applyVoiceText('রুই মাছ ৫০০ গ্রাম')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] flex items-center gap-1 transition-all">🐟 <span>রুই মাছ ৫০০ গ্রাম</span></button>
+          <button type="button" onclick="applyVoiceText('আলু ২ কেজি, ডিম ১ ডজন')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] flex items-center gap-1 transition-all">🥔 <span>আলু ২ কেজি, ডিম ১ ডজন</span></button>
+          <button type="button" onclick="applyVoiceText('सरसों का तेल 1L, चावल 2kg')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] flex items-center gap-1 transition-all">🛢️ <span>सरसों का तेल 1L, चावल 2kg</span></button>
         </div>
       </div>
+
+      <!-- Direct View Saved Grocery List Shortcut -->
+      <button type="button" onclick="closeVoiceSearchModal(); openVoiceShoppingListModal();" id="btnVoiceModalViewSavedList" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-500/30 text-emerald-300 transition-all group">
+        <span class="flex items-center gap-2 text-xs font-bold">
+          <i class="fa-solid fa-clipboard-list text-emerald-400 group-hover:scale-110 transition-transform"></i>
+          <span data-i18n="voice_view_active_list">View Active Grocery List</span>
+        </span>
+        <span id="voiceModalSavedListBadge" class="px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-mono font-black text-[10px]">
+          0
+        </span>
+      </button>
 
       <!-- Action Buttons -->
-      <div class="flex items-center gap-2 pt-2">
+      <div class="flex items-center gap-2 pt-1">
         <button type="button" onclick="closeVoiceSearchModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition-colors" data-i18n="voice_cancel">
           Cancel
         </button>
         <button type="button" id="btnVoiceSubmitSearch" onclick="submitVoiceSearch()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-2" data-i18n="voice_search_btn">
-          <i class="fa-solid fa-magnifying-glass"></i> <span>Search Now</span>
+          <i class="fa-solid fa-magnifying-glass"></i> <span>Search / Create List</span>
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal: Smart Voice Grocery List / ভয়েস বাজার ফর্দ -->
+  <div id="voiceShoppingListModal" onclick="if(event.target === this) closeVoiceShoppingListModal()" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full max-h-[92vh] overflow-y-auto p-5 sm:p-6 space-y-4 shadow-2xl text-xs relative">
+      
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between pb-3 border-b border-slate-800 gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-500 text-slate-950 flex items-center justify-center text-xl font-black shadow-lg shadow-emerald-500/20 shrink-0">
+            <i class="fa-solid fa-clipboard-list"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 id="voiceListModalTitle" class="text-base font-black text-white" data-i18n="voice_list_title">Smart Grocery List</h3>
+              <span id="voiceListLangBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                বাংলা (Bengali)
+              </span>
+            </div>
+            <p id="voiceListSubtitle" class="text-[11px] text-slate-400 mt-0.5" data-i18n="voice_list_subtitle">Smart itemized grocery list generated from your voice</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeVoiceShoppingListModal()" class="text-slate-400 hover:text-white p-1 hover:bg-slate-800 rounded-xl transition-colors">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Spoken Transcript Banner -->
+      <div id="voiceListSpokenPhraseContainer" class="p-3 rounded-2xl bg-slate-950 border border-slate-800/80 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 min-w-0">
+          <i class="fa-solid fa-microphone text-emerald-400 shrink-0 text-xs"></i>
+          <p id="voiceListSpokenPhrase" class="text-slate-300 font-medium italic text-[11px] truncate">"..."</p>
+        </div>
+        <button type="button" onclick="resumeVoiceListeningForList()" class="shrink-0 px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all">
+          <i class="fa-solid fa-plus text-emerald-400"></i> <span data-i18n="voice_list_speak_more">Speak More</span>
+        </button>
+      </div>
+
+      <!-- List Items Container -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between text-slate-400 px-1 text-[11px]">
+          <span class="font-bold flex items-center gap-1.5">
+            <i class="fa-solid fa-cart-flatbed text-amber-400"></i>
+            <span><span data-i18n="voice_list_identified">Identified Grocery Items</span> (<span id="voiceListItemsCount">0</span> <span data-i18n="voice_list_unit">items</span>)</span>
+          </span>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="clearAllVoiceListItems()" class="text-[10px] text-rose-400 hover:text-rose-300 font-semibold px-2 py-0.5 rounded-lg hover:bg-rose-500/10 transition-colors flex items-center gap-1">
+              <i class="fa-solid fa-trash-can text-[10px]"></i> <span data-i18n="voice_list_clear_all">Clear All</span>
+            </button>
+            <span class="text-slate-500 font-mono hidden sm:inline" data-i18n="voice_list_live_rate">Live Stall Rate</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Parsed Items Rows -->
+        <div id="voiceListItemsContainer" class="space-y-2 max-h-[40vh] overflow-y-auto pr-1">
+          <!-- Dynamically populated rows -->
+        </div>
+      </div>
+
+      <!-- Favorite Shop / Merchant Selector -->
+      <div class="p-3 bg-slate-950/80 border border-slate-800 rounded-2xl space-y-1.5">
+        <div class="flex items-center justify-between text-[11px]">
+          <label for="voiceListFavoriteShopSelect" class="font-bold text-slate-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-store text-amber-400"></i>
+            <span data-i18n="voice_list_select_shop">Send List to Favorite Shop:</span>
+          </label>
+          <span class="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Verified Merchant</span>
+        </div>
+        <select id="voiceListFavoriteShopSelect" onchange="renderVoiceGroceryListRows()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs font-semibold focus:outline-none focus:border-emerald-500 transition-colors cursor-pointer">
+          <option value="3" data-shop-name="Ratan Fresh &amp; Grocery (Stall #14)" selected>🏪 Ratan Fresh &amp; Grocery (Stall #14 • Daily Mandi)</option>
+          <option value="10" data-shop-name="Mondal Fish Corner (Stall #07)">🐟 Mondal Fish Corner (Stall #07 • Fish Mandi)</option>
+          <option value="37" data-shop-name="Ghosh Sweets &amp; Dairy Products">🥛 Ghosh Sweets &amp; Dairy (Mahamayatala Corner)</option>
+          <option value="56" data-shop-name="Sonarpur Mandi Wholesale Supply">🏬 Sonarpur Mandi Wholesale (Mandi Gate #2)</option>
+          <option value="57" data-shop-name="Test Seller's Daily Stall">🛒 Test Seller's Daily Stall (Sonarpur Bazaar)</option>
+        </select>
+      </div>
+
+      <!-- Fulfillment Option: Pick up by yourself vs Home Delivery -->
+      <div class="p-3 bg-slate-950/80 border border-slate-800 rounded-2xl space-y-2">
+        <div class="flex items-center justify-between text-[11px]">
+          <span class="font-bold text-slate-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-truck-ramp-box text-teal-400"></i>
+            <span data-i18n="voice_list_fulfillment_label">Fulfillment Option:</span>
+          </span>
+          <span id="voiceListFulfillmentBadge" class="text-[10px] font-black px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
+            Self-Pickup (₹0 Fee)
+          </span>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <label class="cursor-pointer">
+            <input type="radio" name="voiceListFulfillmentMode" value="pickup" class="peer sr-only" checked onchange="onVoiceListFulfillmentChange('pickup')">
+            <div class="p-2.5 rounded-xl border border-slate-800 bg-slate-900 peer-checked:border-emerald-500 peer-checked:bg-emerald-950/50 peer-checked:text-emerald-300 text-slate-400 transition-all flex flex-col items-center text-center gap-1">
+              <i class="fa-solid fa-person-walking-luggage text-base text-purple-400"></i>
+              <span class="font-bold text-xs text-white" data-i18n="voice_list_pickup_title">Pick up by yourself</span>
+              <span class="text-[10px] text-purple-300 font-extrabold" data-i18n="voice_list_pickup_fee">₹0 Delivery Fee • Stall Pickup</span>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="voiceListFulfillmentMode" value="delivery" class="peer sr-only" onchange="onVoiceListFulfillmentChange('delivery')">
+            <div class="p-2.5 rounded-xl border border-slate-800 bg-slate-900 peer-checked:border-teal-500 peer-checked:bg-teal-950/50 peer-checked:text-teal-300 text-slate-400 transition-all flex flex-col items-center text-center gap-1">
+              <i class="fa-solid fa-motorcycle text-base text-teal-400"></i>
+              <span class="font-bold text-xs text-white" data-i18n="voice_list_delivery_title">Home Delivery</span>
+              <span class="text-[10px] text-amber-300 font-extrabold" data-i18n="voice_list_delivery_fee">+ ₹30 Delivery Charge • 15m Express</span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Grand Total & Summary Box -->
+      <div class="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-slate-950 to-slate-950 border border-emerald-500/30 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block" data-i18n="voice_list_est_total">Estimated Total Amount</span>
+          <span id="voiceListDeliveryChargeNote" class="text-xs text-slate-300">Self-Pickup: ₹0 Delivery Charge</span>
+        </div>
+        <div class="text-right">
+          <span id="voiceListGrandTotal" class="text-lg font-black text-emerald-400 font-mono">₹ 0</span>
+          <span id="voiceListBreakdownText" class="text-[10px] text-slate-400 block font-mono">₹0 items + ₹0 delivery</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-2 pt-1">
+        <button type="button" id="btnSendListToShop" onclick="sendGroceryListOrderToShop()" class="w-full py-3.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-black rounded-2xl text-xs sm:text-sm shadow-xl shadow-emerald-500/20 flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-95">
+          <i class="fa-solid fa-paper-plane text-base"></i>
+          <span id="btnSendListToShopText" data-i18n="voice_list_send_order_btn">Send List to Favorite Shop &amp; Order</span>
+        </button>
+
+        <button type="button" id="btnVoiceListAddToCart" onclick="addAllVoiceListItemsToCart()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-2xl text-xs flex items-center justify-center gap-2 transition-all">
+          <i class="fa-solid fa-cart-shopping text-emerald-400"></i>
+          <span id="btnVoiceListAddToCartText" data-i18n="voice_list_add_to_cart">Add All Items to Cart</span>
+        </button>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" onclick="shareVoiceListToWhatsApp()" class="py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all">
+            <i class="fa-brands fa-whatsapp text-emerald-400"></i>
+            <span data-i18n="voice_list_share_wa">Share on WhatsApp</span>
+          </button>
+          <button type="button" onclick="saveVoiceListToPaperSlip()" class="py-2.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all">
+            <i class="fa-solid fa-file-lines text-purple-400"></i>
+            <span data-i18n="voice_list_save_slip">Save Paper Slip</span>
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1756,7 +2078,7 @@
           </div>
           <div>
             <h3 class="text-white font-bold text-base" data-i18n="fish_cut_title">🐟 মাছ ও মাংস কাটার ধরন</h3>
-            <p id="fishCutProductName" class="text-blue-400 text-xs font-semibold">Ruhi Fish (রুই মাছ)</p>
+            <p id="fishCutProductName" class="text-blue-400 text-xs font-semibold">Fresh Catch Fish</p>
           </div>
         </div>
         <button type="button" onclick="closeFishCutModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
@@ -1770,10 +2092,10 @@
             <input type="radio" name="fishCutOption" value="পেটি ও গাদা (Bengali Curry Cut)" checked class="text-emerald-500 focus:ring-emerald-500 w-4 h-4 bg-slate-900 border-slate-700">
             <div>
               <span class="text-white font-bold text-xs block" data-i18n="cut_curry">পেটি ও গাদা (Curry Cut)</span>
-              <span class="text-slate-400 text-[11px]">আদর্শ ঝোল ও কালিয়ার জন্য সেরা মাঝারি টুকরো</span>
+              <span class="text-slate-400 text-[11px]" data-i18n="cut_curry_desc">Ideal for daily gravy dishes, 6-8 uniform pieces</span>
             </div>
           </div>
-          <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">জনপ্রিয়</span>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold" data-i18n="cut_popular_badge">Popular</span>
         </label>
 
         <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer hover:border-slate-700 transition-all">
@@ -1781,7 +2103,7 @@
             <input type="radio" name="fishCutOption" value="পাতলা ঝোলের টুকরো (Thin Jhol Cut)" class="text-emerald-500 focus:ring-emerald-500 w-4 h-4 bg-slate-900 border-slate-700">
             <div>
               <span class="text-white font-bold text-xs block" data-i18n="cut_jhol">পাতলা ঝোলের টুকরো (Thin Jhol Cut)</span>
-              <span class="text-slate-400 text-[11px]">হালকা জিরা-আদা বাটির ঝোলের জন্য নিখুঁত পাতলা টুকরো</span>
+              <span class="text-slate-400 text-[11px]" data-i18n="cut_jhol_desc">Light thin slices, quick cooking with curry</span>
             </div>
           </div>
         </label>
@@ -1791,7 +2113,7 @@
             <input type="radio" name="fishCutOption" value="ফ্রাই কাট / ফিলে (Fish Fry Fillet Cut)" class="text-emerald-500 focus:ring-emerald-500 w-4 h-4 bg-slate-900 border-slate-700">
             <div>
               <span class="text-white font-bold text-xs block" data-i18n="cut_fry">ফ্রাই কাট / ফিলে (Fish Fry Fillet Cut)</span>
-              <span class="text-slate-400 text-[11px]">কাঁটাহীন পাতলা ফিলে বা তেল ভাজার কাট</span>
+              <span class="text-slate-400 text-[11px]" data-i18n="cut_fry_desc">Thick steaks, fillets & crisp frying</span>
             </div>
           </div>
         </label>
@@ -1801,7 +2123,7 @@
             <input type="radio" name="fishCutOption" value="গোটা মাছ পরিষ্কার ও আঁশ ছাড়ানো (Whole Cleaned)" class="text-emerald-500 focus:ring-emerald-500 w-4 h-4 bg-slate-900 border-slate-700">
             <div>
               <span class="text-white font-bold text-xs block" data-i18n="cut_cleaned">গোটা মাছ পরিষ্কার ও আঁশ ছাড়ানো</span>
-              <span class="text-slate-400 text-[11px]">পেট কাটা ও ফুলকা বাদ দিয়ে আস্ত মাছ রাখা হবে</span>
+              <span class="text-slate-400 text-[11px]" data-i18n="cut_cleaned_desc">Scales removed, gutted, kept whole intact</span>
             </div>
           </div>
         </label>
@@ -1811,19 +2133,17 @@
             <input type="radio" name="fishCutOption" value="গোটা সম্পূর্ণ (Whole Uncut)" class="text-emerald-500 focus:ring-emerald-500 w-4 h-4 bg-slate-900 border-slate-700">
             <div>
               <span class="text-white font-bold text-xs block" data-i18n="cut_whole">গোটা সম্পূর্ণ (Whole Uncut)</span>
-              <span class="text-slate-400 text-[11px]">কোনো কাটা বা আঁচড় ছাড়াই সম্পূর্ণ আস্ত মাছ</span>
+              <span class="text-slate-400 text-[11px]" data-i18n="cut_whole_desc">Uncut / Whole with scales, pack as is</span>
             </div>
           </div>
         </label>
       </div>
 
       <div class="flex items-center gap-2 pt-2">
-        <button type="button" onclick="closeFishCutModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition-colors">
-          বাতিল
-        </button>
+        <button type="button" onclick="closeFishCutModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition-colors" data-i18n="cut_cancel">Cancel</button>
         <button type="button" onclick="confirmFishCutAndAddToCart()" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-2">
           <i class="fa-solid fa-cart-plus"></i>
-          <span>কার্টে যোগ করুন</span>
+          <span data-i18n="cut_confirm">Add to Cart</span>
         </button>
       </div>
     </div>
@@ -1840,7 +2160,7 @@
             <i class="fa-solid fa-file-pen"></i>
           </div>
           <div>
-            <h3 class="text-white font-bold text-base" data-i18n="paper_list_banner_title">কাগজের চিরকুট / ফর্দ স্ক্যানার</h3>
+            <h3 class="text-white font-bold text-base" data-i18n="paper_modal_title">Paper Slip & Handwritten Grocery List Scanner</h3>
             <p class="text-purple-400 text-xs">AI Handwritten Grocery Slip Scanner</p>
           </div>
         </div>
@@ -1851,11 +2171,11 @@
       <div class="flex p-1 bg-slate-950 rounded-2xl border border-slate-800 text-xs">
         <button type="button" id="tabBtnPaperPhoto" onclick="switchPaperListTab('photo')" class="flex-1 py-2 font-bold rounded-xl bg-purple-600 text-white shadow transition-all flex items-center justify-center gap-2">
           <i class="fa-solid fa-camera"></i>
-          <span>ছবি আপলোড / ক্যামেরা</span>
+          <span data-i18n="paper_tab_photo">Take Photo / Upload</span>
         </button>
         <button type="button" id="tabBtnPaperText" onclick="switchPaperListTab('text')" class="flex-1 py-2 font-bold rounded-xl text-slate-400 hover:text-white transition-all flex items-center justify-center gap-2">
           <i class="fa-solid fa-keyboard"></i>
-          <span>ফর্দ টাইপ / পেস্ট করুন</span>
+          <span data-i18n="paper_tab_text">Type / Paste List</span>
         </button>
       </div>
 
@@ -1867,8 +2187,8 @@
             <div class="w-14 h-14 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center mx-auto text-2xl">
               <i class="fa-solid fa-camera"></i>
             </div>
-            <p class="text-white font-bold text-xs sm:text-sm">কাগজের চিরকুট বা খাতার পাতার ছবি তুলুন</p>
-            <p class="text-slate-400 text-[11px]">ক্যামেরা চালু করতে অথবা ফাইল বাছাই করতে ট্যাপ করুন (PNG, JPG)</p>
+            <p class="text-white font-bold text-xs sm:text-sm" data-i18n="paper_snap_header">Upload or Snap Photo of Grocery Slip</p>
+            <p class="text-slate-400 text-[11px]" data-i18n="paper_snap_sub">AI scans handwriting, matches local stalls & prices in 1 second</p>
           </div>
           <div id="paperImagePreviewContainer" class="hidden relative">
             <img id="paperImagePreview" src="" alt="Slip Preview" class="max-h-56 mx-auto rounded-xl border border-purple-500/40 object-contain shadow-lg">
@@ -1880,9 +2200,9 @@
       <!-- Tab 2: Text / Manual List -->
       <div id="paperTextSection" class="hidden space-y-2">
         <div class="flex items-center justify-between">
-          <label class="text-xs text-slate-300 font-semibold">হাতে লেখা তালিকার টেক্সট লিখুন বা পেস্ট করুন:</label>
-          <button type="button" onclick="loadSamplePaperListText()" class="text-[11px] text-purple-400 hover:text-purple-300 underline font-bold">
-            + নমুনা ফর্দ টেস্ট করুন
+          <label class="text-xs text-slate-300 font-semibold" data-i18n="paper_text_header">Type or Paste Grocery List:</label>
+          <button type="button" onclick="loadSamplePaperListText()" class="text-[11px] text-purple-400 hover:text-purple-300 underline font-bold" data-i18n="paper_sample_btn">
+            + Load Sample List
           </button>
         </div>
         <textarea id="paperListTextInput" rows="5" placeholder="যেমন:&#10;১ কেজি রুই মাছ&#10;২ কেজি আলু&#10;১ লিটার সরিষার তেল&#10;৫০০ গ্রাম গোবিন্দভোগ চাল&#10;১২ পিস ডিম" class="w-full bg-slate-950 border border-slate-700 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 text-white placeholder-slate-500 text-xs sm:text-sm p-3 rounded-2xl outline-none font-mono"></textarea>
@@ -1891,7 +2211,7 @@
       <!-- Analyze Button -->
       <button type="button" id="btnExecutePaperScan" onclick="executePaperListScan()" class="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black rounded-2xl text-xs sm:text-sm shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 transition-all">
         <i class="fa-solid fa-wand-magic-sparkles"></i>
-        <span>এআই দিয়ে ফর্দ শনাক্ত ও পণ্য খুঁজুন</span>
+        <span data-i18n="paper_analyze_btn">Analyze List & Match Products</span>
       </button>
 
       <!-- Scan Results View -->
@@ -1899,7 +2219,7 @@
         <div class="flex items-center justify-between">
           <h4 class="text-white font-bold text-xs flex items-center gap-2">
             <i class="fa-solid fa-circle-check text-emerald-400"></i>
-            <span>শনাক্তকৃত পণ্যের তালিকা (<span id="paperMatchedCount">0</span>টি পণ্য পাওয়া গেছে)</span>
+            <span><span data-i18n="paper_identified_hdr">Identified Grocery Items</span> (<span id="paperMatchedCount">0</span> <span data-i18n="paper_matched_suffix">items matched</span>)</span>
           </h4>
           <span id="paperEstimatedTotal" class="text-emerald-400 font-black text-sm">₹ 0</span>
         </div>
@@ -1911,7 +2231,7 @@
         <!-- Add All to Cart CTA -->
         <button type="button" onclick="addAllPaperListItemsToCart()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl text-xs sm:text-sm shadow-xl shadow-emerald-600/30 flex items-center justify-center gap-2 transition-all">
           <i class="fa-solid fa-cart-shopping"></i>
-          <span>এক ক্লিকে সব কার্টে যোগ করুন (Add All to Cart)</span>
+          <span data-i18n="paper_add_all_btn">Add All Identified Items to Cart</span>
         </button>
       </div>
     </div>
@@ -1938,9 +2258,9 @@
               <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i>
             </div>
             <div class="flex items-center gap-2 text-[10px] text-slate-300">
-              <span id="storyTimestamp">আজ সকাল ৬:১৫</span>
+              <span id="storyTimestamp" data-i18n="story_default_time">Today 6:15 AM</span>
               <span>•</span>
-              <span class="text-rose-400 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span> লাইভ</span>
+              <span class="text-rose-400 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span> <span data-i18n="story_live_badge">LIVE</span></span>
             </div>
           </div>
         </div>
@@ -1964,15 +2284,13 @@
           <span id="storyMarketTag" class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">
             Sonarpur Central Bazaar
           </span>
-          <p id="storyCaption" class="text-white text-xs sm:text-sm font-semibold mt-1.5 drop-shadow">
-            সকাল ৬টায় ক্যানিং থেকে এলো তাজা জ্যান্ত রুই ও কাতলা মাছ! সীমিত স্টক।
-          </p>
+          <p id="storyCaption" class="text-white text-xs sm:text-sm font-semibold mt-1.5 drop-shadow" data-i18n="story_default_caption">Fresh live Rohu & Katla fish arrived from Canning at 6 AM! Limited morning stock.</p>
         </div>
 
         <div class="flex items-center justify-between gap-3 pt-1">
           <div class="text-left">
-            <span class="text-[10px] text-slate-400 block">আজকের বিশেষ দর:</span>
-            <span id="storyPriceHighlight" class="text-emerald-400 font-black text-sm">₹২৪০ - ₹৩২০ / কেজি</span>
+            <span class="text-[10px] text-slate-400 block" data-i18n="story_special_rate_lbl">Today's Special Rate:</span>
+            <span id="storyPriceHighlight" class="text-emerald-400 font-black text-sm" data-i18n="story_default_price">₹240 - ₹320 / kg</span>
           </div>
           <button type="button" id="btnStoryShopStall" onclick="shopFromCurrentStoryStall()" class="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-2xl text-xs shadow-xl flex items-center gap-2 transition-all">
             <i class="fa-solid fa-store"></i>
@@ -1997,25 +2315,18 @@
           <i class="fa-solid fa-store"></i>
         </div>
         <div>
-          <h4 class="font-black text-white text-sm">LocalLink Marketplace</h4>
+          <div class="flex items-center gap-2">
+            <h4 class="font-black text-white text-sm">LocalLink Marketplace</h4>
+            <button type="button" onclick="openProjectInfoModal()" class="w-5 h-5 rounded-full bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-[10px] transition-all cursor-pointer hover:scale-110" title="Click to view LocalLink Project Architecture & Details">
+              <i class="fa-solid fa-circle-info"></i>
+            </button>
+          </div>
           <p class="text-[11px] text-slate-500">Connecting local shopkeepers with neighborhood residents in Rajpur Sonarpur.</p>
         </div>
       </div>
 
-      <!-- Cross Portal Navigation Links (Native App Safe) -->
+      <!-- Legal Links -->
       <div class="flex items-center flex-wrap gap-2.5">
-        <a href="seller-login.html" onclick="window.LocalLinkApp.goToRole('seller');return false;" class="px-3.5 py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-xl font-bold flex items-center gap-2 transition-all">
-          <i class="fa-solid fa-store text-amber-400"></i>
-          <span>Seller Hub (Sign In)</span>
-        </a>
-        <a href="delivery.html" onclick="window.LocalLinkApp.goToRole('rider');return false;" class="px-3.5 py-2 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/30 rounded-xl font-bold flex items-center gap-2 transition-all">
-          <i class="fa-solid fa-motorcycle text-sky-400"></i>
-          <span>Delivery Rider (Sign In)</span>
-        </a>
-        <a href="login.html" onclick="window.LocalLinkApp.goToRole('admin');return false;" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-xl font-bold flex items-center gap-2 transition-all">
-          <i class="fa-solid fa-shield-halved text-purple-400"></i>
-          <span>Admin Portal (Sign In)</span>
-        </a>
         <a href="privacy-policy.html" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-xl font-bold flex items-center gap-2 transition-all">
           <i class="fa-solid fa-file-shield text-sky-400"></i>
           <span>Privacy Policy</span>
@@ -2195,6 +2506,7 @@
     window.addEventListener("DOMContentLoaded", async () => {
       initAppThemeAndLanguage();
       loadCartFromStorage();
+      loadVoiceGroceryList();
       try {
         await initializeCustomerAuth();
       } catch (e) {
@@ -3908,8 +4220,16 @@
                     }">
                       <i class="fa-solid ${isPaid ? 'fa-circle-check text-emerald-400' : 'fa-clock text-amber-400'} mr-1"></i>${payText}
                     </span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+                      ord.fulfillment_type === 'pickup' 
+                        ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' 
+                        : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                    }">
+                      <i class="fa-solid ${ord.fulfillment_type === 'pickup' ? 'fa-person-walking-luggage text-purple-400' : 'fa-truck-fast text-blue-400'} mr-1"></i>
+                      ${ord.fulfillment_type === 'pickup' ? (currentAppLanguage === 'bn' ? 'স্টল থেকে সংগ্রহ (Self-Pickup: ₹০)' : (currentAppLanguage === 'hi' ? 'दुकान से लेना (Self-Pickup: ₹0)' : 'Self-Pickup: ₹0 Fee')) : (currentAppLanguage === 'bn' ? 'হোম ডেলিভারি (+₹৩০ চার্জ)' : (currentAppLanguage === 'hi' ? 'होम डिलीवरी (+₹30 शुल्क)' : 'Home Delivery (+₹30 Fee)'))}
+                    </span>
                   </div>
-                  <p class="text-slate-400 text-[10px] mt-0.5">Placed on ${new Date(ord.created_at).toLocaleDateString()} &bull; Total: <strong class="text-emerald-400">₹${ord.total_amount}</strong></p>
+                  <p class="text-slate-400 text-[10px] mt-0.5">Placed on ${new Date(ord.created_at).toLocaleDateString()} &bull; Items: ₹${ord.subtotal} &bull; Delivery: <strong class="${Number(ord.delivery_charge) > 0 ? 'text-amber-400' : 'text-purple-300'}">₹${Number(ord.delivery_charge || 0).toFixed(2)}</strong> &bull; Total: <strong class="text-emerald-400 font-bold">₹${ord.total_amount}</strong></p>
                 </div>
                 <span class="px-2.5 py-1 font-bold rounded-full text-[10px] ${
                   isDelivered ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' :
@@ -4539,7 +4859,7 @@
         menu_profile: "My Profile & Account",
         menu_profile_sub: "Personal info, address & stats",
         menu_theme: "Appearance",
-        menu_language: "Language / ভাষা / भाषा",
+        menu_language: "Language",
         menu_seller: "Seller Hub",
         menu_rider: "Delivery Partner (Rider)",
         menu_signout: "Sign Out",
@@ -4643,12 +4963,74 @@
         paper_list_btn: "Scan Market List",
         fish_cut_title: "🐟 Select Fish/Meat Cut Style",
         fish_cut_desc: "Select how you would like the stall to clean & slice this item:",
-        cut_curry: "পেটি ও গাদা (Bengali Curry Cut)",
-        cut_jhol: "পাতলা ঝোলের টুকরো (Thin Jhol Cut)",
-        cut_fry: "ফ্রাই কাট / ফিলে (Fish Fry Fillet Cut)",
-        cut_cleaned: "গোটা মাছ পরিষ্কার ও আঁশ ছাড়ানো (Whole Cleaned)",
-        cut_whole: "গোটা সম্পূর্ণ (Whole Uncut)",
-        story_shop_btn: "🛒 Shop from this Stall"
+        cut_curry: "Standard Curry Cut (Medium Pieces)",
+        cut_jhol: "Thin Jhol / Stew Slices",
+        cut_fry: "Fish Fry Fillet / Steak Cut",
+        cut_cleaned: "Whole Cleaned & Descaled",
+        cut_whole: "Whole Intact (Uncut)",
+        story_shop_btn: "🛒 Shop from this Stall",
+        nav_grocery_list: "List",
+        nav_grocery_list_title: "Grocery List (View Grocery List)",
+        menu_grocery_list_title: "Smart Grocery List",
+        menu_grocery_list_sub: "Saved grocery items & estimate",
+        market_paper_btn_title: "Paper Slip Scanner (Upload Paper Slip)",
+        market_voice_btn_title: "Voice Search (English, বাংলা, हिन्दी)",
+        voice_lang_lbl: "Select Spoken Language",
+        voice_lang_auto: "Auto Detect",
+        voice_input_ph: "Speak or type here (e.g. Masoor Dal 1kg, Basmati Rice 2kg)...",
+        voice_silence_hint: "Auto searches after a 2.5 second pause",
+        voice_view_active_list: "View Active Grocery List",
+        voice_list_title: "Smart Grocery List",
+        voice_list_subtitle: "Smart itemized grocery list generated from your voice",
+        voice_list_speak_more: "Speak More",
+        voice_list_identified: "Identified Grocery Items",
+        voice_list_unit: "items",
+        voice_list_clear_all: "Clear All",
+        voice_list_live_rate: "Live Stall Rate",
+        voice_list_est_total: "Estimated Total Amount",
+        voice_list_free_del: "Free delivery within 15 minutes",
+        voice_list_add_to_cart: "Add All Items to Cart",
+        voice_list_share_wa: "Share on WhatsApp",
+        voice_list_save_slip: "Save Paper Slip",
+        voice_list_empty_title: "Your Grocery List is Empty",
+        voice_list_empty_sub: "All items were removed or not added yet",
+        voice_list_speak_btn: "Speak More Items",
+        voice_list_decrease_title: "Decrease",
+        voice_list_increase_title: "Increase",
+        voice_list_remove_title: "Remove item",
+        voice_list_select_shop: "Send List to Favorite Shop:",
+        voice_list_fulfillment_label: "Fulfillment Option:",
+        voice_list_pickup_title: "Pick up by yourself",
+        voice_list_pickup_fee: "₹0 Delivery Fee • Stall Pickup",
+        voice_list_delivery_title: "Home Delivery",
+        voice_list_delivery_fee: "+ ₹30 Delivery Charge • 15m Express",
+        voice_list_send_order_btn: "Send List to Favorite Shop & Order",
+        cut_curry_desc: "Ideal for daily gravy dishes, 6-8 uniform pieces",
+        cut_popular_badge: "Popular",
+        cut_jhol_desc: "Light thin slices, quick cooking with curry",
+        cut_fry_desc: "Thick steaks, fillets & crisp frying",
+        cut_cleaned_desc: "Scales removed, gutted, kept whole intact",
+        cut_whole_desc: "Uncut / Whole with scales, pack as is",
+        cut_cancel: "Cancel",
+        cut_confirm: "Add to Cart",
+        paper_modal_title: "Paper Slip & Handwritten Grocery List Scanner",
+        paper_tab_photo: "Take Photo / Upload",
+        paper_tab_text: "Type / Paste List",
+        paper_snap_header: "Upload or Snap Photo of Grocery Slip",
+        paper_snap_sub: "AI scans handwriting, matches local stalls & prices in 1 second",
+        paper_text_header: "Type or Paste Grocery List:",
+        paper_sample_btn: "+ Load Sample List",
+        paper_text_ph: "e.g.:\n1 kg Rui Fish\n2 kg Potato\n1 L Mustard Oil\n500 g Rice\n12 Eggs",
+        paper_analyze_btn: "Analyze List & Match Products",
+        paper_identified_hdr: "Identified Grocery Items",
+        paper_matched_suffix: "items matched",
+        paper_add_all_btn: "Add All Identified Items to Cart",
+        mode_indicator: "Mode: English",
+        story_special_rate_lbl: "Today's Special Rate:",
+        story_default_caption: "Fresh live Rohu & Katla fish arrived from Canning at 6 AM! Limited morning stock.",
+        story_default_time: "Today 6:15 AM",
+        story_live_badge: "LIVE",
+        story_default_price: "₹240 - ₹320 / kg"
       },
       bn: {
         app_brand_sub: "লোকাল মার্কেট অ্যাপ",
@@ -4783,7 +5165,69 @@
         cut_fry: "ফ্রাই কাট / ফিলে (Fish Fry Fillet Cut)",
         cut_cleaned: "গোটা মাছ পরিষ্কার ও আঁশ ছাড়ানো (Whole Cleaned)",
         cut_whole: "গোটা সম্পূর্ণ (Whole Uncut)",
-        story_shop_btn: "🛒 এই স্টলের সামগ্রী কিনুন"
+        story_shop_btn: "🛒 এই স্টলের সামগ্রী কিনুন",
+        nav_grocery_list: "ফর্দ",
+        nav_grocery_list_title: "বাজারের ফর্দ (View Grocery List)",
+        menu_grocery_list_title: "বাজারের ফর্দ (Grocery List)",
+        menu_grocery_list_sub: "সংরক্ষিত পণ্যের তালিকা ও হিসাব",
+        market_paper_btn_title: "কাগজের চিরকুট স্ক্যানার (Upload Paper Slip)",
+        market_voice_btn_title: "ভয়েস সার্চ (English, বাংলা, हिन्दी)",
+        voice_lang_lbl: "ভাষা নির্বাচন (Select Voice Language)",
+        voice_lang_auto: "অটো (Auto)",
+        voice_input_ph: "মুখে বলুন বা এখানে লিখুন (যেমন: মুসুর ডাল ১ কেজি, চাল ২ কেজি)...",
+        voice_silence_hint: "কথার পর ২.৫ সেকেন্ড বিরতি দিলে অটো সার্চ হবে",
+        voice_view_active_list: "বর্তমান বাজার ফর্দ দেখুন (View Active List)",
+        voice_list_title: "ভয়েস বাজার ফর্দ",
+        voice_list_subtitle: "আপনার বলা ভয়েস থেকে তৈরি স্মার্ট কেনাকাটার ফর্দ",
+        voice_list_speak_more: "আরও বলুন",
+        voice_list_identified: "শনাক্তকৃত পণ্যের তালিকা",
+        voice_list_unit: "টি",
+        voice_list_clear_all: "সব মুছুন (Clear All)",
+        voice_list_live_rate: "লাইভ স্টল মূল্য",
+        voice_list_est_total: "আনুমানিক মোট মূল্য",
+        voice_list_free_del: "১৫ মিনিটের মধ্যে ডেলিভারি চার্জ ফ্রি",
+        voice_list_add_to_cart: "সব পণ্য কার্টে যোগ করুন",
+        voice_list_share_wa: "WhatsApp ফর্দ পাঠান",
+        voice_list_save_slip: "বাজার চিরকুট সেভ",
+        voice_list_empty_title: "ফর্দে কোনো পণ্য নেই",
+        voice_list_empty_sub: "সব পণ্য মুছে ফেলা হয়েছে বা এখনো যোগ করা হয়নি",
+        voice_list_speak_btn: "নতুন পণ্য বলুন (Speak More)",
+        voice_list_decrease_title: "কমান (Decrease)",
+        voice_list_increase_title: "বাড়ান (Increase)",
+        voice_list_remove_title: "পণ্যটি মুছে ফেলুন (Remove Product)",
+        voice_list_select_shop: "প্রিয় দোকানে ফর্দ পাঠান:",
+        voice_list_fulfillment_label: "ডেলিভারি নাকি পিকআপ:",
+        voice_list_pickup_title: "দোকান থেকে নিজে নিন (Self-Pickup)",
+        voice_list_pickup_fee: "₹০ ডেলিভারি চার্জ • স্টল পিকআপ",
+        voice_list_delivery_title: "হোম ডেলিভারি",
+        voice_list_delivery_fee: "+ ₹৩০ ডেলিভারি চার্জ • ১৫ মিনিট এক্সপ্রেস",
+        voice_list_send_order_btn: "প্রিয় দোকানে ফর্দ পাঠান ও অর্ডার করুন",
+        cut_curry_desc: "আদর্শ ঝোল ও কালিয়ার জন্য সেরা মাঝারি টুকরো",
+        cut_popular_badge: "জনপ্রিয়",
+        cut_jhol_desc: "হালকা জিরা-আদা বাটির ঝোলের জন্য নিখুঁত পাতলা টুকরো",
+        cut_fry_desc: "কাঁটাহীন পাতলা ফিলে বা তেল ভাজার কাট",
+        cut_cleaned_desc: "পেট কাটা ও ফুলকা বাদ দিয়ে আস্ত মাছ রাখা হবে",
+        cut_whole_desc: "কোনো কাটা বা আঁচড় ছাড়াই সম্পূর্ণ আস্ত মাছ",
+        cut_cancel: "বাতিল",
+        cut_confirm: "কার্টে যোগ করুন",
+        paper_modal_title: "কাগজের চিরকুট / ফর্দ স্ক্যানার",
+        paper_tab_photo: "ছবি আপলোড / ক্যামেরা",
+        paper_tab_text: "ফর্দ টাইপ / পেস্ট করুন",
+        paper_snap_header: "কাগজের চিরকুট বা খাতার পাতার ছবি তুলুন",
+        paper_snap_sub: "ক্যামেরা চালু করতে অথবা ফাইল বাছাই করতে ট্যাপ করুন (PNG, JPG)",
+        paper_text_header: "হাতে লেখা তালিকার টেক্সট লিখুন বা পেস্ট করুন:",
+        paper_sample_btn: "+ নমুনা ফর্দ টেস্ট করুন",
+        paper_text_ph: "যেমন:\n১ কেজি রুই মাছ\n২ কেজি আলু\n১ লিটার সরিষার তেল\n৫০০ গ্রাম চাল\n১২টি ডিম",
+        paper_analyze_btn: "এআই দিয়ে ফর্দ শনাক্ত ও পণ্য খুঁজুন",
+        paper_identified_hdr: "শনাক্তকৃত পণ্যের তালিকা",
+        paper_matched_suffix: "টি পণ্য পাওয়া গেছে",
+        paper_add_all_btn: "এক ক্লিকে সব কার্টে যোগ করুন (Add All to Cart)",
+        mode_indicator: "মোড: বাংলা",
+        story_special_rate_lbl: "আজকের বিশেষ দর:",
+        story_default_caption: "সকাল ৬টায় ক্যানিং থেকে এলো তাজা জ্যান্ত রুই ও কাতলা মাছ! সীমিত স্টক।",
+        story_default_time: "আজ সকাল ৬:১৫",
+        story_live_badge: "লাইভ",
+        story_default_price: "₹২৪০ - ₹৩২০ / কেজি"
       },
       hi: {
         app_brand_sub: "लोकल मार्केट ऐप",
@@ -4918,7 +5362,69 @@
         cut_fry: "फ्राई कट / फ़िले (Fish Fry Fillet Cut)",
         cut_cleaned: "पूरी मछली साफ की हुई (Whole Cleaned)",
         cut_whole: "पूरी बिना कटी (Whole Uncut)",
-        story_shop_btn: "🛒 इस दुकान का सामान खरीदें"
+        story_shop_btn: "🛒 इस दुकान का सामान खरीदें",
+        nav_grocery_list: "किराना पर्ची",
+        nav_grocery_list_title: "किराना पर्ची (View Grocery List)",
+        menu_grocery_list_title: "किराना पर्ची (Grocery List)",
+        menu_grocery_list_sub: "सहेजी गई वस्तुओं की सूची व हिसाब",
+        market_paper_btn_title: "कागज़ की पर्ची स्कैनर (Upload Paper Slip)",
+        market_voice_btn_title: "वॉइस सर्च (English, বাংলা, हिन्दी)",
+        voice_lang_lbl: "भाषा चुनें (Select Voice Language)",
+        voice_lang_auto: "ऑटो (Auto)",
+        voice_input_ph: "बोलिए या यहाँ टाइप करें (जैसे: दाल 1 किलो, चावल 2 किलो)...",
+        voice_silence_hint: "बोलने के बाद 2.5 सेकंड रुकने पर अपने आप सर्च होगा",
+        voice_view_active_list: "सक्रिय किराना पर्ची देखें",
+        voice_list_title: "स्मार्ट किराना पर्ची",
+        voice_list_subtitle: "आपकी आवाज़ या पर्ची से बनी स्मार्ट किराना सूची",
+        voice_list_speak_more: "और सामान बोलें",
+        voice_list_identified: "पहचानी गई वस्तुओं की सूची",
+        voice_list_unit: "आइटम",
+        voice_list_clear_all: "सब हटाएं",
+        voice_list_live_rate: "लाइव स्टॉल मूल्य",
+        voice_list_est_total: "अनुमानित कुल राशि",
+        voice_list_free_del: "15 मिनट में डिलीवरी बिल्कुल मुफ़्त",
+        voice_list_add_to_cart: "सभी सामान कार्ट में जोड़ें",
+        voice_list_share_wa: "WhatsApp पर भेजें",
+        voice_list_save_slip: "पर्ची सहेजें",
+        voice_list_empty_title: "पर्ची में कोई सामान नहीं है",
+        voice_list_empty_sub: "सभी सामान हटा दिए गए हैं या अभी तक जोड़े नहीं गए हैं",
+        voice_list_speak_btn: "और सामान बोलें",
+        voice_list_decrease_title: "घटाएं (Decrease)",
+        voice_list_increase_title: "बढ़ाएं (Increase)",
+        voice_list_remove_title: "सामान हटाएं (Remove Item)",
+        voice_list_select_shop: "पसंदीदा दुकान को सूची भेजें:",
+        voice_list_fulfillment_label: "डिलीवरी या पिकअप विकल्प:",
+        voice_list_pickup_title: "स्वयं दुकान से लें (Self-Pickup)",
+        voice_list_pickup_fee: "₹0 डिलीवरी शुल्क • स्टॉल पिकअप",
+        voice_list_delivery_title: "होम डिलीवरी",
+        voice_list_delivery_fee: "+ ₹30 डिलीवरी शुल्क • 15 मिनट एक्सप्रेस",
+        voice_list_send_order_btn: "पसंदीदा दुकान को सूची भेजें और ऑर्डर करें",
+        cut_curry_desc: "दैनिक करी व ग्रेवी के लिए उपयुक्त",
+        cut_popular_badge: "लोकप्रिय",
+        cut_jhol_desc: "हल्की पतली ग्रेवी के लिए बेहतरीन",
+        cut_fry_desc: "क्रिस्पी फ्राई व रोस्ट के लिए",
+        cut_cleaned_desc: "स्केल व गंदगी साफ, बिना टुकड़े पूरा",
+        cut_whole_desc: "काटने की ज़रूरत नहीं, सीधे तौलकर पैक",
+        cut_cancel: "रद्द करें",
+        cut_confirm: "कार्ट में जोड़ें",
+        paper_modal_title: "कागज़ की पर्ची व हस्तलिखित किराना स्कैनर",
+        paper_tab_photo: "फोटो लें / अपलोड",
+        paper_tab_text: "लिखकर पर्ची बनाएं",
+        paper_snap_header: "हाथ से लिखी पर्ची का फोटो लें या अपलोड करें",
+        paper_snap_sub: "एआई तुरंत लिखावट पढ़कर स्थानीय स्टॉल के सामान पहचान लेगा",
+        paper_text_header: "सामान और मात्रा की सूची लिखें:",
+        paper_sample_btn: "+ नमूना सूची लोड करें",
+        paper_text_ph: "जैसे:\n1 किलो रोहू मछली\n2 किलो आलू\n1 लीटर सरसों तेल\n500 ग्राम चावल\n12 अंडे",
+        paper_analyze_btn: "पर्ची स्कैन करें और सामान पहचानें",
+        paper_identified_hdr: "पर्ची से पहचाने गए सामान",
+        paper_matched_suffix: "सामान मिले",
+        paper_add_all_btn: "पहचाने गए सभी सामान कार्ट में जोड़ें",
+        mode_indicator: "मोड: हिन्दी",
+        story_special_rate_lbl: "आज का विशेष भाव:",
+        story_default_caption: "सुबह 6 बजे कैनिंग से ताज़ा रोहू और कतला मछली आई! सीमित स्टॉक।",
+        story_default_time: "आज सुबह 6:15",
+        story_live_badge: "लाइव",
+        story_default_price: "₹240 - ₹320 / किलो"
       }
     };
 
@@ -4930,16 +5436,69 @@
       currentAppLanguage = lang;
       localStorage.setItem("locallink_lang", lang);
 
-      // Default voice recognition lang to match selected language
-      if (lang === "bn") currentVoiceLang = "bn-IN";
-      else if (lang === "hi") currentVoiceLang = "hi-IN";
-      else currentVoiceLang = "en-IN";
+      // Keep user's voice language preference or default strictly to Bangla (bn-IN) for Sonarpur
+      const userVoicePref = localStorage.getItem("locallink_voice_lang");
+      if (userVoicePref) {
+        currentVoiceLang = userVoicePref;
+        currentVoiceLangMode = userVoicePref;
+      } else {
+        currentVoiceLang = (lang === "hi") ? "hi-IN" : "bn-IN";
+        currentVoiceLangMode = currentVoiceLang;
+      }
 
       applyTranslations(lang);
       updateLanguageUIButtons(lang);
 
+      // Update voice modal badges for language
+      const vBadge = document.getElementById("voiceDetectedLangBadge");
+      if (vBadge) {
+        vBadge.textContent = lang === "bn" ? "বাংলা (BN)" : (lang === "hi" ? "हिन्दी (HI)" : "English (EN)");
+      }
+      const lBadge = document.getElementById("voiceListLangBadge");
+      if (lBadge) {
+        lBadge.textContent = lang === "bn" ? "বাংলা (Bengali)" : (lang === "hi" ? "हिन्दी (Hindi)" : "English");
+      }
+
+
       const msg = lang === "bn" ? "ভাষা সফলভাবে বাংলা নির্বাচিত হয়েছে" : (lang === "hi" ? "भाषा हिन्दी सफलतापूर्वक चुनी गई" : "Language set to English");
       showToast(msg, "success");
+    }
+
+    
+    function updateVoiceSuggestionsForLang(lang) {
+      const container = document.getElementById("voiceSuggestionsContainer");
+      if (!container) return;
+
+      const suggestions = {
+        en: [
+          { icon: "📋", text: "Dal 1kg, Rice 2kg", bg: "bg-emerald-950/60 border-emerald-500/30 text-emerald-300" },
+          { icon: "📋", text: "Sugar 1kg, Flour 2kg", bg: "bg-sky-950/60 border-sky-500/30 text-sky-300" },
+          { icon: "🐟", text: "Rui Fish 1kg", bg: "bg-slate-800 text-slate-300" },
+          { icon: "🥔", text: "Potatoes 2kg, Eggs 1 dozen", bg: "bg-slate-800 text-slate-300" },
+          { icon: "🛢️", text: "Mustard Oil 1L, Salt 1 packet", bg: "bg-slate-800 text-slate-300" }
+        ],
+        bn: [
+          { icon: "📋", text: "মুসুর ডাল ১ কেজি, চাল ২ কেজি", bg: "bg-emerald-950/60 border-emerald-500/30 text-emerald-300" },
+          { icon: "📋", text: "চিনি ১ কেজি, আটা ২ কেজি", bg: "bg-sky-950/60 border-sky-500/30 text-sky-300" },
+          { icon: "🐟", text: "রুই মাছ ১ কেজি", bg: "bg-slate-800 text-slate-300" },
+          { icon: "🥔", text: "আলু ২ কেজি, ডিম ১ ডজন", bg: "bg-slate-800 text-slate-300" },
+          { icon: "🛢️", text: "সরিষার তেল ১ লিটার", bg: "bg-slate-800 text-slate-300" }
+        ],
+        hi: [
+          { icon: "📋", text: "दाल 1 किलो, चावल 2 किलो", bg: "bg-emerald-950/60 border-emerald-500/30 text-emerald-300" },
+          { icon: "📋", text: "चीनी 1 किलो, आटा 2 किलो", bg: "bg-sky-950/60 border-sky-500/30 text-sky-300" },
+          { icon: "🐟", text: "रोहू मछली 1 किलो", bg: "bg-slate-800 text-slate-300" },
+          { icon: "🥔", text: "आलू 2 किलो, अंडे 1 दर्जन", bg: "bg-slate-800 text-slate-300" },
+          { icon: "🛢️", text: "सरसों का तेल 1 लीटर", bg: "bg-slate-800 text-slate-300" }
+        ]
+      };
+
+      const items = suggestions[lang] || suggestions.en;
+      container.innerHTML = items.map(s => `
+        <button type="button" onclick="applyVoiceText('${s.text}')" class="px-2.5 py-1 rounded-lg border border-slate-700/60 hover:border-emerald-500/50 hover:bg-slate-800 text-[10px] font-bold flex items-center gap-1 transition-all ${s.bg}">
+          <span>${s.icon}</span> <span>${s.text}</span>
+        </button>
+      `).join("");
     }
 
     function applyTranslations(lang) {
@@ -4970,6 +5529,42 @@
       if (bargainInput && dict.bargain_placeholder) {
         bargainInput.setAttribute("placeholder", dict.bargain_placeholder);
       }
+      const voiceInput = document.getElementById("voiceSearchTextInput");
+      if (voiceInput && dict.voice_input_ph) {
+        voiceInput.setAttribute("placeholder", dict.voice_input_ph);
+      }
+      const paperInput = document.getElementById("paperListTextInput");
+      if (paperInput && dict.paper_text_ph) {
+        paperInput.setAttribute("placeholder", dict.paper_text_ph);
+      }
+
+      // Tooltips / title attributes
+      const navListBtn = document.getElementById("nav-btn-grocery-list");
+      if (navListBtn && dict.nav_grocery_list_title) {
+        navListBtn.setAttribute("title", dict.nav_grocery_list_title);
+      }
+      const marketPaperBtn = document.getElementById("marketPaperListBtn");
+      if (marketPaperBtn && dict.market_paper_btn_title) {
+        marketPaperBtn.setAttribute("title", dict.market_paper_btn_title);
+      }
+      const mobilePaperBtn = document.getElementById("mobilePaperListBtn");
+      if (mobilePaperBtn && dict.market_paper_btn_title) {
+        mobilePaperBtn.setAttribute("title", dict.market_paper_btn_title);
+      }
+      const marketVoiceBtn = document.getElementById("marketVoiceSearchBtn");
+      if (marketVoiceBtn && dict.market_voice_btn_title) {
+        marketVoiceBtn.setAttribute("title", dict.market_voice_btn_title);
+      }
+      const mobileVoiceBtn = document.getElementById("mobileVoiceSearchBtn");
+      if (mobileVoiceBtn && dict.market_voice_btn_title) {
+        mobileVoiceBtn.setAttribute("title", dict.market_voice_btn_title);
+      }
+
+      // Voice Mode Indicator
+      const modeIndicator = document.getElementById("voiceLiveLanguageIndicator");
+      if (modeIndicator && dict.mode_indicator) {
+        modeIndicator.textContent = dict.mode_indicator;
+      }
 
       // 3. Document HTML lang
       document.documentElement.lang = lang;
@@ -4998,6 +5593,37 @@
       const bMsg = document.getElementById("bargainWelcomeMsg");
       if (bMsg && dict.bargain_welcome_msg) {
         bMsg.textContent = dict.bargain_welcome_msg;
+      }
+
+      // 9. Re-render Voice Grocery List Rows if open or populated
+      if (typeof renderVoiceGroceryListRows === "function") {
+        renderVoiceGroceryListRows();
+      }
+
+      // 10. Update Voice Shopping List Modal headers if open
+      const vTitle = document.getElementById("voiceListModalTitle");
+      const vBadge = document.getElementById("voiceListLangBadge");
+      const vSub = document.getElementById("voiceListSubtitle");
+      const vAddBtn = document.getElementById("btnVoiceListAddToCartText");
+      if (vTitle && dict.voice_list_title) vTitle.textContent = dict.voice_list_title;
+      if (vSub && dict.voice_list_subtitle) vSub.textContent = dict.voice_list_subtitle;
+      if (vAddBtn && dict.voice_list_add_to_cart) vAddBtn.textContent = dict.voice_list_add_to_cart;
+      if (vBadge) {
+        if (lang === "bn") {
+          vBadge.textContent = "বাংলা";
+          vBadge.className = "px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+        } else if (lang === "hi") {
+          vBadge.textContent = "हिन्दी";
+          vBadge.className = "px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30";
+        } else {
+          vBadge.textContent = "English";
+          vBadge.className = "px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30";
+        }
+      }
+
+      // 11. Re-render Paper items if parsed
+      if (typeof parsedPaperItems !== "undefined" && parsedPaperItems && parsedPaperItems.length > 0) {
+        renderParsedPaperItems(parsedPaperItems);
       }
     }
 
@@ -5124,19 +5750,26 @@
     });
 
     // =========================================================================
-    // VOICE SEARCH ASSISTANT CONTROLLER (AUTO-DETECT: BANGLA, ENGLISH, HINDI)
+    // 🎙️ MULTILINGUAL VOICE SEARCH & SMART GROCERY LIST ENGINE (BANGLA, EN, HI)
     // =========================================================================
     let speechRecognitionInstance = null;
-    let currentVoiceLang = "en-IN";
+    let audioStreamInstance = null;
+    let audioContextInstance = null;
+    let audioAnalyserInstance = null;
+    let audioAnimFrameId = null;
+    let voiceSilenceTimer = null;
+    let currentVoiceLangMode = "bn-IN"; // Default to Bangla for Sonarpur/Kolkata
+    let currentVoiceLang = "bn-IN";
     let isVoiceListening = false;
     let currentVoiceTranscript = "";
-    let detectedSpokenLangMeta = { code: "auto", short: "Auto", label: "Auto-Detecting" };
-    let voiceLangCycleIndex = 0;
-    const VOICE_SUPPORTED_LANGS = ["bn-IN", "en-IN", "hi-IN"];
+    let detectedSpokenLangMeta = { code: "bn", short: "বাংলা", label: "বাংলা", badge: "বাংলা (Bengali)" };
+    let activeVoiceGroceryList = [];
+    let isAppendingToVoiceList = false;
 
+    // Detect Language from Spoken Text (No country flags)
     function detectSpokenLanguage(text) {
       if (!text || typeof text !== "string") {
-        return { code: "auto", short: "Auto", label: "Auto-Detecting", badge: "বাংলা • English • हिन्दी" };
+        return { code: "bn", short: "বাংলা", label: "বাংলা", badge: "বাংলা (Bengali)" };
       }
       const trimmed = text.trim();
       // Unicode block for Bengali: U+0980 to U+09FF
@@ -5145,55 +5778,1003 @@
       const hasHindi = /[\u0900-\u097F]/.test(trimmed);
 
       if (hasBengali) {
-        return { code: "bn", short: "বাংলা", label: "বাংলা (Bengali)", badge: "বাংলা (Bengali)" };
+        return { code: "bn", short: "বাংলা", label: "বাংলা", badge: "বাংলা (Bengali)" };
       }
       if (hasHindi) {
-        return { code: "hi", short: "हिन्दी", label: "हिन्दी (Hindi)", badge: "हिन्दी (Hindi)" };
+        return { code: "hi", short: "हिन्दी", label: "हिन्दी", badge: "हिन्दी (Hindi)" };
+      }
+
+      // If user has explicitly selected or is in Bangla mode, detect Banglish terms as Bangla
+      if (currentVoiceLangMode === "bn-IN") {
+        return { code: "bn", short: "বাংলা", label: "বাংলা", badge: "বাংলা (Bengali)" };
       }
 
       // Transliterated keyword heuristics
       const lower = trimmed.toLowerCase();
-      const bengaliKeywords = /\b(rui|katla|maach|mach|ilish|sorshe|sarson|alu|chal|dim|taza|deshi|mangsho|murgi|khasi|ponir|dudh)\b/i;
-      const hindiKeywords = /\b(machli|rohu|sarson|tel|aloo|chawal|anda|taaza|desi|paneer|doodh|masala)\b/i;
+      const bengaliKeywords = /\b(rui|katla|maach|mach|ilish|sorshe|sarson|alu|chal|chaal|dim|taza|deshi|mangsho|murgi|khasi|ponir|dudh|daal|dal|kg|kilo)\b/i;
+      const hindiKeywords = /\b(machli|rohu|sarson|tel|aloo|chawal|anda|taaza|desi|paneer|doodh|masala|kilo)\b/i;
 
       if (bengaliKeywords.test(lower)) {
-        return { code: "bn", short: "বাংলা", label: "বাংলা / Transliterated", badge: "বাংলা (Bengali)" };
+        return { code: "bn", short: "বাংলা", label: "বাংলা", badge: "বাংলা (Bengali)" };
       }
       if (hindiKeywords.test(lower)) {
-        return { code: "hi", short: "हिन्दी", label: "हिन्दी / Transliterated", badge: "हिन्दी (Hindi)" };
+        return { code: "hi", short: "हिन्दी", label: "हिन्दी", badge: "हिन्दी (Hindi)" };
       }
 
       return { code: "en", short: "English", label: "English", badge: "English" };
     }
 
+    // Interactive Language Switcher (বাংলা, English, हिन्दी, Auto) - No country flags
+    function switchVoiceLanguage(langCode) {
+      currentVoiceLangMode = langCode;
+      localStorage.setItem("locallink_voice_lang", langCode);
+
+      if (langCode === "auto") {
+        // Base auto detection strictly on Bangla acoustic model for Bengal/Sonarpur
+        currentVoiceLang = "bn-IN";
+      } else {
+        currentVoiceLang = langCode;
+      }
+
+      // Update button styling
+      const buttons = {
+        "bn-IN": document.getElementById("btnVoiceLangBn"),
+        "en-IN": document.getElementById("btnVoiceLangEn"),
+        "hi-IN": document.getElementById("btnVoiceLangHi"),
+        "auto": document.getElementById("btnVoiceLangAuto")
+      };
+
+      for (const [key, btn] of Object.entries(buttons)) {
+        if (!btn) continue;
+        if (key === langCode) {
+          btn.className = "py-1.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1 bg-emerald-600 text-white font-black shadow-md border border-emerald-400";
+        } else {
+          btn.className = "py-1.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1 text-slate-400 hover:text-white hover:bg-slate-800 font-bold";
+        }
+      }
+
+      const badge = document.getElementById("voiceDetectedLangBadge");
+      const indicator = document.getElementById("voiceLiveLanguageIndicator");
+      const statusLabel = document.getElementById("voiceSearchStatusLabel");
+
+      if (langCode === "bn-IN") {
+        detectedSpokenLangMeta = { code: "bn", short: "বাংলা", label: "বাংলা", badge: "বাংলা (Bengali)" };
+        if (badge) badge.textContent = "বাংলা";
+        if (indicator) indicator.textContent = "মোড: বাংলা";
+        if (statusLabel) statusLabel.textContent = "শুনছি... বাংলায় স্পষ্ট বলুন (যেমন: মুসুর ডাল ১ কেজি, চাল ২ কেজি)";
+      } else if (langCode === "en-IN") {
+        detectedSpokenLangMeta = { code: "en", short: "English", label: "English", badge: "English" };
+        if (badge) badge.textContent = "English";
+        if (indicator) indicator.textContent = "Mode: English";
+        if (statusLabel) statusLabel.textContent = "Listening... Speak items (e.g. dal 1kg , rice 2kg)";
+      } else if (langCode === "hi-IN") {
+        detectedSpokenLangMeta = { code: "hi", short: "हिन्दी", label: "हिन्दी", badge: "हिन्दी (Hindi)" };
+        if (badge) badge.textContent = "हिन्दी";
+        if (indicator) indicator.textContent = "मोड: हिन्दी";
+        if (statusLabel) statusLabel.textContent = "सुन रहे हैं... बोलिए (जैसे: दाल 1 किलो, चावल 2 किलो)";
+      } else {
+        if (badge) badge.textContent = "অটো ডিটেক্ট";
+        if (indicator) indicator.textContent = "Smart Auto-Detect (বাংলা)";
+        if (statusLabel) statusLabel.textContent = "অটো ডিটেক্ট হচ্ছে... বলুন (Bangla, English or Hindi)";
+      }
+
+      // Re-start recognition with the selected acoustic model if currently active
+      if (isVoiceListening) {
+        stopVoiceListening();
+        setTimeout(() => {
+          startVoiceListening();
+        }, 120);
+      }
+    }
+
+    // Multilingual Commodity Translation & Normalization Dictionary
+    const COMMODITY_I18N = [
+      { keys: ["dal", "daal", "masoor", "musur", "মুসুর ডাল", "মসুর ডাল", "ডাল", "मसूर दाल", "दाल"], en: "Masoor Dal", bn: "মুসুর ডাল", hi: "मसूर दाल", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["moong", "mung", "মুগ ডাল", "মুগ", "मूंग दाल", "मूंग"], en: "Moong Dal", bn: "মুগ ডাল", hi: "मूंग दाल", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["rice", "chal", "chaal", "minikit", "চাল", "মিনিকেট চাল", "মিনিকেট", "चावल", "मिनीकिट चावल"], en: "Daily Minikit Rice", bn: "মিনিকেট চাল", hi: "मिनीकिट चावल", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["basmati", "বাসমতী চাল", "বাসমতি", "बासमती चावल", "बासमती"], en: "Basmati Rice", bn: "বাসমতী চাল", hi: "बासमती चावल", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["potato", "potatoes", "alu", "aloo", "আলু", "দেশি আলু", "आलू"], en: "Country Potatoes", bn: "দেশি আলু", hi: "देसी आलू", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["onion", "onions", "peyaj", "pyaz", "পেঁয়াজ", "प्याज"], en: "Fresh Onions", bn: "পেঁয়াজ", hi: "ताजा प्याज", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["tomato", "tomatoes", "টমেটো", "টমেটোস", "टमाटर"], en: "Farm Tomatoes", bn: "ফার্ম টমেটো", hi: "फार्म टमाटर", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["oil", "mustard oil", "tel", "sarson", "সর্ষের তেল", "সরষের তেল", "তেল", "সরষে তেল", "সরিষার তেল", "सरसों का तेल", "तेल"], en: "Pure Mustard Oil", bn: "ঘানি সর্ষের তেল", hi: "सरसों का तेल", unitEn: "L", unitBn: "লিটার", unitHi: "लीटर" },
+      { keys: ["fish", "mach", "maach", "rui", "katla", "মাছ", "রুই মাছ", "কাতলা মাছ", "রুই", "কাতলা", "मछली", "रोहू"], en: "Fresh Rui Fish", bn: "টাটকা রুই মাছ", hi: "ताजा रोहू मछली", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["egg", "eggs", "dim", "ডিম", "অন্ডা", "अंडा", "अंडे"], en: "Farm Fresh Eggs", bn: "ফার্মের তাজা ডিম", hi: "ताजा अंडे", unitEn: "pcs", unitBn: "পিস", unitHi: "पीस" },
+      { keys: ["milk", "dudh", "দুধ", "दूध"], en: "Fresh Dairy Milk", bn: "তাজা গরুর দুধ", hi: "ताजा गाय का दूध", unitEn: "L", unitBn: "লিটার", unitHi: "लीटर" },
+      { keys: ["paneer", "ponir", "পনির", "पनीर"], en: "Fresh Malai Paneer", bn: "তাজা পনির", hi: "ताजा मलाई पनीर", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["chicken", "murgi", "দেশি মুরগি", "মুরগির মাংস", "মাংস", "মুরগি", "चिकन", "मुर्गा"], en: "Country Fresh Chicken", bn: "দেশি মুরগির মাংস", hi: "देसी चिकन", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["mutton", "khasi", "খাসির মাংস", "মটন", "मटन"], en: "Fresh Bengal Mutton", bn: "তাজা খাসির মাংস", hi: "ताजा मटन", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["ginger", "ada", "আদা", "अदरक"], en: "Fresh Ginger", bn: "তাজা আদা", hi: "ताजा अदरक", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["garlic", "roshun", "রসুন", "लहसुन"], en: "Fresh Garlic", bn: "তাজা রসুন", hi: "ताजा लहसुन", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["chilli", "morich", "lanka", "কাঁচালঙ্কা", "কাঁচা লঙ্কা", "কাঁচামরিচ", "हरी मिर्च", "मिर्च"], en: "Green Chillies", bn: "কাঁচালঙ্কা", hi: "हरी मिर्च", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["sugar", "chini", "চিনি", "चीनी"], en: "Refined White Sugar", bn: "সাদা চিনি", hi: "सफेद चीनी", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["salt", "noon", "laban", "লবণ", "নুন", "নমক", "नमक"], en: "Iodized Salt", bn: "আয়োডিনযুক্ত লবণ", hi: "आयोडीन युक्त नमक", unitEn: "kg", unitBn: "কেজি", unitHi: "किलो" },
+      { keys: ["tea", "cha", "চা", "চায়", "चाय"], en: "Premium Assam Tea", bn: "আসাম চা পাতা", hi: "असम चाय पत्ती", unitEn: "pack", unitBn: "প্যাকেট", unitHi: "पैकेट" },
+      { keys: ["sandesh", "mishti", "মিষ্টি", "সন্দেশ", "নলেন গুড়", "मिठाई", "संदेश"], en: "Nolen Gur Sandesh", bn: "নলেন গুড়ের সন্দেশ", hi: "नोलेन गुड़ संदेश", unitEn: "pack", unitBn: "প্যাকেট", unitHi: "पैकेट" },
+      { keys: ["soap", "সাঁবান", "সাবান", "साबुन"], en: "Bathing Soap", bn: "গোসলের সাবান", hi: "नहाने का साबुन", unitEn: "pcs", unitBn: "পিস", unitHi: "पीस" }
+    ];
+
+    function formatItemQuantity(qty, rawUnit, lang) {
+      const num = Number(qty) || 1;
+      const u = (rawUnit || "").toLowerCase().trim();
+      let targetUnit = "kg";
+      if (["কেজি", "kg", "kilo", "किलो"].includes(u)) {
+        targetUnit = lang === "bn" ? "কেজি" : (lang === "hi" ? "किलो" : "kg");
+      } else if (["গ্রাম", "g", "gm", "gram", "ग्राम"].includes(u)) {
+        targetUnit = lang === "bn" ? "গ্রাম" : (lang === "hi" ? "ग्राम" : "g");
+      } else if (["লিটার", "l", "ltr", "liter", "litre", "लीटर"].includes(u)) {
+        targetUnit = lang === "bn" ? "লিটার" : (lang === "hi" ? "लीटर" : "L");
+      } else if (["পিস", "pc", "pcs", "piece", "pieces", "পিচ", "पीस"].includes(u)) {
+        targetUnit = lang === "bn" ? "পিস" : (lang === "hi" ? "पीस" : "pcs");
+      } else if (["ডজন", "dozen", "दर्जन"].includes(u)) {
+        targetUnit = lang === "bn" ? "ডজন" : (lang === "hi" ? "दर्जन" : "dozen");
+      } else if (["প্যাকেট", "pack", "packet", "पैकेट"].includes(u)) {
+        targetUnit = lang === "bn" ? "প্যাকেট" : (lang === "hi" ? "पैकेट" : "pack");
+      } else if (["আঁটি", "bundle"].includes(u)) {
+        targetUnit = lang === "bn" ? "আঁটি" : (lang === "hi" ? "बंडल" : "bundle");
+      } else {
+        targetUnit = u || (lang === "bn" ? "কেজি" : (lang === "hi" ? "किलो" : "kg"));
+      }
+
+      let formattedNum = num.toString();
+      if (lang === "bn") {
+        const bnNumMap = { "0":"০", "1":"১", "2":"২", "3":"৩", "4":"৪", "5":"৫", "6":"৬", "7":"৭", "8":"৮", "9":"৯", ".":"." };
+        formattedNum = formattedNum.replace(/[0-9]/g, d => bnNumMap[d] || d);
+      } else if (lang === "en") {
+        const bnToEnMap = { "০":"0", "১":"1", "২":"2", "৩":"3", "৪":"4", "৫":"5", "৬":"6", "৭":"7", "৮":"8", "৯":"9" };
+        formattedNum = formattedNum.replace(/[০-৯]/g, d => bnToEnMap[d] || d);
+      }
+
+      return { unit: targetUnit, displayQty: `${formattedNum} ${targetUnit}` };
+    }
+
+    function localizeGroceryItem(item, lang = "en") {
+      const targetLang = lang || currentAppLanguage || "en";
+      const searchStr = `${item.canonicalKey || ""} ${item.name || ""} ${item.queryTerm || ""} ${item.rawText || ""}`.toLowerCase();
+
+      let matchedEntry = COMMODITY_I18N.find(entry =>
+        entry.keys.some(k => searchStr.includes(k.toLowerCase()))
+      );
+
+      let title = item.name;
+      let defaultUnit = item.unit || "kg";
+
+      if (matchedEntry) {
+        title = matchedEntry[targetLang] || matchedEntry.en;
+        if (targetLang === "bn") defaultUnit = matchedEntry.unitBn;
+        else if (targetLang === "hi") defaultUnit = matchedEntry.unitHi;
+        else defaultUnit = matchedEntry.unitEn;
+      } else {
+        if (targetLang === "en" && /[\u0980-\u09FF\u0900-\u097F]/.test(title)) {
+          title = item.queryTerm || "Grocery Item";
+        }
+      }
+
+      const qtyInfo = formatItemQuantity(item.qty || 1, defaultUnit, targetLang);
+
+      let shop = "Sonarpur Daily Stall";
+      if (targetLang === "bn") shop = "সোনারপুর দৈনিক স্টল";
+      else if (targetLang === "hi") shop = "सोनारपुर दैनिक स्टॉल";
+
+      return {
+        name: title,
+        unit: qtyInfo.unit,
+        displayQty: qtyInfo.displayQty,
+        shopName: shop
+      };
+    }
+
+    // Robust Phonetic Normalization for Distorted Transliterations
+    function normalizePhoneticCorruptions(text) {
+      if (!text || typeof text !== "string") return "";
+      let s = text;
+      const isBn = currentVoiceLangMode === "bn-IN" || /[\u0980-\u09FF]/.test(text) || currentAppLanguage === "bn";
+      if (isBn) {
+        s = s.replace(/\b(?:becky\s*ji\s*doll|becky\s*ji\s*dal|ek\s*kilu\s*daal|ek\s*kilo\s*daal)\b/gi, "১ কেজি মুসুর ডাল");
+        s = s.replace(/\b(?:dakilo\s*chaal|dakilo\s*chal|do\s*kilo\s*chaal|du\s*kilo\s*chal|du\s*kilo\s*chaal)\b/gi, "২ কেজি চাল");
+        s = s.replace(/\b(?:1\s*km\s*much|ek\s*kilo\s*mach|ek\s*kilo\s*maach)\b/gi, "১ কেজি মাছ");
+        s = s.replace(/\b(?:ek\s*kilo\s*alu|ek\s*kilo\s*aloo)\b/gi, "১ কেজি আলু");
+        s = s.replace(/\b(?:ek\s*kilo\s*peyaj)\b/gi, "১ কেজি পেঁয়াজ");
+        s = s.replace(/\b(?:ek\s*litre\s*tel)\b/gi, "১ লিটার সর্ষের তেল");
+        s = s.replace(/\b(?:ek\s*dozen\s*dim)\b/gi, "১ ডজন ডিম");
+        s = s.replace(/\b(?:half\s*kilo\s*chicken|adha\s*kilo\s*murgi)\b/gi, "৫০০ গ্রাম মুরগির মাংস");
+      } else {
+        s = s.replace(/\b(?:becky\s*ji\s*doll|becky\s*ji\s*dal)\b/gi, "1 kg dal");
+        s = s.replace(/\b(?:dakilo\s*chaal|dakilo\s*chal)\b/gi, "2 kg rice");
+        s = s.replace(/\b(?:1\s*km\s*much)\b/gi, "1 kg fish");
+      }
+      return s;
+    }
+
+    // Check if query contains quantity cues (e.g. 1kg, 2kg, ১ কেজি, ৫০০ গ্রাম, 1 किलो, आधा किलो)
+    function hasExplicitQuantity(text) {
+      if (!text) return false;
+      const normalized = normalizePhoneticCorruptions(text);
+      if (/(\d+|[০-৯]+|[०-९]+)\s*(kg|kilo|কেজি|किलो|গ্রাম|ग्राम|g|gm|gram|লিটার|लीटर|l|ltr|liter|litre|পিস|पीस|pc|pcs|piece|pieces|ডজন|दर्जन|dozen|packet|প্যাকেট|पैकेट|আঁটি|bundle)/i.test(normalized)) {
+        return true;
+      }
+      const spokenNums = "half|এক|দুটো|দুই|তিন|চার|পাঁচ|দেড়|দেড়|আড়াই|আড়াই|আধ|আধা|one|two|three|four|five|एक|दो|तीन|चार|पांच|आधा|ek|do|tin|char|pach|adha|dedh|adhai";
+      const units = "kg|kilo|কেজি|किलो|গ্রাম|ग्राम|g|gm|gram|লিটার|लीटर|l|ltr|liter|litre|পিস|पीस|pc|pcs|piece|pieces|ডজন|दर्जन|dozen|packet|প্যাকেট|पैकेट|আঁটি|bundle";
+      const rxSpoken = new RegExp("(?:^|[\\s,;।+])(" + spokenNums + ")[\\s]+(" + units + ")(?:[\\s,;।+]|$)", "i");
+      if (rxSpoken.test(normalized)) return true;
+      return /(\d+|[০-৯]+|[०-९]+)\s*(kg|kilo|কেজি|किलो|গ্রাম|g|gm|l|লিটার|लीटर)/i.test(normalized);
+    }
+
+    // Parse Voice Grocery List (Dal 1kg, Rice 2kg / মুসুর ডাল ১ কেজি / 1 किलो दाल)
+    function parseVoiceGroceryList(text, lang = "auto") {
+      if (!text || typeof text !== "string") return [];
+
+      let normalized = normalizePhoneticCorruptions(text);
+
+      // Normalize Bengali numerals to digits: ০-৯ -> 0-9
+      const bnDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+      bnDigits.forEach((d, i) => {
+        normalized = normalized.replaceAll(d, i.toString());
+      });
+
+      // Normalize Hindi/Devanagari numerals to digits: ०-९ -> 0-9
+      const hiDigits = ["०", "१", "२", "३", "४", "५", "६", "७", "८", "९"];
+      hiDigits.forEach((d, i) => {
+        normalized = normalized.replaceAll(d, i.toString());
+      });
+
+      // Normalize spoken number words across languages
+      const wordToNum = [
+        { words: [/\b(এক|akta|ek|one|एक)\b/gi], val: 1 },
+        { words: [/\b(দেড়|দেড়|dedh|one and a half|डेढ़)\b/gi], val: 1.5 },
+        { words: [/\b(দুই|দুটো|du|duto|two|do|दो)\b/gi], val: 2 },
+        { words: [/\b(আড়াই|আড়াই|adhai|two and a half|ढाई)\b/gi], val: 2.5 },
+        { words: [/\b(তিন|tin|tinto|three|teen|तीन)\b/gi], val: 3 },
+        { words: [/\b(চার|char|charto|four|चार)\b/gi], val: 4 },
+        { words: [/\b(পাঁচ|pach|pachta|five|पांच)\b/gi], val: 5 },
+        { words: [/\b(আধ|আধা|adho|adha|half|आधा)\b/gi], val: 0.5 },
+        { words: [/\b(এক পোয়া|এক পোয়া|poya|ek poya|पाव)\b/gi], val: 0.25 },
+        { words: [/\b(দশ|das|ten|दस)\b/gi], val: 10 }
+      ];
+
+      // Split into clauses by commas, semicolons, danda, or spoken conjunctions
+      let segments = normalized.split(/[\n,;।+]+|\s+(?:and|আর|ও|এবং|aur|phir|also)\s+/i).map(s => s.trim()).filter(Boolean);
+
+      // If only 1 segment but multiple quantities exist (e.g. "dal 1kg rice 2kg" or "ডাল ১ কেজি চাল ২ কেজি")
+      if (segments.length === 1) {
+        const multiPattern = /(?:[a-zA-Z\u0980-\u09FF\u0900-\u097F\s]+(?:\d+(?:\.\d+)?|\b(?:half|এক|দুই|তিন|চার|পাঁচ)\b)\s*(?:kg|কেজি|গ্রাম|g|gm|লিটার|l|ltr|litre|পিস|pc|pcs|packet|প্যাকেট|ডজন|dozen)?)/gi;
+        const matches = segments[0].match(multiPattern);
+        if (matches && matches.length > 1) {
+          segments = matches.map(m => m.trim()).filter(Boolean);
+        }
+      }
+
+      const items = [];
+
+      for (const seg of segments) {
+        let cleanSeg = seg;
+        let qty = 1;
+        let unit = "";
+
+        // Look for number + unit: "1kg", "2kg", "500g", "১ কেজি", "১.৫ লিটার", "1 किलो", "1 लीटर"
+        const qtyRegex = /(\d+(?:\.\d+)?)\s*(kg|kilo|কেজি|किलो|g|gm|gram|গ্রাম|ग्राम|l|ltr|liter|litre|লিটার|लीटर|পিস|पीस|pc|pcs|piece|pieces|ডজন|दर्जन|dozen|packet|প্যাকেট|पैकेट|আঁটি|bundle)?/i;
+        const match = cleanSeg.match(qtyRegex);
+
+        if (match) {
+          qty = parseFloat(match[1]) || 1;
+          unit = (match[2] || "").trim();
+          cleanSeg = cleanSeg.replace(match[0], "").trim();
+        } else {
+          // Word numbers
+          for (const wEntry of wordToNum) {
+            for (const rx of wEntry.words) {
+              if (rx.test(cleanSeg)) {
+                qty = wEntry.val;
+                cleanSeg = cleanSeg.replace(rx, "").trim();
+                break;
+              }
+            }
+          }
+          const unitMatch = cleanSeg.match(/\b(kg|kilo|কেজি|किलো|g|gm|gram|গ্রাম|ग्राम|l|ltr|liter|litre|লিটার|लीटर|পিস|पीस|pc|pcs|piece|pieces|ডজন|दर्जन|dozen|packet|প্যাকেট|पैकेट|আঁটি|bundle)\b/i);
+          if (unitMatch) {
+            unit = unitMatch[1];
+            cleanSeg = cleanSeg.replace(unitMatch[0], "").trim();
+          }
+        }
+
+        // Clean punctuation & polite filler words
+        cleanSeg = cleanSeg.replace(/^[-–—•\*\s]+|[-–—•\*\s]+$/g, "")
+                           .replace(/\b(চাই|দিন|দাও|nebo|lagbe|chahiye|please|give|take|kino)\b/gi, "")
+                           .trim();
+
+        if (cleanSeg.length > 0) {
+          if (!unit) {
+            if (/ডিম|লেবু|লাউ|কলা|sandesh|soap|egg/i.test(cleanSeg)) unit = "pc";
+            else if (/তেল|দুধ|জল|oil|milk/i.test(cleanSeg)) unit = "L";
+            else unit = "kg";
+          }
+
+          let localizedUnit = unit;
+          let localizedQty = qty.toString();
+          let localizedName = cleanSeg;
+
+          if (lang === "bn" || /[\u0980-\u09FF]/.test(text) || currentVoiceLangMode === "bn-IN") {
+            // Bengali Localization
+            const bnUnits = {
+              "kg": "কেজি", "kilo": "কেজি", "g": "গ্রাম", "gm": "গ্রাম", "gram": "গ্রাম",
+              "l": "লিটার", "ltr": "লিটার", "litre": "লিটার", "liter": "লিটার",
+              "pc": "পিস", "pcs": "পিস", "piece": "পিস", "dozen": "ডজন", "packet": "প্যাকেট", "bundle": "আঁটি"
+            };
+            localizedUnit = bnUnits[unit.toLowerCase()] || unit;
+            const bnNumMap = { "0":"০", "1":"১", "2":"২", "3":"৩", "4":"৪", "5":"৫", "6":"৬", "7":"৭", "8":"৮", "9":"৯" };
+            localizedQty = localizedQty.replace(/[0-9]/g, d => bnNumMap[d] || d);
+
+            const bnDict = {
+              "dal": "মুসুর ডাল", "daal": "মুসুর ডাল", "masoor dal": "মুসুর ডাল", "masoor": "মুসুর ডাল", "musur": "মুসুর ডাল", "moong": "মুগ ডাল", "moong dal": "মুগ ডাল",
+              "rice": "চাল", "chaal": "চাল", "chal": "চাল", "minikit rice": "মিনিকেট চাল", "minikit": "মিনিকেট চাল", "basmati": "বাসমতী চাল",
+              "potato": "আলু", "potatoes": "আলু", "alu": "আলু", "aloo": "আলু",
+              "oil": "সর্ষের তেল", "mustard oil": "সর্ষের তেল", "tel": "সর্ষের তেল",
+              "fish": "মাছ", "mach": "মাছ", "maach": "মাছ", "katla": "কাতলা মাছ", "rui": "রুই মাছ", "ilish": "ইলিশ মাছ",
+              "egg": "ডিম", "eggs": "ডিম", "dim": "ডিম", "milk": "দুধ", "dudh": "দুধ",
+              "paneer": "পনির", "ponir": "পনির", "onion": "পেঁয়াজ", "peyaj": "পেঁয়াজ", "pyaz": "পেঁয়াজ", "tomato": "টমেটো",
+              "chicken": "দেশি মুরগির মাংস", "murgi": "দেশি মুরগির মাংস", "mutton": "খাসির মাংস", "khasi": "খাসির মাংস",
+              "ginger": "আদা", "ada": "আদা", "garlic": "রসুন", "roshun": "রসুন", "chilli": "কাঁচালঙ্কা", "morich": "কাঁচালঙ্কা",
+              "sugar": "চিনি", "chini": "চিনি", "salt": "লবণ", "noon": "লবণ", "tea": "চা"
+            };
+            if (bnDict[cleanSeg.toLowerCase()]) {
+              localizedName = bnDict[cleanSeg.toLowerCase()];
+            }
+          } else if (lang === "hi" || /[\u0900-\u097F]/.test(text)) {
+            // Hindi Localization
+            const hiUnits = {
+              "kg": "किलो", "kilo": "किलो", "g": "ग्राम", "gm": "ग्राम",
+              "l": "लीटर", "ltr": "लीटर", "pc": "पीस", "pcs": "पीस", "dozen": "दर्जन", "packet": "पैकेट"
+            };
+            localizedUnit = hiUnits[unit.toLowerCase()] || unit;
+          } else {
+            // English Localization
+            const enUnits = {
+              "কেজি": "kg", "গ্রাম": "g", "লিটার": "L", "পিস": "pcs", "ডজন": "dozen", "প্যাকেট": "pack"
+            };
+            localizedUnit = enUnits[unit] || unit;
+            // Capitalize word
+            localizedName = cleanSeg.charAt(0).toUpperCase() + cleanSeg.slice(1);
+          }
+
+          let canonicalKey = "";
+          const lower = cleanSeg.toLowerCase();
+          for (const entry of COMMODITY_I18N) {
+            if (entry.keys.some(k => lower.includes(k.toLowerCase()) || (localizedName && entry.keys.includes(localizedName.toLowerCase())))) {
+              canonicalKey = entry.keys[0];
+              break;
+            }
+          }
+
+          items.push({
+            id: 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+            rawText: seg,
+            canonicalKey: canonicalKey || cleanSeg.toLowerCase(),
+            name: localizedName,
+            queryTerm: cleanSeg,
+            qty: qty,
+            unit: localizedUnit,
+            displayQty: `${localizedQty} ${localizedUnit}`,
+            selected: true
+          });
+        }
+      }
+
+      return items;
+    }
+
+    // Match parsed grocery item to products in LocalLink catalog
+    function matchVoiceItemToProduct(item) {
+      if (!currentProducts || currentProducts.length === 0) {
+        return {
+          productId: 0,
+          name: item.name,
+          shopName: "Sonarpur Local Mart",
+          unitPrice: 95,
+          unit: item.unit
+        };
+      }
+
+      const term = (item.queryTerm || item.name || "").toLowerCase();
+
+      // Specific match rules for LocalLink products
+      let matched = null;
+      if (/dal|ডাল|masoor/i.test(term)) {
+        matched = currentProducts.find(p => /dal|masoor|lentil/i.test(p.name)) || currentProducts.find(p => p.id === 43);
+      } else if (/rice|চাল|chal|minikit|basmati/i.test(term)) {
+        matched = currentProducts.find(p => /minikit|rice|chal|gobindabhog/i.test(p.name)) || currentProducts.find(p => p.id === 35);
+      } else if (/potato|আলু|alu/i.test(term)) {
+        matched = currentProducts.find(p => /potato|alu/i.test(p.name)) || currentProducts.find(p => p.id === 34 || p.id === 2);
+      } else if (/oil|তেল|mustard|sarson/i.test(term)) {
+        matched = currentProducts.find(p => /mustard|oil|tel/i.test(p.name)) || currentProducts.find(p => p.id === 7 || p.id === 36);
+      } else if (/fish|মাছ|mach|katla|rui/i.test(term)) {
+        matched = currentProducts.find(p => /katla|rui|fish/i.test(p.name)) || currentProducts.find(p => p.id === 33 || p.id === 37);
+      } else if (/egg|ডিম|dim/i.test(term)) {
+        matched = currentProducts.find(p => /egg|dim/i.test(p.name));
+      } else if (/milk|দুধ|dudh/i.test(term)) {
+        matched = currentProducts.find(p => /milk|dudh/i.test(p.name)) || currentProducts.find(p => p.id === 4);
+      } else if (/paneer|পনির/i.test(term)) {
+        matched = currentProducts.find(p => /paneer/i.test(p.name)) || currentProducts.find(p => p.id === 10);
+      } else if (/tea|চা/i.test(term)) {
+        matched = currentProducts.find(p => /tea/i.test(p.name)) || currentProducts.find(p => p.id === 6);
+      } else if (/sandesh|মিষ্টি/i.test(term)) {
+        matched = currentProducts.find(p => /sandesh|gur/i.test(p.name)) || currentProducts.find(p => p.id === 27);
+      }
+
+      if (!matched) {
+        matched = currentProducts.find(p => p.name.toLowerCase().includes(term) || (p.description && p.description.toLowerCase().includes(term)));
+      }
+
+      if (!matched && currentProducts.length > 0) {
+        matched = currentProducts[0];
+      }
+
+      return {
+        productId: matched ? Number(matched.id) : 1,
+        name: matched ? matched.name : item.name,
+        shopName: matched ? (matched.shopName || matched.shop_name || "Sonarpur Daily Stall") : "Sonarpur Local Mart",
+        unitPrice: matched ? Number(matched.price) : 95,
+        imageUrl: matched ? matched.image : "https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&q=80"
+      };
+    }
+
+    // Grocery List Local Storage Persistence & Badges
+    function saveVoiceGroceryList() {
+      try {
+        localStorage.setItem("locallink_voice_grocery_list", JSON.stringify(activeVoiceGroceryList || []));
+      } catch (e) {}
+      updateGroceryListBadges();
+    }
+
+    function loadVoiceGroceryList() {
+      try {
+        const saved = localStorage.getItem("locallink_voice_grocery_list");
+        if (saved) {
+          activeVoiceGroceryList = JSON.parse(saved);
+        }
+      } catch (e) {
+        activeVoiceGroceryList = [];
+      }
+      updateGroceryListBadges();
+    }
+
+    function updateGroceryListBadges() {
+      const count = (activeVoiceGroceryList || []).length;
+      const badges = [
+        document.getElementById("groceryListCountBadge"),
+        document.getElementById("voiceModalSavedListBadge"),
+        document.getElementById("threeDotGroceryListBadge"),
+        document.getElementById("voiceListItemsCount")
+      ];
+      badges.forEach(b => {
+        if (b) {
+          b.textContent = count;
+        }
+      });
+    }
+
+    let currentVoiceListFulfillment = "pickup";
+
+    function onVoiceListFulfillmentChange(mode) {
+      currentVoiceListFulfillment = mode;
+      const badge = document.getElementById("voiceListFulfillmentBadge");
+      const note = document.getElementById("voiceListDeliveryChargeNote");
+      if (mode === "pickup") {
+        if (badge) {
+          badge.textContent = currentAppLanguage === "bn" ? "পিকআপ (₹০ চার্জ)" : (currentAppLanguage === "hi" ? "पिकअप (₹0 शुल्क)" : "Self-Pickup (₹0 Fee)");
+          badge.className = "text-[10px] font-black px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30";
+        }
+      } else {
+        if (badge) {
+          badge.textContent = currentAppLanguage === "bn" ? "হোম ডেলিভারি (+₹৩০ চার্জ)" : (currentAppLanguage === "hi" ? "होम डिलीवरी (+₹30 शुल्क)" : "Home Delivery (+₹30 Fee)");
+          badge.className = "text-[10px] font-black px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse";
+        }
+      }
+      renderVoiceGroceryListRows();
+    }
+
+    // Open Smart Voice Grocery List Modal (Clean headers, No country flags)
+    function openVoiceShoppingListModal(items, langInfo, spokenPhrase) {
+      if (items && Array.isArray(items) && items.length > 0) {
+        if (!activeVoiceGroceryList) activeVoiceGroceryList = [];
+        // Append or increment newly spoken items so previous items are preserved
+        for (const newItem of items) {
+          const existing = activeVoiceGroceryList.find(x => 
+            (x.canonicalKey && newItem.canonicalKey && x.canonicalKey === newItem.canonicalKey) ||
+            (x.name && newItem.name && x.name.toLowerCase() === newItem.name.toLowerCase())
+          );
+          if (existing) {
+            existing.qty = Number(existing.qty) + Number(newItem.qty);
+            const formatted = formatItemQuantity(existing.qty, existing.unit, (langInfo && langInfo.code) || currentAppLanguage || "en");
+            existing.displayQty = formatted.displayQty;
+          } else {
+            activeVoiceGroceryList.push(newItem);
+          }
+        }
+      } else {
+        // Direct open from persistent list button or empty call
+        if (!activeVoiceGroceryList || activeVoiceGroceryList.length === 0) {
+          try {
+            const saved = localStorage.getItem("locallink_voice_grocery_list");
+            if (saved) activeVoiceGroceryList = JSON.parse(saved);
+          } catch (e) {
+            activeVoiceGroceryList = [];
+          }
+        }
+      }
+
+      saveVoiceGroceryList();
+
+      const modal = document.getElementById("voiceShoppingListModal");
+      if (!modal) return;
+
+      const titleEl = document.getElementById("voiceListModalTitle");
+      const badgeEl = document.getElementById("voiceListLangBadge");
+      const subtitleEl = document.getElementById("voiceListSubtitle");
+      const phraseEl = document.getElementById("voiceListSpokenPhrase");
+      const phraseContainer = document.getElementById("voiceListSpokenPhraseContainer");
+      const addBtnText = document.getElementById("btnVoiceListAddToCartText");
+
+      // Strictly adhere to app language unless explicit spoken lang info is provided
+      const langCode = (langInfo && langInfo.code) ? langInfo.code : (currentAppLanguage || "en");
+
+      // Localize Modal Content based on active language without country flags
+      if (langCode === "bn") {
+        if (titleEl) titleEl.textContent = "বাজারের ফর্দ (Grocery List)";
+        if (badgeEl) {
+          badgeEl.textContent = "বাংলা";
+          badgeEl.className = "px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+        }
+        if (subtitleEl) subtitleEl.textContent = "আপনার সক্রিয় ও সংরক্ষিত বাজার ফর্দ";
+        if (addBtnText) addBtnText.textContent = "সব পণ্য কার্টে যোগ করুন (Add All to Cart)";
+      } else if (langCode === "hi") {
+        if (titleEl) titleEl.textContent = "किराना लिस्ट (Grocery List)";
+        if (badgeEl) {
+          badgeEl.textContent = "हिन्दी";
+          badgeEl.className = "px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30";
+        }
+        if (subtitleEl) subtitleEl.textContent = "आपकी सक्रिय किराना लिस्ट";
+        if (addBtnText) addBtnText.textContent = "सभी सामान कार्ट में जोड़ें (Add All to Cart)";
+      } else {
+        if (titleEl) titleEl.textContent = "Smart Grocery List";
+        if (badgeEl) {
+          badgeEl.textContent = "English";
+          badgeEl.className = "px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30";
+        }
+        if (subtitleEl) subtitleEl.textContent = "Your active and saved grocery shopping list";
+        if (addBtnText) addBtnText.textContent = "Add All Items to Cart";
+      }
+
+      if (phraseEl) {
+        if (spokenPhrase) {
+          phraseEl.textContent = `"${spokenPhrase}"`;
+          if (phraseContainer) phraseContainer.classList.remove("hidden");
+        } else {
+          phraseEl.textContent = langCode === "en" ? "Saved grocery list" : (langCode === "hi" ? "सहेजी गई किराना सूची" : "সংরক্ষিত বাজার ফর্দ");
+          if (phraseContainer) phraseContainer.classList.remove("hidden");
+        }
+      }
+
+      renderVoiceGroceryListRows();
+      modal.classList.remove("hidden");
+    }
+
+    function closeVoiceShoppingListModal() {
+      const modal = document.getElementById("voiceShoppingListModal");
+      if (modal) modal.classList.add("hidden");
+    }
+
+    // Render Voice List rows with checkboxes, quantity adjuster, and Remove Product button
+    function renderVoiceGroceryListRows() {
+      const container = document.getElementById("voiceListItemsContainer");
+      const countEl = document.getElementById("voiceListItemsCount");
+      const totalEl = document.getElementById("voiceListGrandTotal");
+      const noteEl = document.getElementById("voiceListDeliveryChargeNote");
+      const addBtn = document.getElementById("btnVoiceListAddToCart");
+      const orderBtn = document.getElementById("btnSendListToShop");
+      if (!container) return;
+
+      const dict = LOCAL_LINK_TRANSLATIONS[currentAppLanguage] || LOCAL_LINK_TRANSLATIONS.en;
+
+      if (countEl) countEl.textContent = activeVoiceGroceryList.length;
+
+      // Empty State when all products are removed
+      if (!activeVoiceGroceryList || activeVoiceGroceryList.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center bg-slate-950/40 border border-dashed border-slate-800 rounded-3xl space-y-3 my-2">
+            <div class="w-12 h-12 rounded-2xl bg-slate-800/80 text-slate-400 flex items-center justify-center mx-auto text-lg">
+              <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+            <div>
+              <p class="text-xs text-white font-bold">${dict.voice_list_empty_title || "Your Grocery List is Empty"}</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">${dict.voice_list_empty_sub || "All items were removed or not added yet"}</p>
+            </div>
+            <button type="button" onclick="resumeVoiceListeningForList()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all shadow-lg flex items-center gap-1.5 mx-auto">
+              <i class="fa-solid fa-microphone"></i> ${dict.voice_list_speak_btn || "Speak More Items"}
+            </button>
+          </div>
+        `;
+        if (totalEl) totalEl.textContent = "₹ 0";
+        if (noteEl) noteEl.textContent = currentVoiceListFulfillment === "pickup" 
+          ? (currentAppLanguage === "bn" ? "স্টল পিকআপ: ₹০ ডেলিভারি চার্জ" : (currentAppLanguage === "hi" ? "स्टॉल पिकअप: ₹0 डिलीवरी शुल्क" : "Self-Pickup: ₹0 Delivery Charge"))
+          : (currentAppLanguage === "bn" ? "হোম ডেলিভারি" : "Home Delivery");
+        if (addBtn) addBtn.classList.add("opacity-50", "pointer-events-none");
+        if (orderBtn) orderBtn.classList.add("opacity-50", "pointer-events-none");
+        return;
+      }
+
+      if (addBtn) addBtn.classList.remove("opacity-50", "pointer-events-none");
+      if (orderBtn) orderBtn.classList.remove("opacity-50", "pointer-events-none");
+
+      let subtotal = 0;
+
+      container.innerHTML = activeVoiceGroceryList.map((it, idx) => {
+        const localized = localizeGroceryItem(it, currentAppLanguage);
+        const prod = matchVoiceItemToProduct(it);
+        it.matchedProduct = prod;
+
+        let itemSubtotal = prod.unitPrice * (it.qty || 1);
+        if (["গ্রাম", "g", "gm", "gram", "ग्राम"].includes((it.unit || "").toLowerCase())) {
+          itemSubtotal = Math.round(prod.unitPrice * ((it.qty || 1) / 1000));
+        }
+
+        it.itemSubtotal = itemSubtotal;
+        if (it.selected !== false) {
+          subtotal += itemSubtotal;
+        }
+
+        return `
+          <div class="p-3 rounded-2xl bg-slate-950 border ${it.selected !== false ? 'border-slate-800 hover:border-emerald-500/40' : 'border-slate-800/40 opacity-60'} flex items-center justify-between gap-3 text-xs transition-all">
+            <!-- Left: Checkbox & Product Details -->
+            <div class="flex items-center gap-2.5 min-w-0 flex-1">
+              <input type="checkbox" ${it.selected !== false ? 'checked' : ''} onchange="toggleVoiceItemCheck(${idx}, this.checked)" class="w-4 h-4 rounded text-emerald-500 bg-slate-900 border-slate-700 focus:ring-0 cursor-pointer">
+              <span class="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-400 font-bold flex items-center justify-center text-[10px] shrink-0 font-mono">
+                ${idx + 1}
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h5 class="text-white font-bold text-xs truncate">${localized.name}</h5>
+                  <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 font-mono font-bold text-[10px]">
+                    ${localized.displayQty}
+                  </span>
+                </div>
+                <p class="text-slate-400 text-[11px] truncate mt-0.5">
+                  <i class="fa-solid fa-store text-amber-400 text-[10px] mr-1"></i> ${localized.shopName} • <span class="text-slate-300 font-semibold">${localized.name}</span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Middle: Quantity Adjuster (- and +) -->
+            <div class="flex items-center gap-1 bg-slate-900 border border-slate-800 rounded-xl px-1.5 py-0.5 shrink-0">
+              <button type="button" onclick="adjustVoiceItemQty(${idx}, -1)" class="w-5 h-5 rounded hover:bg-slate-800 text-slate-400 hover:text-white font-bold text-xs flex items-center justify-center transition-all" title="${dict.voice_list_decrease_title || 'Decrease'}">-</button>
+              <span class="font-mono font-bold text-white text-[11px] px-1">${it.qty}</span>
+              <button type="button" onclick="adjustVoiceItemQty(${idx}, 1)" class="w-5 h-5 rounded hover:bg-slate-800 text-slate-400 hover:text-white font-bold text-xs flex items-center justify-center transition-all" title="${dict.voice_list_increase_title || 'Increase'}">+</button>
+            </div>
+
+            <!-- Right: Subtotal & Remove Product Button -->
+            <div class="flex items-center gap-2 shrink-0">
+              <div class="text-right">
+                <span class="text-emerald-400 font-bold font-mono text-xs sm:text-sm block">₹ ${itemSubtotal}</span>
+                <span class="text-[9px] text-slate-500">₹ ${prod.unitPrice}/${localized.unit}</span>
+              </div>
+              <button type="button" onclick="removeVoiceListItem(${idx})" class="w-7 h-7 rounded-xl bg-rose-500/10 hover:bg-rose-500/25 text-rose-400 hover:text-rose-300 border border-rose-500/20 flex items-center justify-center transition-all hover:scale-105 active:scale-95" title="${dict.voice_list_remove_title || 'Remove item'}">
+                <i class="fa-solid fa-trash-can text-xs"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const isPickup = currentVoiceListFulfillment === "pickup";
+      const deliveryCharge = isPickup ? 0 : 30;
+      const grandTotal = subtotal + deliveryCharge;
+      const breakdownEl = document.getElementById("voiceListBreakdownText");
+
+      if (noteEl) {
+        if (isPickup) {
+          noteEl.textContent = currentAppLanguage === "bn" ? "স্টল পিকআপ: ₹০ ডেলিভারি চার্জ" : (currentAppLanguage === "hi" ? "स्टॉल पिकअप: ₹0 डिलीवरी शुल्क" : "Self-Pickup: ₹0 Delivery Charge");
+        } else {
+          noteEl.textContent = currentAppLanguage === "bn" 
+            ? "হোম ডেলিভারি চার্জ: +₹৩০ যোগ করা হয়েছে" 
+            : (currentAppLanguage === "hi" ? "होम डिलीवरी शुल्क: +₹30 जोड़ा गया" : "Home Delivery: +₹30 Delivery Charge Added");
+        }
+      }
+
+      if (breakdownEl) {
+        breakdownEl.textContent = `₹${subtotal} + ₹${deliveryCharge} delivery = ₹${grandTotal}`;
+      }
+
+      if (totalEl) totalEl.textContent = `₹ ${grandTotal}`;
+    }
+
+    // Direct Order Grocery List from Modal with Favorite Shop & Selected Fulfillment Mode
+    async function sendGroceryListOrderToShop() {
+      const selectedItems = (activeVoiceGroceryList || []).filter(x => x.selected !== false);
+      if (selectedItems.length === 0) {
+        showToast(currentAppLanguage === "bn" ? "দয়া করে ফর্দ থেকে অন্তত একটি পণ্য নির্বাচন করুন" : (currentAppLanguage === "hi" ? "कृपया सूची से कम से कम एक सामान चुनें" : "Please select at least one item from the list"), "warning");
+        return;
+      }
+
+      const shopSelect = document.getElementById("voiceListFavoriteShopSelect");
+      const targetSellerId = Number(shopSelect ? shopSelect.value : 3) || 3;
+      const targetOption = shopSelect ? shopSelect.options[shopSelect.selectedIndex] : null;
+      const shopName = targetOption ? (targetOption.getAttribute("data-shop-name") || targetOption.text) : "Ratan Fresh & Grocery (Stall #14)";
+
+      const btn = document.getElementById("btnSendListToShop");
+      const btnText = document.getElementById("btnSendListToShopText");
+      const origText = btnText ? btnText.textContent : "";
+      if (btn) btn.disabled = true;
+      if (btnText) btnText.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> ${currentAppLanguage === "bn" ? "অর্ডার পাঠানো হচ্ছে..." : (currentAppLanguage === "hi" ? "आर्डर भेजा जा रहा है..." : "Sending Order to Shop...")}`;
+
+      try {
+        // Ensure customer is authenticated (auto-login demo user if guest)
+        let token = localStorage.getItem("locallinkCustomerToken");
+        if (!token) {
+          const authRes = await apiRequest("/api/customer/auth/login", {
+            method: "POST",
+            body: JSON.stringify({ email: "tanvir@locallink.com", password: "customer123", demo: true })
+          });
+          if (authRes && authRes.success && authRes.data.token) {
+            localStorage.setItem("locallinkCustomerToken", authRes.data.token);
+            localStorage.setItem("locallinkCustomerUser", JSON.stringify(authRes.data.user));
+            currentCustomerUser = authRes.data.user;
+            applyCustomerUserUI(currentCustomerUser);
+          }
+        }
+
+        // Prepare order items
+        const orderItems = [];
+        for (const it of selectedItems) {
+          const prod = matchVoiceItemToProduct(it);
+          let pid = prod.productId;
+          if (!pid || pid <= 0) {
+            pid = targetSellerId === 10 ? 37 : (targetSellerId === 37 ? 27 : (targetSellerId === 56 ? 43 : 44));
+          }
+          orderItems.push({
+            productId: pid,
+            quantity: Math.max(1, Number(it.qty) || 1),
+            unitPrice: prod.unitPrice || 60,
+            sellerId: targetSellerId
+          });
+        }
+
+        const fulfillmentType = currentVoiceListFulfillment || "pickup";
+        const deliveryCharge = fulfillmentType === "pickup" ? 0 : 30;
+        const orderPayload = {
+          items: orderItems,
+          fulfillmentType: fulfillmentType,
+          deliveryCharge: deliveryCharge,
+          deliveryAddress: fulfillmentType === "pickup" 
+            ? `Self-Pickup from ${shopName}` 
+            : (currentCustomerUser?.address || "House #42, Main Road, Rajpur Block C"),
+          customerPhone: currentCustomerUser?.phone || "9876543211",
+          customerNote: `[${fulfillmentType === 'pickup' ? 'SELF-PICKUP (₹0)' : 'HOME DELIVERY (+₹30)'}] Smart grocery list sent to ${shopName}.`,
+          paymentMethod: "cod",
+          paymentStatus: "pending"
+        };
+
+        const res = await apiRequest("/api/customer/orders", {
+          method: "POST",
+          body: JSON.stringify(orderPayload)
+        });
+
+        if (res && res.success) {
+          const orderNum = res.data?.orderNumber || ('LL-' + res.data?.orderId);
+          closeVoiceShoppingListModal();
+
+          // Remove placed items from list or clear
+          activeVoiceGroceryList = activeVoiceGroceryList.filter(x => x.selected === false);
+          saveVoiceGroceryList();
+
+          const successMsg = currentAppLanguage === "bn"
+            ? `🎉 অর্ডার #${orderNum} সফলভাবে ${shopName}-এ পাঠানো হয়েছে! (${fulfillmentType === 'pickup' ? '🛍️ দোকান থেকে সংগ্রহ (₹০ ডেলিভারি)' : '🚚 হোম ডেলিভারি (+₹৩০ ডেলিভারি চার্জ)'})`
+            : (currentAppLanguage === "hi"
+                ? `🎉 आर्डर #${orderNum} सफलतापूर्वक ${shopName} को भेज दिया गया है! (${fulfillmentType === 'pickup' ? '🛍️ दुकान से लेना (₹0 डिलीवरी)' : '🚚 होम डिलीवरी (+₹30 डिलीवरी शुल्क)'})`
+                : `🎉 Order #${orderNum} placed with ${shopName}! (${fulfillmentType === 'pickup' ? '🛍️ Self-Pickup (₹0 Fee)' : '🚚 Home Delivery (+₹30 Delivery Fee)'})`);
+          
+          showToast(successMsg, "success");
+
+          // Navigate to Orders page to track live status
+          switchCustomerPage("orders");
+          await loadCustomerOrders();
+        } else {
+          showToast(res.message || "Failed to place order with shop", "error");
+        }
+      } catch (err) {
+        showToast("Order failed: " + err.message, "error");
+      } finally {
+        if (btn) btn.disabled = false;
+        if (btnText) btnText.textContent = origText;
+      }
+    }
+
+    // Remove single product from list
+    function removeVoiceListItem(index) {
+      if (activeVoiceGroceryList && activeVoiceGroceryList[index]) {
+        const removed = activeVoiceGroceryList.splice(index, 1);
+        saveVoiceGroceryList();
+        renderVoiceGroceryListRows();
+        const localized = localizeGroceryItem(removed[0] || {}, currentAppLanguage);
+        const itemName = localized.name || "Item";
+        showToast(currentAppLanguage === "bn" 
+          ? `✓ "${itemName}" ফর্দ থেকে মুছে ফেলা হয়েছে` 
+          : (currentAppLanguage === "hi" ? `✓ "${itemName}" पर्ची से हटा दिया गया` : `✓ "${itemName}" removed from list`), "info");
+      }
+    }
+
+    // Adjust product quantity (+ / -)
+    function adjustVoiceItemQty(index, delta) {
+      if (activeVoiceGroceryList && activeVoiceGroceryList[index]) {
+        const item = activeVoiceGroceryList[index];
+        const newQty = Math.max(0.5, (item.qty || 1) + delta);
+        item.qty = newQty;
+        const formatted = formatItemQuantity(newQty, item.unit, currentAppLanguage);
+        item.displayQty = formatted.displayQty;
+        saveVoiceGroceryList();
+        renderVoiceGroceryListRows();
+      }
+    }
+
+    // Clear all items from grocery list
+    function clearAllVoiceListItems() {
+      if (!activeVoiceGroceryList || activeVoiceGroceryList.length === 0) return;
+      activeVoiceGroceryList = [];
+      saveVoiceGroceryList();
+      renderVoiceGroceryListRows();
+      showToast(detectedSpokenLangMeta.code === "bn" ? "✓ ফর্দ খালি করা হয়েছে" : "✓ List cleared", "info");
+    }
+
+    function toggleVoiceItemCheck(index, checked) {
+      if (activeVoiceGroceryList[index]) {
+        activeVoiceGroceryList[index].selected = checked;
+        renderVoiceGroceryListRows();
+      }
+    }
+
+    // Add all items from Voice List into the customer's shopping cart
+    function addAllVoiceListItemsToCart() {
+      const selectedItems = activeVoiceGroceryList.filter(it => it.selected !== false);
+      if (selectedItems.length === 0) {
+        showToast("অনুগ্রহ করে অন্তত একটি পণ্য নির্বাচন করুন (Select at least 1 item)", "error");
+        return;
+      }
+
+      let addedCount = 0;
+
+      for (const item of selectedItems) {
+        const prod = item.matchedProduct || matchVoiceItemToProduct(item);
+        const pid = Number(prod.productId);
+        const qty = Math.max(1, Math.round(Number(item.qty) || 1));
+
+        const existingIndex = cart.findIndex(i => Number(i.productId) === pid);
+        if (existingIndex > -1) {
+          cart[existingIndex].quantity += qty;
+        } else {
+          cart.push({
+            productId: pid,
+            name: prod.name,
+            shopName: prod.shopName,
+            unitPrice: prod.unitPrice,
+            agreedPrice: prod.unitPrice,
+            quantity: qty
+          });
+        }
+        addedCount++;
+      }
+
+      saveCartToStorage();
+      updateCartBadge();
+      updateFloatingCartBar();
+
+      closeVoiceShoppingListModal();
+
+      if (detectedSpokenLangMeta.code === "bn") {
+        showToast(`🛒 ${addedCount}টি পণ্য সফলভাবে আপনার কার্টে যোগ করা হয়েছে!`, "success");
+      } else {
+        showToast(`🛒 ${addedCount} items added to your cart successfully!`, "success");
+      }
+
+      // Open cart view for immediate review & checkout
+      switchCustomerPage("cart");
+      renderCart();
+    }
+
+    // Share generated list to WhatsApp
+    function shareVoiceListToWhatsApp() {
+      if (!activeVoiceGroceryList || activeVoiceGroceryList.length === 0) return;
+
+      const isBn = detectedSpokenLangMeta.code === "bn";
+      let msg = isBn 
+        ? `🛒 *লোকাললিঙ্ক স্মার্ট বাজার ফর্দ:*\n----------------------------------\n`
+        : `🛒 *LocalLink Smart Grocery List:*\n----------------------------------\n`;
+
+      let total = 0;
+      activeVoiceGroceryList.forEach((it, idx) => {
+        const sub = it.itemSubtotal || 0;
+        total += sub;
+        msg += `${idx + 1}. ${it.name} — ${it.displayQty} (আনুমানিক ₹${sub})\n`;
+      });
+
+      msg += `----------------------------------\n`;
+      msg += isBn ? `*মোট আনুমানিক:* ₹${total}\n` : `*Estimated Total:* ₹${total}\n`;
+      msg += `📍 Sonarpur LocalLink Hyperlocal Market`;
+
+      const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+      window.open(url, "_blank");
+    }
+
+    // Save Voice List as a Paper Slip for recurring orders
+    function saveVoiceListToPaperSlip() {
+      if (!activeVoiceGroceryList || activeVoiceGroceryList.length === 0) return;
+
+      const lines = activeVoiceGroceryList.map(it => `${it.name} ${it.displayQty}`).join("\n");
+      closeVoiceShoppingListModal();
+      openPaperListModal();
+
+      switchPaperListTab("text");
+      const textarea = document.getElementById("paperListTextInput");
+      if (textarea) textarea.value = lines;
+
+      executePaperListScan();
+      showToast("📝 ফর্দটি কাগজের চিরকুটে যুক্ত করে বিশ্লেষণ করা হচ্ছে...", "info");
+    }
+
+    // Resume voice listening to append more items
+    function resumeVoiceListeningForList() {
+      closeVoiceShoppingListModal();
+      isAppendingToVoiceList = true;
+      openVoiceSearchModal();
+      showToast("🎙️ আরও পণ্য বলুন, আগের ফর্দে যুক্ত হবে", "info");
+    }
+
+    // Manual input typing handler inside voice modal
+    function handleVoiceManualInput(val) {
+      currentVoiceTranscript = val;
+      const clearBtn = document.getElementById("btnClearVoiceInput");
+      if (clearBtn) {
+        if (val && val.length > 0) clearBtn.classList.remove("hidden");
+        else clearBtn.classList.add("hidden");
+      }
+      if (val && val.trim().length > 0) {
+        detectedSpokenLangMeta = detectSpokenLanguage(val);
+        const badge = document.getElementById("voiceDetectedLangBadge");
+        if (badge) badge.textContent = detectedSpokenLangMeta.badge;
+      }
+    }
+
+    function clearVoiceInput() {
+      currentVoiceTranscript = "";
+      const textInput = document.getElementById("voiceSearchTextInput");
+      if (textInput) {
+        textInput.value = "";
+        textInput.focus();
+      }
+      const clearBtn = document.getElementById("btnClearVoiceInput");
+      if (clearBtn) clearBtn.classList.add("hidden");
+      const previewEl = document.getElementById("voiceLiveInterimPreview");
+      if (previewEl) previewEl.textContent = "";
+    }
+
+    // Open Voice Modal & start listening
     function openVoiceSearchModal() {
       const modal = document.getElementById("voiceSearchModal");
       if (!modal) return;
       modal.classList.remove("hidden");
       currentVoiceTranscript = "";
-      detectedSpokenLangMeta = { code: "auto", short: "Auto", label: "Auto-Detecting" };
 
-      const transcriptEl = document.getElementById("voiceLiveTranscript");
-      if (transcriptEl) transcriptEl.textContent = '"..."';
+      const textInput = document.getElementById("voiceSearchTextInput");
+      if (textInput) textInput.value = "";
+      const clearBtn = document.getElementById("btnClearVoiceInput");
+      if (clearBtn) clearBtn.classList.add("hidden");
+      const previewEl = document.getElementById("voiceLiveInterimPreview");
+      if (previewEl) previewEl.textContent = "";
 
-      const badge = document.getElementById("voiceDetectedLangBadge");
-      if (badge) {
-        badge.textContent = "বাংলা • English • हिन्दी";
-        badge.className = "px-2.5 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black uppercase tracking-wider";
-      }
-
-      const indicator = document.getElementById("voiceLiveLanguageIndicator");
-      if (indicator) indicator.textContent = "Auto-Detecting";
-
-      // Initialize base recognition language prioritizing app preference
-      if (currentAppLanguage === "bn") currentVoiceLang = "bn-IN";
-      else if (currentAppLanguage === "hi") currentVoiceLang = "hi-IN";
-      else currentVoiceLang = "en-IN";
+      // STRICTLY default voice language to Bangla (bn-IN) or saved user preference
+      const savedVoiceLang = localStorage.getItem("locallink_voice_lang");
+      currentVoiceLangMode = savedVoiceLang || "bn-IN";
+      switchVoiceLanguage(currentVoiceLangMode);
+      updateGroceryListBadges();
 
       stopVoiceListening();
-      setTimeout(() => {
-        startVoiceListening();
-      }, 150);
+      startVoiceListening();
     }
 
     function closeVoiceSearchModal() {
@@ -5202,15 +6783,255 @@
       if (modal) modal.classList.add("hidden");
     }
 
-    function startVoiceListening() {
+    // Real Audio Visualizer meter updater
+    function updateAudioMeterVisuals(avg) {
+      const bars = [
+        document.getElementById("waveformBar1"),
+        document.getElementById("waveformBar2"),
+        document.getElementById("waveformBar3"),
+        document.getElementById("waveformBar4"),
+        document.getElementById("waveformBar5")
+      ];
+      
+      const normalized = Math.min(1, Math.max(0, avg / 60));
+      const heights = [
+        Math.max(6, Math.round(normalized * 22)),
+        Math.max(10, Math.round(normalized * 34)),
+        Math.max(8, Math.round(normalized * 28)),
+        Math.max(12, Math.round(normalized * 36)),
+        Math.max(6, Math.round(normalized * 20))
+      ];
+
+      bars.forEach((b, i) => {
+        if (b) b.style.height = `${heights[i]}px`;
+      });
+
+      const rings = document.getElementById("voiceMicPulseRings");
+      if (rings) {
+        if (normalized > 0.15) {
+          rings.classList.remove("hidden");
+          rings.style.transform = `scale(${1 + normalized * 0.35})`;
+        } else {
+          rings.style.transform = `scale(1)`;
+        }
+      }
+    }
+
+    // High Reliability Dual-Engine Voice System (Browser Web Speech + Neural Audio STT Fallback)
+    let voiceFallbackAttempts = 0;
+    let currentVoiceEngineContinuous = false;
+    let audioRecordedBuffers = [];
+    let audioRecorderNode = null;
+    let hasSpokenInCurrentSession = false;
+    let voiceSilenceDetectorTimer = null;
+    let isTranscribingBackend = false;
+
+    // Convert raw PCM Float32Array chunks to 16kHz Mono WAV base64 string
+    function buildWavBase64FromAudioBuffers() {
+      if (!audioRecordedBuffers || audioRecordedBuffers.length === 0) return null;
+      let totalLength = 0;
+      for (let i = 0; i < audioRecordedBuffers.length; i++) {
+        totalLength += audioRecordedBuffers[i].length;
+      }
+      if (totalLength < 4000) return null; // Ignore clicks under 0.25s
+
+      const merged = new Float32Array(totalLength);
+      let offset = 0;
+      for (let i = 0; i < audioRecordedBuffers.length; i++) {
+        merged.set(audioRecordedBuffers[i], offset);
+        offset += audioRecordedBuffers[i].length;
+      }
+
+      const inputSampleRate = audioContextInstance ? audioContextInstance.sampleRate : 44100;
+      const targetSampleRate = 16000;
+      let downsampled;
+      if (inputSampleRate !== targetSampleRate) {
+        const ratio = inputSampleRate / targetSampleRate;
+        const newLen = Math.round(totalLength / ratio);
+        downsampled = new Float32Array(newLen);
+        for (let i = 0; i < newLen; i++) {
+          downsampled[i] = merged[Math.floor(i * ratio)];
+        }
+      } else {
+        downsampled = merged;
+      }
+
+      const numSamples = downsampled.length;
+      const buffer = new ArrayBuffer(44 + numSamples * 2);
+      const view = new DataView(buffer);
+
+      function writeString(v, off, str) {
+        for (let i = 0; i < str.length; i++) v.setUint8(off + i, str.charCodeAt(i));
+      }
+
+      writeString(view, 0, "RIFF");
+      view.setUint32(4, 36 + numSamples * 2, true);
+      writeString(view, 8, "WAVE");
+      writeString(view, 12, "fmt ");
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true); // PCM format
+      view.setUint16(22, 1, true); // Mono channel
+      view.setUint32(24, targetSampleRate, true);
+      view.setUint32(28, targetSampleRate * 2, true);
+      view.setUint16(32, 2, true);
+      view.setUint16(34, 16, true);
+      writeString(view, 36, "data");
+      view.setUint32(40, numSamples * 2, true);
+
+      let pcmOffset = 44;
+      for (let i = 0; i < numSamples; i++, pcmOffset += 2) {
+        const s = Math.max(-1, Math.min(1, downsampled[i]));
+        view.setInt16(pcmOffset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+      }
+
+      let binary = "";
+      const bytes = new Uint8Array(buffer);
+      const len = bytes.byteLength;
+      for (let i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary);
+    }
+
+    // Background Audio Streamer & Real-Time Waveform Analyzer
+    function initAudioMeterBackground() {
+      if (audioStreamInstance || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+      navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+        audioStreamInstance = stream;
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioContextInstance = new AudioContextClass();
+          audioAnalyserInstance = audioContextInstance.createAnalyser();
+          audioAnalyserInstance.fftSize = 64;
+          const source = audioContextInstance.createMediaStreamSource(stream);
+          source.connect(audioAnalyserInstance);
+
+          // Audio Recording buffer via ScriptProcessorNode (universal cross-browser PCM capture)
+          try {
+            audioRecorderNode = audioContextInstance.createScriptProcessor(4096, 1, 1);
+            audioRecorderNode.onaudioprocess = function(e) {
+              if (!isVoiceListening || isTranscribingBackend) return;
+              const inputData = e.inputBuffer.getChannelData(0);
+              audioRecordedBuffers.push(new Float32Array(inputData));
+            };
+            source.connect(audioRecorderNode);
+            audioRecorderNode.connect(audioContextInstance.destination);
+          } catch(e) {
+            console.warn("ScriptProcessor warning:", e);
+          }
+
+          const dataArray = new Uint8Array(audioAnalyserInstance.frequencyBinCount);
+          function renderAudioMeter() {
+            if (!isVoiceListening && !isTranscribingBackend) return;
+            audioAnalyserInstance.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+            const avg = sum / dataArray.length;
+            updateAudioMeterVisuals(avg);
+
+            // Voice activity detection
+            if (avg > 14) {
+              hasSpokenInCurrentSession = true;
+              clearTimeout(voiceSilenceDetectorTimer);
+              voiceSilenceDetectorTimer = setTimeout(() => {
+                if (isVoiceListening && hasSpokenInCurrentSession) {
+                  console.log("Silence detected after speech, finalizing voice input...");
+                  finishVoiceInputSession();
+                }
+              }, 2200);
+            }
+
+            audioAnimFrameId = requestAnimationFrame(renderAudioMeter);
+          }
+          audioAnimFrameId = requestAnimationFrame(renderAudioMeter);
+        }
+      }).catch((err) => {
+        console.warn("Audio meter stream warning:", err);
+      });
+    }
+
+    // Backend Neural Speech-to-Text Transcriber (Universal fallback for Bangla, English, Hindi)
+    async function transcribeAudioWithBackendSTT() {
+      const wavBase64 = buildWavBase64FromAudioBuffers();
+      if (!wavBase64) return false;
+
+      isTranscribingBackend = true;
+      const statusLabel = document.getElementById("voiceSearchStatusLabel");
+      if (statusLabel) {
+        statusLabel.textContent = currentVoiceLang.startsWith("bn") 
+          ? "🔄 কথা বিশ্লেষণ করা হচ্ছে..." 
+          : (currentVoiceLang.startsWith("hi") ? "🔄 आवाज का विश्लेषण हो रहा है..." : "🔄 Transcribing audio...");
+      }
+
+      try {
+        const res = await apiRequest("/api/stt", {
+          method: "POST",
+          body: JSON.stringify({
+            audioBase64: wavBase64,
+            lang: currentVoiceLang || "bn-IN"
+          })
+        }, true);
+
+        isTranscribingBackend = false;
+        if (res && res.success && res.transcript && res.transcript.trim()) {
+          const text = res.transcript.trim();
+          currentVoiceTranscript = text;
+
+          const textInput = document.getElementById("voiceSearchTextInput");
+          if (textInput) textInput.value = text;
+          const clearBtn = document.getElementById("btnClearVoiceInput");
+          if (clearBtn) clearBtn.classList.remove("hidden");
+
+          const previewEl = document.getElementById("voiceLiveInterimPreview");
+          if (previewEl) {
+            previewEl.textContent = `✓ সনাক্ত হয়েছে: "${text}"`;
+          }
+
+          detectedSpokenLangMeta = detectSpokenLanguage(text);
+          const badge = document.getElementById("voiceDetectedLangBadge");
+          if (badge) badge.textContent = detectedSpokenLangMeta.badge;
+
+          submitVoiceSearch(text);
+          return true;
+        }
+      } catch (err) {
+        console.warn("Backend STT request error:", err);
+      } finally {
+        isTranscribingBackend = false;
+      }
+      return false;
+    }
+
+    // Start voice listening with dual-engine readiness
+    function startVoiceListening(isRetryFallback = false) {
+      if (!isRetryFallback) {
+        voiceFallbackAttempts = 0;
+        currentVoiceEngineContinuous = false;
+      }
+
+      isVoiceListening = true;
+      hasSpokenInCurrentSession = false;
+      audioRecordedBuffers = [];
+      updateVoiceUIState(true);
+
+      const statusLabel = document.getElementById("voiceSearchStatusLabel");
+      if (statusLabel) {
+        if (currentVoiceLang.startsWith("bn")) {
+          statusLabel.textContent = "🎙️ শুনছি... বলুন (যেমন: মুসুর ডাল ১ কেজি, চাল ২ কেজি)";
+        } else if (currentVoiceLang.startsWith("hi")) {
+          statusLabel.textContent = "🎙️ सुन रहे हैं... बोलिए (जैसे: दाल 1 किलो, चावल 2 किलो)";
+        } else {
+          statusLabel.textContent = "🎙️ Listening... Speak items (e.g. dal 1kg , rice 2kg)";
+        }
+      }
+
+      // 1. Launch real microphone volume meter & PCM audio recording in background
+      initAudioMeterBackground();
+
+      // 2. Launch Web Speech Recognition if available
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
-        const statusEl = document.getElementById("voiceSearchStatusText");
-        if (statusEl) {
-          const dict = LOCAL_LINK_TRANSLATIONS[currentAppLanguage] || LOCAL_LINK_TRANSLATIONS.en;
-          statusEl.textContent = dict.voice_not_supported || "Speech recognition is not supported in this browser. Please type in search bar.";
-        }
-        updateVoiceUIState(false);
+        console.log("Web Speech API not present; using universal Audio STT engine.");
         return;
       }
 
@@ -5231,32 +7052,43 @@
         speechRecognitionInstance.interimResults = true;
         speechRecognitionInstance.lang = currentVoiceLang;
 
+        let finalAccumulatedTranscript = currentVoiceTranscript || "";
+
         speechRecognitionInstance.onstart = function() {
           isVoiceListening = true;
           updateVoiceUIState(true);
-          const dict = LOCAL_LINK_TRANSLATIONS[currentAppLanguage] || LOCAL_LINK_TRANSLATIONS.en;
-          const statusEl = document.getElementById("voiceSearchStatusText");
-          if (statusEl) statusEl.textContent = dict.voice_listening || "Listening... Speak now!";
         };
 
         speechRecognitionInstance.onresult = function(event) {
           let interim = "";
-          let final = "";
           for (let i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
-              final += event.results[i][0].transcript;
+              const res = event.results[i][0].transcript.trim();
+              if (res) {
+                finalAccumulatedTranscript = (finalAccumulatedTranscript + " " + res).trim();
+              }
             } else {
               interim += event.results[i][0].transcript;
             }
           }
-          const text = (final || interim).trim();
-          if (text) {
-            currentVoiceTranscript = text;
-            const el = document.getElementById("voiceLiveTranscript");
-            if (el) el.textContent = `"${text}"`;
 
-            // Real-time automatic language detection
-            detectedSpokenLangMeta = detectSpokenLanguage(text);
+          const combined = (finalAccumulatedTranscript + (interim ? (" " + interim) : "")).trim();
+          if (combined) {
+            currentVoiceTranscript = combined;
+            hasSpokenInCurrentSession = true;
+
+            const textInput = document.getElementById("voiceSearchTextInput");
+            if (textInput) textInput.value = combined;
+            const clearBtn = document.getElementById("btnClearVoiceInput");
+            if (clearBtn) clearBtn.classList.remove("hidden");
+
+            const previewEl = document.getElementById("voiceLiveInterimPreview");
+            if (previewEl) {
+              const prefix = currentAppLanguage === "en" ? (interim ? "Hearing: " : "✓ Heard: ") : (currentAppLanguage === "hi" ? (interim ? "सुन रहे हैं: " : "✓ पहचाना गया: ") : (interim ? "শুনছি: " : "✓ সনাক্ত হয়েছে: "));
+              previewEl.textContent = `${prefix}"${combined}"`;
+            }
+
+            detectedSpokenLangMeta = detectSpokenLanguage(combined);
             const badge = document.getElementById("voiceDetectedLangBadge");
             if (badge) {
               badge.textContent = detectedSpokenLangMeta.badge;
@@ -5264,61 +7096,110 @@
             }
             const indicator = document.getElementById("voiceLiveLanguageIndicator");
             if (indicator) {
-              indicator.textContent = "Detected: " + detectedSpokenLangMeta.label;
+              const labelPrefix = currentAppLanguage === "en" ? "Detected: " : (currentAppLanguage === "hi" ? "पहचाना गया: " : "সনাক্ত: ");
+              indicator.textContent = labelPrefix + detectedSpokenLangMeta.label;
             }
+
+            clearTimeout(voiceSilenceTimer);
+            voiceSilenceTimer = setTimeout(() => {
+              if (isVoiceListening && currentVoiceTranscript.trim().length > 0) {
+                submitVoiceSearch();
+              }
+            }, 2400);
           }
         };
 
         speechRecognitionInstance.onerror = function(event) {
-          console.warn("Speech recognition error:", event.error);
-          isVoiceListening = false;
-          updateVoiceUIState(false);
-          const statusEl = document.getElementById("voiceSearchStatusText");
-          if (statusEl) {
-            if (event.error === "not-allowed") {
-              statusEl.textContent = "Microphone permission denied. Please allow microphone in browser.";
-            } else if (event.error === "no-speech") {
-              // Rotate to next language model on silence to cover multi-lingual users
-              voiceLangCycleIndex = (voiceLangCycleIndex + 1) % VOICE_SUPPORTED_LANGS.length;
-              currentVoiceLang = VOICE_SUPPORTED_LANGS[voiceLangCycleIndex];
-              statusEl.textContent = "No speech heard. Listening in Bangla, English & Hindi...";
-            } else {
-              statusEl.textContent = `Recognition error (${event.error}). Tap to retry.`;
-            }
+          console.warn("Web Speech event notice:", event.error);
+          // If browser speech service is restricted (e.g. Brave or network policy), 
+          // do NOT stop listening! The universal Audio STT engine will transcribe upon finish.
+          if (event.error === "service-not-allowed" || event.error === "network") {
+            console.log("Seamlessly switching to Universal Audio STT Engine for Bangla/regional input...");
           }
         };
 
         speechRecognitionInstance.onend = function() {
-          isVoiceListening = false;
-          updateVoiceUIState(false);
-          if (currentVoiceTranscript && currentVoiceTranscript.trim().length > 0) {
-            setTimeout(() => {
-              submitVoiceSearch();
-            }, 450);
+          if (isVoiceListening && !currentVoiceTranscript.trim()) {
+            try {
+              speechRecognitionInstance.start();
+            } catch (_) {}
           }
         };
 
         speechRecognitionInstance.start();
       } catch (err) {
-        console.warn("Speech recognition error:", err);
-        isVoiceListening = false;
-        updateVoiceUIState(false);
+        console.warn("Speech recognition initialization note:", err);
       }
     }
 
-    function stopVoiceListening() {
+    // Finish voice listening and submit either live Web Speech transcript or backend audio transcript
+    async function finishVoiceInputSession() {
+      clearTimeout(voiceSilenceTimer);
+      clearTimeout(voiceSilenceDetectorTimer);
+
+      const hadTranscript = currentVoiceTranscript && currentVoiceTranscript.trim().length > 0;
+      stopVoiceListening(false);
+
+      if (hadTranscript) {
+        submitVoiceSearch(currentVoiceTranscript);
+      } else {
+        const success = await transcribeAudioWithBackendSTT();
+        if (!success) {
+          const statusLabel = document.getElementById("voiceSearchStatusLabel");
+          if (statusLabel) {
+            statusLabel.textContent = currentAppLanguage === "en"
+              ? "Type items below or tap suggestions (e.g. dal 1kg, rice 2kg):"
+              : (currentAppLanguage === "hi"
+                ? "नीचे सामान लिखें या सुझाव चुनें (जैसे: दाल 1 किलो, चावल 2 किलो):"
+                : "নিচে পণ্যের নাম লিখুন বা সুপারিশে ট্যাপ করুন (যেমন: মুসুর ডাল ১ কেজি, চাল ২ কেজি):");
+          }
+          const input = document.getElementById("voiceSearchTextInput");
+          if (input) input.focus();
+        }
+      }
+    }
+
+    function stopVoiceListening(shouldCleanAudio = true) {
+      clearTimeout(voiceSilenceTimer);
+      clearTimeout(voiceSilenceDetectorTimer);
+      isVoiceListening = false;
+
       if (speechRecognitionInstance) {
         try {
-          speechRecognitionInstance.abort();
+          speechRecognitionInstance.onstart = null;
+          speechRecognitionInstance.onresult = null;
+          speechRecognitionInstance.onerror = null;
+          speechRecognitionInstance.onend = null;
+          speechRecognitionInstance.stop();
         } catch (e) {}
       }
-      isVoiceListening = false;
+
+      if (shouldCleanAudio) {
+        if (audioStreamInstance) {
+          try {
+            audioStreamInstance.getTracks().forEach(t => t.stop());
+          } catch (e) {}
+          audioStreamInstance = null;
+        }
+
+        if (audioContextInstance && audioContextInstance.state !== "closed") {
+          try {
+            audioContextInstance.close();
+          } catch (e) {}
+          audioContextInstance = null;
+        }
+
+        if (audioAnimFrameId) {
+          cancelAnimationFrame(audioAnimFrameId);
+          audioAnimFrameId = null;
+        }
+      }
+
       updateVoiceUIState(false);
     }
-
     function toggleVoiceListening() {
       if (isVoiceListening) {
-        stopVoiceListening();
+        finishVoiceInputSession();
       } else {
         startVoiceListening();
       }
@@ -5343,31 +7224,58 @@
       }
     }
 
-    function submitVoiceSearch() {
-      const query = (currentVoiceTranscript || "").trim();
+    // Submit Voice Search or Auto-Generate Grocery List
+    async function submitVoiceSearch(manualQuery) {
+      const inputEl = document.getElementById("voiceSearchTextInput");
+      let query = (manualQuery || currentVoiceTranscript || (inputEl ? inputEl.value : "")).trim();
+
+      // If query is empty but user spoke into audio recorder, transcribe audio buffer first
+      if (!query && audioRecordedBuffers && audioRecordedBuffers.length > 0) {
+        const transcribed = await transcribeAudioWithBackendSTT();
+        if (transcribed && currentVoiceTranscript) {
+          query = currentVoiceTranscript.trim();
+        }
+      }
+
       closeVoiceSearchModal();
       if (!query) return;
 
+      query = normalizePhoneticCorruptions(query);
+
       const langInfo = detectSpokenLanguage(query);
+      const parsedItems = parseVoiceGroceryList(query, langInfo.code);
 
-      const desktopInput = document.getElementById("marketSearchInput");
-      const mobileInput = document.getElementById("mobileMarketSearchInput");
-      if (desktopInput) desktopInput.value = query;
-      if (mobileInput) mobileInput.value = query;
+      // Check if this is a grocery list (multiple items or explicit quantity)
+      const isList = parsedItems.length > 1 || (parsedItems.length === 1 && hasExplicitQuantity(query));
 
-      switchCustomerPage("home");
-      loadCustomerProducts("all", query);
-      showToast(`🎙️ [${langInfo.short}] Voice Search: "${query}"`, "success");
+      if (isList && parsedItems.length > 0) {
+        openVoiceShoppingListModal(parsedItems, langInfo, query);
+        showToast(langInfo.code === "bn" ? `📋 "${query}" থেকে স্মার্ট বাজার ফর্দ তৈরি করা হয়েছে!` : `📋 Smart grocery list created for "${query}"!`, "success");
+      } else {
+        const desktopInput = document.getElementById("marketSearchInput");
+        const mobileInput = document.getElementById("mobileMarketSearchInput");
+        if (desktopInput) desktopInput.value = query;
+        if (mobileInput) mobileInput.value = query;
+
+        switchCustomerPage("home");
+        loadCustomerProducts("all", query);
+        showToast(`🎙️ [${langInfo.short}] Voice Search: "${query}"`, "success");
+      }
     }
 
     function applyVoiceText(text) {
       currentVoiceTranscript = text;
+      const textInput = document.getElementById("voiceSearchTextInput");
+      if (textInput) textInput.value = text;
+      const clearBtn = document.getElementById("btnClearVoiceInput");
+      if (clearBtn) clearBtn.classList.remove("hidden");
+
       const langInfo = detectSpokenLanguage(text);
       const badge = document.getElementById("voiceDetectedLangBadge");
       if (badge) badge.textContent = langInfo.badge;
       const indicator = document.getElementById("voiceLiveLanguageIndicator");
-      if (indicator) indicator.textContent = "Detected: " + langInfo.label;
-      submitVoiceSearch();
+      if (indicator) indicator.textContent = "সনাক্ত: " + langInfo.label;
+      submitVoiceSearch(text);
     }
 
     // ==============================================
@@ -5495,17 +7403,25 @@
       if (!container || !listEl) return;
       container.classList.remove("hidden");
 
-      if (countEl) countEl.textContent = items.length;
-      if (totalEl) totalEl.textContent = `₹ ${estimatedTotal || 0}`;
+      const itemList = items || parsedPaperItems || [];
 
-      if (items.length === 0) {
-        listEl.innerHTML = `<div class="p-3 text-center text-slate-400 text-xs">কোনো পণ্য শনাক্ত করা যায়নি</div>`;
+      if (countEl) countEl.textContent = itemList.length;
+      if (totalEl && estimatedTotal !== undefined) totalEl.textContent = `₹ ${estimatedTotal || 0}`;
+
+      const dict = LOCAL_LINK_TRANSLATIONS[currentAppLanguage] || LOCAL_LINK_TRANSLATIONS.en;
+
+      if (itemList.length === 0) {
+        listEl.innerHTML = `<div class="p-3 text-center text-slate-400 text-xs">${dict.voice_list_empty_title || "No items detected"}</div>`;
         return;
       }
 
-      listEl.innerHTML = items.map((it, idx) => {
+      listEl.innerHTML = itemList.map((it, idx) => {
+        const localized = localizeGroceryItem({
+          name: it.name || it.matchedProduct || it.rawTerm || "Grocery Item",
+          qty: it.quantity,
+          unit: it.unit
+        }, currentAppLanguage);
         const itemSub = it.itemTotal || it.itemSubtotal || ((it.unitPrice || 0) * (it.quantity || 1));
-        const itemName = it.name || it.matchedProduct || it.rawTerm || "পণ্য";
         const cut = it.detectedCut || it.cutPreference;
         return `
           <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between gap-3 text-xs">
@@ -5514,8 +7430,8 @@
                 ${idx + 1}
               </span>
               <div class="min-w-0">
-                <h5 class="text-white font-bold truncate">${itemName}</h5>
-                <p class="text-slate-400 text-[11px]">${it.shopName || 'লোকাল স্টল'} • ${it.quantity} ${it.unit || 'কেজি'}</p>
+                <h5 class="text-white font-bold truncate">${localized.name}</h5>
+                <p class="text-slate-400 text-[11px]">${localized.shopName} • ${localized.displayQty}</p>
                 ${cut ? `
                   <span class="inline-block px-1.5 py-0.2 bg-blue-500/20 border border-blue-500/30 text-blue-300 text-[10px] rounded">
                     🐟 ${cut}
@@ -5593,6 +7509,34 @@
       }
     }
 
+    
+    function formatStallNameForLang(name, lang) {
+      if (!name) return "";
+      if (lang === "en") {
+        const enMap = {
+          "শ্যামলদার": "Shyamal",
+          "শ্যামলদার মাছের আড়ত": "Shyamal Fish",
+          "পরেশদার": "Paresh",
+          "পরেশদার তাজা সবজি": "Paresh Veggies",
+          "রফিক": "Rafiq",
+          "রফিক চিকেন সেন্টার": "Rafiq Chicken",
+          "ঘোষ": "Ghosh",
+          "ঘোষ ডেয়ারি ও ছানা": "Ghosh Dairy",
+          "সুন্দরবন": "Sundarban",
+          "সুন্দরবন ফ্রুটস হাব": "Sundarban Fruits"
+        };
+        const firstWord = name.split(" ")[0];
+        return enMap[firstWord] || enMap[name] || firstWord;
+      }
+      return name.split(" ")[0];
+    }
+
+    function formatStoryTimeForLang(time, lang) {
+      if (lang === "en") return "6:15 AM";
+      if (lang === "hi") return "सुबह 6:15";
+      return time ? (time.split(" ")[1] || "৬:১৫") : "সকাল ৬টা";
+    }
+
     function renderBazaarStoriesTray(stories) {
       const container = document.getElementById("bazaarStoriesList");
       if (!container) return;
@@ -5614,10 +7558,10 @@
               </span>
             </div>
             <span class="text-white text-[11px] font-bold text-center leading-tight truncate w-full group-hover:text-emerald-400 transition-colors">
-              ${s.stallName.split(' ')[0]}
+              ${formatStallNameForLang(s.stallName, currentAppLanguage)}
             </span>
             <span class="text-slate-400 text-[9px] text-center whitespace-nowrap">
-              ${s.timeAgo ? s.timeAgo.split(' ')[1] || '৬:১৫' : 'সকাল ৬টা'}
+              ${formatStoryTimeForLang(s.timeAgo, currentAppLanguage)}
             </span>
           </div>
         `;
@@ -5652,9 +7596,13 @@
       if (imageEl) imageEl.src = story.storyImage;
       if (captionEl) captionEl.textContent = story.caption;
       if (priceEl) {
-        priceEl.textContent = story.category === 'fish' ? '₹২৪০ - ₹৩২০ / কেজি' :
-                             (story.category === 'meat' ? '₹২০০ - ₹২৮০ / কেজি' :
-                             (story.category === 'vegetables' ? '₹২৫ - ₹৪৫ / কেজি' : 'টাটকা লোকাল রেট'));
+        const isBn = currentAppLanguage === 'bn';
+      const isHi = currentAppLanguage === 'hi';
+      const kgUnit = isBn ? '/ কেজি' : (isHi ? '/ किलो' : '/ kg');
+      const rateLabel = isBn ? 'টাটকা লোকাল রেট' : (isHi ? 'ताज़ा लोकल रेट' : 'Fresh Local Rate');
+      priceEl.textContent = story.category === 'fish' ? (isBn ? '₹২৪০ - ₹৩২০ ' + kgUnit : '₹240 - ₹320 ' + kgUnit) :
+                           (story.category === 'meat' ? (isBn ? '₹২০০ - ₹২৮০ ' + kgUnit : '₹200 - ₹280 ' + kgUnit) :
+                           (story.category === 'vegetables' ? (isBn ? '₹২৫ - ₹৪৫ ' + kgUnit : '₹25 - ₹45 ' + kgUnit) : rateLabel));
       }
 
       renderStoryProgressBars();
@@ -5742,8 +7690,37 @@
       // Managed by touch zones
     }
 
+    // Modal: About LocalLink Project Information
+    function openProjectInfoModal() {
+      const modal = document.getElementById("projectInfoModal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+      }
+    }
+
+    function closeProjectInfoModal() {
+      const modal = document.getElementById("projectInfoModal");
+      if (modal) {
+        modal.classList.add("hidden");
+        document.body.style.overflow = "";
+      }
+    }
+
     // Keyboard navigation for modals
     window.addEventListener("keydown", (e) => {
+      const voiceListModal = document.getElementById("voiceShoppingListModal");
+      if (voiceListModal && !voiceListModal.classList.contains("hidden")) {
+        if (e.key === "Escape") closeVoiceShoppingListModal();
+      }
+      const voiceModal = document.getElementById("voiceSearchModal");
+      if (voiceModal && !voiceModal.classList.contains("hidden")) {
+        if (e.key === "Escape") closeVoiceSearchModal();
+      }
+      const infoModal = document.getElementById("projectInfoModal");
+      if (infoModal && !infoModal.classList.contains("hidden")) {
+        if (e.key === "Escape") closeProjectInfoModal();
+      }
       const storyModal = document.getElementById("bazaarStoryModal");
       if (storyModal && !storyModal.classList.contains("hidden")) {
         if (e.key === "ArrowRight") nextBazaarStory();

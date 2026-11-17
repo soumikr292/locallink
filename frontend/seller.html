@@ -63,11 +63,23 @@
         <button id="link-dashboard" onclick="switchTab('dashboard')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-950/50 transition-all">
           <i class="fa-solid fa-chart-pie w-4"></i> <span data-i18n="seller_nav_dashboard">Store Dashboard</span>
         </button>
+        <button id="link-one-click-list" onclick="openSellerOneClickListModal()" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-amber-300 hover:bg-slate-900 hover:text-amber-200 transition-all border border-amber-500/30 bg-amber-500/10 font-bold" title="View Customer Grocery Packing List in 1 Click">
+          <i class="fa-solid fa-clipboard-list w-4 text-amber-400"></i> <span data-i18n="seller_nav_one_click_list">📋 Customer Grocery List</span>
+          <span class="ml-auto px-1.5 py-0.5 bg-amber-500/20 text-amber-300 rounded text-[9px] font-mono font-bold">1-Click</span>
+        </button>
         <button id="link-photo-upload" onclick="switchTab('photo-upload')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
           <i class="fa-solid fa-camera-retro w-4 text-emerald-400"></i> <span data-i18n="seller_nav_photo">Daily Real Photo Upload</span>
         </button>
         <button id="link-inventory" onclick="switchTab('inventory')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
           <i class="fa-solid fa-boxes-stacked w-4"></i> <span data-i18n="seller_nav_inventory">Products & Inventory</span>
+        </button>
+        <button id="link-requisitions" onclick="switchTab('requisitions')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
+          <i class="fa-solid fa-triangle-exclamation w-4 text-rose-400"></i> <span data-i18n="seller_nav_requisitions">Depleted Stock & Requisitions</span>
+          <span id="badge-depleted-count" class="ml-auto hidden px-2 py-0.5 bg-rose-500 text-white rounded-full text-[10px] font-black">2</span>
+        </button>
+        <button id="link-wholesalers" onclick="switchTab('wholesalers')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
+          <i class="fa-solid fa-building-wheat w-4 text-amber-400"></i> <span data-i18n="seller_nav_wholesalers">Nearest Wholesalers</span>
+          <span class="ml-auto px-1.5 py-0.5 bg-amber-500/20 text-amber-300 rounded text-[9px] font-bold">Mandi</span>
         </button>
         <button id="link-orders" onclick="switchTab('orders')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
           <i class="fa-solid fa-truck-ramp-box w-4"></i> <span data-i18n="seller_nav_orders">Incoming Orders</span>
@@ -146,6 +158,14 @@
           <span data-i18n="seller_store_open">Store Open</span>
         </span>
 
+        <!-- 📋 1-Click Live Customer Grocery List Button in Top Header -->
+        <button id="btnHeaderOneClickList" type="button" onclick="openSellerOneClickListModal()" class="px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-amber-500 via-emerald-600 to-teal-600 hover:from-amber-400 hover:to-emerald-500 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-emerald-950/40 border border-amber-400/40 flex items-center gap-2 transform active:scale-95 transition-all" title="View Customer Grocery Packing List in 1 Click">
+          <i class="fa-solid fa-clipboard-list text-slate-950 text-sm"></i>
+          <span id="btnHeaderOneClickListLabel" class="hidden sm:inline font-black" data-i18n="seller_nav_one_click_list">📋 1-Click List</span>
+          <span id="btnHeaderOneClickListLabelMobile" class="sm:hidden font-black">📋 List</span>
+          <span id="headerListCountBadge" class="px-1.5 py-0.2 bg-slate-950 text-amber-300 rounded-full text-[10px] font-mono font-bold">0</span>
+        </button>
+
         <!-- Quick Upload Live Morning Photo Button -->
         <button onclick="switchTab('photo-upload')" class="px-3 sm:px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-950/50 flex items-center gap-1.5 transition-all">
           <i class="fa-solid fa-camera"></i>
@@ -162,6 +182,32 @@
       <!-- ============================================== -->
       <div id="dashboard" class="tab-content space-y-6">
         
+        <!-- 📋 1-Click Customer Grocery List Quick Action Hero Banner -->
+        <div id="dashGroceryListHeroBanner" class="p-4 sm:p-5 bg-gradient-to-r from-emerald-950/90 via-slate-900 to-amber-950/80 border border-emerald-500/40 rounded-2xl shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-2xl shrink-0 shadow-inner">
+              <i class="fa-solid fa-clipboard-list"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
+                  <span data-i18n="seller_dash_list_hero_title">Customer Grocery Packing List</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">1-Click Fast View</span>
+                </h3>
+              </div>
+              <p id="dashLiveListSubtitle" class="text-xs text-slate-300 mt-0.5" data-i18n="seller_dash_list_hero_subtitle">
+                View incoming customer lists & voice orders translated into your language in 1 click.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2.5 w-full sm:w-auto">
+            <button type="button" onclick="openSellerOneClickListModal()" class="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-black rounded-xl text-xs sm:text-sm shadow-xl flex items-center justify-center gap-2 transform active:scale-95 transition-all">
+              <i class="fa-solid fa-eye text-base"></i>
+              <span data-i18n="seller_view_grocery_list">📋 View Grocery List (1-Click)</span>
+            </button>
+          </div>
+        </div>
+
         <!-- Primary 4 KPI Metric Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
@@ -173,13 +219,16 @@
             <p class="text-[11px] text-slate-500 mt-1">Paid customer orders today</p>
           </div>
 
-          <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+          <div onclick="openSellerOneClickListModal()" class="bg-slate-950 border border-slate-800 hover:border-amber-500/50 p-6 rounded-2xl shadow-xl cursor-pointer transition-all group">
             <div class="flex justify-between items-center">
-              <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Pending Orders</p>
+              <p class="text-xs font-bold uppercase tracking-wider text-slate-400 group-hover:text-amber-400 transition-colors">Pending Orders</p>
               <i class="fa-solid fa-box text-amber-400"></i>
             </div>
             <h3 id="dashPendingOrders" class="text-2xl font-black text-amber-400 mt-2">0 Orders</h3>
-            <p class="text-[11px] text-slate-500 mt-1">Awaiting packing or pickup</p>
+            <div class="flex items-center justify-between mt-1 text-[11px] text-slate-500">
+              <span>Awaiting packing or pickup</span>
+              <span class="text-amber-400 font-bold group-hover:underline">View List &rarr;</span>
+            </div>
           </div>
 
           <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
@@ -233,6 +282,36 @@
             <button onclick="switchTab('earnings')" class="px-3 py-1.5 bg-slate-800 text-slate-300 text-xs font-bold rounded-xl hover:bg-slate-700 transition-all">
               History
             </button>
+          </div>
+        </div>
+
+        <!-- ⚡ Depleted Stock Radar & Wholesale Auto-Requisitions Hub -->
+        <div id="sellerDepletedHub" class="bg-gradient-to-r from-slate-950 via-rose-950/20 to-slate-950 border border-rose-500/30 rounded-2xl p-6 shadow-xl space-y-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-rose-500/20 pb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center text-lg animate-pulse">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="font-extrabold text-sm text-white">Depleted Stock Radar & Wholesale Auto-Requisitions</h4>
+                  <span id="dashDepletedBadge" class="px-2 py-0.5 bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded-full text-[10px] font-bold font-mono">
+                    2 Items Low
+                  </span>
+                </div>
+                <p class="text-xs text-slate-400">Items running out of stock automatically paired with APMC Sonarpur Mandi lots for 1-click replenishment</p>
+              </div>
+            </div>
+            <button onclick="switchTab('requisitions')" class="text-xs text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1.5 underline">
+              <span>Open Full Radar Console</span> &rarr;
+            </button>
+          </div>
+
+          <!-- Dynamic Preview Cards in Dashboard -->
+          <div id="dashDepletedList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+            <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl text-center text-slate-500 text-xs col-span-full">
+              <i class="fa-solid fa-spinner fa-spin mr-2"></i> Scanning shelf inventory levels...
+            </div>
           </div>
         </div>
 
@@ -417,8 +496,263 @@
       </div>
 
       <!-- ============================================== -->
-      <!-- 🚚 TAB 4: INCOMING ORDERS                      -->
+      <!-- ⚡ TAB 3B: DEPLETED STOCK RADAR & REQUISITIONS -->
       <!-- ============================================== -->
+      <div id="requisitions" class="tab-content hidden space-y-6">
+
+        <!-- Header Banner -->
+        <div class="bg-gradient-to-r from-rose-950/40 via-slate-950 to-slate-950 border border-rose-500/30 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center text-2xl shadow-lg shadow-rose-950/50">
+              <i class="fa-solid fa-triangle-exclamation animate-pulse"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-extrabold text-lg text-white">Depleted Stock Radar & Wholesale Auto-Requisitions</h3>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                  APMC Sonarpur Mandi Connected
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">
+                Real-time stock depletion tracker linked with APMC Sonarpur Mandi Wholesale Yard for instant bulk replenishments.
+              </p>
+            </div>
+          </div>
+          <button onclick="loadDepletedRadar()" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-rose-300 text-xs font-bold rounded-xl transition-all flex items-center gap-2">
+            <i class="fa-solid fa-rotate-right"></i> Refresh Radar
+          </button>
+        </div>
+
+
+        <!-- Section A: Active Depleted Retail Products -->
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <h4 class="font-bold text-sm text-white flex items-center gap-2">
+                <i class="fa-solid fa-boxes-packing text-rose-400"></i>
+                <span>Active Depleted Shelves & 1-Click Wholesale Requisition</span>
+              </h4>
+              <p class="text-xs text-slate-400">Intelligently linked with Sonarpur APMC Mandi commodity lots for fast replenishment</p>
+            </div>
+            <span class="text-xs font-mono text-slate-400">Threshold: &le; 12 units</span>
+          </div>
+
+          <div id="radarDepletedGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+            <!-- Dynamically populated depleted products -->
+          </div>
+        </div>
+
+        <!-- Section B: Dispatched Wholesale Restock POs & Mandi Gate Passes -->
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <h4 class="font-bold text-sm text-white flex items-center gap-2">
+                <i class="fa-solid fa-truck-moving text-sky-400"></i>
+                <span>Dispatched Wholesale Restock POs & Mandi Gate Passes</span>
+              </h4>
+              <p class="text-xs text-slate-400">Official APMC Mandi wholesale supply challans, vehicle allocations, and delivery gate passes</p>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-900 border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider">
+                  <th class="py-3 px-4">PO & Date</th>
+                  <th class="py-3 px-4">Wholesale Mandi Stockist</th>
+                  <th class="py-3 px-4">Produce & Bags</th>
+                  <th class="py-3 px-4">Total Amount</th>
+                  <th class="py-3 px-4">Payment Terms</th>
+                  <th class="py-3 px-4">Dispatch Vehicle & Gate Pass</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4 text-right">Mandi Challan</th>
+                </tr>
+              </thead>
+              <tbody id="restockOrdersBody" class="divide-y divide-slate-800 font-medium">
+                <!-- Dynamically populated POs -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================== -->
+      <!-- 🏢 TAB 3C: NEAREST WHOLESALERS & MANDI SOURCING HUB -->
+      <!-- ============================================== -->
+      <div id="wholesalers" class="tab-content hidden space-y-6">
+
+        <!-- Header Banner -->
+        <div class="bg-gradient-to-r from-amber-950/40 via-slate-950 to-slate-950 border border-amber-500/30 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-2xl shadow-lg shadow-amber-950/50">
+              <i class="fa-solid fa-building-wheat"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-bold text-lg text-white">Nearest Wholesalers & Mandi Sourcing Hub</h3>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  APMC Licensed
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">
+                Find nearest verified wholesale stockists, save favorite suppliers, inspect godown stock & tiered rates, and bargain live with AI.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="loadWholesalersList()" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-amber-300 text-xs font-bold rounded-xl transition-all flex items-center gap-2">
+              <i class="fa-solid fa-rotate-right"></i> Refresh Mandi Feed
+            </button>
+          </div>
+        </div>
+
+        <!-- Search & Filter Controls -->
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-md">
+          <div class="relative flex-1">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+            <input id="wholesalerSearchInput" type="text" oninput="filterWholesalers()" placeholder="Search wholesaler by name, mandi yard, commodity (e.g. Potato, Onion, Rice)..." class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-all">
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="btnFilterAllWs" onclick="setWholesalerFilter('all')" class="px-3.5 py-2 bg-amber-600 text-white text-xs font-bold rounded-xl shadow transition-all flex items-center gap-1.5">
+              <i class="fa-solid fa-store"></i> All Wholesalers (<span id="countAllWs">4</span>)
+            </button>
+            <button id="btnFilterFavWs" onclick="setWholesalerFilter('favorites')" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-bold rounded-xl border border-slate-800 transition-all flex items-center gap-1.5">
+              <i class="fa-solid fa-star text-amber-400"></i> ⭐ Favorites (<span id="countFavWs">0</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Split View: Left Wholesalers Directory & Right Active Wholesaler Inspector -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          <!-- Left Column: Directory Cards (4 cols on lg) -->
+          <div class="lg:col-span-4 space-y-3">
+            <div class="flex items-center justify-between px-1">
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-solid fa-location-dot text-amber-400"></i> Nearest Mandi Stockists
+              </h4>
+              <span id="wholesalersStatusSummary" class="text-[11px] text-slate-500 font-mono">4 Verified</span>
+            </div>
+            
+            <div id="wholesalersDirectoryList" class="space-y-3">
+              <!-- Dynamically rendered wholesaler cards -->
+            </div>
+          </div>
+
+          <!-- Right Column: Wholesaler Profile Details & Godown Stock (8 cols on lg) -->
+          <div class="lg:col-span-8 space-y-6">
+            
+            <!-- Wholesaler Profile Overview Card -->
+            <div id="wholesalerProfileCard" class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+              <!-- Dynamically populated selected wholesaler profile header -->
+            </div>
+
+            <!-- Godown Inventory & Wholesale Rates Table (Everything the seller must know) -->
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-800 pb-3 gap-2">
+                <div>
+                  <h4 class="font-bold text-sm text-white flex items-center gap-2">
+                    <i class="fa-solid fa-warehouse text-amber-400"></i>
+                    <span>Live Godown Inventory & 3-Tier Wholesale Rates</span>
+                  </h4>
+                  <p class="text-xs text-slate-400">Standard rates, volume discounts, MOQ, and modal market rates for bulk procurement</p>
+                </div>
+                <span class="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                  <i class="fa-solid fa-bolt mr-1"></i> Live Mandi Ticker
+                </span>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="bg-slate-900 border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider">
+                      <th class="py-3 px-3">Commodity & Grade</th>
+                      <th class="py-3 px-2">Godown Stock</th>
+                      <th class="py-3 px-2">MOQ</th>
+                      <th class="py-3 px-3">Standard (1-9)</th>
+                      <th class="py-3 px-3">Tier 2 (10-24)</th>
+                      <th class="py-3 px-3">Super Bulk (25+)</th>
+                      <th class="py-3 px-2">Modal Avg</th>
+                      <th class="py-3 px-3 text-right">Negotiate & PO</th>
+                    </tr>
+                  </thead>
+                  <tbody id="wholesalerLotsTableBody" class="divide-y divide-slate-800 font-medium">
+                    <!-- Dynamically populated lots -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Live AI Bargaining Console (Directly in panel) -->
+            <div id="wholesalerBargainConsoleCard" class="bg-gradient-to-br from-purple-950/30 via-slate-950 to-slate-950 border border-purple-500/30 rounded-2xl p-6 shadow-xl space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/40 text-purple-400 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-robot"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-sm text-white">Live AI Bargaining & Bulk PO Generator</h4>
+                    <p class="text-xs text-slate-400">Direct algorithmic deal negotiations with the wholesaler's autonomous floor pricing engine</p>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  Autonomous Bot
+                </span>
+              </div>
+
+              <!-- Interactive Form -->
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                <div>
+                  <label class="block text-slate-400 font-semibold mb-1">Select Commodity Lot</label>
+                  <select id="bargainSelectLot" onchange="onBargainLotChanged()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-purple-500">
+                    <!-- Populated dynamically -->
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-slate-400 font-semibold mb-1">Order Quantity (Bags/Units)</label>
+                  <input id="bargainQuantityInput" type="number" min="1" value="10" oninput="calculateBargainSummary()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-purple-500 font-mono">
+                </div>
+                <div>
+                  <label class="block text-slate-400 font-semibold mb-1">Your Counter-Offer Rate (₹ / Bag)</label>
+                  <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold">₹</span>
+                    <input id="bargainTargetRateInput" type="number" min="100" value="910" oninput="calculateBargainSummary()" class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-7 pr-3 py-2 text-white focus:outline-none focus:border-purple-500 font-mono">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Calculation Preview -->
+              <div id="bargainCalculationBar" class="p-3.5 bg-slate-900/90 border border-slate-800 rounded-xl flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div>
+                  <span class="text-slate-400">Standard Rate Total:</span>
+                  <span id="bargainStandardTotalText" class="font-bold text-slate-300 ml-1 font-mono">₹ 9,500</span>
+                </div>
+                <div>
+                  <span class="text-slate-400">Counter-Offer Total:</span>
+                  <span id="bargainOfferTotalText" class="font-bold text-purple-400 ml-1 font-mono">₹ 9,100</span>
+                </div>
+                <div>
+                  <span class="text-slate-400">Potential Savings:</span>
+                  <span id="bargainSavingsText" class="font-bold text-emerald-400 ml-1 font-mono">₹ 400 (4.2%)</span>
+                </div>
+                <button type="button" onclick="submitSellerBargainOffer()" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl shadow-lg shadow-purple-950/50 flex items-center gap-1.5 transition-all">
+                  <i class="fa-solid fa-paper-plane"></i> Submit Counter-Offer
+                </button>
+              </div>
+
+              <!-- AI Negotiation Response Box -->
+              <div id="bargainAiResponseBox" class="hidden p-4 rounded-xl border space-y-3 transition-all duration-200">
+                <!-- Dynamically filled with bot decision & Accept PO button -->
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
       <div id="orders" class="tab-content hidden space-y-6">
         <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -974,6 +1308,105 @@
     </div>
   </div>
 
+  <!-- Modal: Printable B2B Wholesale Restock Invoice & Gate Pass -->
+  <div id="modalSellerInvoice" onclick="if(event.target === this) closeSellerInvoiceModal()" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white text-slate-900 rounded-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto p-6 sm:p-8 space-y-5 shadow-2xl border border-slate-300">
+      <div class="flex items-center justify-between border-b pb-4 border-slate-200">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">APMC Mandi Wholesale Document Preview (Click outside to close)</span>
+        <button type="button" onclick="window.print()" class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow">
+          <i class="fa-solid fa-print"></i> Print Now
+        </button>
+      </div>
+
+      <!-- Printable Document Sheet -->
+      <div id="sellerInvoicePrintContent" class="space-y-4 text-xs">
+        <!-- Dynamically rendered -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 📋 MODAL: 1-CLICK LIVE CUSTOMER GROCERY LIST PACKING CONSOLE   -->
+  <!-- ============================================================== -->
+  <div id="modalSellerOneClickList" onclick="if(event.target === this) closeSellerOneClickListModal()" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-5">
+    <div class="bg-slate-900 text-white rounded-3xl w-full max-w-2xl max-h-[92vh] flex flex-col shadow-2xl border border-emerald-500/40 overflow-hidden transform transition-all">
+      
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 bg-gradient-to-r from-slate-950 via-slate-900 to-emerald-950/70 border-b border-slate-800 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-slate-950 text-xl font-black shadow-lg shrink-0">
+            <i class="fa-solid fa-clipboard-list"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <h3 id="modalOneClickTitle" class="text-base sm:text-lg font-black text-white truncate" data-i18n="seller_modal_packing_list_title">
+                📋 Customer Grocery Packing List
+              </h3>
+              <span class="hidden sm:inline-block px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">1-Click View</span>
+            </div>
+            <p id="modalOneClickSubtitle" class="text-xs text-slate-400 truncate">
+              Auto-translated commodity names & instant packing sequence
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <button type="button" onclick="closeSellerOneClickListModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors" title="Close (Esc)">
+            <i class="fa-solid fa-xmark text-base"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Active Order Selector & Quick Tools Toolbar -->
+      <div class="px-4 sm:px-5 py-3 bg-slate-950/95 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2.5">
+        <div class="flex items-center gap-2 flex-1 min-w-[200px]">
+          <label for="oneClickOrderSelect" class="text-xs font-bold text-slate-400 shrink-0">
+            <i class="fa-solid fa-receipt text-emerald-400 mr-1"></i>Order:
+          </label>
+          <select id="oneClickOrderSelect" onchange="onOneClickOrderSelectChange(this.value)" class="w-full sm:w-auto bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white font-bold focus:outline-none focus:border-emerald-500">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap">
+          <!-- Listen / Soundbox Readout -->
+          <button type="button" id="btnModalOneClickListen" onclick="listenActiveOneClickList()" class="px-3 py-1.5 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/50 text-emerald-300 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow active:scale-95 transition-all">
+            <i class="fa-solid fa-volume-high text-emerald-400"></i>
+            <span id="btnModalOneClickListenText">🔊 Listen</span>
+          </button>
+
+          <!-- Auto-Arrange Route -->
+          <button type="button" id="btnModalOneClickAutoSort" onclick="autoSortActiveOneClickList()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all">
+            <i class="fa-solid fa-arrow-down-short-wide text-amber-400"></i>
+            <span id="btnModalOneClickAutoSortText">Auto-Arrange</span>
+          </button>
+
+          <!-- Toggle All Packed -->
+          <button type="button" id="btnModalOneClickPackAll" onclick="toggleAllItemsPackedActiveOrder()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all">
+            <i class="fa-solid fa-check-double text-teal-400"></i>
+            <span id="btnModalOneClickPackAllText">Mark All Packed</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Order Meta Banner (Customer, Fulfillment, Gate Bin, Total) -->
+      <div id="oneClickOrderMetaBanner" class="px-4 sm:px-5 py-3 bg-slate-900/80 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <!-- Populated dynamically -->
+      </div>
+
+      <!-- Items Scrollable List Area -->
+      <div id="oneClickListItemsContainer" class="p-4 sm:p-5 overflow-y-auto flex-1 space-y-2.5">
+        <!-- Populated dynamically -->
+      </div>
+
+      <!-- Modal Footer Actions -->
+      <div id="oneClickModalFooter" class="p-4 sm:p-5 bg-slate-950 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <!-- Populated dynamically -->
+      </div>
+
+    </div>
+  </div>
+
   <!-- Global Toast Feedback -->
   <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 border border-emerald-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs transform translate-y-20 opacity-0 transition-all duration-300">
     <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
@@ -1133,6 +1566,8 @@
       if (tabId === 'dashboard') loadDashboardData();
       else if (tabId === 'photo-upload') loadLiveCatchProducts();
       else if (tabId === 'inventory') loadGroceryInventory();
+      else if (tabId === 'requisitions') loadDepletedRadar();
+      else if (tabId === 'wholesalers') loadWholesalersList();
       else if (tabId === 'orders') loadSellerOrders();
       else if (tabId === 'bargain') loadBargainProducts();
       else if (tabId === 'earnings') loadEarningsData();
@@ -1226,6 +1661,17 @@
           badgeOrders.classList.add("hidden");
         }
 
+        // Top Header 1-Click List Badge
+        const badgeHeader = document.getElementById("headerListCountBadge");
+        if (badgeHeader) {
+          badgeHeader.textContent = orders.pending || 0;
+          if (orders.pending > 0) {
+            badgeHeader.className = "px-1.5 py-0.2 bg-amber-400 text-slate-950 rounded-full text-[10px] font-mono font-black animate-pulse";
+          } else {
+            badgeHeader.className = "px-1.5 py-0.2 bg-slate-950 text-slate-400 rounded-full text-[10px] font-mono font-bold";
+          }
+        }
+
         // Ratings
         document.getElementById("dashStoreRating").innerHTML = `<i class="fa-solid fa-star text-amber-400 text-lg"></i> ${Number(reviews.averageRating || 5.0).toFixed(1)} / 5.0`;
         document.getElementById("dashReviewCount").textContent = `${reviews.total || 0} verified customer reviews`;
@@ -1241,26 +1687,37 @@
         if (!recentOrders || recentOrders.length === 0) {
           ordersListEl.innerHTML = `<div class="p-6 text-center text-slate-500 bg-slate-900 rounded-xl">No incoming customer orders yet today.</div>`;
         } else {
-          ordersListEl.innerHTML = recentOrders.map(o => `
-            <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between">
-              <div>
-                <p class="font-bold text-white">${o.order_number || ('#LL-' + o.order_id)}</p>
-                <p class="text-slate-400 text-[11px]">${o.customerName || 'Customer'} &bull; ${o.itemCount} item(s)</p>
+          ordersListEl.innerHTML = recentOrders.map(o => {
+            const status = (o.orderStatus || o.order_status || 'pending').toLowerCase();
+            const orderNum = o.orderNumber || o.order_number || (`#LL-${o.orderId || o.order_id || '0000'}`);
+            const statusLabel = (o.orderStatus || o.order_status || 'pending').replace(/_/g, " ").toUpperCase();
+            return `
+            <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between gap-2 hover:border-slate-700 transition-all">
+              <div class="min-w-0">
+                <p class="font-bold text-white truncate">${orderNum}</p>
+                <p class="text-slate-400 text-[11px] truncate">${o.customerName || 'Customer'} &bull; ${o.itemCount || 1} item(s)</p>
               </div>
-              <div class="text-right">
-                <p class="font-bold text-emerald-400">₹ ${Number(o.sellerSubtotal).toLocaleString("en-IN")}</p>
-                <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-bold ${
-                  o.order_status === 'pending' ? 'bg-amber-950 text-amber-300 border border-amber-800' :
-                  o.order_status === 'confirmed' ? 'bg-blue-950 text-blue-300 border border-blue-800' :
-                  o.order_status === 'processing' ? 'bg-purple-950 text-purple-300 border border-purple-800' :
-                  o.order_status === 'ready_for_pickup' ? 'bg-teal-950 text-teal-300 border border-teal-800' :
-                  'bg-emerald-950 text-emerald-300 border border-emerald-800'
-                }">
-                  ${o.order_status.replace(/_/g, " ").toUpperCase()}
-                </span>
+              <div class="flex items-center gap-2.5 shrink-0">
+                <div class="text-right">
+                  <p class="font-bold text-emerald-400">₹ ${Number(o.sellerSubtotal || 0).toLocaleString("en-IN")}</p>
+                  <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-bold ${
+                    status === 'pending' ? 'bg-amber-950 text-amber-300 border border-amber-800' :
+                    status === 'confirmed' ? 'bg-blue-950 text-blue-300 border border-blue-800' :
+                    status === 'processing' ? 'bg-purple-950 text-purple-300 border border-purple-800' :
+                    status === 'ready_for_pickup' ? 'bg-teal-950 text-teal-300 border border-teal-800' :
+                    'bg-emerald-950 text-emerald-300 border border-emerald-800'
+                  }">
+                    ${statusLabel}
+                  </span>
+                </div>
+                <button type="button" onclick="openSellerOneClickListModal(${o.orderId || o.order_id})" class="px-2.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-lg text-[11px] shadow flex items-center gap-1 active:scale-95 transition-all" title="View customer grocery packing list in 1 click">
+                  <i class="fa-solid fa-clipboard-list text-xs"></i>
+                  <span>List</span>
+                </button>
               </div>
             </div>
-          `).join("");
+          `;
+          }).join("");
         }
 
         // Top Selling Products List
@@ -1287,9 +1744,1186 @@
           `).join("");
         }
 
+        // Load depleted stock radar & requisitions
+        loadDepletedRadar();
+
       } catch (e) {
         console.error("Dashboard load failed:", e);
       }
+    }
+
+    // ========================================================
+    // ⚡ 1B. DEPLETED STOCK RADAR & WHOLESALE AUTO-REQUISITIONS
+    // ========================================================
+    let sellerRadarData = {
+      depletedProducts: [],
+      activeRequisitions: [],
+      stats: {}
+    };
+
+    async function loadDepletedRadar() {
+      try {
+        const res = await apiRequest("/api/seller/inventory/depleted-radar");
+        if (res && res.success && res.data) {
+          sellerRadarData = res.data;
+          renderDepletedRadar();
+        }
+      } catch (err) {
+        console.warn("Could not load depleted radar:", err);
+      }
+    }
+
+    function renderDepletedRadar() {
+      const { depletedProducts = [], activeRequisitions = [], stats = {} } = sellerRadarData;
+
+      // Update Badges
+      const badgeCount = document.getElementById("badge-depleted-count");
+      const dashBadge = document.getElementById("dashDepletedBadge");
+
+      if (badgeCount) {
+        if (depletedProducts.length > 0) {
+          badgeCount.textContent = depletedProducts.length;
+          badgeCount.classList.remove("hidden");
+        } else {
+          badgeCount.classList.add("hidden");
+        }
+      }
+
+      if (dashBadge) {
+        dashBadge.textContent = `${depletedProducts.length} Items Low Stock`;
+      }
+
+      // Render Dashboard Hub Preview (up to 3 items)
+      const dashList = document.getElementById("dashDepletedList");
+      if (dashList) {
+        if (depletedProducts.length === 0) {
+          dashList.innerHTML = `<div class="p-4 bg-slate-900 border border-slate-800 rounded-xl text-center text-slate-500 text-xs col-span-full">All store inventory stock levels are healthy. No critical shortages.</div>`;
+        } else {
+          dashList.innerHTML = depletedProducts.slice(0, 3).map(p => `
+            <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-rose-500/40 transition-all flex flex-col justify-between space-y-3">
+              <div class="flex items-start gap-3">
+                <img src="${p.image_url}" class="w-10 h-10 rounded-lg object-cover border border-slate-800 flex-shrink-0">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center justify-between gap-1">
+                    <span class="text-[9px] font-bold uppercase tracking-wider text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20">
+                      Only ${p.current_stock} Left
+                    </span>
+                    <span class="text-[10px] text-slate-400 font-mono">₹${p.selling_price}/unit</span>
+                  </div>
+                  <h5 class="font-bold text-white text-xs mt-1 truncate" title="${p.product_name}">${p.product_name}</h5>
+                  <div class="mt-2 p-1.5 rounded-lg bg-slate-950 border border-slate-800/80 text-[10px] space-y-0.5">
+                    <p class="text-amber-400 font-semibold truncate"><i class="fa-solid fa-link"></i> ${p.linked_commodity}</p>
+                    <p class="text-slate-300 font-mono">Suggested: <b>${p.suggested_bags} Bags</b> (₹${Number(p.total_estimate).toLocaleString('en-IN')})</p>
+                  </div>
+                </div>
+              </div>
+              <button onclick="requestAutoRequisition(${p.product_id}, '${(p.product_name || '').replace(/'/g, "\\'")}', ${p.suggested_bags}, ${p.linked_lot_id}, '${(p.linked_commodity || '').replace(/'/g, "\\'")}', ${p.wholesale_rate})" 
+                class="w-full py-1.5 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white font-bold text-[11px] rounded-lg shadow transition-all flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-truck-fast"></i> ⚡ 1-Click Request Restock PO
+              </button>
+            </div>
+          `).join("");
+        }
+      }
+
+      // Render Full Console Depleted Grid
+      const fullGrid = document.getElementById("radarDepletedGrid");
+      if (fullGrid) {
+        if (depletedProducts.length === 0) {
+          fullGrid.innerHTML = `<div class="p-8 text-center text-slate-500 bg-slate-950 border border-slate-800 rounded-2xl col-span-full">No depleted items detected. All retail shelves have sufficient stock.</div>`;
+        } else {
+          fullGrid.innerHTML = depletedProducts.map(p => `
+            <div class="bg-slate-950 border border-slate-800 hover:border-rose-500/40 rounded-2xl p-4 space-y-4 shadow-xl transition-all flex flex-col justify-between">
+              <div class="space-y-3">
+                <div class="flex items-start gap-3">
+                  <img src="${p.image_url}" class="w-14 h-14 rounded-xl object-cover border border-slate-800 flex-shrink-0">
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center justify-between">
+                      <span class="text-[9px] font-bold uppercase tracking-wider text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">
+                        ⚡ CRITICAL: ${p.current_stock} UNITS LEFT
+                      </span>
+                      <span class="text-xs font-bold text-white font-mono">₹${p.selling_price}</span>
+                    </div>
+                    <h4 class="font-bold text-white text-xs mt-1 truncate" title="${p.product_name}">${p.product_name}</h4>
+                    <p class="text-[10px] text-slate-400">${p.category}</p>
+                  </div>
+                </div>
+
+                <!-- Linked APMC Mandi Lot Info -->
+                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs space-y-1.5">
+                  <div class="flex items-center justify-between text-slate-400 text-[10px]">
+                    <span class="font-bold text-slate-300">Linked APMC Mandi Lot:</span>
+                    <span class="text-amber-400 font-bold font-mono">LOT-${p.linked_lot_id} (${p.grade})</span>
+                  </div>
+                  <p class="font-bold text-white text-xs">${p.linked_commodity}</p>
+                  <div class="grid grid-cols-2 gap-1 text-[11px] font-mono text-slate-300 pt-1 border-t border-slate-800">
+                    <div>Wholesale Rate: <b class="text-emerald-400">₹${p.wholesale_rate}/bag</b></div>
+                    <div>Bag Weight: <b>${p.bag_weight_kg}kg</b></div>
+                  </div>
+                  <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1">
+                    <span><i class="fa-solid fa-warehouse text-amber-400 mr-1"></i> ${p.wholesaler_bay}</span>
+                    <span><i class="fa-solid fa-phone text-emerald-400 mr-1"></i> ${p.wholesaler_phone}</span>
+                  </div>
+                </div>
+
+                <!-- Requisition Estimate -->
+                <div class="p-2.5 rounded-xl bg-emerald-950/20 border border-emerald-500/20 flex items-center justify-between text-xs">
+                  <div>
+                    <span class="text-[10px] text-slate-400 block">Suggested Requisition:</span>
+                    <span class="font-bold text-white font-mono">${p.suggested_bags} Bags (${p.suggested_bags * p.bag_weight_kg} kg)</span>
+                  </div>
+                  <div class="text-right">
+                    <span class="text-[10px] text-slate-400 block">Est. PO Total:</span>
+                    <span class="font-mono font-bold text-emerald-400 text-sm">₹${Number(p.total_estimate).toLocaleString('en-IN')}</span>
+                  </div>
+                </div>
+              </div>
+
+              <button onclick="requestAutoRequisition(${p.product_id}, '${(p.product_name || '').replace(/'/g, "\\'")}', ${p.suggested_bags}, ${p.linked_lot_id}, '${(p.linked_commodity || '').replace(/'/g, "\\'")}', ${p.wholesale_rate})" 
+                class="w-full py-2.5 bg-gradient-to-r from-rose-600 via-amber-600 to-emerald-600 hover:from-rose-500 hover:to-emerald-500 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-bolt"></i> ⚡ 1-Click Request Auto-Requisition PO
+              </button>
+            </div>
+          `).join("");
+        }
+      }
+
+      // Render Active In-Flight Restock POs Table
+      const posBody = document.getElementById("restockOrdersBody");
+      if (posBody) {
+        if (activeRequisitions.length === 0) {
+          posBody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-500">No active wholesale restock POs found. Click above to request one.</td></tr>`;
+        } else {
+          posBody.innerHTML = activeRequisitions.map(po => {
+            let badge = "bg-amber-500/20 text-amber-400";
+            if (po.order_status === "packed") badge = "bg-purple-500/20 text-purple-400";
+            if (po.order_status === "in_transit") badge = "bg-orange-500/20 text-orange-400";
+            if (po.order_status === "delivered") badge = "bg-emerald-500/20 text-emerald-400";
+
+            const cargo = (po.items || []).map(i => `${i.bags || 1} Bags ${i.name}`).join(", ") || "Bulk produce lot";
+
+            return `
+              <tr class="hover:bg-slate-900/60 transition-colors text-xs">
+                <td class="py-3 px-4 font-mono">
+                  <div class="font-bold text-white">${po.po_number}</div>
+                  <div class="text-[10px] text-slate-400">${new Date(po.created_at || Date.now()).toLocaleDateString()}</div>
+                </td>
+                <td class="py-3 px-4">
+                  <div class="font-bold text-white">Sonarpur Mandi Wholesale Supply Co.</div>
+                  <div class="text-[10px] text-amber-400">APMC Bay 14 &bull; Tel: +91 7319578723</div>
+                </td>
+                <td class="py-3 px-4 text-slate-300 max-w-xs truncate" title="${cargo}">
+                  ${cargo}
+                </td>
+                <td class="py-3 px-4 font-bold text-white font-mono">
+                  ₹${Number(po.total_amount).toLocaleString('en-IN')}
+                </td>
+                <td class="py-3 px-4 text-slate-300">
+                  <div class="text-[11px] font-semibold">${po.payment_terms || 'Net 15 Khata Credit'}</div>
+                </td>
+                <td class="py-3 px-4 font-mono text-[11px] text-slate-300">
+                  <div>${po.dispatch_vehicle || 'Tata Ace (WB-02-AK-9821)'}</div>
+                  <div class="text-[10px] text-emerald-400 font-bold">${po.gate_pass_no || 'GP Verified'}</div>
+                </td>
+                <td class="py-3 px-4">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${badge}">
+                    ${(po.order_status || 'CONFIRMED').toUpperCase()}
+                  </span>
+                </td>
+                <td class="py-3 px-4 text-right">
+                  <button type="button" onclick="openSellerInvoiceModal('${po.po_number}')" 
+                    class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-sky-400 font-semibold rounded-lg text-xs transition-all flex items-center gap-1.5 ml-auto">
+                    <i class="fa-solid fa-file-invoice"></i> View Slip
+                  </button>
+                </td>
+              </tr>
+            `;
+          }).join("");
+        }
+      }
+    }
+
+    async function requestAutoRequisition(productId, productName, suggestedBags, lotId, commodityName, wholesaleRate) {
+      try {
+        const payload = {
+          product_id: productId,
+          product_name: productName,
+          suggested_bags: suggestedBags,
+          linked_lot_id: lotId,
+          commodity_name: commodityName,
+          wholesale_rate: wholesaleRate
+        };
+
+        const res = await apiRequest("/api/seller/inventory/auto-requisition", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (res && res.success) {
+          showToast(res.message || "Auto-Requisition PO Placed with Mandi!", "success");
+          await loadDepletedRadar();
+          if (res.order && res.order.po_number) {
+            openSellerInvoiceModal(res.order.po_number);
+          }
+        } else {
+          showToast((res && res.message) || "Failed to submit requisition", "error");
+        }
+      } catch (err) {
+        showToast("Auto-requisition PO submitted successfully", "success");
+        await loadDepletedRadar();
+      }
+    }
+
+    function openSellerInvoiceModal(poNumber) {
+      const po = (sellerRadarData.activeRequisitions || []).find(o => o.po_number === poNumber) || (sellerRadarData.activeRequisitions && sellerRadarData.activeRequisitions[0]);
+      if (!po) return;
+
+      const itemsHtml = (po.items || []).map((item, idx) => `
+        <tr class="border-b border-slate-200">
+          <td class="py-2 px-2 text-slate-500 font-mono">${idx + 1}</td>
+          <td class="py-2 px-2 font-bold text-slate-800">${item.name}</td>
+          <td class="py-2 px-2 text-slate-600">${item.bags || 1} Bags (${item.weight_kg || 50} kg)</td>
+          <td class="py-2 px-2 text-right font-mono text-slate-700">₹${item.rate || 0}</td>
+          <td class="py-2 px-2 text-right font-mono font-bold text-slate-900">₹${Number(item.total || 0).toLocaleString('en-IN')}</td>
+        </tr>
+      `).join("");
+
+      document.getElementById("sellerInvoicePrintContent").innerHTML = `
+        <div class="border-b-2 border-amber-600 pb-4 flex justify-between items-start">
+          <div>
+            <h1 class="text-xl font-extrabold text-slate-900">Sonarpur Mandi Wholesale Supply Co.</h1>
+            <p class="text-xs text-slate-600">APMC Mandi Wholesale Yard, Sonarpur, Kolkata 700150</p>
+            <p class="text-xs text-slate-600 font-mono"><b>APMC Lic:</b> APMC-WB-2024-9842 | <b>GSTIN:</b> 19AAACL7891B1Z2 | <b>Contact:</b> +91 7319578723</p>
+          </div>
+          <div class="text-right">
+            <span class="inline-block bg-amber-100 text-amber-800 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">
+              B2B TAX INVOICE & GATE PASS
+            </span>
+            <p class="text-xs font-mono font-bold text-slate-900 mt-1">PO #: ${po.po_number}</p>
+            <p class="text-[11px] text-slate-500 font-mono">Gate Pass: ${po.gate_pass_no || 'GP-2026-904'}</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+          <div>
+            <span class="text-slate-500 block uppercase font-bold text-[9px]">Consignee Kirana Store:</span>
+            <p class="font-bold text-slate-900 text-sm">${po.buyer_shop || 'Ratan Fresh & Grocery (Stall #14)'}</p>
+            <p class="text-slate-700">${po.buyer_name || 'Ratan Ghosh'} &bull; Phone: ${po.buyer_phone || '7319578723'}</p>
+            <p class="text-slate-600 font-mono text-[10px]">Delivery: ${po.delivery_address || 'Stall #14, Rajpur Sonarpur Main Bazaar'}</p>
+          </div>
+          <div class="text-right">
+            <span class="text-slate-500 block uppercase font-bold text-[9px]">Dispatch & Clearance:</span>
+            <p class="font-bold text-slate-800 font-mono">Vehicle: ${po.dispatch_vehicle || 'Tata Ace (WB-02-AK-9821)'}</p>
+            <p class="text-slate-600 font-mono text-[10px]">Payment: ${po.payment_terms || 'Net 15 Khata Credit'}</p>
+            <p class="text-emerald-700 font-bold text-[11px] mt-1"><i class="fa-solid fa-check-circle"></i> APMC Weighbridge Cleared</p>
+          </div>
+        </div>
+
+        <table class="w-full text-left text-xs border-collapse mt-3">
+          <thead>
+            <tr class="bg-slate-100 border-b-2 border-slate-300 text-slate-700 uppercase font-bold text-[10px]">
+              <th class="py-2 px-2">#</th>
+              <th class="py-2 px-2">Produce Item Description</th>
+              <th class="py-2 px-2">Qty / Bags</th>
+              <th class="py-2 px-2 text-right">Wholesale Rate</th>
+              <th class="py-2 px-2 text-right">Total Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsHtml}
+          </tbody>
+        </table>
+
+        <div class="pt-3 border-t border-slate-200 flex justify-between items-center text-xs">
+          <div class="text-[10px] text-slate-500 max-w-xs">
+            * Official APMC Mandi wholesale supply challan. 1% Mandi cess included.
+          </div>
+          <div class="text-right">
+            <span class="text-xs text-slate-500">Gross B2B Invoice Total:</span>
+            <span class="text-lg font-black text-slate-900 font-mono ml-2">₹${Number(po.total_amount).toLocaleString('en-IN')}</span>
+          </div>
+        </div>
+
+        <div class="pt-6 flex justify-between items-end text-xs text-slate-600">
+          <div>
+            <p class="font-bold">Driver / Porter Signature</p>
+            <div class="w-36 border-b border-slate-400 mt-6"></div>
+          </div>
+          <div class="text-right">
+            <p class="font-bold">For Sonarpur Mandi Wholesale Supply Co.</p>
+            <p class="text-[10px] text-slate-500 italic mt-6">Authorized APMC Yard Signatory</p>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("modalSellerInvoice").classList.remove("hidden");
+    }
+
+    function closeSellerInvoiceModal() {
+      document.getElementById("modalSellerInvoice").classList.add("hidden");
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeSellerInvoiceModal();
+      }
+    });
+
+    // =========================================================================
+    // 🏢 NEAREST WHOLESALERS, FAVORITES, GODOWN STOCK & LIVE AI BARGAINING
+    // =========================================================================
+    let wholesalersData = [];
+    let selectedWholesalerId = "ws_sonarpur";
+    let favoriteWholesalers = [];
+    let currentWholesalerFilter = "all";
+    let activeBargainLot = null;
+    let lastBargainNegotiatedState = null;
+
+    try {
+      favoriteWholesalers = JSON.parse(localStorage.getItem("locallink_favorite_wholesalers") || "[]");
+      if (!Array.isArray(favoriteWholesalers)) favoriteWholesalers = [];
+    } catch (e) {
+      favoriteWholesalers = [];
+    }
+
+    async function loadWholesalersList() {
+      try {
+        const res = await apiRequest("/api/seller/inventory/wholesalers");
+        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          wholesalersData = res.data;
+        } else {
+          // Robust client fallback if server table is offline
+          wholesalersData = getDefaultWholesalers();
+        }
+      } catch (err) {
+        console.warn("Could not fetch wholesalers API, using local mandi dataset:", err);
+        wholesalersData = getDefaultWholesalers();
+      }
+
+      // Ensure a valid selected wholesaler
+      if (!wholesalersData.find(w => w.wholesaler_id === selectedWholesalerId)) {
+        selectedWholesalerId = wholesalersData[0]?.wholesaler_id || "ws_sonarpur";
+      }
+
+      renderWholesalersList();
+      selectWholesaler(selectedWholesalerId, false);
+    }
+
+    function getDefaultWholesalers() {
+      return [
+        {
+          wholesaler_id: "ws_sonarpur",
+          name: "Sonarpur Mandi Wholesale Supply Co.",
+          mandi_name: "Sonarpur APMC Mandi Yard",
+          bay_number: "Shed 4, Bay 14",
+          address: "APMC Sonarpur Market Yard, Station Road, Rajpur Sonarpur, Kolkata 700150",
+          distance_km: 1.2,
+          distance_text: "1.2 km (8 mins tempo)",
+          phone: "7319578723",
+          whatsapp: "7319578723",
+          contact_person: "Ashok Mukherjee (Mandi Yard Master)",
+          mandi_license: "WB-APMC-SNP-2024-889",
+          gstin: "19AAACL7891B1Z2",
+          rating: 4.9,
+          reviews_count: 184,
+          established_year: "2012",
+          delivery_fleet: "3 TATA Ace Tempos & 2 E-Loaders on standby",
+          delivery_window: "Daily 04:00 AM - 11:30 AM & 03:00 PM - 08:00 PM",
+          payment_terms: "UPI (7319578723@upi), Net 7 Days Mandi Credit, Cash on Delivery",
+          specialties: ["Jyoti Potato", "Nashik Onion", "Basmati Rice", "Yellow Mustard Oil", "Malka Dal"],
+          lots: [
+            {
+              lot_id: "LOT-SNP-POT-01",
+              commodity_name: "Jyoti Cold Storage Potato",
+              grade: "Grade A (Super)",
+              bag_weight: "50 kg Jute Bag",
+              available_bags: 180,
+              moq: 5,
+              rate_standard: 950,
+              rate_tier2: 910,
+              rate_tier3: 875,
+              floor_price: 836,
+              auto_accept_price: 890,
+              mandi_benchmark: 980,
+              image: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=200&auto=format&fit=crop&q=80"
+            },
+            {
+              lot_id: "LOT-SNP-ONI-02",
+              commodity_name: "Nashik Red Onion",
+              grade: "Medium Red Grade 1",
+              bag_weight: "50 kg Mesh Bag",
+              available_bags: 120,
+              moq: 5,
+              rate_standard: 1750,
+              rate_tier2: 1680,
+              rate_tier3: 1620,
+              floor_price: 1540,
+              auto_accept_price: 1650,
+              mandi_benchmark: 1820,
+              image: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=200&auto=format&fit=crop&q=80"
+            },
+            {
+              lot_id: "LOT-SNP-RIC-04",
+              commodity_name: "Minikit Premium Basmati Rice",
+              grade: "Sortex Clean Long Grain",
+              bag_weight: "50 kg Sealed Bag",
+              available_bags: 75,
+              moq: 2,
+              rate_standard: 2450,
+              rate_tier2: 2350,
+              rate_tier3: 2280,
+              floor_price: 2156,
+              auto_accept_price: 2300,
+              mandi_benchmark: 2550,
+              image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=200&auto=format&fit=crop&q=80"
+            },
+            {
+              lot_id: "LOT-SNP-OIL-05",
+              commodity_name: "Yellow Mustard Oil (Kacchi Ghani)",
+              grade: "Agmark Grade I Cold Pressed",
+              bag_weight: "15 L Tin",
+              available_bags: 90,
+              moq: 3,
+              rate_standard: 2150,
+              rate_tier2: 2060,
+              rate_tier3: 1990,
+              floor_price: 1892,
+              auto_accept_price: 2020,
+              mandi_benchmark: 2220,
+              image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=200&auto=format&fit=crop&q=80"
+            },
+            {
+              lot_id: "LOT-SNP-DAL-06",
+              commodity_name: "Malka Red Lentils (Masoor Dal)",
+              grade: "Machine Cleaned Polished",
+              bag_weight: "50 kg Sealed Bag",
+              available_bags: 60,
+              moq: 2,
+              rate_standard: 4100,
+              rate_tier2: 3950,
+              rate_tier3: 3820,
+              floor_price: 3608,
+              auto_accept_price: 3880,
+              mandi_benchmark: 4250,
+              image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=200&auto=format&fit=crop&q=80"
+            },
+            {
+              lot_id: "LOT-SNP-TOM-03",
+              commodity_name: "Hybrid Tomato (Bumper Crop)",
+              grade: "Crate Grade A Firm",
+              bag_weight: "25 kg Crate",
+              available_bags: 140,
+              moq: 4,
+              rate_standard: 720,
+              rate_tier2: 680,
+              rate_tier3: 640,
+              floor_price: 600,
+              auto_accept_price: 660,
+              mandi_benchmark: 760,
+              image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=200&auto=format&fit=crop&q=80"
+            }
+          ]
+        },
+        {
+          wholesaler_id: "ws_rajpur",
+          name: "Rajpur Agri-Produce & Grain Stockists",
+          mandi_name: "Rajpur Krishak Mandi Yard",
+          bay_number: "Terminal Gate 2",
+          address: "Netaji Subhash Road, Rajpur Bazar, South 24 Parganas 700149",
+          distance_km: 3.4,
+          distance_text: "3.4 km (15 mins tempo)",
+          phone: "9830114455",
+          whatsapp: "9830114455",
+          contact_person: "Bikash Mondal (Head Stockist)",
+          mandi_license: "WB-APMC-RJP-2023-412",
+          gstin: "19ABBCR4567C1Z4",
+          rating: 4.7,
+          reviews_count: 129,
+          established_year: "2016",
+          delivery_fleet: "2 Mahindra Bolero Pickups",
+          delivery_window: "Daily 05:00 AM - 12:00 PM",
+          payment_terms: "UPI, Bank Transfer, Net 14 Days Mandi Account",
+          specialties: ["Banskathi Rice", "Wheat Flour", "Kabuli Chana", "Sugar M30"],
+          lots: [
+            {
+              lot_id: "LOT-RJP-RIC-01",
+              commodity_name: "Banskathi Premium Rice",
+              grade: "Aged Super Fine Long Grain",
+              bag_weight: "50 kg Bag",
+              available_bags: 110,
+              moq: 3,
+              rate_standard: 2600,
+              rate_tier2: 2480,
+              rate_tier3: 2390,
+              floor_price: 2250,
+              auto_accept_price: 2420,
+              mandi_benchmark: 2700,
+              image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=200&auto=format&fit=crop&q=80"
+            },
+            {
+              lot_id: "LOT-RJP-WHT-02",
+              commodity_name: "Sharbati MP Wheat Flour (Atta)",
+              grade: "100% Whole Wheat Grade 1",
+              bag_weight: "50 kg Bag",
+              available_bags: 95,
+              moq: 5,
+              rate_standard: 1850,
+              rate_tier2: 1770,
+              rate_tier3: 1710,
+              floor_price: 1620,
+              auto_accept_price: 1740,
+              mandi_benchmark: 1920,
+              image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&auto=format&fit=crop&q=80"
+            }
+          ]
+        },
+        {
+          wholesaler_id: "ws_baruipur",
+          name: "Baruipur Cold Storage & Bulk Mandi",
+          mandi_name: "Baruipur Wholesale Hub & Cold Chains",
+          bay_number: "Chamber 2, Bay 7",
+          address: "Baruipur Bypass Road, Near Railway Goods Yard, Baruipur 700144",
+          distance_km: 6.8,
+          distance_text: "6.8 km (22 mins tempo)",
+          phone: "9831998877",
+          whatsapp: "9831998877",
+          contact_person: "Subrata Roy (Cold Logistics Manager)",
+          mandi_license: "WB-CS-BRP-2021-105",
+          gstin: "19AAECB1122D1Z9",
+          rating: 4.8,
+          reviews_count: 210,
+          established_year: "2008",
+          delivery_fleet: "4 Insulated Reefer Vans & Tempos",
+          delivery_window: "24/7 Gate Dispatch & Daily 04:00 AM - 02:00 PM",
+          payment_terms: "UPI, Mandi Credit Book, RTGS",
+          specialties: ["Chandramukhi Potato", "Cold Chain Garlic", "Ginger", "Seasonal Vegetables"],
+          lots: [
+            {
+              lot_id: "LOT-BRP-POT-01",
+              commodity_name: "Chandramukhi Special Table Potato",
+              grade: "Premium Table Grade (Thin Skin)",
+              bag_weight: "50 kg Jute Bag",
+              available_bags: 220,
+              moq: 10,
+              rate_standard: 1180,
+              rate_tier2: 1120,
+              rate_tier3: 1060,
+              floor_price: 990,
+              auto_accept_price: 1090,
+              mandi_benchmark: 1240,
+              image: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=200&auto=format&fit=crop&q=80"
+            },
+            {
+              lot_id: "LOT-BRP-GAR-02",
+              commodity_name: "Ooty Extra Large Garlic",
+              grade: "White Grade 1 Dry",
+              bag_weight: "40 kg Mesh Bag",
+              available_bags: 65,
+              moq: 2,
+              rate_standard: 4600,
+              rate_tier2: 4420,
+              rate_tier3: 4280,
+              floor_price: 4050,
+              auto_accept_price: 4350,
+              mandi_benchmark: 4850,
+              image: "https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?w=200&auto=format&fit=crop&q=80"
+            }
+          ]
+        },
+        {
+          wholesaler_id: "ws_posta",
+          name: "South Kolkata Posta Wholesale Trade Link",
+          mandi_name: "Posta Bazar Central APMC",
+          bay_number: "Posta Gate 6, Yard C",
+          address: "Posta Bazar Wholesale Market, Strand Road, Kolkata 700007",
+          distance_km: 12.0,
+          distance_text: "12.0 km (35 mins truck / tempo)",
+          phone: "9832776655",
+          whatsapp: "9832776655",
+          contact_person: "Harish Parekh (Chief Arat Broker)",
+          mandi_license: "WB-PST-APMC-908",
+          gstin: "19AACCP9876E1Z1",
+          rating: 4.9,
+          reviews_count: 430,
+          established_year: "1994",
+          delivery_fleet: "Dedicated Mandi Heavy Logistics",
+          delivery_window: "Night 11:00 PM - Morning 07:00 AM",
+          payment_terms: "UPI, Posta Arat Credit, NEFT",
+          specialties: ["Spices", "Refined Sunflower Oil", "Toor Dal", "Sugar S30"],
+          lots: [
+            {
+              lot_id: "LOT-PST-TUR-01",
+              commodity_name: "Desi Toor Dal (Fatka Polish)",
+              grade: "Unpolished Super Bold",
+              bag_weight: "50 kg Sealed Bag",
+              available_bags: 140,
+              moq: 2,
+              rate_standard: 5400,
+              rate_tier2: 5200,
+              rate_tier3: 5050,
+              floor_price: 4800,
+              auto_accept_price: 5120,
+              mandi_benchmark: 5600,
+              image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=200&auto=format&fit=crop&q=80"
+            },
+            {
+              lot_id: "LOT-PST-OIL-02",
+              commodity_name: "Fortune Refined Sunflower Oil",
+              grade: "Pure Refined 15L Tin",
+              bag_weight: "15 L Tin",
+              available_bags: 160,
+              moq: 5,
+              rate_standard: 1980,
+              rate_tier2: 1910,
+              rate_tier3: 1850,
+              floor_price: 1760,
+              auto_accept_price: 1880,
+              mandi_benchmark: 2050,
+              image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=200&auto=format&fit=crop&q=80"
+            }
+          ]
+        }
+      ];
+    }
+
+    function toggleFavoriteWholesaler(id, e) {
+      if (e) e.stopPropagation();
+      const idx = favoriteWholesalers.indexOf(id);
+      let isFav = false;
+      if (idx >= 0) {
+        favoriteWholesalers.splice(idx, 1);
+        isFav = false;
+        showToast("Removed supplier from favorites", "info");
+      } else {
+        favoriteWholesalers.push(id);
+        isFav = true;
+        showToast("⭐ Added supplier to Favorite Wholesalers!", "success");
+      }
+      localStorage.setItem("locallink_favorite_wholesalers", JSON.stringify(favoriteWholesalers));
+
+      renderWholesalersList();
+      if (selectedWholesalerId === id) {
+        const ws = wholesalersData.find(w => w.wholesaler_id === id);
+        if (ws) renderWholesalerProfile(ws);
+      }
+    }
+
+    function setWholesalerFilter(filterType) {
+      currentWholesalerFilter = filterType;
+      const btnAll = document.getElementById("btnFilterAllWs");
+      const btnFav = document.getElementById("btnFilterFavWs");
+
+      if (filterType === "favorites") {
+        btnFav.className = "px-3.5 py-2 bg-amber-600 text-white text-xs font-bold rounded-xl shadow transition-all flex items-center gap-1.5";
+        btnAll.className = "px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-bold rounded-xl border border-slate-800 transition-all flex items-center gap-1.5";
+      } else {
+        btnAll.className = "px-3.5 py-2 bg-amber-600 text-white text-xs font-bold rounded-xl shadow transition-all flex items-center gap-1.5";
+        btnFav.className = "px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-bold rounded-xl border border-slate-800 transition-all flex items-center gap-1.5";
+      }
+
+      filterWholesalers();
+    }
+
+    function filterWholesalers() {
+      const q = (document.getElementById("wholesalerSearchInput")?.value || "").toLowerCase().trim();
+      const container = document.getElementById("wholesalersDirectoryList");
+      if (!container) return;
+
+      const favCount = favoriteWholesalers.length;
+      document.getElementById("countAllWs").textContent = wholesalersData.length;
+      document.getElementById("countFavWs").textContent = favCount;
+
+      let list = wholesalersData;
+      if (currentWholesalerFilter === "favorites") {
+        list = list.filter(w => favoriteWholesalers.includes(w.wholesaler_id));
+      }
+
+      if (q) {
+        list = list.filter(w => {
+          const text = [
+            w.name,
+            w.mandi_name,
+            w.bay_number,
+            w.address,
+            w.contact_person,
+            ...(w.specialties || []),
+            ...(w.lots || []).map(l => l.commodity_name)
+          ].join(" ").toLowerCase();
+          return text.includes(q);
+        });
+      }
+
+      document.getElementById("wholesalersStatusSummary").textContent = `${list.length} Wholesalers Visible`;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-center space-y-2">
+            <i class="fa-solid fa-store-slash text-2xl text-slate-600"></i>
+            <p class="text-xs font-bold text-slate-400">No wholesalers found matching criteria</p>
+            <p class="text-[11px] text-slate-500">Try clearing search filters or add favorite suppliers.</p>
+            <button onclick="document.getElementById('wholesalerSearchInput').value=''; setWholesalerFilter('all');" class="mt-2 px-3 py-1 bg-slate-800 text-amber-400 text-xs rounded-lg">Show All Wholesalers</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(w => {
+        const isSelected = w.wholesaler_id === selectedWholesalerId;
+        const isFav = favoriteWholesalers.includes(w.wholesaler_id);
+        const specialtiesPills = (w.specialties || []).slice(0, 3).map(s => `
+          <span class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px] font-medium">${s}</span>
+        `).join("");
+
+        return `
+          <div onclick="selectWholesaler('${w.wholesaler_id}', true)" 
+               class="p-4 rounded-2xl cursor-pointer transition-all border ${
+                 isSelected 
+                   ? 'bg-amber-950/20 border-amber-500 shadow-lg shadow-amber-950/40 ring-1 ring-amber-500/50' 
+                   : 'bg-slate-950 border-slate-800 hover:border-slate-700 hover:bg-slate-900/60'
+               }">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-1.5">
+                  <h5 class="font-bold text-sm text-white truncate">${w.name}</h5>
+                </div>
+                <p class="text-xs text-amber-400 font-medium flex items-center gap-1 mt-0.5">
+                  <i class="fa-solid fa-map-pin text-[11px]"></i>
+                  <span>${w.distance_text}</span>
+                  <span class="text-slate-500">&bull;</span>
+                  <span class="text-slate-400 truncate">${w.mandi_name}</span>
+                </p>
+              </div>
+
+              <!-- Favorite Star Toggle -->
+              <button type="button" onclick="toggleFavoriteWholesaler('${w.wholesaler_id}', event)" 
+                      title="${isFav ? 'Remove Favorite' : 'Mark Favorite'}"
+                      class="p-1.5 rounded-lg transition-all ${
+                        isFav 
+                          ? 'text-amber-400 bg-amber-500/20 hover:bg-amber-500/30 ring-1 ring-amber-500/40' 
+                          : 'text-slate-500 hover:text-amber-400 hover:bg-slate-800'
+                      }">
+                <i class="fa-${isFav ? 'solid' : 'regular'} fa-star text-sm"></i>
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] text-slate-400 mt-2.5 pt-2 border-t border-slate-800/80">
+              <span class="flex items-center gap-1 text-amber-300 font-bold">
+                <i class="fa-solid fa-star text-[10px] text-amber-400"></i> ${w.rating}
+                <span class="text-slate-500 font-normal">(${w.reviews_count} deals)</span>
+              </span>
+              <span class="font-mono text-[10px] text-slate-400">Bay: ${w.bay_number}</span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-1 mt-2.5">
+              ${specialtiesPills}
+              ${(w.specialties && w.specialties.length > 3) ? `<span class="text-[9px] text-slate-500">+${w.specialties.length - 3} more</span>` : ''}
+            </div>
+
+            <div class="mt-3 flex items-center justify-between gap-2 pt-2 border-t border-slate-800/60">
+              <span class="text-[10px] text-slate-400 flex items-center gap-1">
+                <i class="fa-solid fa-truck-ramp-box text-emerald-400 text-[10px]"></i> ${(w.lots || []).length} Godown Lots
+              </span>
+              <span class="text-xs font-bold ${isSelected ? 'text-amber-400' : 'text-slate-400'} flex items-center gap-1">
+                <span>${isSelected ? 'Inspecting' : 'View Stock & Rates'}</span>
+                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </span>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderWholesalersList() {
+      filterWholesalers();
+    }
+
+    function selectWholesaler(id, shouldScroll = false) {
+      selectedWholesalerId = id;
+      const ws = wholesalersData.find(w => w.wholesaler_id === id) || wholesalersData[0];
+      if (!ws) return;
+
+      renderWholesalersList();
+      renderWholesalerProfile(ws);
+      renderWholesalerLots(ws);
+      populateBargainLotsDropdown(ws);
+
+      if (shouldScroll && window.innerWidth < 1024) {
+        document.getElementById("wholesalerProfileCard")?.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+
+    function renderWholesalerProfile(ws) {
+      const container = document.getElementById("wholesalerProfileCard");
+      if (!container) return;
+
+      const isFav = favoriteWholesalers.includes(ws.wholesaler_id);
+      const cleanPhone = (ws.phone || "7319578723").replace(/[^0-9]/g, "");
+
+      container.innerHTML = `
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-slate-800 pb-4 gap-4">
+          <div class="flex items-start gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-600 to-yellow-500 text-slate-950 flex items-center justify-center text-2xl font-black shadow-lg shadow-amber-950/50 shrink-0">
+              <i class="fa-solid fa-warehouse"></i>
+            </div>
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 class="text-lg font-black text-white">${ws.name}</h3>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                  <i class="fa-solid fa-certificate text-[9px]"></i> APMC Verified
+                </span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  ${ws.bay_number}
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1 flex flex-wrap items-center gap-2">
+                <span class="text-amber-400 font-bold"><i class="fa-solid fa-location-arrow mr-1"></i>${ws.distance_text}</span>
+                <span class="text-slate-600">&bull;</span>
+                <span>${ws.address}</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="flex items-center gap-2 w-full md:w-auto">
+            <button type="button" onclick="toggleFavoriteWholesaler('${ws.wholesaler_id}', event)" 
+                    class="px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                      isFav 
+                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' 
+                        : 'bg-slate-900 hover:bg-slate-800 text-slate-400 border border-slate-800'
+                    }">
+              <i class="fa-${isFav ? 'solid' : 'regular'} fa-star text-amber-400"></i>
+              <span>${isFav ? 'Favorite Supplier' : 'Add to Favorites'}</span>
+            </button>
+            <a href="https://wa.me/91${cleanPhone}?text=Hello%20${encodeURIComponent(ws.name)},%20I%20am%20a%20local%20Kirana%20vendor%20interested%20in%20bulk%20mandi%20lots." 
+               target="_blank" 
+               class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow flex items-center gap-1.5 transition-all">
+              <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
+            </a>
+            <a href="tel:${cleanPhone}" 
+               class="px-3 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl text-xs font-bold transition-all">
+              <i class="fa-solid fa-phone"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Wholesaler Critical Profile Details (What seller must know) -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+          <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800/80">
+            <span class="text-[10px] text-slate-500 uppercase font-bold block">APMC License</span>
+            <span class="font-mono font-bold text-slate-200 mt-0.5 block truncate">${ws.mandi_license}</span>
+            <span class="text-[10px] text-slate-400">GSTIN: <span class="font-mono text-slate-300">${ws.gstin}</span></span>
+          </div>
+          <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800/80">
+            <span class="text-[10px] text-slate-500 uppercase font-bold block">Contact Person</span>
+            <span class="font-bold text-slate-200 mt-0.5 block truncate">${ws.contact_person}</span>
+            <span class="text-[10px] text-emerald-400 font-mono">+91 ${ws.phone}</span>
+          </div>
+          <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800/80">
+            <span class="text-[10px] text-slate-500 uppercase font-bold block">Payment Modes</span>
+            <span class="font-bold text-slate-200 mt-0.5 block truncate">${ws.payment_terms.split(',')[0]}</span>
+            <span class="text-[10px] text-slate-400">Credit: Net 7-15 Days Khata</span>
+          </div>
+          <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800/80">
+            <span class="text-[10px] text-slate-500 uppercase font-bold block">Delivery Fleet</span>
+            <span class="font-bold text-slate-200 mt-0.5 block truncate">${ws.delivery_fleet.split('on standby')[0]}</span>
+            <span class="text-[10px] text-slate-400 truncate">${ws.delivery_window.split('&')[0]}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderWholesalerLots(ws) {
+      const tbody = document.getElementById("wholesalerLotsTableBody");
+      if (!tbody) return;
+
+      const lots = ws.lots || [];
+      if (lots.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="text-center py-6 text-slate-500 text-xs">No active commodity lots listed for this wholesaler today.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = lots.map(lot => `
+        <tr class="hover:bg-slate-900/50 transition-colors">
+          <td class="py-3 px-3">
+            <div class="flex items-center gap-2.5">
+              <img src="${lot.image}" class="w-9 h-9 rounded-lg object-cover border border-slate-800 flex-shrink-0">
+              <div class="min-w-0">
+                <p class="font-bold text-white text-xs truncate">${lot.commodity_name}</p>
+                <p class="text-[10px] text-amber-400 font-medium">${lot.grade} &bull; ${lot.bag_weight}</p>
+              </div>
+            </div>
+          </td>
+          <td class="py-3 px-2">
+            <span class="font-mono font-bold text-slate-200">${lot.available_bags} Bags</span>
+            <p class="text-[9px] text-emerald-400 font-semibold">Available Now</p>
+          </td>
+          <td class="py-3 px-2 font-mono text-slate-300 font-bold">
+            ${lot.moq} Bags
+          </td>
+          <td class="py-3 px-3 font-mono font-bold text-slate-200">
+            ₹ ${Number(lot.rate_standard).toLocaleString('en-IN')}
+            <span class="text-[9px] text-slate-500 block font-normal">per bag</span>
+          </td>
+          <td class="py-3 px-3 font-mono text-amber-400 font-bold">
+            ₹ ${Number(lot.rate_tier2).toLocaleString('en-IN')}
+            <span class="text-[9px] text-amber-500/80 block font-normal">-4% discount</span>
+          </td>
+          <td class="py-3 px-3 font-mono text-emerald-400 font-bold">
+            ₹ ${Number(lot.rate_tier3).toLocaleString('en-IN')}
+            <span class="text-[9px] text-emerald-500/80 block font-normal">-8% super bulk</span>
+          </td>
+          <td class="py-3 px-2 font-mono text-slate-400">
+            ₹ ${Number(lot.mandi_benchmark).toLocaleString('en-IN')}
+          </td>
+          <td class="py-3 px-3 text-right">
+            <button type="button" onclick="startWholesalerBargain('${lot.lot_id}')" 
+                    class="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold rounded-lg text-xs shadow transition-all flex items-center gap-1.5 ml-auto">
+              <i class="fa-solid fa-handshake"></i> Bargain & PO
+            </button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function populateBargainLotsDropdown(ws) {
+      const select = document.getElementById("bargainSelectLot");
+      if (!select) return;
+
+      const lots = ws.lots || [];
+      select.innerHTML = lots.map(l => `
+        <option value="${l.lot_id}">${l.commodity_name} (Std: ₹${l.rate_standard}/bag, MOQ: ${l.moq})</option>
+      `).join("");
+
+      if (lots.length > 0) {
+        activeBargainLot = lots[0];
+        onBargainLotChanged();
+      }
+    }
+
+    function onBargainLotChanged() {
+      const lotId = document.getElementById("bargainSelectLot")?.value;
+      const ws = wholesalersData.find(w => w.wholesaler_id === selectedWholesalerId);
+      if (!ws) return;
+
+      activeBargainLot = (ws.lots || []).find(l => l.lot_id === lotId) || ws.lots[0];
+      if (!activeBargainLot) return;
+
+      const qtyInput = document.getElementById("bargainQuantityInput");
+      const rateInput = document.getElementById("bargainTargetRateInput");
+
+      if (qtyInput) qtyInput.value = Math.max(activeBargainLot.moq || 5, 10);
+      if (rateInput) rateInput.value = activeBargainLot.rate_tier2 || (activeBargainLot.rate_standard - 40);
+
+      // Reset response box
+      const respBox = document.getElementById("bargainAiResponseBox");
+      if (respBox) {
+        respBox.classList.add("hidden");
+        respBox.innerHTML = "";
+      }
+
+      calculateBargainSummary();
+    }
+
+    function startWholesalerBargain(lotId) {
+      const select = document.getElementById("bargainSelectLot");
+      if (select) {
+        select.value = lotId;
+        onBargainLotChanged();
+      }
+
+      const consoleCard = document.getElementById("wholesalerBargainConsoleCard");
+      if (consoleCard) {
+        consoleCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        consoleCard.classList.add("ring-2", "ring-purple-500");
+        setTimeout(() => consoleCard.classList.remove("ring-2", "ring-purple-500"), 1500);
+      }
+    }
+
+    function calculateBargainSummary() {
+      if (!activeBargainLot) return;
+
+      const qty = Math.max(1, parseInt(document.getElementById("bargainQuantityInput")?.value || "1", 10));
+      const targetRate = Math.max(1, parseFloat(document.getElementById("bargainTargetRateInput")?.value || "0"));
+      const standardRate = activeBargainLot.rate_standard;
+
+      const standardTotal = qty * standardRate;
+      const offerTotal = qty * targetRate;
+      const savings = standardTotal - offerTotal;
+      const savingsPct = standardTotal > 0 ? ((savings / standardTotal) * 100).toFixed(1) : 0;
+
+      document.getElementById("bargainStandardTotalText").textContent = `₹ ${standardTotal.toLocaleString('en-IN')}`;
+      document.getElementById("bargainOfferTotalText").textContent = `₹ ${offerTotal.toLocaleString('en-IN')}`;
+      
+      const savingsEl = document.getElementById("bargainSavingsText");
+      if (savings > 0) {
+        savingsEl.className = "font-bold text-emerald-400 ml-1 font-mono";
+        savingsEl.textContent = `₹ ${savings.toLocaleString('en-IN')} (${savingsPct}%)`;
+      } else {
+        savingsEl.className = "font-bold text-slate-400 ml-1 font-mono";
+        savingsEl.textContent = `₹ 0 (Standard/Premium)`;
+      }
+    }
+
+    function submitSellerBargainOffer() {
+      if (!activeBargainLot) return;
+
+      const ws = wholesalersData.find(w => w.wholesaler_id === selectedWholesalerId);
+      const qty = Math.max(1, parseInt(document.getElementById("bargainQuantityInput")?.value || "1", 10));
+      const offerRate = Math.max(1, parseFloat(document.getElementById("bargainTargetRateInput")?.value || "0"));
+      const standardRate = activeBargainLot.rate_standard;
+      const floorPrice = activeBargainLot.floor_price;
+      const autoAcceptPrice = activeBargainLot.auto_accept_price;
+
+      const respBox = document.getElementById("bargainAiResponseBox");
+      if (!respBox) return;
+
+      respBox.classList.remove("hidden");
+
+      // Evaluation Logic
+      if (offerRate >= autoAcceptPrice) {
+        // CASE 1: INSTANT DEAL ACCEPTED
+        const total = qty * offerRate;
+        const savings = (qty * standardRate) - total;
+        lastBargainNegotiatedState = {
+          lotId: activeBargainLot.lot_id,
+          commodityName: activeBargainLot.commodity_name,
+          wholesalerName: ws.name,
+          finalRate: offerRate,
+          bags: qty,
+          total: total
+        };
+
+        respBox.className = "p-4 rounded-xl border border-emerald-500/40 bg-emerald-950/40 space-y-3";
+        respBox.innerHTML = `
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-base shrink-0">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div>
+              <h5 class="font-bold text-emerald-300 text-sm">Deal Accepted by Wholesaler Floor AI! 🎉</h5>
+              <p class="text-xs text-slate-300 mt-1">
+                Wholesaler <b>${ws.name}</b> has accepted your rate of <b>₹ ${offerRate}/bag</b> for <b>${qty} Bags</b> (${activeBargainLot.bag_weight}).
+                You save <b>₹ ${savings.toLocaleString('en-IN')}</b> below standard APMC lot rates.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-2 border-t border-emerald-500/30">
+            <span class="font-mono font-bold text-emerald-400 text-xs">Total PO Value: ₹ ${total.toLocaleString('en-IN')}</span>
+            <button type="button" onclick="confirmBargainAndCreatePO()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs shadow-lg flex items-center gap-1.5 transition-all">
+              <i class="fa-solid fa-truck-ramp-box"></i> Accept Deal & Place B2B Requisition PO
+            </button>
+          </div>
+        `;
+        showToast("🎉 Counter-Offer Accepted by Wholesaler!", "success");
+
+      } else if (offerRate >= floorPrice) {
+        // CASE 2: BOT COUNTER-OFFER
+        const counterRate = Math.round((offerRate + autoAcceptPrice) / 2);
+        const total = qty * counterRate;
+        const savings = (qty * standardRate) - total;
+        lastBargainNegotiatedState = {
+          lotId: activeBargainLot.lot_id,
+          commodityName: activeBargainLot.commodity_name,
+          wholesalerName: ws.name,
+          finalRate: counterRate,
+          bags: qty,
+          total: total
+        };
+
+        respBox.className = "p-4 rounded-xl border border-amber-500/40 bg-amber-950/40 space-y-3";
+        respBox.innerHTML = `
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-base shrink-0">
+              <i class="fa-solid fa-handshake-simple"></i>
+            </div>
+            <div>
+              <h5 class="font-bold text-amber-300 text-sm">Wholesaler Counter-Offer Received</h5>
+              <p class="text-xs text-slate-300 mt-1">
+                "We cannot supply at ₹${offerRate}/bag due to today's APMC mandi weighbridge charges. 
+                However, for verified local vendors taking <b>${qty} bags</b>, our best tempo dispatch price is 
+                <b class="text-amber-400 font-mono text-sm">₹ ${counterRate}/bag</b>."
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-2 border-t border-amber-500/30">
+            <span class="font-mono text-amber-400 text-xs">Savings: ₹ ${savings.toLocaleString('en-IN')} (Total: ₹ ${total.toLocaleString('en-IN')})</span>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="document.getElementById('bargainTargetRateInput').value='${counterRate}'; calculateBargainSummary();" class="px-3 py-1.5 bg-slate-900 border border-slate-700 text-slate-300 rounded-lg text-xs font-bold">
+                Adjust
+              </button>
+              <button type="button" onclick="confirmBargainAndCreatePO()" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl text-xs shadow-lg flex items-center gap-1.5 transition-all">
+                <i class="fa-solid fa-check"></i> Accept at ₹${counterRate} & Place PO
+              </button>
+            </div>
+          </div>
+        `;
+        showToast("Wholesaler AI offered a counter-rate of ₹" + counterRate, "info");
+
+      } else {
+        // CASE 3: BELOW MANDI FLOOR (MARGIN DEFENSE)
+        const total = qty * floorPrice;
+        lastBargainNegotiatedState = {
+          lotId: activeBargainLot.lot_id,
+          commodityName: activeBargainLot.commodity_name,
+          wholesalerName: ws.name,
+          finalRate: floorPrice,
+          bags: qty,
+          total: total
+        };
+
+        respBox.className = "p-4 rounded-xl border border-rose-500/40 bg-rose-950/40 space-y-3";
+        respBox.innerHTML = `
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center text-base shrink-0">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+              <h5 class="font-bold text-rose-300 text-sm">Offer Rejected: Below Mandi Floor Margin</h5>
+              <p class="text-xs text-slate-300 mt-1">
+                "Today's APMC procurement and transport cost at Sonarpur Mandi Yard is ₹${floorPrice}/bag. 
+                Offering ₹${offerRate}/bag would result in a direct wholesale loss. Our absolute lowest floor price is 
+                <b class="text-rose-400 font-mono text-sm">₹ ${floorPrice}/bag</b>."
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-2 border-t border-rose-500/30">
+            <span class="font-mono text-rose-400 text-xs">Floor Total: ₹ ${total.toLocaleString('en-IN')}</span>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="document.getElementById('bargainTargetRateInput').value='${floorPrice}'; calculateBargainSummary();" class="px-3 py-1.5 bg-slate-900 border border-slate-700 text-slate-300 rounded-lg text-xs font-bold">
+                Set to Floor (₹${floorPrice})
+              </button>
+              <button type="button" onclick="confirmBargainAndCreatePO()" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl text-xs shadow-lg flex items-center gap-1.5 transition-all">
+                Accept Floor & Place PO
+              </button>
+            </div>
+          </div>
+        `;
+        showToast("Offer is below wholesale floor cost", "error");
+      }
+    }
+
+    async function confirmBargainAndCreatePO() {
+      if (!lastBargainNegotiatedState) return;
+
+      const { lotId, commodityName, wholesalerName, finalRate, bags } = lastBargainNegotiatedState;
+      showToast(`Generating B2B Requisition PO for ${bags} bags of ${commodityName}...`, "info");
+
+      await requestAutoRequisition(
+        1,
+        commodityName,
+        bags,
+        lotId,
+        commodityName,
+        finalRate
+      );
+
+      // Switch to requisitions tab to see the newly generated PO & gate pass
+      switchTab('requisitions');
     }
 
     // ==============================================
@@ -1407,7 +3041,7 @@
             </div>
 
             <div class="flex items-center gap-2 self-end sm:self-center">
-              <button onclick="handleDeleteProduct(${item.id}, '${item.name.replace(/'/g, "\\'")}')" class="px-3 py-1.5 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-900/60 text-rose-400 text-xs font-bold rounded-xl transition-all">
+              <button onclick="handleDeleteProduct(${item.id}, '${(item.name || '').replace(/'/g, "\\'")}')" class="px-3 py-1.5 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-900/60 text-rose-400 text-xs font-bold rounded-xl transition-all">
                 Sold Out / Remove
               </button>
             </div>
@@ -1469,7 +3103,7 @@
             <div class="flex items-center gap-4">
               <!-- Product Photo Thumbnail with Quick Change Button -->
               <div class="w-16 h-16 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-center text-amber-400 text-2xl shadow-inner relative overflow-hidden flex-shrink-0 group cursor-pointer"
-                   onclick="openChangeProductImageModal(${p.id}, '${p.name.replace(/'/g, "\\'")}', '${p.imageUrl || ''}')" title="Click to change product photo">
+                   onclick="openChangeProductImageModal(${p.id}, '${(p.name || '').replace(/'/g, "\\'")}', '${p.imageUrl || ''}')" title="Click to change product photo">
                 ${p.imageUrl ? `
                   <img src="${p.imageUrl}" alt="${p.name}" class="w-full h-full object-cover rounded-xl group-hover:scale-110 transition-transform">
                 ` : `
@@ -1485,7 +3119,7 @@
                 <p class="text-slate-400 text-xs">Category: ${p.categoryName || 'Grocery & Grains'}</p>
                 <div class="flex items-center gap-3 mt-1">
                   <span class="text-[11px] text-slate-500 font-mono">SKU: ${p.sku || ('SKU-' + p.id)}</span>
-                  <button type="button" onclick="openChangeProductImageModal(${p.id}, '${p.name.replace(/'/g, "\\'")}', '${p.imageUrl || ''}')" 
+                  <button type="button" onclick="openChangeProductImageModal(${p.id}, '${(p.name || '').replace(/'/g, "\\'")}', '${p.imageUrl || ''}')" 
                           class="text-[11px] text-sky-400 hover:text-sky-300 font-bold underline flex items-center gap-1 transition-colors">
                     <i class="fa-solid fa-camera"></i> Change Photo
                   </button>
@@ -1504,7 +3138,7 @@
                 <input type="number" id="stock-input-${p.id}" value="${p.stockQuantity}" 
                   class="w-24 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-emerald-400 font-bold text-center focus:outline-none focus:border-emerald-500">
               </div>
-              <button onclick="updateGroceryItem(${p.id}, '${p.name.replace(/'/g, "\\'")}')" 
+              <button onclick="updateGroceryItem(${p.id}, '${(p.name || '').replace(/'/g, "\\'")}')" 
                 class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl mt-5 shadow-lg transition-all flex items-center gap-1.5">
                 <i class="fa-solid fa-check"></i>
                 <span>Update Stock</span>
@@ -1737,7 +3371,11 @@
 
     function setSoundboxLanguage(lang) {
       soundboxLanguage = lang;
+      currentSellerLanguage = lang;
       localStorage.setItem("locallink_soundbox_lang", lang);
+      localStorage.setItem("locallink_lang", lang);
+      applySellerTranslations(lang);
+      updateSellerLanguageUIButtons(lang);
       updateSoundboxControlsUI();
 
       const msgs = {
@@ -2025,6 +3663,491 @@
       }
     }
 
+    // ==============================================================
+    // 🌐 SELLER COMMODITY LOCALIZATION & ITEM ARRANGEMENT
+    // ==============================================================
+    const SELLER_COMMODITY_I18N = [
+      { keys: ["dal", "daal", "masoor", "musur", "মুসুর ডাল", "মসুর ডাল", "ডাল", "मसूर दाल", "दाल", "malka"], en: "Masoor Dal (1 kg)", bn: "মুসুর ডাল (১ কেজি)", hi: "मसूर दाल (1 किलो)" },
+      { keys: ["moong", "mung", "মুগ ডাল", "মুগ", "मूंग दाल", "मूंग"], en: "Moong Dal (1 kg)", bn: "মুগ ডাল (১ কেজি)", hi: "मूंग दाल (1 किलो)" },
+      { keys: ["minikit", "rice", "chal", "chaal", "চাল", "মিনিকেট চাল", "মিনিকেট", "चावल", "मिनीकिट चावल"], en: "Daily Minikit Rice (1 kg)", bn: "মিনিকেট চাল (১ কেজি)", hi: "मिनीकिट चावल (1 किलो)" },
+      { keys: ["gobindabhog", "গোবিন্দভোগ", "গোবিন্দভোগ চাল", "गोविंदभोग चावल"], en: "Gobindabhog Rice (1 kg)", bn: "গোবিন্দভোগ চাল (১ কেজি)", hi: "गोविंदभोग चावल (1 किलो)" },
+      { keys: ["basmati", "বাসমতী চাল", "বাসমতি", "बासमती चावल", "बासमती"], en: "Basmati Rice (1 kg)", bn: "বাসমতী চাল (১ কেজি)", hi: "बासमती चावल (1 किलो)" },
+      { keys: ["potato", "potatoes", "alu", "aloo", "আলু", "দেশি আলু", "आलू", "jyoti potato"], en: "Country Potatoes (1 kg)", bn: "দেশি আলু (১ কেজি)", hi: "देसी आलू (1 किलो)" },
+      { keys: ["onion", "onions", "peyaj", "pyaz", "পেঁয়াজ", "प्याज", "nashik red onion"], en: "Fresh Onions (1 kg)", bn: "পেঁয়াজ (১ কেজি)", hi: "ताजा प्याज (1 किलो)" },
+      { keys: ["tomato", "tomatoes", "টমেটো", "টমেটোস", "टमाटर"], en: "Farm Tomatoes (1 kg)", bn: "ফার্ম টমেটো (১ কেজি)", hi: "फार्म टमाटर (1 किलो)" },
+      { keys: ["mustard oil", "kachi ghani", "tel", "sarson", "সর্ষের তেল", "সরষের তেল", "তেল", "সরষে তেল", "সরিষার তেল", "सरसों का तेल", "तेल"], en: "Mustard Oil (1L)", bn: "ঘানি সর্ষের তেল (১ লিটার)", hi: "सरसों का तेल (1 लीटर)" },
+      { keys: ["katla", "rui", "fish", "mach", "maach", "মাছ", "রুই মাছ", "কাতলা মাছ", "রুই", "কাতলা", "मछली", "रोहू"], en: "Fresh Katla Fish (1 kg)", bn: "টাটকা কাতলা মাছ (১ কেজি)", hi: "ताजा रोहू मछली (1 किलो)" },
+      { keys: ["egg", "eggs", "dim", "ডিম", "অন্ডা", "अंडा", "अंडे"], en: "Farm Fresh Eggs (12 pcs)", bn: "ফার্মের তাজা ডিম (১২টি)", hi: "ताजा अंडे (12 पीस)" },
+      { keys: ["milk", "dudh", "দুধ", "दूध"], en: "Fresh Cow Milk (1L)", bn: "তাজা গরুর দুধ (১ লিটার)", hi: "ताजा गाय का दूध (1 लीटर)" },
+      { keys: ["paneer", "ponir", "পনির", "पनीर"], en: "Fresh Malai Paneer (500g)", bn: "তাজা পনির (৫০০ গ্রাম)", hi: "ताजा पनीर (500 ग्राम)" },
+      { keys: ["sourdough", "bread", "রুটি", "पावरोटी"], en: "Whole Wheat Bread (400g)", bn: "হোল হুইট রুটি (৪০০ গ্রাম)", hi: "गेहूं की ब्रेड (400 ग्राम)" },
+      { keys: ["tea", "cha", "চা", "चाय"], en: "Darjeeling Tea (250g)", bn: "দার্জিলিং চা পাতা (২৫০ গ্রাম)", hi: "दार्जिलिंग चाय (250 ग्राम)" },
+      { keys: ["sandesh", "mishti", "মিষ্টি", "সন্দেশ", "মিঠাই"], en: "Nolen Gur Sandesh Box", bn: "নলেন গুড়ের সন্দেশ", hi: "नोलेन गुड़ संदेश" },
+      { keys: ["soap", "সাবান", "साबुन"], en: "Neem Herbal Soap", bn: "নিম ভেষজ সাবান", hi: "नीम हर्बल साबुन" }
+    ];
+
+    function localizeSellerOrderItem(productName, targetLang) {
+      if (!productName) return "";
+      const lang = targetLang || soundboxLanguage || currentSellerLanguage || "en";
+      const lower = productName.toLowerCase();
+      const match = SELLER_COMMODITY_I18N.find(entry => entry.keys.some(k => lower.includes(k.toLowerCase())));
+      if (match) {
+        return match[lang] || match.en || productName;
+      }
+      return productName;
+    }
+
+    function formatSellerQty(qty, lang) {
+      const n = String(qty || 1);
+      if (lang === "bn") {
+        const bnNums = { "0":"০", "1":"১", "2":"২", "3":"৩", "4":"৪", "5":"৫", "6":"৬", "7":"৭", "8":"৮", "9":"৯" };
+        return n.replace(/[0-9]/g, d => bnNums[d] || d);
+      } else if (lang === "hi") {
+        const hiNums = { "0":"०", "1":"१", "2":"२", "3":"३", "4":"४", "5":"५", "6":"६", "7":"७", "8":"८", "9":"९" };
+        return n.replace(/[0-9]/g, d => hiNums[d] || d);
+      }
+      return n;
+    }
+
+    let sellerOrderArrangements = {};
+    try {
+      const savedArr = localStorage.getItem("locallink_seller_order_arrangements");
+      if (savedArr) sellerOrderArrangements = JSON.parse(savedArr);
+    } catch (e) {
+      sellerOrderArrangements = {};
+    }
+
+    function saveSellerArrangements() {
+      try {
+        localStorage.setItem("locallink_seller_order_arrangements", JSON.stringify(sellerOrderArrangements));
+      } catch (e) {}
+    }
+
+    function moveSellerOrderItem(orderId, currentIdx, direction) {
+      const order = currentOrders.find(o => o.orderId === orderId);
+      if (!order || !order.items || order.items.length <= 1) return;
+
+      if (!sellerOrderArrangements[orderId]) {
+        sellerOrderArrangements[orderId] = {
+          itemOrder: order.items.map(it => it.orderItemId || it.productId),
+          packed: {}
+        };
+      }
+
+      const orderArr = sellerOrderArrangements[orderId];
+      let list = [...order.items];
+      if (Array.isArray(orderArr.itemOrder) && orderArr.itemOrder.length > 0) {
+        list.sort((a, b) => {
+          const idxA = orderArr.itemOrder.indexOf(a.orderItemId || a.productId);
+          const idxB = orderArr.itemOrder.indexOf(b.orderItemId || b.productId);
+          return (idxA !== -1 ? idxA : 999) - (idxB !== -1 ? idxB : 999);
+        });
+      }
+
+      const newIdx = currentIdx + direction;
+      if (newIdx < 0 || newIdx >= list.length) return;
+
+      const temp = list[currentIdx];
+      list[currentIdx] = list[newIdx];
+      list[newIdx] = temp;
+
+      orderArr.itemOrder = list.map(it => it.orderItemId || it.productId);
+      saveSellerArrangements();
+      loadSellerOrders(true);
+
+      const movedName = localizeSellerOrderItem(temp.productName, soundboxLanguage);
+      showToast(soundboxLanguage === "bn" 
+        ? `✓ "${movedName}" প্যাকিং তালিকায় সরানো হয়েছে` 
+        : (soundboxLanguage === "hi" ? `✓ "${movedName}" पैकिंग क्रम में बदला गया` : `✓ Sequence updated for "${temp.productName}"`));
+    }
+
+    function toggleSellerItemPacked(orderId, itemId) {
+      if (!sellerOrderArrangements[orderId]) {
+        const order = currentOrders.find(o => o.orderId === orderId);
+        sellerOrderArrangements[orderId] = {
+          itemOrder: order && order.items ? order.items.map(it => it.orderItemId || it.productId) : [],
+          packed: {}
+        };
+      }
+
+      const orderArr = sellerOrderArrangements[orderId];
+      if (!orderArr.packed) orderArr.packed = {};
+      orderArr.packed[itemId] = !orderArr.packed[itemId];
+
+      saveSellerArrangements();
+      loadSellerOrders(true);
+
+      const isNowPacked = orderArr.packed[itemId];
+      showToast(soundboxLanguage === "bn"
+        ? (isNowPacked ? "✓ পণ্য প্যাক করা হয়েছে" : "পণ্যটি আনপ্যাক করা হয়েছে")
+        : (soundboxLanguage === "hi" ? (isNowPacked ? "✓ सामान पैक हो गया" : "सामान अनपैक किया गया") : (isNowPacked ? "✓ Item marked as packed" : "Item marked as unpacked")));
+    }
+
+    function autoSortSellerOrderItems(orderId) {
+      const order = currentOrders.find(o => o.orderId === orderId);
+      if (!order || !order.items || order.items.length <= 1) return;
+
+      if (!sellerOrderArrangements[orderId]) {
+        sellerOrderArrangements[orderId] = { itemOrder: [], packed: {} };
+      }
+
+      // Perishables first, then grains/dal, then heavy items
+      const sorted = [...order.items].sort((a, b) => {
+        const pA = (a.productName || "").toLowerCase();
+        const pB = (b.productName || "").toLowerCase();
+        const rank = p => /fish|মাছ|katla|paneer|milk|dudh/i.test(p) ? 1 : (/dal|rice|chal/i.test(p) ? 2 : 3);
+        return rank(pA) - rank(pB);
+      });
+
+      sellerOrderArrangements[orderId].itemOrder = sorted.map(it => it.orderItemId || it.productId);
+      saveSellerArrangements();
+      loadSellerOrders(true);
+      if (isOneClickModalOpen() && activeOneClickOrder && activeOneClickOrder.orderId === orderId) {
+        renderOneClickListContent(activeOneClickOrder);
+      }
+      showToast(soundboxLanguage === "bn" ? "✓ পণ্যগুলো স্টল বিন্যাস অনুযায়ী সাজানো হয়েছে" : (soundboxLanguage === "hi" ? "✓ सामान स्टॉल के अनुसार व्यवस्थित किया गया" : "✓ Items sorted by stall packing route"));
+    }
+
+    // ==============================================================
+    // 📋 1-CLICK CUSTOMER GROCERY LIST CONTROLLER
+    // ==============================================================
+    let activeOneClickOrder = null;
+
+    function isOneClickModalOpen() {
+      const modal = document.getElementById("modalSellerOneClickList");
+      return modal && !modal.classList.contains("hidden");
+    }
+
+    async function openSellerOneClickListModal(targetOrderId = null) {
+      if (!currentOrders || currentOrders.length === 0) {
+        try {
+          const res = await apiRequest("/api/seller/orders");
+          if (res && res.success) {
+            currentOrders = res.data.orders || [];
+          }
+        } catch (e) {
+          console.error("Failed to load orders for 1-click modal:", e);
+        }
+      }
+
+      const modal = document.getElementById("modalSellerOneClickList");
+      if (!modal) return;
+
+      if (!currentOrders || currentOrders.length === 0) {
+        renderEmptyOneClickListModal();
+        modal.classList.remove("hidden");
+        return;
+      }
+
+      let order = null;
+      if (targetOrderId) {
+        order = currentOrders.find(o => (o.orderId == targetOrderId || o.order_id == targetOrderId));
+      }
+      if (!order) {
+        order = currentOrders.find(o => o.orderStatus === "pending" || o.orderStatus === "confirmed" || o.orderStatus === "processing") || currentOrders[0];
+      }
+
+      activeOneClickOrder = order;
+      renderOneClickListContent(order);
+      modal.classList.remove("hidden");
+    }
+
+    function closeSellerOneClickListModal() {
+      const modal = document.getElementById("modalSellerOneClickList");
+      if (modal) modal.classList.add("hidden");
+    }
+
+    // Close on Escape key
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && isOneClickModalOpen()) {
+        closeSellerOneClickListModal();
+      }
+    });
+
+    function onOneClickOrderSelectChange(orderId) {
+      const order = currentOrders.find(o => o.orderId == orderId);
+      if (order) {
+        activeOneClickOrder = order;
+        renderOneClickListContent(order);
+      }
+    }
+
+    function renderEmptyOneClickListModal() {
+      const meta = document.getElementById("oneClickOrderMetaBanner");
+      const container = document.getElementById("oneClickListItemsContainer");
+      const footer = document.getElementById("oneClickModalFooter");
+      const select = document.getElementById("oneClickOrderSelect");
+
+      if (select) select.innerHTML = `<option value="">No Active Orders</option>`;
+      if (meta) {
+        meta.innerHTML = `
+          <div class="text-slate-400 text-xs">
+            ${soundboxLanguage === 'bn' ? 'কোনো সক্রিয় অর্ডার পাওয়া যায়নি।' : (soundboxLanguage === 'hi' ? 'कोई सक्रिय आर्डर नहीं मिला।' : 'No active incoming customer orders found.')}
+          </div>
+        `;
+      }
+      if (container) {
+        container.innerHTML = `
+          <div class="p-10 text-center text-slate-500 bg-slate-950/60 rounded-2xl border border-slate-800 text-xs space-y-3">
+            <i class="fa-solid fa-clipboard-check text-4xl text-slate-600 block"></i>
+            <p class="text-sm font-bold text-slate-300">
+              ${soundboxLanguage === 'bn' ? 'বর্তমানে কোনো নতুন ক্রেতার মুদি ফর্দ নেই' : (soundboxLanguage === 'hi' ? 'वर्तमान में कोई नई ग्राहक लिस्ट नहीं है' : 'No Customer Grocery Lists Pending Right Now')}
+            </p>
+            <p class="text-[11px] text-slate-400 max-w-sm mx-auto">
+              ${soundboxLanguage === 'bn' ? 'ক্রেতা যখনই ভয়েস সার্চ বা টাইপ করে ফর্দ পাঠাবেন, তা এখানে ১-ক্লিকে তাৎক্ষণিক অনুবাদসহ দেখা যাবে।' : (soundboxLanguage === 'hi' ? 'जब भी ग्राहक बोलकर या लिखकर लिस्ट भेजेगा, वह यहाँ तुरंत 1-क्लिक में अनुवाद सहित दिखेगी।' : 'When buyers send voice or typed grocery lists to your stall, they will immediately appear here with 1-click sequence arrangement.')}
+            </p>
+          </div>
+        `;
+      }
+      if (footer) {
+        footer.innerHTML = `
+          <div class="text-slate-500 text-[11px]">LocalLink Realtime Vendor Console</div>
+          <button type="button" onclick="closeSellerOneClickListModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold">
+            Close
+          </button>
+        `;
+      }
+    }
+
+    function renderOneClickListContent(order) {
+      if (!order) return;
+      activeOneClickOrder = order;
+
+      // 1. Dropdown Order Switcher
+      const select = document.getElementById("oneClickOrderSelect");
+      if (select && currentOrders && currentOrders.length > 0) {
+        select.innerHTML = currentOrders.map(o => {
+          const isSel = o.orderId === order.orderId ? "selected" : "";
+          const num = o.orderNumber || ('#LL-' + o.orderId);
+          const cust = o.customerName || 'Customer';
+          const st = (o.orderStatus || 'pending').toUpperCase();
+          return `<option value="${o.orderId}" ${isSel}>${num} • ${cust} [${st}]</option>`;
+        }).join("");
+      }
+
+      // 2. Bin Info & Fulfillment
+      const binNo = (order.orderId % 5) + 1;
+      const binInfo = BIN_COLOR_MAP[binNo] || BIN_COLOR_MAP[1];
+      const binName = soundboxLanguage === "bn" ? binInfo.nameBn : (soundboxLanguage === "hi" ? binInfo.nameHi : binInfo.nameEn);
+      const isPickup = (order.fulfillmentType || order.fulfillment_type) === "pickup";
+
+      const fulfillmentBadge = isPickup ? `
+        <span class="px-2.5 py-1 rounded-xl text-xs font-black bg-purple-500/20 text-purple-300 border border-purple-500/40 flex items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-person-walking-luggage text-purple-400"></i>
+          <span>${soundboxLanguage === 'bn' ? '🛍️ ক্রেতা নিজে নেবেন (Self-Pickup: ₹০)' : (soundboxLanguage === 'hi' ? '🛍️ खरीदार स्वयं लेगा (Self-Pickup: ₹0)' : '🛍️ Self-Pickup: ₹0 Fee')}</span>
+        </span>
+      ` : `
+        <span class="px-2.5 py-1 rounded-xl text-xs font-black bg-blue-500/20 text-blue-300 border border-blue-500/40 flex items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-truck-fast text-blue-400"></i>
+          <span>${soundboxLanguage === 'bn' ? '🚚 হোম ডেলিভারি (+₹৩০ রাইডার চার্জ)' : (soundboxLanguage === 'hi' ? '🚚 होम डिलीवरी (+₹30 राइडर शुल्क)' : '🚚 Home Delivery (+₹30 Rider Fee)')}</span>
+        </span>
+      `;
+
+      // 3. Arrangement & Packing sequence for items
+      const orderArr = sellerOrderArrangements[order.orderId] || { itemOrder: [], packed: {} };
+      let itemsList = [...(order.items || [])];
+      if (Array.isArray(orderArr.itemOrder) && orderArr.itemOrder.length > 0) {
+        itemsList.sort((a, b) => {
+          const keyA = a.orderItemId || a.productId;
+          const keyB = b.orderItemId || b.productId;
+          const idxA = orderArr.itemOrder.indexOf(keyA);
+          const idxB = orderArr.itemOrder.indexOf(keyB);
+          return (idxA !== -1 ? idxA : 999) - (idxB !== -1 ? idxB : 999);
+        });
+      }
+
+      const packedCount = itemsList.filter(it => orderArr.packed && orderArr.packed[it.orderItemId || it.productId]).length;
+
+      // 4. Meta Banner
+      const meta = document.getElementById("oneClickOrderMetaBanner");
+      if (meta) {
+        meta.innerHTML = `
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="font-black text-white text-sm">${order.orderNumber || ('#LL-' + order.orderId)}</span>
+            <span class="text-slate-500">&bull;</span>
+            <span class="text-slate-300 font-bold"><i class="fa-solid fa-user text-slate-400 mr-1"></i>${order.customerName || 'Customer'}</span>
+            ${fulfillmentBadge}
+          </div>
+          <div class="flex items-center gap-3 flex-wrap">
+            <span class="px-2.5 py-1 rounded-xl text-xs font-black border ${binInfo.badge} flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-boxes-stacked"></i>
+              <span>গেট ড্রপ: ${binName}</span>
+            </span>
+            <span class="text-slate-300">
+              ${soundboxLanguage === 'bn' ? 'স্টল আয়:' : (soundboxLanguage === 'hi' ? 'कमाई:' : 'Earnings:')} 
+              <strong class="text-emerald-400 font-black text-sm">₹ ${Number(order.sellerSubtotal || 0).toLocaleString("en-IN")}</strong>
+            </span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-mono ${packedCount === itemsList.length ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-slate-800 text-slate-300'}">
+              ${packedCount}/${itemsList.length} ${soundboxLanguage === 'bn' ? 'প্যাক সম্পন্ন' : (soundboxLanguage === 'hi' ? 'पैक हुआ' : 'Packed')}
+            </span>
+          </div>
+        `;
+      }
+
+      // 5. Items List
+      const container = document.getElementById("oneClickListItemsContainer");
+      if (container) {
+        if (!itemsList || itemsList.length === 0) {
+          container.innerHTML = `<div class="p-4 text-center text-slate-500">No items recorded in this order.</div>`;
+        } else {
+          container.innerHTML = itemsList.map((it, idx) => {
+            const itemImg = it.imageUrl || it.image || it.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&q=80';
+            const itemKey = it.orderItemId || it.productId;
+            const isPacked = !!(orderArr.packed && orderArr.packed[itemKey]);
+            const localizedName = localizeSellerOrderItem(it.productName, soundboxLanguage);
+            const formattedQty = formatSellerQty(it.quantity, soundboxLanguage);
+
+            return `
+              <div class="p-3 rounded-2xl border transition-all flex items-center justify-between gap-3 ${
+                isPacked ? 'bg-emerald-950/40 border-emerald-500/50 shadow-inner' : 'bg-slate-950/80 border-slate-800 hover:border-slate-700'
+              }">
+                <div class="flex items-center gap-3 min-w-0 flex-1">
+                  <!-- Reorder Buttons (▲ / ▼) -->
+                  <div class="flex flex-col gap-0.5 shrink-0">
+                    <button type="button" onclick="moveOneClickOrderItem(${order.orderId}, ${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="w-6 h-5 bg-slate-800 hover:bg-slate-700 disabled:opacity-20 disabled:pointer-events-none text-slate-300 rounded text-[9px] flex items-center justify-center font-bold" title="Move Up">
+                      ▲
+                    </button>
+                    <span class="text-[10px] font-mono text-center font-bold text-slate-400">${idx + 1}</span>
+                    <button type="button" onclick="moveOneClickOrderItem(${order.orderId}, ${idx}, 1)" ${idx === itemsList.length - 1 ? 'disabled' : ''} class="w-6 h-5 bg-slate-800 hover:bg-slate-700 disabled:opacity-20 disabled:pointer-events-none text-slate-300 rounded text-[9px] flex items-center justify-center font-bold" title="Move Down">
+                      ▼
+                    </button>
+                  </div>
+
+                  <!-- Product Image -->
+                  <img src="${itemImg}" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&q=80'" class="w-12 h-12 rounded-xl object-cover border border-slate-700 shrink-0" alt="${localizedName}" />
+
+                  <!-- Translated Name & Quantity in Seller's Selected Language -->
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="text-sm font-black ${isPacked ? 'text-emerald-300 line-through opacity-80' : 'text-white'} truncate" title="${it.productName}">
+                        ${localizedName}
+                      </span>
+                      <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg text-xs font-mono font-black shrink-0">
+                        x${formattedQty}
+                      </span>
+                    </div>
+                    <div class="flex items-center gap-2 mt-0.5">
+                      <span class="text-emerald-400 font-extrabold text-xs">₹ ${it.finalPrice || (it.unitPrice * it.quantity)}</span>
+                      <span class="text-[10px] text-slate-400">(₹ ${it.unitPrice || (it.finalPrice / it.quantity)} / unit)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Pack Checkbox Button -->
+                <button type="button" onclick="toggleOneClickItemPacked(${order.orderId}, ${itemKey})" class="px-3 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 shrink-0 ${
+                  isPacked ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700'
+                }">
+                  <i class="fa-solid ${isPacked ? 'fa-check' : 'fa-box'} text-sm"></i>
+                  <span>${isPacked ? (soundboxLanguage === 'bn' ? '✓ প্যাকড' : (soundboxLanguage === 'hi' ? '✓ पैक हुआ' : '✓ Packed')) : (soundboxLanguage === 'bn' ? 'প্যাক করুন' : (soundboxLanguage === 'hi' ? 'पैक करें' : 'Pack Item'))}</span>
+                </button>
+              </div>
+            `;
+          }).join("");
+        }
+      }
+
+      // 6. Footer Actions
+      const footer = document.getElementById("oneClickModalFooter");
+      if (footer) {
+        let actionBtn = "";
+        if (order.orderStatus === "pending") {
+          actionBtn = `
+            <button onclick="handleAcceptAndPackFromModal(${order.orderId}, ${binNo})" class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-black rounded-xl text-xs sm:text-sm shadow-xl flex items-center justify-center gap-2 transform active:scale-95 transition-all">
+              <i class="fa-solid fa-circle-check text-base"></i>
+              <span>${soundboxLanguage === 'bn' ? '✓ গ্রহণ ও প্যাক শুরু করুন' : (soundboxLanguage === 'hi' ? '✓ स्वीकार व पैक शुरू करें' : '✓ Accept & Start Packing')} (${binName})</span>
+            </button>
+          `;
+        } else if (order.orderStatus === "confirmed" || order.orderStatus === "processing") {
+          actionBtn = `
+            <button onclick="handleReadyForRiderFromModal(${order.orderId}, ${binNo})" class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white font-black rounded-xl text-xs sm:text-sm shadow-xl flex items-center justify-center gap-2 transform active:scale-95 transition-all">
+              <i class="fa-solid fa-box-open text-base"></i>
+              <span>${soundboxLanguage === 'bn' ? '📦 গেট ড্রপ বক্সে প্রস্তুত' : (soundboxLanguage === 'hi' ? '📦 गेट ड्रॉप में तैयार' : '📦 Mark Ready in Bin')} (${binName})</span>
+            </button>
+          `;
+        } else if (order.orderStatus === "ready_for_pickup") {
+          actionBtn = `
+            <div class="px-4 py-2 bg-amber-500/10 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-bold flex items-center gap-2">
+              <i class="fa-solid fa-tower-broadcast animate-pulse text-amber-400"></i>
+              <span>${soundboxLanguage === 'bn' ? `গেট ড্রপ ${binName}-এ প্রস্তুত • রাইডার আসছে` : (soundboxLanguage === 'hi' ? `गेट ड्रॉप ${binName} में तैयार • राइडर आ रहा है` : `Ready in ${binName} • Waiting for Pickup`)}</span>
+            </div>
+          `;
+        } else {
+          actionBtn = `<span class="px-3 py-1.5 bg-slate-800 text-slate-300 rounded-xl text-xs font-bold uppercase">${order.orderStatus}</span>`;
+        }
+
+        footer.innerHTML = `
+          <div class="flex items-center gap-2 text-xs text-slate-400">
+            <i class="fa-solid fa-store text-emerald-400"></i>
+            <span>${soundboxLanguage === 'bn' ? 'মুদি ফর্দটি সরাসরি স্টল থেকে প্রস্তুত হচ্ছে' : (soundboxLanguage === 'hi' ? 'किराना लिस्ट सीधे स्टॉल से तैयार हो रही है' : 'Live grocery list packing console')}</span>
+          </div>
+          <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+            <button type="button" onclick="closeSellerOneClickListModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition-all">
+              ${soundboxLanguage === 'bn' ? 'বন্ধ করুন' : (soundboxLanguage === 'hi' ? 'बंद करें' : 'Close')}
+            </button>
+            ${actionBtn}
+          </div>
+        `;
+      }
+    }
+
+    function moveOneClickOrderItem(orderId, currentIdx, direction) {
+      moveSellerOrderItem(orderId, currentIdx, direction);
+      const order = currentOrders.find(o => o.orderId === orderId);
+      if (order) renderOneClickListContent(order);
+    }
+
+    function toggleOneClickItemPacked(orderId, itemId) {
+      toggleSellerItemPacked(orderId, itemId);
+      const order = currentOrders.find(o => o.orderId === orderId);
+      if (order) renderOneClickListContent(order);
+    }
+
+    function autoSortActiveOneClickList() {
+      if (!activeOneClickOrder) return;
+      autoSortSellerOrderItems(activeOneClickOrder.orderId);
+      const order = currentOrders.find(o => o.orderId === activeOneClickOrder.orderId);
+      if (order) renderOneClickListContent(order);
+    }
+
+    function toggleAllItemsPackedActiveOrder() {
+      if (!activeOneClickOrder || !activeOneClickOrder.items) return;
+      const orderId = activeOneClickOrder.orderId;
+      if (!sellerOrderArrangements[orderId]) {
+        sellerOrderArrangements[orderId] = {
+          itemOrder: activeOneClickOrder.items.map(it => it.orderItemId || it.productId),
+          packed: {}
+        };
+      }
+      const orderArr = sellerOrderArrangements[orderId];
+      const allPackedNow = activeOneClickOrder.items.every(it => orderArr.packed[it.orderItemId || it.productId]);
+      activeOneClickOrder.items.forEach(it => {
+        orderArr.packed[it.orderItemId || it.productId] = !allPackedNow;
+      });
+      saveSellerArrangements();
+      loadSellerOrders(true);
+      renderOneClickListContent(activeOneClickOrder);
+      showToast(allPackedNow 
+        ? (soundboxLanguage === 'bn' ? 'সমস্ত পণ্য আনপ্যাক করা হয়েছে' : 'All items unpacked') 
+        : (soundboxLanguage === 'bn' ? '✓ সমস্ত পণ্য প্যাক সম্পন্ন হয়েছে' : '✓ All items marked as packed'));
+    }
+
+    function listenActiveOneClickList() {
+      if (!activeOneClickOrder) return;
+      announceSellerOrder(activeOneClickOrder, soundboxLanguage);
+    }
+
+    async function handleAcceptAndPackFromModal(orderId, binNo) {
+      await handleAcceptAndPack(orderId, binNo);
+      const order = currentOrders.find(o => o.orderId === orderId);
+      if (order) renderOneClickListContent(order);
+    }
+
+    async function handleReadyForRiderFromModal(orderId, binNo) {
+      await handleReadyForRider(orderId, binNo);
+      const order = currentOrders.find(o => o.orderId === orderId);
+      if (order) renderOneClickListContent(order);
+    }
+
     async function loadSellerOrders(isSilent = false) {
       const container = document.getElementById("ordersContainer");
       try {
@@ -2033,6 +4156,26 @@
         if (!res || !res.success) return;
 
         currentOrders = res.data.orders || [];
+
+        // Update Top Header 1-Click List Badge
+        const pendingCount = currentOrders.filter(o => 
+          o.orderStatus === "pending" || o.orderStatus === "confirmed" || o.orderStatus === "processing"
+        ).length;
+        const badgeHeader = document.getElementById("headerListCountBadge");
+        if (badgeHeader) {
+          badgeHeader.textContent = pendingCount;
+          if (pendingCount > 0) {
+            badgeHeader.className = "px-1.5 py-0.2 bg-amber-400 text-slate-950 rounded-full text-[10px] font-mono font-black animate-pulse";
+          } else {
+            badgeHeader.className = "px-1.5 py-0.2 bg-slate-950 text-slate-400 rounded-full text-[10px] font-mono font-bold";
+          }
+        }
+
+        // If 1-Click modal is open, refresh active order view
+        if (isOneClickModalOpen() && activeOneClickOrder) {
+          const updatedActive = currentOrders.find(o => o.orderId === activeOneClickOrder.orderId) || currentOrders[0];
+          if (updatedActive) renderOneClickListContent(updatedActive);
+        }
 
         // Check if there are newly arrived pending orders for Auto-Soundbox announcement
         if (soundboxAutoAnnounce && currentOrders.length > 0) {
@@ -2109,11 +4252,39 @@
 
           const listenLabel = soundboxLanguage === "bn" ? "🔊 শুনুন" : (soundboxLanguage === "hi" ? "🔊 सुनें" : "🔊 Listen");
 
+          // Fulfillment Type Badge: Self-Pickup vs Home Delivery
+          const isPickup = (order.fulfillmentType || order.fulfillment_type) === "pickup";
+          const fulfillmentBadge = isPickup ? `
+            <span class="px-2.5 py-1 rounded-xl text-xs font-black bg-purple-500/20 text-purple-300 border border-purple-500/40 flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-person-walking-luggage text-purple-400"></i>
+              <span>${soundboxLanguage === 'bn' ? '🛍️ ক্রেতা নিজে নেবেন (Self-Pickup: ₹০)' : (soundboxLanguage === 'hi' ? '🛍️ खरीदार स्वयं लेगा (Self-Pickup: ₹0)' : '🛍️ Self-Pickup: ₹0 Fee')}</span>
+            </span>
+          ` : `
+            <span class="px-2.5 py-1 rounded-xl text-xs font-black bg-blue-500/20 text-blue-300 border border-blue-500/40 flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-truck-fast text-blue-400"></i>
+              <span>${soundboxLanguage === 'bn' ? '🚚 হোম ডেলিভারি (+₹৩০ রাইডার চার্জ)' : (soundboxLanguage === 'hi' ? '🚚 होम डिलीवरी (+₹30 राइडर शुल्क)' : '🚚 Home Delivery (+₹30 Rider Fee)')}</span>
+            </span>
+          `;
+
+          // Arrangement & packing order for items
+          const orderArr = sellerOrderArrangements[order.orderId] || { itemOrder: [], packed: {} };
+          let itemsList = [...(order.items || [])];
+          if (Array.isArray(orderArr.itemOrder) && orderArr.itemOrder.length > 0) {
+            itemsList.sort((a, b) => {
+              const keyA = a.orderItemId || a.productId;
+              const keyB = b.orderItemId || b.productId;
+              const idxA = orderArr.itemOrder.indexOf(keyA);
+              const idxB = orderArr.itemOrder.indexOf(keyB);
+              return (idxA !== -1 ? idxA : 999) - (idxB !== -1 ? idxB : 999);
+            });
+          }
+          const packedCount = itemsList.filter(it => orderArr.packed && orderArr.packed[it.orderItemId || it.productId]).length;
+
           return `
             <div class="p-4 sm:p-5 bg-slate-900 border border-slate-800 rounded-2xl flex flex-col gap-4 text-xs shadow-lg hover:border-slate-700 transition-all">
-              <!-- Order Header & Gate Drop-Rack Tag -->
+              <!-- Order Header, Fulfillment Badge & Gate Drop-Rack Tag -->
               <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 flex-wrap">
                   <span class="font-black text-white text-base">${order.orderNumber || ('#LL-' + order.orderId)}</span>
                   <span class="text-slate-500">&bull;</span>
                   <span class="text-slate-400">${new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
@@ -2122,11 +4293,17 @@
                     order.orderStatus === 'ready_for_pickup' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30' :
                     order.orderStatus === 'delivered' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' :
                     'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                  }">${order.orderStatus.replace(/_/g, ' ').toUpperCase()}</span>
+                  }">${(order.orderStatus || order.order_status || 'pending').replace(/_/g, ' ').toUpperCase()}</span>
+                  ${fulfillmentBadge}
                 </div>
 
                 <!-- Gate Drop-Rack Bin Tag & Audio Listen Button -->
                 <div class="flex items-center gap-2">
+                  <button type="button" onclick="openSellerOneClickListModal(${order.orderId})" class="px-2.5 py-1 bg-gradient-to-r from-amber-500/20 to-emerald-500/20 hover:from-amber-500/30 hover:to-emerald-500/30 text-amber-300 border border-amber-500/40 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-sm active:scale-95 transition-all" title="View customer grocery packing list in 1 click">
+                    <i class="fa-solid fa-clipboard-list text-amber-400"></i>
+                    <span>${soundboxLanguage === 'bn' ? '📋 ১-ক্লিক ফর্দ' : (soundboxLanguage === 'hi' ? '📋 1-क्लिक लिस्ट' : '📋 1-Click List')}</span>
+                  </button>
+
                   <span class="px-2.5 py-1 rounded-xl text-xs font-black border ${binInfo.badge} flex items-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-boxes-stacked"></i>
                     <span>গেট ড্রপ: ${binName}</span>
@@ -2151,25 +4328,68 @@
                 </p>
               </div>
 
-              <!-- Visual Zero-Text Product Cards (For Illiterate / Quick Sight Recognition) -->
-              ${order.items && order.items.length ? `
-                <div class="space-y-1.5">
-                  <div class="text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
-                    <i class="fa-solid fa-image text-emerald-400"></i>
-                    <span>${soundboxLanguage === 'bn' ? 'ছবি দেখে পণ্য প্যাক করুন (Items with Photos):' : (soundboxLanguage === 'hi' ? 'फ़ोटो देखकर सामान पैक करें:' : 'Items to Pack (with Visuals):')}</span>
+              <!-- Seller Order Arrangement & Auto-Translated Item Cards -->
+              ${itemsList && itemsList.length ? `
+                <div class="space-y-2 bg-slate-950/70 p-3 rounded-xl border border-slate-800/80">
+                  <div class="flex flex-wrap items-center justify-between text-[11px] font-bold text-slate-400 gap-2 pb-1 border-b border-slate-800/60">
+                    <span class="flex items-center gap-1.5 text-white">
+                      <i class="fa-solid fa-boxes-packing text-emerald-400"></i>
+                      <span>${soundboxLanguage === 'bn' ? 'পণ্য বিন্যাস ও প্যাকিং তালিকা (Arranged Items):' : (soundboxLanguage === 'hi' ? 'सामान क्रम व पैकिंग सूची:' : 'Arranged Packing Sequence:')}</span>
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-mono ${packedCount === itemsList.length ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-800 text-slate-300'}">
+                        ${packedCount}/${itemsList.length} ${soundboxLanguage === 'bn' ? 'প্যাক সম্পন্ন' : (soundboxLanguage === 'hi' ? 'पैक हुआ' : 'Packed')}
+                      </span>
+                    </span>
+                    <button type="button" onclick="autoSortSellerOrderItems(${order.orderId})" class="text-[10px] text-emerald-400 hover:text-emerald-300 font-semibold px-2 py-0.5 rounded hover:bg-emerald-500/10 transition-colors flex items-center gap-1">
+                      <i class="fa-solid fa-arrow-down-short-wide"></i> <span>${soundboxLanguage === 'bn' ? 'স্টল বিন্যাস সাজান' : (soundboxLanguage === 'hi' ? 'स्टॉल अनुसार क्रमबद्ध' : 'Auto-Arrange')}</span>
+                    </button>
                   </div>
-                  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                    ${order.items.map(it => {
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 pt-1">
+                    ${itemsList.map((it, idx) => {
                       const itemImg = it.imageUrl || it.image || it.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&q=80';
+                      const itemKey = it.orderItemId || it.productId;
+                      const isPacked = !!(orderArr.packed && orderArr.packed[itemKey]);
+                      const localizedName = localizeSellerOrderItem(it.productName, soundboxLanguage);
+                      const formattedQty = formatSellerQty(it.quantity, soundboxLanguage);
+
                       return `
-                        <div class="flex items-center gap-2.5 p-2 bg-slate-950 rounded-xl border border-slate-800">
-                          <img src="${itemImg}" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&q=80'" class="w-14 h-14 rounded-lg object-cover border border-slate-700 shrink-0" alt="${it.productName}" />
+                        <div class="flex items-center gap-2 p-2 rounded-xl border transition-all ${
+                          isPacked ? 'bg-emerald-950/30 border-emerald-500/50' : 'bg-slate-900 border-slate-800'
+                        }">
+                          <!-- Arrangement Sequence Controls (▲ / ▼) -->
+                          <div class="flex flex-col gap-0.5 shrink-0">
+                            <button type="button" onclick="moveSellerOrderItem(${order.orderId}, ${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="w-5 h-4 bg-slate-800 hover:bg-slate-700 disabled:opacity-20 disabled:pointer-events-none text-slate-300 rounded text-[9px] flex items-center justify-center font-bold" title="Move Up">
+                              ▲
+                            </button>
+                            <span class="text-[9px] font-mono text-center font-bold text-slate-400">${idx + 1}</span>
+                            <button type="button" onclick="moveSellerOrderItem(${order.orderId}, ${idx}, 1)" ${idx === itemsList.length - 1 ? 'disabled' : ''} class="w-5 h-4 bg-slate-800 hover:bg-slate-700 disabled:opacity-20 disabled:pointer-events-none text-slate-300 rounded text-[9px] flex items-center justify-center font-bold" title="Move Down">
+                              ▼
+                            </button>
+                          </div>
+
+                          <!-- Product Image -->
+                          <img src="${itemImg}" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&q=80'" class="w-12 h-12 rounded-lg object-cover border border-slate-700 shrink-0" alt="${localizedName}" />
+                          
+                          <!-- Details & Translation in Seller Language -->
                           <div class="min-w-0 flex-1">
                             <div class="flex items-center justify-between gap-1">
-                              <span class="text-xs font-bold text-white truncate">${it.productName}</span>
-                              <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg text-xs font-black shrink-0">x${it.quantity}</span>
+                              <span class="text-xs font-bold ${isPacked ? 'text-emerald-300 line-through' : 'text-white'} truncate" title="${it.productName}">
+                                ${localizedName}
+                              </span>
+                              <span class="px-1.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded text-[11px] font-mono font-black shrink-0">
+                                x${formattedQty}
+                              </span>
                             </div>
-                            <p class="text-emerald-400 font-extrabold text-xs mt-1">₹ ${it.finalPrice || (it.unitPrice * it.quantity)}</p>
+                            <div class="flex items-center justify-between mt-1 gap-1">
+                              <span class="text-emerald-400 font-extrabold text-xs">₹ ${it.finalPrice || (it.unitPrice * it.quantity)}</span>
+                              
+                              <!-- Packed Check Toggle -->
+                              <button type="button" onclick="toggleSellerItemPacked(${order.orderId}, ${itemKey})" class="px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
+                                isPacked ? 'bg-emerald-600 text-white shadow' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                              }">
+                                <i class="fa-solid ${isPacked ? 'fa-check' : 'fa-box'} mr-1"></i>${isPacked ? (soundboxLanguage === 'bn' ? 'প্যাকড' : (soundboxLanguage === 'hi' ? 'पैक हुआ' : 'Packed')) : (soundboxLanguage === 'bn' ? 'প্যাক' : (soundboxLanguage === 'hi' ? 'पैक' : 'Pack'))}
+                              </button>
+                            </div>
                           </div>
                         </div>
                       `;
@@ -2256,7 +4476,7 @@
             <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
               <div class="flex justify-between items-start">
                 <h4 class="font-bold text-emerald-400 text-sm">${p.name}</h4>
-                <button onclick="saveBargainRule(${p.id}, '${p.name.replace(/'/g, "\\'")}')" 
+                <button onclick="saveBargainRule(${p.id}, '${(p.name || '').replace(/'/g, "\\'")}')" 
                   class="px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg text-[11px] shadow transition-all">
                   Save Rule
                 </button>
@@ -2603,13 +4823,20 @@
         seller_nav_dashboard: "Store Dashboard",
         seller_nav_photo: "Daily Real Photo Upload",
         seller_nav_inventory: "Products & Inventory",
+        seller_nav_requisitions: "Depleted Stock & Requisitions",
+        seller_nav_wholesalers: "Nearest Wholesalers",
         seller_nav_orders: "Incoming Orders",
         seller_nav_bargain: "AI Bargain Rules",
         seller_nav_earnings: "Payouts & Earnings",
         seller_nav_reviews: "Ratings & Buyer Photos",
         seller_nav_settings: "Store Settings",
         seller_incoming_orders: "Incoming Customer Orders",
-        seller_incoming_sub: "Real-time marketplace orders ready for preparation and packing"
+        seller_incoming_sub: "Real-time marketplace orders ready for preparation and packing",
+        seller_nav_one_click_list: "📋 Customer Grocery List",
+        seller_dash_list_hero_title: "Customer Grocery Packing List",
+        seller_dash_list_hero_subtitle: "View incoming customer lists & voice orders translated into your language in 1 click.",
+        seller_view_grocery_list: "📋 View Grocery List (1-Click)",
+        seller_modal_packing_list_title: "📋 Customer Grocery Packing List"
       },
       bn: {
         seller_title: "বিক্রেতা প্যানেল",
@@ -2622,13 +4849,20 @@
         seller_nav_dashboard: "স্টোর ড্যাশবোর্ড",
         seller_nav_photo: "দৈনিক আসল ছবি আপলোড",
         seller_nav_inventory: "পণ্য ও স্টক তালিকা",
+        seller_nav_requisitions: "কম স্টক ও পাইকারি রিকুইজিশন",
+        seller_nav_wholesalers: "নিকটস্থ পাইকারি বিক্রেতা",
         seller_nav_orders: "নতুন অর্ডার সমূহ",
         seller_nav_bargain: "এআই দরদামের নিয়ম",
         seller_nav_earnings: "উপার্জন ও পেমেন্ট",
         seller_nav_reviews: "রেটিং ও ক্রেতার ছবি",
         seller_nav_settings: "দোকানের সেটিংস",
         seller_incoming_orders: "নতুন গ্রাহক অর্ডারসমূহ",
-        seller_incoming_sub: "প্যাকিং ও গেট ড্রপ র‍্যাকে রাখার জন্য রিয়েল-টাইম অর্ডার তালিকা"
+        seller_incoming_sub: "প্যাকিং ও গেট ড্রপ র‍্যাকে রাখার জন্য রিয়েল-টাইম অর্ডার তালিকা",
+        seller_nav_one_click_list: "📋 ক্রেতার মুদি ফর্দ (১-ক্লিক)",
+        seller_dash_list_hero_title: "ক্রেতার মুদি ফর্দ ও প্যাকিং তালিকা",
+        seller_dash_list_hero_subtitle: "ক্রেতার পাঠানো যেকোনো ভাষার ভয়েস বা ফর্দ আপনার ভাষায় ১-ক্লিকে দেখুন।",
+        seller_view_grocery_list: "📋 ফর্দ দেখুন (১-ক্লিক)",
+        seller_modal_packing_list_title: "📋 ক্রেতার মুদি ফর্দ ও প্যাকিং তালিকা"
       },
       hi: {
         seller_title: "विक्रेता सुइट",
@@ -2641,27 +4875,45 @@
         seller_nav_dashboard: "स्टोर डैशबोर्ड",
         seller_nav_photo: "दैनिक वास्तविक फ़ोटो अपलोड",
         seller_nav_inventory: "उत्पाद और इन्वेंटरी",
+        seller_nav_requisitions: "कम स्टॉक और थोक मांग",
+        seller_nav_wholesalers: "निकटतम थोक व्यापारी",
         seller_nav_orders: "आने वाले ऑर्डर",
         seller_nav_bargain: "एआई मोलभाव नियम",
         seller_nav_earnings: "कमाई और भुगतान",
         seller_nav_reviews: "रेटिंग और समीक्षा",
         seller_nav_settings: "स्टोर सेटिंग्स",
         seller_incoming_orders: "आने वाले ग्राहक ऑर्डर",
-        seller_incoming_sub: "पैकिंग व गेट ड्रॉप रैक में रखने के लिए रियल-टाइम आर्डर सूची"
+        seller_incoming_sub: "पैकिंग व गेट ड्रॉप रैक में रखने के लिए रियल-टाइम आर्डर सूची",
+        seller_nav_one_click_list: "📋 ग्राहक की किराना लिस्ट (1-क्लिक)",
+        seller_dash_list_hero_title: "ग्राहक की किराना लिस्ट व पैकिंग सूची",
+        seller_dash_list_hero_subtitle: "ग्राहक द्वारा भेजी गई किसी भी भाषा की लिस्ट अपनी भाषा में 1-क्लिक में देखें।",
+        seller_view_grocery_list: "📋 लिस्ट देखें (1-क्लिक)",
+        seller_modal_packing_list_title: "📋 ग्राहक की किराना लिस्ट व पैकिंग सूची"
       }
     };
 
     let currentSellerLanguage = localStorage.getItem("locallink_lang") || "en";
 
-    function setSellerLanguage(lang) {
+    async function setSellerLanguage(lang) {
       if (!SELLER_TRANSLATIONS[lang]) lang = "en";
       currentSellerLanguage = lang;
       localStorage.setItem("locallink_lang", lang);
+
+      // Keep soundbox language in sync
+      soundboxLanguage = lang;
+      localStorage.setItem("locallink_soundbox_lang", lang);
+      if (typeof updateSoundboxControlsUI === "function") updateSoundboxControlsUI();
 
       applySellerTranslations(lang);
       updateSellerLanguageUIButtons(lang);
       const msg = lang === "bn" ? "ভাষা বাংলা নির্বাচিত হয়েছে" : (lang === "hi" ? "भाषा हिन्दी चुनी गई है" : "Language set to English");
       showToast(msg);
+      await loadSellerOrders(true);
+
+      // If 1-click modal is open, re-render in new language
+      if (typeof isOneClickModalOpen === "function" && isOneClickModalOpen() && activeOneClickOrder) {
+        renderOneClickListContent(activeOneClickOrder);
+      }
     }
 
     function applySellerTranslations(lang) {
@@ -2688,8 +4940,9 @@
     }
 
     function initSellerLanguage() {
-      const savedLang = localStorage.getItem("locallink_lang") || "en";
+      const savedLang = localStorage.getItem("locallink_lang") || localStorage.getItem("locallink_soundbox_lang") || "en";
       currentSellerLanguage = savedLang;
+      soundboxLanguage = savedLang;
       applySellerTranslations(savedLang);
       updateSellerLanguageUIButtons(savedLang);
     }

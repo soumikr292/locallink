@@ -10,5 +10,6 @@ android/.gradle/
 android/app/build/
 ios/App/Pods/
 frontend/index copy.html
+browser_evidence/
 .DS_Store
 *.log

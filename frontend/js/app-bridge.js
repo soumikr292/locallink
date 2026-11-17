@@ -331,9 +331,6 @@
     document.body.appendChild(offlineBanner);
 
     updateServerStatusUI();
-  }  }
-
-    updateServerStatusUI();
   }
 
   function updateServerStatusUI() {

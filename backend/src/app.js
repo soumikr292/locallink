@@ -52,6 +52,7 @@ const sellerReportRoutes = require("./routes/sellerReportRoutes");
 const customerRoutes = require("./routes/customerRoutes");
 const riderRoutes = require("./routes/riderRoutes");
 const ttsRoutes = require("./routes/ttsRoutes");
+const sttRoutes = require("./routes/sttRoutes");
 const unifiedAuthRoutes = require("./routes/unifiedAuthRoutes");
 const wholesalerRoutes = require("./routes/wholesalerRoutes");
 
@@ -256,6 +257,7 @@ app.use("/api/seller/reports", sellerReportRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/rider", riderRoutes);
 app.use("/api/tts", ttsRoutes);
+app.use("/api/stt", sttRoutes);
 
 // Friendly UI Route Shortcuts
 app.get(["/seller", "/seller/dashboard"], (req, res) => {
