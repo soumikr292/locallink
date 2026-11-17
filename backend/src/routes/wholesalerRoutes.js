@@ -66,15 +66,20 @@ router.get("/metrics", async (req, res) => {
     const khataStats = khataStatsRes[0] || {};
 
     // B2C Direct Consumer stats
-    const b2cStatsRes = await connection.query(
-      `SELECT 
-        COUNT(*) as totalB2COrders,
-        COALESCE(SUM(total_amount), 0) as b2cTurnover
-       FROM wholesale_orders 
-       WHERE wholesaler_id = ? AND order_type = 'b2c'`,
-      [wholesalerId]
-    );
-    const b2cStats = b2cStatsRes[0] || {};
+    let b2cStats = {};
+    try {
+      const b2cStatsRes = await connection.query(
+        `SELECT 
+          COUNT(*) as totalB2COrders,
+          COALESCE(SUM(total_amount), 0) as b2cTurnover
+         FROM wholesale_orders 
+         WHERE wholesaler_id = ? AND order_type = 'b2c'`,
+        [wholesalerId]
+      );
+      b2cStats = b2cStatsRes[0] || {};
+    } catch (_) {
+      b2cStats = { totalB2COrders: 0, b2cTurnover: 0 };
+    }
 
     // Wholesaler Profile
     const profileRes = await connection.query(

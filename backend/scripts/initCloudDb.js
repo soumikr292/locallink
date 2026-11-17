@@ -120,6 +120,7 @@ async function ensureWholesalePlatform(conn) {
       gate_pass_no VARCHAR(100) DEFAULT NULL,
       delivery_address TEXT DEFAULT NULL,
       notes TEXT DEFAULT NULL,
+      order_type VARCHAR(20) DEFAULT 'b2b',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE=InnoDB;
@@ -189,6 +190,7 @@ async function ensureWholesalePlatform(conn) {
   // 3. Ensure seller_profiles entry exists for wholesaler
   await ensureColumn(conn, "seller_profiles", "gstin", "ALTER TABLE `seller_profiles` ADD COLUMN `gstin` VARCHAR(50) DEFAULT NULL AFTER `updated_at`");
   await ensureColumn(conn, "seller_profiles", "mandi_license", "ALTER TABLE `seller_profiles` ADD COLUMN `mandi_license` VARCHAR(100) DEFAULT NULL AFTER `gstin`");
+  await ensureColumn(conn, "wholesale_orders", "order_type", "ALTER TABLE `wholesale_orders` ADD COLUMN `order_type` VARCHAR(20) DEFAULT 'b2b' AFTER `notes`");
 
   const existingProfile = await conn.query(
     "SELECT profile_id FROM seller_profiles WHERE seller_id = ?",
