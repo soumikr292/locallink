@@ -1,6 +1,6 @@
 window.__LOCALLINK_BUILD_ENV__ = {
   "isMobileBundle": false,
-  "defaultServerUrl": "",
+  "defaultServerUrl": "https://locallink-web-production.up.railway.app",
   "lanUrl": "http://192.168.31.157:5001",
   "lanUrls": [
     "http://192.168.31.157:5001"

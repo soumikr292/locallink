@@ -249,6 +249,7 @@
 
   function detectCurrentRole() {
     const path = (window.location.pathname || "").toLowerCase();
+    if (path.includes("wholesaler")) return "wholesaler";
     if (path.includes("seller")) return "seller";
     if (path.includes("delivery") || path.includes("rider")) return "rider";
     if (path.includes("admin") || path.includes("login.html") || path.endsWith("/index.html") && document.title.toLowerCase().includes("admin")) {
@@ -261,6 +262,9 @@
     const isNativeBundle = Boolean(getBuildEnv().isMobileBundle);
     if (role === "customer") {
       return isNativeBundle ? "index.html" : "customer.html";
+    }
+    if (role === "wholesaler") {
+      return "wholesaler.html";
     }
     if (role === "seller") {
       const sellerToken =
@@ -321,15 +325,7 @@
     `;
     document.head.appendChild(style);
 
-    // Network offline banner
-    const offlineBanner = document.createElement("div");
-    offlineBanner.id = "llOfflineBanner";
-    offlineBanner.style.cssText =
-      "display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#e11d48;color:#fff;text-align:center;font-size:11px;font-weight:700;padding:6px 12px;box-shadow:0 4px 12px rgba(0,0,0,0.4);";
-    offlineBanner.innerHTML =
-      '<i class="fa-solid fa-wifi mr-1"></i> No internet connection or backend unreachable — please check your network connection';
-    document.body.appendChild(offlineBanner);
-
+    // Network offline banner disabled per user request
     updateServerStatusUI();
   }
 
@@ -338,7 +334,6 @@
     const fabDot = document.getElementById("llFabDot");
     const headerDot = document.getElementById("llHeaderConnectionDot");
     const input = document.getElementById("llServerUrlInput");
-    const offlineBanner = document.getElementById("llOfflineBanner");
 
     if (input && document.activeElement !== input) {
       input.value = activeApiBase;
@@ -352,16 +347,14 @@
       }
       if (fabDot) fabDot.style.background = "#10b981";
       if (headerDot) headerDot.style.background = "#10b981";
-      if (offlineBanner) offlineBanner.style.display = "none";
     } else if (backendConnectionState === "offline") {
       if (badge) {
-        badge.textContent = "Unreachable";
+        badge.textContent = "Offline";
         badge.style.background = "rgba(244,63,94,0.2)";
         badge.style.color = "#fb7185";
       }
       if (fabDot) fabDot.style.background = "#f43f5e";
       if (headerDot) headerDot.style.background = "#f43f5e";
-      if (offlineBanner && isCapacitorNative()) offlineBanner.style.display = "block";
     } else {
       if (badge) {
         badge.textContent = "Checking...";
@@ -522,40 +515,8 @@
   }
 
   function showInstallBanner(isIosGuide = false) {
-    if (isCapacitorNative() || isStandaloneInstalled()) return;
-    try {
-      if (sessionStorage.getItem("llInstallDismissed") === "1") return;
-    } catch (_) {}
-    if (!document.body || document.getElementById("llInstallBanner")) return;
-
-    const banner = document.createElement("div");
-    banner.id = "llInstallBanner";
-    banner.style.cssText =
-      "position:fixed;bottom:74px;left:12px;right:12px;max-width:440px;margin:0 auto;z-index:9989;background:linear-gradient(135deg,#0f172a,#020617);border:1px solid rgba(16,185,129,0.5);border-radius:16px;padding:10px 12px;box-shadow:0 14px 35px rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:space-between;gap:10px;font-family:system-ui,-apple-system,sans-serif;";
-    banner.innerHTML = `
-      <div style="display:flex;align-items:center;gap:10px;min-width:0;">
-        <img src="icons/icon-192.png" alt="LocalLink" style="width:36px;height:36px;border-radius:10px;flex-shrink:0;" onerror="this.style.display='none'" />
-        <div style="min-width:0;">
-          <div style="font-size:12px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Install LocalLink App</div>
-          <div style="font-size:10px;color:#94a3b8;line-height:1.25;">${
-            isIosGuide
-              ? "Tap Share <i class='fa-solid fa-arrow-up-from-bracket'></i> then 'Add to Home Screen'"
-              : "Put LocalLink icon right on your phone home screen"
-          }</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-        ${
-          isIosGuide
-            ? ""
-            : `<button type="button" onclick="window.LocalLinkApp.promptInstallPwa()" style="background:#10b981;color:#020617;border:none;border-radius:10px;padding:7px 11px;font-size:11px;font-weight:900;cursor:pointer;">Install</button>`
-        }
-        <button type="button" onclick="window.LocalLinkApp.dismissInstallBanner()" aria-label="Dismiss" style="background:#1e293b;color:#94a3b8;border:none;border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:12px;">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-    `;
-    document.body.appendChild(banner);
+    // Disabled banner per user instruction
+    return;
   }
 
   async function promptInstallPwa() {

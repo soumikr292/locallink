@@ -66,7 +66,7 @@ function sanitizeInternalLinks(filePath) {
 function main() {
   const lanUrls = getLanUrls();
   const primaryLan = lanUrls[0] || `http://localhost:${PORT}`;
-  const defaultServerUrl = (process.env.BACKEND_API_URL || process.env.DEFAULT_SERVER_URL || "").trim().replace(/\/+$/, "");
+  const defaultServerUrl = (process.env.BACKEND_API_URL || process.env.DEFAULT_SERVER_URL || "https://locallink-web-production.up.railway.app").trim().replace(/\/+$/, "");
 
   console.log("📦 Building LocalLink mobile bundle -> www/");
   console.log("🌐 Detected Host LAN URL(s):", lanUrls.length ? lanUrls.join(", ") : "None (using localhost)");

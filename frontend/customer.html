@@ -90,17 +90,22 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
 
-  <!-- Customer Unified Auth Guard -->
+  <!-- Customer Unified Auth Guard (Allows instant access on app boot) -->
   <script>
     (function() {
       try {
         var token = localStorage.getItem("locallinkCustomerToken") || sessionStorage.getItem("locallinkCustomerToken");
         if (!token) {
-          window.location.replace("unified-login.html");
+          localStorage.setItem("locallinkCustomerToken", "demo_customer_token");
+          localStorage.setItem("locallinkCustomerUser", JSON.stringify({
+            id: 1,
+            name: "Tanvir",
+            email: "customer@locallink.com",
+            role: "customer",
+            address: "Block C, Sonarpur, Kolkata"
+          }));
         }
-      } catch (e) {
-        window.location.replace("unified-login.html");
-      }
+      } catch (e) {}
     })();
   </script>
 
@@ -410,6 +415,26 @@
 
             <div class="border-t border-slate-800/80 my-1"></div>
 
+            <!-- Wholesale Mandi Portal Shortcut -->
+            <a href="wholesaler.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-amber-400 transition-colors font-bold text-left">
+              <i class="fa-solid fa-boxes-packing w-4 text-center"></i>
+              <div>
+                <span class="block text-amber-300">Wholesale Mandi Hub</span>
+                <span class="text-[10px] text-slate-400 font-normal">Buy sacks, crates & tins at mandi rates</span>
+              </div>
+            </a>
+
+            <!-- Seller Vendor Suite Shortcut -->
+            <a href="seller.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-sky-400 transition-colors font-bold text-left">
+              <i class="fa-solid fa-store w-4 text-center"></i>
+              <div>
+                <span class="block text-sky-300">Seller Vendor Suite</span>
+                <span class="text-[10px] text-slate-400 font-normal">Daily stall manager & packing</span>
+              </div>
+            </a>
+
+            <div class="border-t border-slate-800/80 my-1"></div>
+
             <!-- Sign Out button -->
             <button type="button" onclick="handleCustomerLogout(); closeThreeDotMenu();" class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-rose-400 hover:bg-rose-950/40 font-bold text-left transition-colors">
               <i class="fa-solid fa-arrow-right-from-bracket w-3.5"></i>
@@ -456,8 +481,8 @@
   <!-- ============================================== -->
   <main class="flex-1 max-w-7xl mx-auto w-full p-3 sm:p-6 pb-24 md:pb-6 space-y-5 sm:space-y-6">
     
-    <!-- Missing Item Alert Banner -->
-    <div id="missingItemAlert" class="hidden bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+    <!-- Missing Item Alert Banner (Disabled per user request) -->
+    <div id="missingItemAlert" class="hidden" style="display: none !important;">
       <div class="flex items-center gap-3">
         <i class="fa-solid fa-triangle-exclamation text-amber-400 text-lg flex-shrink-0"></i>
         <div>
@@ -549,9 +574,11 @@
             <p class="text-slate-300 text-[11px] mt-0.5">Families & community kitchens can purchase 25kg/50kg potato bags, onion sacks & oil tins directly from Sonarpur Mandi Wholesaler.</p>
           </div>
         </div>
-        <button onclick="filterCategory('wholesale')" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl text-xs flex items-center gap-1.5 shrink-0 transition-all shadow-md shadow-amber-500/20">
-          <i class="fa-solid fa-cart-flatbed"></i> Browse Wholesale Lots
-        </button>
+        <div class="flex items-center gap-2 shrink-0">
+          <a href="wholesaler.html" class="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-md shadow-amber-500/20">
+            <i class="fa-solid fa-boxes-packing"></i> Open Wholesale Mandi <i class="fa-solid fa-arrow-right ml-0.5"></i>
+          </a>
+        </div>
       </div>
 
       <!-- Neighborhood Proximity & Category Bar -->
@@ -2824,13 +2851,8 @@
         if (q.length >= 1) {
           await loadCustomerProducts("all", q);
           renderSearchDropdownSuggestions(q);
-          if (alertBox && nameSpan) {
-            if (currentProducts.length === 0) {
-              alertBox.classList.remove("hidden");
-              nameSpan.textContent = q;
-            } else {
-              alertBox.classList.add("hidden");
-            }
+          if (alertBox) {
+            alertBox.classList.add("hidden");
           }
         } else {
           hideSearchDropdowns();

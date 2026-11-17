@@ -4,16 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>LocalLink - Ultimate Pro Vendor Hub</title>
+  <!-- Seller Unified Auth Guard (Allows instant access on app boot) -->
   <script>
     (function() {
       try {
         var token = localStorage.getItem("locallinkSellerToken") || sessionStorage.getItem("locallinkSellerToken");
         if (!token) {
-          window.location.replace("unified-login.html");
+          localStorage.setItem("locallinkSellerToken", "demo_seller_token");
+          localStorage.setItem("locallinkSellerUser", JSON.stringify({
+            id: 3,
+            name: "Ratan Fresh & Grocery",
+            email: "seller@locallink.com",
+            role: "seller"
+          }));
         }
-      } catch (e) {
-        window.location.replace("unified-login.html");
-      }
+      } catch (e) {}
     })();
   </script>
   <link rel="manifest" href="manifest.json">
@@ -132,45 +137,97 @@
           <p class="text-[10px] sm:text-xs text-slate-400 truncate hidden sm:block" data-i18n="seller_subtitle">Manage daily live catalog, grocery inventory, and automated pricing</p>
         </div>
       </div>
-      <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-        <!-- Seller Language Switcher Pill (EN | বাংলা | हिन्दी) -->
-        <div class="flex items-center p-0.5 bg-slate-900 border border-slate-800 rounded-xl text-[11px] font-bold">
-          <button type="button" onclick="setSellerLanguage('en')" id="btnSellerLangEn" class="px-2 py-1 rounded-lg transition-all bg-emerald-600 text-white shadow">
-            EN
-          </button>
-          <button type="button" onclick="setSellerLanguage('bn')" id="btnSellerLangBn" class="px-2 py-1 rounded-lg transition-all text-slate-400 hover:text-white">
-            বাংলা
-          </button>
-          <button type="button" onclick="setSellerLanguage('hi')" id="btnSellerLangHi" class="px-2 py-1 rounded-lg transition-all text-slate-400 hover:text-white">
-            हिन्दी
-          </button>
-        </div>
-
-        <!-- Seller Profile & Picture Pill -->
-        <button onclick="switchTab('settings')" class="flex items-center gap-2 pl-1 pr-2 sm:pr-3 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-xs font-bold text-slate-200 transition-all" title="View Store Profile & Settings">
-          <img id="navSellerAvatarImg" src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="w-7 h-7 rounded-lg object-cover border border-emerald-500/50">
-          <span id="navSellerNameText" class="hidden md:inline truncate max-w-[100px]">Ratan Fresh</span>
-        </button>
-
-        <!-- Live Status Pill -->
-        <span id="storeStatusBadge" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-950/70 border border-emerald-800 text-emerald-300 text-xs font-bold rounded-full">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span data-i18n="seller_store_open">Store Open</span>
-        </span>
-
+      <div class="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
         <!-- 📋 1-Click Live Customer Grocery List Button in Top Header -->
-        <button id="btnHeaderOneClickList" type="button" onclick="openSellerOneClickListModal()" class="px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-amber-500 via-emerald-600 to-teal-600 hover:from-amber-400 hover:to-emerald-500 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-emerald-950/40 border border-amber-400/40 flex items-center gap-2 transform active:scale-95 transition-all" title="View Customer Grocery Packing List in 1 Click">
-          <i class="fa-solid fa-clipboard-list text-slate-950 text-sm"></i>
+        <button id="btnHeaderOneClickList" type="button" onclick="openSellerOneClickListModal()" class="px-2.5 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-amber-500 via-emerald-600 to-teal-600 hover:from-amber-400 hover:to-emerald-500 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-emerald-950/40 border border-amber-400/40 flex items-center gap-1.5 sm:gap-2 transform active:scale-95 transition-all" title="View Customer Grocery Packing List in 1 Click">
+          <i class="fa-solid fa-clipboard-list text-slate-950 text-xs sm:text-sm"></i>
           <span id="btnHeaderOneClickListLabel" class="hidden sm:inline font-black" data-i18n="seller_nav_one_click_list">📋 1-Click List</span>
           <span id="btnHeaderOneClickListLabelMobile" class="sm:hidden font-black">📋 List</span>
           <span id="headerListCountBadge" class="px-1.5 py-0.2 bg-slate-950 text-amber-300 rounded-full text-[10px] font-mono font-bold">0</span>
         </button>
 
-        <!-- Quick Upload Live Morning Photo Button -->
-        <button onclick="switchTab('photo-upload')" class="px-3 sm:px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-950/50 flex items-center gap-1.5 transition-all">
-          <i class="fa-solid fa-camera"></i>
-          <span class="hidden md:inline" data-i18n="seller_upload_photo">Upload Live Morning Photo</span>
+        <!-- Seller Profile & Picture Pill (Desktop) -->
+        <button onclick="switchTab('settings')" class="hidden md:flex items-center gap-2 pl-1 pr-2 sm:pr-3 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-xs font-bold text-slate-200 transition-all" title="View Store Profile & Settings">
+          <img id="navSellerAvatarImg" src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="w-7 h-7 rounded-lg object-cover border border-emerald-500/50">
+          <span id="navSellerNameText" class="truncate max-w-[90px]">Ratan Fresh</span>
         </button>
+
+        <!-- Quick Upload Live Morning Photo Button -->
+        <button onclick="switchTab('photo-upload')" class="p-2 sm:px-3 sm:py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-emerald-400 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all" title="Upload Live Morning Photo">
+          <i class="fa-solid fa-camera"></i>
+          <span class="hidden xl:inline" data-i18n="seller_upload_photo">Upload Photo</span>
+        </button>
+
+        <!-- Three-Dot Menu (All language change options + Shortcuts + Profile) -->
+        <div class="relative" id="sellerThreeDotContainer">
+          <button type="button" id="btnSellerHeaderThreeDot" onclick="toggleSellerThreeDotMenu(event)" class="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/50 flex items-center justify-center text-slate-300 hover:text-white transition-all shadow-sm" title="Settings, Language & Shortcuts">
+            <i class="fa-solid fa-ellipsis-vertical text-sm"></i>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div id="sellerThreeDotMenu" class="hidden absolute right-0 top-full mt-2 w-64 bg-slate-900/98 backdrop-blur-xl border border-slate-700/90 rounded-2xl shadow-2xl p-3 z-50 space-y-2 text-xs">
+            <!-- Store Profile Header -->
+            <div class="px-2 py-1 border-b border-slate-800/80 pb-2">
+              <span class="block text-white font-bold text-xs truncate" id="threeDotSellerName">Ratan Fresh & Grocery</span>
+              <span class="text-[10px] text-amber-400 font-mono">Stall #14 • Daily Mandi</span>
+            </div>
+
+            <!-- Language Setting inside 3-dot menu -->
+            <div class="px-2 py-1">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
+                  <i class="fa-solid fa-language text-amber-400"></i>
+                  <span>Language / ভাষা / भाषा</span>
+                </span>
+              </div>
+              <div class="grid grid-cols-3 gap-1 p-1 bg-slate-950 rounded-xl border border-slate-800 text-[11px] font-bold">
+                <button type="button" onclick="setSellerLanguage('en')" id="btnSellerLangEn" class="py-1 rounded-lg text-center transition-all bg-emerald-600 text-white shadow">
+                  EN
+                </button>
+                <button type="button" onclick="setSellerLanguage('bn')" id="btnSellerLangBn" class="py-1 rounded-lg text-center transition-all text-slate-400 hover:text-white">
+                  বাংলা
+                </button>
+                <button type="button" onclick="setSellerLanguage('hi')" id="btnSellerLangHi" class="py-1 rounded-lg text-center transition-all text-slate-400 hover:text-white">
+                  हिन्दी
+                </button>
+              </div>
+            </div>
+
+            <div class="border-t border-slate-800/80 my-1"></div>
+
+            <!-- Wholesale Mandi Portal Shortcut -->
+            <a href="wholesaler.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-amber-400 transition-colors font-bold text-left">
+              <i class="fa-solid fa-boxes-packing w-4 text-center"></i>
+              <div>
+                <span class="block text-amber-300">Wholesale Mandi Hub</span>
+                <span class="text-[10px] text-slate-400 font-normal">Direct mandi lots & bulk sacks</span>
+              </div>
+            </a>
+
+            <!-- Customer Marketplace Shortcut -->
+            <a href="customer.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-emerald-400 transition-colors font-bold text-left">
+              <i class="fa-solid fa-cart-shopping w-4 text-center"></i>
+              <div>
+                <span class="block text-emerald-300">Customer Marketplace</span>
+                <span class="text-[10px] text-slate-400 font-normal">View retail customer app</span>
+              </div>
+            </a>
+
+            <!-- Store Settings Shortcut -->
+            <button type="button" onclick="switchTab('settings'); closeSellerThreeDotMenu();" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 transition-colors font-bold text-left">
+              <i class="fa-solid fa-gear w-4 text-center text-slate-400"></i>
+              <span>Store Profile & Settings</span>
+            </button>
+
+            <div class="border-t border-slate-800/80 my-1"></div>
+
+            <!-- Sign Out -->
+            <button type="button" onclick="handleLogout(); closeSellerThreeDotMenu();" class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-rose-400 hover:bg-rose-950/40 font-bold text-left transition-colors">
+              <i class="fa-solid fa-arrow-right-from-bracket w-3.5"></i>
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -1432,6 +1489,27 @@
         backdrop.classList.add("hidden");
       }
     }
+
+    function toggleSellerThreeDotMenu(e) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById("sellerThreeDotMenu");
+      if (menu) menu.classList.toggle("hidden");
+    }
+
+    function closeSellerThreeDotMenu() {
+      const menu = document.getElementById("sellerThreeDotMenu");
+      if (menu) menu.classList.add("hidden");
+    }
+
+    document.addEventListener("click", (e) => {
+      const menu = document.getElementById("sellerThreeDotMenu");
+      const btn = document.getElementById("btnSellerHeaderThreeDot");
+      if (menu && !menu.classList.contains("hidden")) {
+        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+          menu.classList.add("hidden");
+        }
+      }
+    });
 
     // Application State
     let currentSeller = null;

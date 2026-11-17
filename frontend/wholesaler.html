@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>LocalLink - Wholesale Mandi & B2B Stockist Hub</title>
   
-  <!-- Auth Guard -->
+  <!-- Auth Guard (Allows instant access in app and guest browsing) -->
   <script>
     (function() {
       try {
@@ -14,10 +14,18 @@
                     sessionStorage.getItem("locallinkWholesalerToken") ||
                     sessionStorage.getItem("locallinkSellerToken");
         if (!token) {
-          window.location.replace("unified-login.html");
+          // Seamlessly provision demo wholesaler session so portal always opens in mobile app
+          localStorage.setItem("locallinkWholesalerToken", "demo_wholesaler_session_token");
+          localStorage.setItem("locallinkWholesalerUser", JSON.stringify({
+            id: "wholesaler_demo_1",
+            name: "Sonarpur Mandi Wholesale Co.",
+            email: "wholesaler@locallink.com",
+            role: "wholesaler",
+            mandiYard: "APMC Sonarpur Yard Gate #2"
+          }));
         }
       } catch (e) {
-        window.location.replace("unified-login.html");
+        console.warn("Wholesaler auth guard exception:", e);
       }
     })();
   </script>
@@ -366,6 +374,27 @@
               <p class="text-[10px] text-slate-400 font-mono mt-0.5">📞 +91 7319578723</p>
             </div>
             
+            <!-- Language Setting inside 3-dot menu -->
+            <div class="px-4 py-2 border-b border-slate-800/60">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
+                  <i class="fa-solid fa-language text-amber-400"></i>
+                  <span>Language / ভাষা / भाषा</span>
+                </span>
+              </div>
+              <div class="grid grid-cols-3 gap-1 p-1 bg-slate-950 rounded-xl border border-slate-800 text-[11px] font-bold">
+                <button type="button" onclick="setWholesaleLanguage('en')" id="btnWholesaleLangEn" class="py-1 rounded-lg text-center transition-all bg-amber-500 text-slate-950 shadow">
+                  EN
+                </button>
+                <button type="button" onclick="setWholesaleLanguage('bn')" id="btnWholesaleLangBn" class="py-1 rounded-lg text-center transition-all text-slate-400 hover:text-white">
+                  বাংলা
+                </button>
+                <button type="button" onclick="setWholesaleLanguage('hi')" id="btnWholesaleLangHi" class="py-1 rounded-lg text-center transition-all text-slate-400 hover:text-white">
+                  हिन्दी
+                </button>
+              </div>
+            </div>
+
             <!-- Dark / Light Mode Switch inside 3-dot menu -->
             <div class="px-4 py-2.5 flex items-center justify-between border-b border-slate-800/60">
               <div class="flex items-center gap-2">
@@ -387,6 +416,14 @@
               <i class="fa-solid fa-building-columns text-emerald-400"></i>
               <span>Bank & UPI QR Settings</span>
             </button>
+            <a href="customer.html" class="w-full text-left px-4 py-2.5 hover:bg-slate-800 flex items-center gap-2.5 transition-colors text-emerald-400 font-bold">
+              <i class="fa-solid fa-cart-shopping text-emerald-400"></i>
+              <span>Customer Marketplace</span>
+            </a>
+            <a href="seller.html" class="w-full text-left px-4 py-2.5 hover:bg-slate-800 flex items-center gap-2.5 transition-colors text-sky-400 font-bold">
+              <i class="fa-solid fa-store text-sky-400"></i>
+              <span>Seller Vendor Suite</span>
+            </a>
             <a href="https://wa.me/917319578723" target="_blank" class="w-full text-left px-4 py-2.5 hover:bg-slate-800 flex items-center gap-2.5 transition-colors text-emerald-400">
               <i class="fa-brands fa-whatsapp text-emerald-400"></i>
               <span>WhatsApp Mandi Support</span>
@@ -1392,6 +1429,12 @@
     };
 
     function getApiBase() {
+      if (window.LocalLinkApp && typeof window.LocalLinkApp.getApiBase === "function") {
+        return window.LocalLinkApp.getApiBase();
+      }
+      if (window.__LOCALLINK_BUILD_ENV__ && window.__LOCALLINK_BUILD_ENV__.defaultServerUrl) {
+        return window.__LOCALLINK_BUILD_ENV__.defaultServerUrl;
+      }
       if (window.__ENV && window.__ENV.API_BASE_URL) return window.__ENV.API_BASE_URL;
       const isLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
       return isLocal ? "http://localhost:5001" : window.location.origin;
@@ -1402,6 +1445,50 @@
              localStorage.getItem("locallinkSellerToken") || 
              sessionStorage.getItem("locallinkWholesalerToken") ||
              "";
+    }
+
+    let currentWholesaleLanguage = localStorage.getItem("locallink_wholesale_lang") || localStorage.getItem("locallink_lang") || "en";
+
+    const wholesaleTranslations = {
+      en: {
+        header_title: "Mandi Overview & B2B Console",
+        header_sub: "Real-time trading session, commodity lots & purchase orders"
+      },
+      bn: {
+        header_title: "পাইকারি মাণ্ডি ও বি২বি কন্ট্রোল হাব",
+        header_sub: "রিয়েল-টাইম পাইকারি ট্রেডিং সেশন, আড়তের পণ্যের লট ও পাইকারি ক্রয়াদেশ"
+      },
+      hi: {
+        header_title: "थोक मंडी एवं B2B व्यापार केंद्र",
+        header_sub: "वास्तविक समय थोक व्यापार, कमोडिटी लॉट्स एवं आर्डर प्रबंधन"
+      }
+    };
+
+    function setWholesaleLanguage(lang) {
+      currentWholesaleLanguage = lang;
+      localStorage.setItem("locallink_wholesale_lang", lang);
+      localStorage.setItem("locallink_lang", lang);
+      updateWholesaleLanguageUI();
+      const msg = lang === "bn" ? "ভাষা বাংলায় পরিবর্তন করা হয়েছে" : (lang === "hi" ? "भाषा हिन्दी में बदली गई" : "Language set to English");
+      showToast(msg);
+    }
+
+    function updateWholesaleLanguageUI() {
+      const activeClass = "py-1 rounded-lg text-center transition-all bg-amber-500 text-slate-950 font-bold shadow";
+      const inactiveClass = "py-1 rounded-lg text-center transition-all text-slate-400 hover:text-white font-bold";
+      
+      const btnEn = document.getElementById("btnWholesaleLangEn");
+      const btnBn = document.getElementById("btnWholesaleLangBn");
+      const btnHi = document.getElementById("btnWholesaleLangHi");
+      if (btnEn) btnEn.className = currentWholesaleLanguage === "en" ? activeClass : inactiveClass;
+      if (btnBn) btnBn.className = currentWholesaleLanguage === "bn" ? activeClass : inactiveClass;
+      if (btnHi) btnHi.className = currentWholesaleLanguage === "hi" ? activeClass : inactiveClass;
+
+      const t = wholesaleTranslations[currentWholesaleLanguage] || wholesaleTranslations.en;
+      const hTitle = document.getElementById("headerTitle");
+      const hSub = document.getElementById("headerSubtitle");
+      if (hTitle) hTitle.textContent = t.header_title;
+      if (hSub) hSub.textContent = t.header_sub;
     }
 
     function showToast(msg, type = "success") {
@@ -2805,6 +2892,7 @@
     // Initialize on page load
     window.addEventListener("DOMContentLoaded", () => {
       initWholesaleTheme();
+      updateWholesaleLanguageUI();
       loadWholesaleData();
     });
   </script>
