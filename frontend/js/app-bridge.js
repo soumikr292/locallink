@@ -475,10 +475,6 @@
 
       if (plugins.Network && typeof plugins.Network.addListener === "function") {
         plugins.Network.addListener("networkStatusChange", (status) => {
-          const banner = document.getElementById("llOfflineBanner");
-          if (banner) {
-            banner.style.display = status.connected ? "none" : "block";
-          }
           if (status.connected) {
             autoDetectBackend();
           }
