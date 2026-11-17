@@ -187,6 +187,9 @@ async function ensureWholesalePlatform(conn) {
   }
 
   // 3. Ensure seller_profiles entry exists for wholesaler
+  await ensureColumn(conn, "seller_profiles", "gstin", "ALTER TABLE `seller_profiles` ADD COLUMN `gstin` VARCHAR(50) DEFAULT NULL AFTER `updated_at`");
+  await ensureColumn(conn, "seller_profiles", "mandi_license", "ALTER TABLE `seller_profiles` ADD COLUMN `mandi_license` VARCHAR(100) DEFAULT NULL AFTER `gstin`");
+
   const existingProfile = await conn.query(
     "SELECT profile_id FROM seller_profiles WHERE seller_id = ?",
     [wholesalerId]
