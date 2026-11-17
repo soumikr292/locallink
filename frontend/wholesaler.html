@@ -301,12 +301,14 @@
   <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-950">
 
     <!-- Top Mandi Live Commodity Ticker -->
-    <div class="bg-slate-900 border-b border-slate-800 py-1.5 px-4 overflow-hidden flex items-center gap-3 text-xs flex-shrink-0">
-      <div class="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 text-amber-400 px-2.5 py-0.5 rounded-full font-bold text-[10px] uppercase tracking-wider flex-shrink-0">
-        <i class="fa-solid fa-satellite-dish animate-pulse"></i> Mandi Live Rates
+    <div class="bg-slate-950 border-b border-slate-800/80 py-1 px-3 sm:px-4 overflow-hidden flex items-center gap-2.5 text-xs flex-shrink-0">
+      <div class="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 px-2 py-0.5 rounded-full font-bold text-[9px] sm:text-[10px] uppercase tracking-wider flex-shrink-0 shadow-sm">
+        <i class="fa-solid fa-satellite-dish text-[9px] animate-pulse"></i>
+        <span class="hidden sm:inline">Mandi Live Rates</span>
+        <span class="sm:hidden">Live Rates</span>
       </div>
       <div class="flex-1 overflow-hidden relative">
-        <div id="mandiTickerTrack" class="ticker-track text-slate-300 gap-8 text-[11px] font-mono">
+        <div id="mandiTickerTrack" class="ticker-track text-slate-300 gap-6 text-[10px] sm:text-[11px] font-mono">
           <!-- Dynamically populated ticker items -->
           <span class="flex items-center gap-1.5">🥔 <b>Jyoti Potato:</b> ₹1,850/Qtl <span class="text-emerald-400">▲ +₹60</span></span>
           <span class="flex items-center gap-1.5">🧅 <b>Nashik Red Onion:</b> ₹3,400/Qtl <span class="text-rose-400">▼ -₹100</span></span>
@@ -324,40 +326,45 @@
     </div>
 
     <!-- Header / Context Action Bar -->
-    <header class="mandi-app-header relative bg-slate-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between gap-4 flex-shrink-0" style="position: relative; z-index: 99999;">
-      <div class="flex items-center gap-3">
-        <button type="button" onclick="toggleWholesaleSidebar(true)" class="lg:hidden p-2 text-slate-400 hover:text-white rounded-lg">
-          <i class="fa-solid fa-bars text-lg"></i>
+    <header class="mandi-app-header sticky top-0 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 px-3 sm:px-6 py-2 sm:py-3 flex items-center justify-between gap-2.5 flex-shrink-0 z-[1000] ll-safe-top" style="position: relative; z-index: 99999;">
+      <!-- Left: Navigation Menu & Title -->
+      <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+        <button type="button" onclick="toggleWholesaleSidebar(true)" class="lg:hidden w-8 h-8 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 flex items-center justify-center text-slate-300 hover:text-white transition-all shadow-sm flex-shrink-0" title="Open Navigation Menu">
+          <i class="fa-solid fa-bars text-sm"></i>
         </button>
-        <div>
-          <h2 id="headerTitle" class="text-lg font-bold text-white tracking-tight">Mandi Overview & B2B Console</h2>
-          <p id="headerSubtitle" class="text-xs text-slate-400">Real-time trading session, commodity lots & kirana purchase orders</p>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <h2 id="headerTitle" class="text-xs sm:text-base font-black text-white tracking-tight truncate max-w-[130px] xs:max-w-[180px] sm:max-w-none">Mandi Console</h2>
+            <span class="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Live Mandi
+            </span>
+          </div>
+          <p id="headerSubtitle" class="text-[10px] sm:text-xs text-slate-400 truncate hidden sm:block">Real-time trading session, commodity lots & kirana purchase orders</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-3">
-        <!-- Mandi Verified Contact & GST Badge -->
-        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-[11px] font-mono text-slate-300">
+      <!-- Right: Action Buttons -->
+      <div class="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
+        <!-- Mandi Verified Contact & GST Badge (Desktop) -->
+        <div class="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-[11px] font-mono text-slate-300 shadow-sm">
           <span class="text-amber-400"><i class="fa-solid fa-phone"></i> +91 7319578723</span>
           <span class="text-slate-600">|</span>
           <span class="text-emerald-400 font-bold">GSTIN: 19AAACL7891B1Z2</span>
         </div>
 
+        <!-- Add Bulk Lot Button (Responsive & Non-Wrapping) -->
         <button type="button" onclick="openAddLotModal()" 
-          class="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold text-xs rounded-xl flex items-center gap-2 shadow-lg shadow-amber-500/20 transition-all">
-          <i class="fa-solid fa-plus"></i>
-          <span>Add Bulk Lot</span>
+          class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 bg-gradient-to-r from-amber-500 via-amber-400 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs rounded-xl flex items-center gap-1.5 shadow-md shadow-amber-500/20 active:scale-95 transition-all whitespace-nowrap flex-shrink-0" title="Add New Bulk Lot">
+          <i class="fa-solid fa-plus text-xs"></i>
+          <span class="hidden sm:inline">Add Bulk Lot</span>
+          <span class="sm:hidden font-black">Add Lot</span>
         </button>
 
-        <!-- Quick Theme Mode Toggle Button -->
-        <button type="button" onclick="toggleWholesaleTheme()" id="btnHeaderThemeQuick"
-          class="p-2 text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 rounded-xl transition-all" title="Toggle Light / Dark Mode">
-          <i id="headerThemeQuickIcon" class="fa-solid fa-moon text-sm text-amber-400"></i>
-        </button>
-
+        <!-- Refresh Button -->
         <button type="button" onclick="refreshWholesaleData()" 
-          class="p-2 text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 rounded-xl transition-all" title="Refresh Mandi Data">
-          <i id="btnRefreshIcon" class="fa-solid fa-rotate text-sm"></i>
+          class="w-8 h-8 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 flex items-center justify-center text-slate-300 hover:text-white transition-all shadow-sm flex-shrink-0" title="Refresh Mandi Data">
+          <i id="btnRefreshIcon" class="fa-solid fa-rotate text-xs"></i>
         </button>
 
         <!-- Three Dot Backdrop Overlay -->
@@ -366,11 +373,11 @@
         <!-- Three Dot Settings Menu -->
         <div id="wholesaleHeaderMenuContainer" class="relative" style="position: relative; z-index: 100000;">
           <button type="button" onclick="toggleHeaderMenu()" id="btnHeaderMenu"
-            class="p-2 text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition-all" title="Settings & Profile">
-            <i class="fa-solid fa-ellipsis-vertical text-base"></i>
+            class="w-8 h-8 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 flex items-center justify-center text-slate-300 hover:text-white transition-all shadow-sm flex-shrink-0" title="Settings, Language & Profile">
+            <i class="fa-solid fa-ellipsis-vertical text-sm"></i>
           </button>
           
-          <div id="wholesaleHeaderMenu" class="hidden absolute right-0 mt-2 w-64 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl py-2 text-xs text-slate-200" style="position: absolute; z-index: 1000000;">
+          <div id="wholesaleHeaderMenu" class="hidden absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-24px)] bg-slate-900/98 backdrop-blur-2xl border border-slate-700 rounded-2xl shadow-2xl py-2 text-xs text-slate-200" style="position: absolute; z-index: 1000000;">
             <div class="px-4 py-2 border-b border-slate-800">
               <p class="font-bold text-white text-xs truncate">Sonarpur Mandi Wholesale Co.</p>
               <p class="text-[10px] text-amber-400 font-mono mt-0.5">APMC-WB-2024-9842</p>
