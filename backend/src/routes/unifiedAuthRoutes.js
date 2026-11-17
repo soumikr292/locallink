@@ -92,6 +92,9 @@ router.post("/login", async (req, res) => {
         idLower === "wholesale"
       ) {
         try {
+          try {
+            await connection.query("ALTER TABLE `users` MODIFY COLUMN `role` ENUM('customer','seller','wholesaler','delivery_partner','staff','admin','super_admin') NOT NULL DEFAULT 'customer'");
+          } catch (_) {}
           const hash = await bcrypt.hash("Wholesaler@123", 10);
           const insRes = await connection.query(
             `INSERT INTO users (name, email, phone, password_hash, role, status, email_verified, city, pincode)

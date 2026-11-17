@@ -65,6 +65,14 @@ async function ensureColumn(conn, tableName, columnName, alterSql) {
 }
 
 async function ensureWholesalePlatform(conn) {
+  // 0. Ensure 'wholesaler' is supported in users.role enum
+  try {
+    await conn.query("ALTER TABLE `users` MODIFY COLUMN `role` ENUM('customer','seller','wholesaler','delivery_partner','staff','admin','super_admin') NOT NULL DEFAULT 'customer'");
+    console.log("Verified users.role ENUM includes 'wholesaler'.");
+  } catch (err) {
+    console.warn("Could not alter users.role enum:", err.message);
+  }
+
   // 1. Create tables if not exist
   await conn.query(`
     CREATE TABLE IF NOT EXISTS wholesale_lots (

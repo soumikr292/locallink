@@ -484,7 +484,7 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `password_hash` varchar(255) NOT NULL,
-  `role` enum('customer','seller','delivery_partner','staff','admin','super_admin') NOT NULL DEFAULT 'customer',
+  `role` enum('customer','seller','wholesaler','delivery_partner','staff','admin','super_admin') NOT NULL DEFAULT 'customer',
   `status` enum('active','inactive','suspended','pending') NOT NULL DEFAULT 'active',
   `email_verified` tinyint(1) NOT NULL DEFAULT 0,
   `last_login_at` datetime DEFAULT NULL,
