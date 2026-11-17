@@ -340,14 +340,17 @@
           <span id="navCustomerNameText" class="text-[11px] font-bold hidden sm:inline truncate max-w-[75px]">Tanvir</span>
         </button>
 
+        <!-- Three-Dot Click Backdrop Overlay -->
+        <div id="customerThreeDotBackdrop" onclick="closeThreeDotMenu()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[999] hidden"></div>
+
         <!-- Three-Dot Menu (Profile, Theme, Language, Role Switcher, Signout) -->
-        <div class="relative" id="threeDotMenuContainer">
+        <div class="relative z-[1001]" id="threeDotMenuContainer">
           <button type="button" id="btnHeaderThreeDot" onclick="toggleThreeDotMenu(event)" class="w-8 h-8 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/50 flex items-center justify-center text-slate-300 hover:text-white transition-all shadow-sm" title="Settings, Language & Appearance">
             <i class="fa-solid fa-ellipsis-vertical text-sm"></i>
           </button>
 
           <!-- Three-Dot Dropdown Menu -->
-          <div id="headerThreeDotMenu" class="hidden absolute right-0 top-full mt-2 w-64 bg-slate-900/98 backdrop-blur-xl border border-slate-700/90 rounded-2xl shadow-2xl p-3 z-50 space-y-2 text-xs">
+          <div id="headerThreeDotMenu" class="hidden absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-24px)] bg-slate-950/98 backdrop-blur-2xl border border-slate-700/90 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.85)] p-3.5 z-[1002] space-y-2 text-xs">
             <!-- Profile shortcut -->
             <button type="button" onclick="openCustomerProfileModal(); closeThreeDotMenu();" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 transition-colors font-bold text-left">
               <i class="fa-solid fa-user text-emerald-400 w-4 text-center"></i>
@@ -5755,13 +5758,23 @@
     function toggleThreeDotMenu(event) {
       if (event) event.stopPropagation();
       const menu = document.getElementById("headerThreeDotMenu");
+      const backdrop = document.getElementById("customerThreeDotBackdrop");
       if (!menu) return;
-      menu.classList.toggle("hidden");
+      const isHidden = menu.classList.contains("hidden");
+      if (isHidden) {
+        menu.classList.remove("hidden");
+        if (backdrop) backdrop.classList.remove("hidden");
+      } else {
+        menu.classList.add("hidden");
+        if (backdrop) backdrop.classList.add("hidden");
+      }
     }
 
     function closeThreeDotMenu() {
       const menu = document.getElementById("headerThreeDotMenu");
+      const backdrop = document.getElementById("customerThreeDotBackdrop");
       if (menu) menu.classList.add("hidden");
+      if (backdrop) backdrop.classList.add("hidden");
     }
 
     document.addEventListener("click", (e) => {

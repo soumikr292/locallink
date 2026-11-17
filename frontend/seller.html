@@ -126,8 +126,11 @@
   <!-- =============================== -->
   <main class="flex-1 flex flex-col h-screen overflow-y-auto bg-slate-900">
     
+    <!-- Three-Dot Click Backdrop Overlay (Prevents overlap with dashboard & isolates menu) -->
+    <div id="sellerThreeDotBackdrop" onclick="closeSellerThreeDotMenu()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[999] hidden"></div>
+
     <!-- Top Navbar -->
-    <header class="bg-slate-950/90 backdrop-blur-md border-b border-slate-800 px-4 sm:px-8 py-3 sm:py-4 flex justify-between items-center sticky top-0 z-20 gap-2 ll-safe-top">
+    <header class="bg-slate-950/90 backdrop-blur-md border-b border-slate-800 px-4 sm:px-8 py-3 sm:py-4 flex justify-between items-center sticky top-0 z-[1000] gap-2 ll-safe-top">
       <div class="flex items-center gap-3 min-w-0">
         <button type="button" onclick="toggleSellerSidebar(true)" class="lg:hidden p-2 bg-slate-900 border border-slate-800 rounded-xl text-slate-200 hover:bg-slate-800 flex-shrink-0" title="Open Menu">
           <i class="fa-solid fa-bars"></i>
@@ -159,13 +162,13 @@
         </button>
 
         <!-- Three-Dot Menu (All language change options + Shortcuts + Profile) -->
-        <div class="relative" id="sellerThreeDotContainer">
+        <div class="relative z-[1001]" id="sellerThreeDotContainer">
           <button type="button" id="btnSellerHeaderThreeDot" onclick="toggleSellerThreeDotMenu(event)" class="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/50 flex items-center justify-center text-slate-300 hover:text-white transition-all shadow-sm" title="Settings, Language & Shortcuts">
             <i class="fa-solid fa-ellipsis-vertical text-sm"></i>
           </button>
 
           <!-- Dropdown Menu -->
-          <div id="sellerThreeDotMenu" class="hidden absolute right-0 top-full mt-2 w-64 bg-slate-900/98 backdrop-blur-xl border border-slate-700/90 rounded-2xl shadow-2xl p-3 z-50 space-y-2 text-xs">
+          <div id="sellerThreeDotMenu" class="hidden absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-24px)] bg-slate-950/98 backdrop-blur-2xl border border-slate-700/90 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.85)] p-3.5 z-[1002] space-y-2.5 text-xs">
             <!-- Store Profile Header -->
             <div class="px-2 py-1 border-b border-slate-800/80 pb-2">
               <span class="block text-white font-bold text-xs truncate" id="threeDotSellerName">Ratan Fresh & Grocery</span>
@@ -1493,12 +1496,23 @@
     function toggleSellerThreeDotMenu(e) {
       if (e) e.stopPropagation();
       const menu = document.getElementById("sellerThreeDotMenu");
-      if (menu) menu.classList.toggle("hidden");
+      const backdrop = document.getElementById("sellerThreeDotBackdrop");
+      if (!menu) return;
+      const isHidden = menu.classList.contains("hidden");
+      if (isHidden) {
+        menu.classList.remove("hidden");
+        if (backdrop) backdrop.classList.remove("hidden");
+      } else {
+        menu.classList.add("hidden");
+        if (backdrop) backdrop.classList.add("hidden");
+      }
     }
 
     function closeSellerThreeDotMenu() {
       const menu = document.getElementById("sellerThreeDotMenu");
+      const backdrop = document.getElementById("sellerThreeDotBackdrop");
       if (menu) menu.classList.add("hidden");
+      if (backdrop) backdrop.classList.add("hidden");
     }
 
     document.addEventListener("click", (e) => {
@@ -1506,7 +1520,7 @@
       const btn = document.getElementById("btnSellerHeaderThreeDot");
       if (menu && !menu.classList.contains("hidden")) {
         if (!menu.contains(e.target) && !btn.contains(e.target)) {
-          menu.classList.add("hidden");
+          closeSellerThreeDotMenu();
         }
       }
     });
@@ -1694,12 +1708,14 @@
 
         // Store status badge
         const badge = document.getElementById("storeStatusBadge");
-        if (currentSeller.shop && currentSeller.shop.isVacationMode) {
-          badge.className = "hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-amber-950/70 border border-amber-800 text-amber-300 text-xs font-bold rounded-full";
-          badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span><span>Vacation Mode</span>`;
-        } else {
-          badge.className = "hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-950/70 border border-emerald-800 text-emerald-300 text-xs font-bold rounded-full";
-          badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>Store Open</span>`;
+        if (badge) {
+          if (currentSeller.shop && currentSeller.shop.isVacationMode) {
+            badge.className = "hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-amber-950/70 border border-amber-800 text-amber-300 text-xs font-bold rounded-full";
+            badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span><span>Vacation Mode</span>`;
+          } else {
+            badge.className = "hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-950/70 border border-emerald-800 text-emerald-300 text-xs font-bold rounded-full";
+            badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>Store Open</span>`;
+          }
         }
       } catch (e) {
         console.error("Session init failed:", e);
