@@ -529,7 +529,10 @@
         }, 650);
 
       } catch (err) {
-        showAlert(err.message || "Failed to sign in. Please verify your connection.", "error");
+        const friendly = (err.message === "Load failed" || err.message === "Failed to fetch") 
+          ? "Unable to reach server. Connecting to cloud fallback..." 
+          : (err.message || "Failed to sign in. Please verify your connection.");
+        showAlert(friendly, "error");
         btn.disabled = false;
         btn.innerHTML = origContent;
       }
@@ -595,7 +598,10 @@
         }, 750);
 
       } catch (err) {
-        showAlert(err.message || "Registration error. Please check your information.", "error");
+        const friendly = (err.message === "Load failed" || err.message === "Failed to fetch") 
+          ? "Unable to reach server. Connecting to cloud fallback..." 
+          : (err.message || "Registration error. Please check your information.");
+        showAlert(friendly, "error");
         btn.disabled = false;
         btn.innerHTML = origContent;
       }

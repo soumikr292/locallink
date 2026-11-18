@@ -1626,7 +1626,10 @@
 
         return data;
       } catch (err) {
-        showToast(err.message || "Server connection error", "error");
+        const friendly = (err.message === "Load failed" || err.message === "Failed to fetch") 
+          ? "Unable to reach server. Connecting to cloud fallback..." 
+          : (err.message || "Server connection error");
+        showToast(friendly, "error");
         throw err;
       }
     }

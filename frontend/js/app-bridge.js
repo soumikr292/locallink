@@ -141,40 +141,72 @@
     return activeApiBase;
   }
 
-  // Transparent fetch wrapper so both relative /api/* and hardcoded localhost:5001 work everywhere
+  // Transparent fetch wrapper with automatic Cloud Server Failover
   const nativeFetch = window.fetch.bind(window);
-  window.fetch = function (input, init) {
+  window.fetch = async function (input, init) {
+    let resolvedInput = input;
     try {
       const base = getApiBase();
       if (typeof input === "string") {
         if (input.startsWith("http://localhost:5001")) {
-          input = base + input.slice("http://localhost:5001".length);
+          resolvedInput = base + input.slice("http://localhost:5001".length);
         } else if (input.startsWith("http://127.0.0.1:5001")) {
-          input = base + input.slice("http://127.0.0.1:5001".length);
+          resolvedInput = base + input.slice("http://127.0.0.1:5001".length);
         } else if (window.location && window.location.origin && input.startsWith(window.location.origin + "/api/")) {
           // If called with window.location.origin on a static dev server port (e.g. :5500), rewrite to base
           if (base && !input.startsWith(base)) {
-            input = base + input.slice(window.location.origin.length);
+            resolvedInput = base + input.slice(window.location.origin.length);
           }
         } else if (input.startsWith("/api/")) {
-          input = base + input;
+          resolvedInput = base + input;
         }
       } else if (input instanceof Request && input.url) {
         if (input.url.startsWith("http://localhost:5001")) {
           const rewritten = base + input.url.slice("http://localhost:5001".length);
-          input = new Request(rewritten, input);
+          resolvedInput = new Request(rewritten, input);
         } else if (input.url.startsWith("http://127.0.0.1:5001")) {
           const rewritten = base + input.url.slice("http://127.0.0.1:5001".length);
-          input = new Request(rewritten, input);
+          resolvedInput = new Request(rewritten, input);
         } else if (window.location && window.location.origin && input.url.startsWith(window.location.origin + "/api/")) {
           if (base && !input.url.startsWith(base)) {
             const rewritten = base + input.url.slice(window.location.origin.length);
-            input = new Request(rewritten, input);
+            resolvedInput = new Request(rewritten, input);
           }
         }
       }
     } catch (_) {}
-    return nativeFetch(input, init);
+
+    try {
+      return await nativeFetch(resolvedInput, init);
+    } catch (primaryErr) {
+      // Auto-failover: If local/LAN endpoint fails (e.g. "Load failed" on iPhone or "Failed to fetch"), retry against cloud production
+      const env = getBuildEnv();
+      const cloudServer = normalizeUrl(env.defaultServerUrl || "https://locallink-web-production.up.railway.app");
+      const currentTarget = typeof resolvedInput === "string" ? resolvedInput : (resolvedInput && resolvedInput.url ? resolvedInput.url : "");
+
+      if (cloudServer && currentTarget && !currentTarget.startsWith(cloudServer)) {
+        let apiPath = null;
+        if (currentTarget.includes("/api/")) {
+          apiPath = currentTarget.slice(currentTarget.indexOf("/api/"));
+        }
+        if (apiPath) {
+          try {
+            const fallbackUrl = cloudServer + apiPath;
+            const fallbackInput = typeof resolvedInput === "string" ? fallbackUrl : new Request(fallbackUrl, resolvedInput);
+            const fallbackRes = await nativeFetch(fallbackInput, init);
+            // Seamlessly promote cloud server so next requests don't lag
+            activeApiBase = cloudServer;
+            try { localStorage.setItem(STORAGE_KEY_SERVER, cloudServer); } catch (_) {}
+            backendConnectionState = "online";
+            updateServerStatusUI();
+            return fallbackRes;
+          } catch (_) {
+            // If cloud retry also fails, throw primary error
+          }
+        }
+      }
+      throw primaryErr;
+    }
   };
 
   async function testServerUrl(baseUrl, timeoutMs = 2500) {

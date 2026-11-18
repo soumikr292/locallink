@@ -2518,7 +2518,10 @@
         return data;
       } catch (err) {
         if (!suppressToast) {
-          showToast(err.message || "Network error", "error");
+          const msg = (err.message === "Load failed" || err.message === "Failed to fetch") 
+            ? "Connection error: Reconnecting to LocalLink cloud..." 
+            : (err.message || "Network error");
+          showToast(msg, "error");
         }
         throw err;
       }

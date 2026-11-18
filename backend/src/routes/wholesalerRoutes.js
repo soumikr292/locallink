@@ -4,20 +4,46 @@ const { verifyToken } = require("../utils/jwt");
 
 const router = express.Router();
 
+// Cached default wholesaler ID (auto-resolved from DB to handle differences across local and cloud environments)
+let cachedDefaultWholesalerId = null;
+
+async function syncDefaultWholesalerId() {
+  if (cachedDefaultWholesalerId) return cachedDefaultWholesalerId;
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const rows = await conn.query(
+      "SELECT user_id FROM users WHERE role = 'wholesaler' OR email = 'wholesaler@locallink.com' ORDER BY user_id ASC LIMIT 1"
+    );
+    if (rows && rows.length > 0) {
+      cachedDefaultWholesalerId = Number(rows[0].user_id);
+      console.log(`[Wholesaler] Default wholesaler user_id synced: ${cachedDefaultWholesalerId}`);
+    }
+  } catch (err) {
+    console.warn("[Wholesaler] Could not sync default wholesaler user_id:", err.message);
+  } finally {
+    if (conn) conn.release();
+  }
+  return cachedDefaultWholesalerId || 22;
+}
+
+// Pre-cache on boot
+syncDefaultWholesalerId().catch(() => {});
+
 // Helper to extract authenticated user or fallback for demo
 function getWholesalerId(req) {
   try {
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith("Bearer ")) {
       const decoded = verifyToken(authHeader.split(" ")[1]);
-      if (decoded && decoded.userId) {
-        return Number(decoded.userId);
+      if (decoded && (decoded.userId || decoded.user_id || decoded.id)) {
+        return Number(decoded.userId || decoded.user_id || decoded.id);
       }
     }
   } catch (e) {
     // Fall back to default wholesaler
   }
-  return 56; // Sonarpur Mandi Wholesale Co.
+  return cachedDefaultWholesalerId || 22;
 }
 
 // 1. Dashboard Metrics
