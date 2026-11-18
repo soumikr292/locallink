@@ -228,6 +228,56 @@
       font-family: inherit;
     }
 
+    /* LocalLink Market Map Custom Markers */
+    .ll-map-marker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+    }
+    .ll-map-marker:hover, .ll-map-marker.active {
+      transform: scale(1.22);
+      z-index: 1000 !important;
+    }
+    .ll-marker-retail {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #ffffff;
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.6);
+    }
+    .ll-marker-wholesaler {
+      background: linear-gradient(135deg, #d97706, #f59e0b);
+      color: #0f172a;
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.65);
+    }
+    .ll-marker-customer {
+      background: #0284c7;
+      color: #ffffff;
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 0 0 6px rgba(14, 165, 233, 0.35);
+      animation: customerPulse 2s infinite;
+    }
+    @keyframes customerPulse {
+      0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.6); }
+      70% { box-shadow: 0 0 0 12px rgba(14, 165, 233, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
+    }
+    .leaflet-popup-content-wrapper {
+      background: #0f172a !important;
+      color: #f8fafc !important;
+      border: 1px solid #334155 !important;
+      border-radius: 1rem !important;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important;
+      padding: 0.25rem !important;
+    }
+    .leaflet-popup-tip {
+      background: #0f172a !important;
+      border: 1px solid #334155 !important;
+    }
+
     /* UPI QR Scanning Laser Line */
     @keyframes laserSweep {
       0% { top: 4%; opacity: 0.85; }
@@ -340,6 +390,12 @@
           <span id="groceryListCountBadge" class="min-w-4 h-4 px-1 bg-emerald-500 text-slate-950 rounded-full text-[9px] font-black flex items-center justify-center">0</span>
         </button>
 
+        <!-- Stores & Mandis Map Button (Desktop/Tablet) -->
+        <button onclick="openMarketMapModal()" id="nav-btn-market-map" class="hidden lg:flex px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-900 hover:bg-slate-800 text-rose-300 border border-slate-800 hover:border-rose-500/40 rounded-xl items-center gap-1.5 transition-all shadow-sm group" title="View Nearby Stores & Wholesalers on Live Map">
+          <i class="fa-solid fa-map-location-dot text-rose-400 text-sm group-hover:scale-110 transition-transform"></i>
+          <span class="hidden xl:inline font-bold">Stores Map</span>
+        </button>
+
         <!-- Optional Desktop Sign In Button for Guests (Before 3-dot) -->
         <button onclick="openCustomerAuthModal()" id="customerLoginNavBtn" class="hidden md:flex px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs items-center gap-1.5 shadow-lg flex-shrink-0">
           <i class="fa-solid fa-arrow-right-to-bracket"></i> <span data-i18n="nav_signin">Sign In</span>
@@ -392,6 +448,18 @@
                 </div>
               </div>
               <span id="threeDotGroceryListBadge" class="px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-mono font-black text-[10px]">0</span>
+            </button>
+
+            <!-- Market & Wholesalers Live Map Shortcut -->
+            <button type="button" onclick="openMarketMapModal(); closeThreeDotMenu();" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 transition-colors font-bold text-left group">
+              <div class="flex items-center gap-2.5">
+                <i class="fa-solid fa-map-location-dot text-rose-400 w-4 text-center group-hover:scale-110 transition-transform"></i>
+                <div>
+                  <span class="block text-white">Stores & Mandi Map</span>
+                  <span class="text-[10px] text-slate-400 font-normal">View nearby stalls & wholesalers</span>
+                </div>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-bold border border-rose-500/30">Radar</span>
             </button>
 
             <div class="border-t border-slate-800/80 my-1"></div>
@@ -634,6 +702,10 @@
           </button>
           <button onclick="toggleNearbyFilter()" id="btnNearbyOnlyToggle" class="px-2.5 py-1.5 bg-slate-900 border border-slate-700 text-slate-300 text-[11px] font-bold rounded-xl hover:bg-slate-800 transition-all" title="Toggle strictly nearby stores">
             <i class="fa-solid fa-globe mr-1"></i> <span data-i18n="all_stalls_btn">All Stalls</span>
+          </button>
+          <button type="button" onclick="openMarketMapModal()" class="px-3 py-1.5 bg-gradient-to-r from-rose-950/60 via-slate-900 to-amber-950/60 hover:from-rose-900/60 hover:to-amber-900/60 border border-rose-500/40 text-rose-300 font-bold rounded-xl flex items-center gap-1.5 text-xs transition-all shadow-sm group" title="Open Map to view nearby shops and wholesalers">
+            <i class="fa-solid fa-map-location-dot text-rose-400 group-hover:scale-110 transition-transform"></i>
+            <span>Stores & Mandi Map</span>
           </button>
         </div>
       </div>
@@ -1056,6 +1128,106 @@
     </div>
 
   </main>
+
+  <!-- ============================================== -->
+  <!-- 🗺️ LOCAL MARKET & WHOLESALER MAP RADAR MODAL   -->
+  <!-- ============================================== -->
+  <div id="marketMapModal" onclick="if(event.target === this) closeMarketMapModal()" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-700/80 rounded-3xl max-w-4xl w-full p-4 sm:p-6 space-y-3.5 shadow-[0_25px_60px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col max-h-[96vh]">
+      <!-- Header -->
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3 flex-shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-slate-950 flex items-center justify-center shadow-lg shadow-emerald-500/20 text-lg flex-shrink-0">
+            <i class="fa-solid fa-map-location-dot"></i>
+          </div>
+          <div>
+            <h3 class="font-black text-white text-base sm:text-lg flex items-center gap-2">
+              <span>Local Market & Wholesaler Map</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">Live Radar</span>
+            </h3>
+            <p class="text-xs text-slate-400">Showing verified retail stalls & wholesale mandi yards in <strong class="text-emerald-400" id="mapModalLocalityText">Rajpur Sonarpur</strong></p>
+          </div>
+        </div>
+        <button type="button" onclick="closeMarketMapModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-sm transition-all shadow" title="Close Map">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 flex-shrink-0 text-xs">
+        <!-- Filter Tabs -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="mapFilterTabs">
+          <button type="button" onclick="setMarketMapFilter('all')" id="mapTab-all" class="px-3 py-1.5 rounded-xl font-bold bg-emerald-600 text-white shadow transition-all whitespace-nowrap">
+            All (<span id="mapCountAll">9</span>)
+          </button>
+          <button type="button" onclick="setMarketMapFilter('retail')" id="mapTab-retail" class="px-3 py-1.5 rounded-xl font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all whitespace-nowrap flex items-center gap-1.5">
+            <i class="fa-solid fa-store text-emerald-400"></i> Retail Shops (<span id="mapCountRetail">6</span>)
+          </button>
+          <button type="button" onclick="setMarketMapFilter('wholesaler')" id="mapTab-wholesaler" class="px-3 py-1.5 rounded-xl font-bold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 transition-all whitespace-nowrap flex items-center gap-1.5">
+            <i class="fa-solid fa-warehouse text-amber-400"></i> Wholesalers & Mandis (<span id="mapCountWholesaler">3</span>)
+          </button>
+        </div>
+
+        <!-- Search & Locate Me -->
+        <div class="flex items-center gap-2">
+          <div class="relative flex-1 sm:w-56">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs pointer-events-none"></i>
+            <input type="text" id="mapStoreSearchInput" oninput="handleMapStoreSearch(this.value)" placeholder="Search shop or mandi..." class="w-full bg-slate-950 border border-slate-800 text-white placeholder-slate-500 text-xs rounded-xl pl-8 pr-3 py-1.5 outline-none focus:border-emerald-500">
+          </div>
+          <button type="button" onclick="recenterMarketMap()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1 font-bold whitespace-nowrap" title="Center map to my delivery location">
+            <i class="fa-solid fa-crosshairs text-sky-400"></i> <span class="hidden sm:inline">My Location</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Map Container -->
+      <div class="relative rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 flex-1 min-h-[300px] sm:min-h-[380px]">
+        <div id="marketStoresMapLeaflet" class="w-full h-full min-h-[300px] sm:min-h-[380px] z-0"></div>
+        
+        <!-- Legend overlay in top right -->
+        <div class="absolute top-3 right-3 z-[400] bg-slate-950/90 backdrop-blur-md border border-slate-800 p-2 rounded-xl text-[10px] space-y-1 shadow-lg pointer-events-none sm:pointer-events-auto">
+          <div class="flex items-center gap-1.5 text-emerald-400 font-bold">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow"></span> Retail Store / Stall
+          </div>
+          <div class="flex items-center gap-1.5 text-amber-400 font-bold">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block shadow"></span> Wholesale Mandi Yard
+          </div>
+          <div class="flex items-center gap-1.5 text-sky-400 font-bold">
+            <span class="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block shadow animate-ping"></span> Your Delivery Area
+          </div>
+        </div>
+      </div>
+
+      <!-- Selected Store Detail Bottom Card -->
+      <div id="mapSelectedStoreCard" class="bg-slate-950 border border-slate-800 rounded-2xl p-3.5 space-y-2 flex-shrink-0 transition-all">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span id="mapCardStoreTypeBadge" class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Verified Retail Stall</span>
+              <span id="mapCardRatingBadge" class="text-[10px] font-bold text-amber-400 flex items-center gap-1"><i class="fa-solid fa-star text-[9px]"></i> 4.8</span>
+              <span id="mapCardDistanceText" class="text-[10px] text-slate-400 font-bold flex items-center gap-1"><i class="fa-solid fa-route text-rose-400"></i> 0.6 km • ~10 mins</span>
+            </div>
+            <h4 id="mapCardStoreName" class="text-sm sm:text-base font-black text-white truncate mt-0.5">Ratan Fresh & Grocery (Stall #14)</h4>
+            <p id="mapCardStoreAddress" class="text-[11px] text-slate-400 truncate">Stall #14, Rajpur Sonarpur Main Bazaar • Open: 6:00 AM - 9:30 PM</p>
+          </div>
+          <!-- Action Buttons -->
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <button type="button" id="mapCardViewProductsBtn" onclick="viewStoreProductsFromMap()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow transition-all">
+              <i class="fa-solid fa-basket-shopping"></i> <span>View Products</span>
+            </button>
+            <a id="mapCardDirectionsLink" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-sky-400 hover:text-white font-bold rounded-xl text-xs flex items-center gap-1.5 border border-slate-700 shadow transition-all">
+              <i class="fa-solid fa-diamond-turn-right text-sky-400"></i> <span>Directions</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Store Chips Carousel -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 flex-shrink-0 pt-0.5" id="mapQuickStoresCarousel">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
 
   <!-- ============================================== -->
   <!-- LIVE MAP TRACKING MODAL (LEAFLET INTERACTIVE)   -->
@@ -2242,7 +2414,12 @@
             <i class="fa-solid fa-store text-amber-400"></i>
             <span data-i18n="voice_list_select_shop">Send List to Favorite Shop:</span>
           </label>
-          <span class="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Verified Merchant</span>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="openSelectedFavoriteShopOnMap()" class="text-[10px] text-rose-400 hover:text-rose-300 font-bold bg-rose-500/10 hover:bg-rose-500/20 px-2 py-0.5 rounded border border-rose-500/30 flex items-center gap-1 transition-all" title="View selected shop on map">
+              <i class="fa-solid fa-location-dot"></i> View on Map
+            </button>
+            <span class="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Verified</span>
+          </div>
         </div>
         <select id="voiceListFavoriteShopSelect" onchange="renderVoiceGroceryListRows()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs font-semibold focus:outline-none focus:border-emerald-500 transition-colors cursor-pointer">
           <option value="3" data-shop-name="Ratan Fresh &amp; Grocery (Stall #14)" selected>🏪 Ratan Fresh &amp; Grocery (Stall #14 • Daily Mandi)</option>
@@ -3086,10 +3263,14 @@
 
               <div class="mt-3 space-y-1">
                 <div class="flex items-center justify-between text-[10px]">
-                  <span class="text-emerald-400 font-bold truncate max-w-[140px]">
-                    <i class="fa-solid fa-store mr-1"></i> ${p.shopName}
+                  <span class="text-emerald-400 font-bold truncate max-w-[150px] flex items-center gap-1">
+                    <i class="fa-solid fa-store mr-0.5 flex-shrink-0"></i>
+                    <span class="truncate">${p.shopName}</span>
+                    <button type="button" onclick="event.stopPropagation(); openStoreOnMap('${p.shopName.replace(/'/g, "\\'")}', '${p.categoryKey === 'wholesale' ? 'wholesaler' : 'retail'}')" class="w-5 h-5 rounded-md bg-rose-500/15 hover:bg-rose-500/30 text-rose-400 hover:text-rose-300 flex items-center justify-center flex-shrink-0 transition-all hover:scale-110 active:scale-95 shadow-sm" title="View ${p.shopName} on Live Map">
+                      <i class="fa-solid fa-location-dot text-[11px] text-rose-400"></i>
+                    </button>
                   </span>
-                  <span class="px-1.5 py-0.5 bg-slate-950 text-slate-300 rounded font-bold border border-slate-800 flex items-center gap-1">
+                  <span class="px-1.5 py-0.5 bg-slate-950 text-slate-300 rounded font-bold border border-slate-800 flex items-center gap-1 flex-shrink-0">
                     <i class="fa-solid fa-location-arrow text-rose-400 text-[8px]"></i> ${p.distanceKm || 0.8} km
                   </span>
                 </div>
@@ -3098,7 +3279,10 @@
                 <div class="text-[10px] text-slate-500 flex items-center gap-2 pt-0.5">
                   <span><i class="fa-solid fa-bolt text-amber-400 mr-0.5"></i> ${deliveryText}</span>
                   <span>•</span>
-                  <span class="truncate">${p.shopAddress || p.city || 'Market Hub'}</span>
+                  <button type="button" onclick="event.stopPropagation(); openStoreOnMap('${p.shopName.replace(/'/g, "\\'")}', '${p.categoryKey === 'wholesale' ? 'wholesaler' : 'retail'}')" class="truncate hover:text-emerald-300 hover:underline flex items-center gap-0.5 transition-colors" title="View stall address on map">
+                    <i class="fa-solid fa-location-dot text-rose-400 text-[9px]"></i>
+                    <span class="truncate">${p.shopAddress || p.city || 'Market Hub'}</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -3431,7 +3615,12 @@
                   ` : ''}
                 </div>
                 <div class="flex items-center gap-2 text-[11px] text-slate-400 flex-wrap">
-                  <span class="text-sky-400 font-bold truncate"><i class="fa-solid fa-store mr-1"></i>${s.shopName}</span>
+                  <span class="text-sky-400 font-bold truncate flex items-center gap-1">
+                    <i class="fa-solid fa-store mr-0.5"></i>${s.shopName}
+                    <button type="button" onclick="event.stopPropagation(); openStoreOnMap('${s.shopName.replace(/'/g, "\\'")}', 'retail')" class="text-rose-400 hover:text-rose-300 p-0.5 transition-transform hover:scale-110 active:scale-95" title="View store on map">
+                      <i class="fa-solid fa-location-dot text-rose-500"></i>
+                    </button>
+                  </span>
                   <span>•</span>
                   <span><i class="fa-solid fa-location-dot text-rose-400 mr-0.5"></i> ${s.distanceKm} km</span>
                   <span>•</span>
@@ -4585,7 +4774,13 @@
           <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div>
               <h4 class="font-bold text-white text-sm">${item.name}</h4>
-              <p class="text-slate-400 text-xs mt-0.5">${item.shopName}</p>
+              <p class="text-slate-400 text-xs mt-0.5 flex items-center gap-1.5">
+                <i class="fa-solid fa-store text-emerald-400/80 text-[10px]"></i>
+                <span>${item.shopName}</span>
+                <button type="button" onclick="event.stopPropagation(); openStoreOnMap('${(item.shopName || '').replace(/'/g, "\\'")}', 'retail')" class="text-rose-400 hover:text-rose-300 p-0.5 transition-transform hover:scale-110 active:scale-95" title="View store on map">
+                  <i class="fa-solid fa-location-dot text-rose-500 text-[11px]"></i>
+                </button>
+              </p>
               ${item.cutPreference ? `
                 <div class="mt-1 flex items-center gap-1.5 flex-wrap">
                   <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-500/20 border border-blue-500/30 text-blue-300 font-bold rounded text-[10px]">
@@ -5231,6 +5426,13 @@
 
               <!-- Items List -->
               <div class="text-slate-300 space-y-1">
+                <p class="flex items-center gap-1.5 flex-wrap">
+                  <strong>Fulfilling Stall:</strong>
+                  <span class="text-emerald-400 font-semibold">${ord.shop_name || "Sonarpur Local Marketplace Stall"}</span>
+                  <button type="button" onclick="event.stopPropagation(); openStoreOnMap('${(ord.shop_name || "Sonarpur Local Marketplace Stall").replace(/'/g, "\\'")}', 'retail')" class="text-rose-400 hover:text-rose-300 p-0.5 transition-transform hover:scale-110 active:scale-95" title="View fulfilling stall on map">
+                    <i class="fa-solid fa-location-dot text-rose-500 text-[11px]"></i>
+                  </button>
+                </p>
                 <p><strong>${dict.orders_items || "Items:"}</strong> ${(ord.items || []).map(i => `${i.product_name} (x${i.quantity})`).join(", ")}</p>
                 <p><strong>${dict.orders_assigned_rider || "Assigned Rider:"}</strong> ${ord.rider_name ? `${ord.rider_name} (${ord.vehicle_type || 'Scooter'}, ${ord.rider_phone})` : `<span class="text-amber-400 font-semibold">${dict.orders_waiting_rider || "Waiting for seller confirmation & nearby rider dispatch"}</span>`}</p>
                 ${ord.delivery_otp ? `
@@ -5401,6 +5603,355 @@
     function closeTrackingModal() {
       clearInterval(trackingPollInterval);
       document.getElementById("liveTrackingModal").classList.add("hidden");
+    }
+
+    // ==============================================
+    // 6B. MARKET STORES & WHOLESALERS RADAR MAP (LEAFLET)
+    // ==============================================
+    let marketMapInstance = null;
+    let marketMapStoresData = [];
+    let marketMapMarkers = [];
+    let currentMapFilter = 'all';
+    let selectedMapStore = null;
+    let marketCustomerLocation = { lat: 22.4410, lng: 88.3980, locality: 'Rajpur' };
+
+    async function openMarketMapModal(targetStoreName = null, storeTypeHint = null) {
+      const modal = document.getElementById("marketMapModal");
+      if (!modal) return;
+      modal.classList.remove("hidden");
+
+      const locEl = document.getElementById("mapModalLocalityText");
+      if (locEl) locEl.textContent = currentCustomerLocality || "Rajpur Sonarpur";
+
+      await loadMarketMapStores(targetStoreName, storeTypeHint);
+    }
+
+    function closeMarketMapModal() {
+      const modal = document.getElementById("marketMapModal");
+      if (modal) modal.classList.add("hidden");
+    }
+
+    function openStoreOnMap(shopName, storeType = 'retail') {
+      openMarketMapModal(shopName, storeType);
+    }
+
+    async function loadMarketMapStores(targetStoreName = null, storeTypeHint = null) {
+      try {
+        const res = await apiRequest(`/api/customer/stores-map?locality=${encodeURIComponent(currentCustomerLocality || 'Rajpur')}`);
+        if (res && res.success && res.data) {
+          marketMapStoresData = res.data.stores || [];
+          if (res.data.customerLocation) {
+            marketCustomerLocation = res.data.customerLocation;
+          }
+          if (res.data.counts) {
+            const elAll = document.getElementById("mapCountAll");
+            const elRet = document.getElementById("mapCountRetail");
+            const elWh = document.getElementById("mapCountWholesaler");
+            if (elAll) elAll.textContent = res.data.counts.all || marketMapStoresData.length;
+            if (elRet) elRet.textContent = res.data.counts.retail || 0;
+            if (elWh) elWh.textContent = res.data.counts.wholesaler || 0;
+          }
+        }
+      } catch (err) {
+        console.warn("Could not fetch stores-map API, using fallback:", err);
+      }
+
+      if (!marketMapStoresData || marketMapStoresData.length === 0) {
+        marketMapStoresData = [
+          {
+            id: "hub-ret-1",
+            shopName: "Ratan Fresh & Grocery (Stall #14)",
+            type: "retail",
+            category: "Fresh Vegetables & Kirana",
+            address: "Stall #14, Rajpur Sonarpur Main Bazaar",
+            city: "Rajpur Sonarpur",
+            lat: 22.4412,
+            lng: 88.3982,
+            rating: 4.8,
+            distanceKm: 0.6,
+            timing: "6:00 AM - 9:30 PM",
+            badge: "Verified Retail Stall",
+            phone: "+91 98765 43210"
+          },
+          {
+            id: "hub-ret-2",
+            shopName: "Mondal Fish Corner (Stall #07)",
+            type: "retail",
+            category: "Live Fish & Country Seafood",
+            address: "Stall #07, Sonarpur Station Daily Fish Market",
+            city: "Sonarpur",
+            lat: 22.4438,
+            lng: 88.4065,
+            rating: 4.9,
+            distanceKm: 1.8,
+            timing: "5:30 AM - 1:00 PM",
+            badge: "Fish Mandi Partner",
+            phone: "+91 98765 43213"
+          },
+          {
+            id: "hub-ws-1",
+            shopName: "Sonarpur Mandi Wholesale Supply",
+            type: "wholesaler",
+            category: "B2B Mandi Grains, Potato Sacks & Oil Tins",
+            address: "Mandi Gate #2, Sonarpur Wholesale Yard",
+            city: "Sonarpur",
+            lat: 22.4385,
+            lng: 88.4118,
+            rating: 4.9,
+            distanceKm: 1.8,
+            timing: "4:00 AM - 6:00 PM",
+            badge: "APMC Licensed Mandi Hub",
+            phone: "+91 73195 78723"
+          }
+        ];
+      }
+
+      setTimeout(() => {
+        initMarketMap();
+        applyMarketMapFilterAndRender(targetStoreName);
+      }, 150);
+    }
+
+    function initMarketMap() {
+      const container = document.getElementById("marketStoresMapLeaflet");
+      if (!container) return;
+
+      if (!marketMapInstance) {
+        marketMapInstance = L.map('marketStoresMapLeaflet', {
+          zoomControl: true,
+          attributionControl: false
+        }).setView([marketCustomerLocation.lat, marketCustomerLocation.lng], 14);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19
+        }).addTo(marketMapInstance);
+      } else {
+        marketMapInstance.invalidateSize();
+      }
+    }
+
+    function setMarketMapFilter(filterType) {
+      currentMapFilter = filterType || 'all';
+
+      const tabAll = document.getElementById('mapTab-all');
+      const tabRet = document.getElementById('mapTab-retail');
+      const tabWh = document.getElementById('mapTab-wholesaler');
+
+      [tabAll, tabRet, tabWh].forEach(t => {
+        if (t) {
+          t.className = "px-3 py-1.5 rounded-xl font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all whitespace-nowrap flex items-center gap-1.5";
+        }
+      });
+
+      if (filterType === 'all' && tabAll) {
+        tabAll.className = "px-3 py-1.5 rounded-xl font-bold bg-emerald-600 text-white shadow transition-all whitespace-nowrap";
+      } else if (filterType === 'retail' && tabRet) {
+        tabRet.className = "px-3 py-1.5 rounded-xl font-bold bg-emerald-600 text-white shadow transition-all whitespace-nowrap flex items-center gap-1.5";
+      } else if (filterType === 'wholesaler' && tabWh) {
+        tabWh.className = "px-3 py-1.5 rounded-xl font-bold bg-amber-600 text-white shadow transition-all whitespace-nowrap flex items-center gap-1.5";
+      }
+
+      applyMarketMapFilterAndRender();
+    }
+
+    function handleMapStoreSearch(query) {
+      applyMarketMapFilterAndRender(null, query);
+    }
+
+    function applyMarketMapFilterAndRender(targetStoreName = null, searchQuery = '') {
+      if (!marketMapInstance) return;
+
+      marketMapMarkers.forEach(m => marketMapInstance.removeLayer(m));
+      marketMapMarkers = [];
+
+      // Add Customer Location Pin
+      const custIcon = L.divIcon({
+        className: 'custom-leaflet-marker',
+        html: `<div class="ll-map-marker ll-marker-customer w-8 h-8 text-xs shadow-lg"><i class="fa-solid fa-house-user"></i></div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+      const custMarker = L.marker([marketCustomerLocation.lat, marketCustomerLocation.lng], { icon: custIcon })
+        .addTo(marketMapInstance)
+        .bindPopup(`<div class="p-2 text-xs space-y-1"><strong class="text-sky-400 block"><i class="fa-solid fa-location-dot"></i> Your Delivery Area</strong><p class="text-slate-300">${marketCustomerLocation.locality || currentCustomerLocality}</p></div>`);
+      marketMapMarkers.push(custMarker);
+
+      // Filter stores
+      let filtered = marketMapStoresData;
+      if (currentMapFilter === 'retail') {
+        filtered = filtered.filter(s => s.type === 'retail');
+      } else if (currentMapFilter === 'wholesaler') {
+        filtered = filtered.filter(s => s.type === 'wholesaler');
+      }
+
+      const q = (searchQuery || document.getElementById('mapStoreSearchInput')?.value || '').trim().toLowerCase();
+      if (q) {
+        filtered = filtered.filter(s => 
+          (s.shopName || '').toLowerCase().includes(q) ||
+          (s.category || '').toLowerCase().includes(q) ||
+          (s.address || '').toLowerCase().includes(q)
+        );
+      }
+
+      let matchedTargetStore = null;
+      const normTarget = (targetStoreName || '').toLowerCase().trim();
+
+      filtered.forEach(store => {
+        const isWholesaler = store.type === 'wholesaler';
+        const iconClass = isWholesaler ? 'll-marker-wholesaler' : 'll-marker-retail';
+        const iconSymbol = isWholesaler ? '<i class="fa-solid fa-warehouse"></i>' : '<i class="fa-solid fa-store"></i>';
+
+        const storeIcon = L.divIcon({
+          className: 'custom-leaflet-marker',
+          html: `<div class="ll-map-marker ${iconClass} w-9 h-9 text-xs shadow-xl font-bold" id="marker-store-${store.id || store.sellerId}">${iconSymbol}</div>`,
+          iconSize: [36, 36],
+          iconAnchor: [18, 18]
+        });
+
+        const popupContent = `
+          <div class="p-2.5 text-xs space-y-1.5 min-w-[210px] bg-slate-900 rounded-xl text-white">
+            <div class="flex items-center justify-between gap-2">
+              <span class="px-2 py-0.5 rounded text-[9px] font-bold ${isWholesaler ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'}">
+                ${store.badge || (isWholesaler ? 'Wholesale Mandi' : 'Verified Stall')}
+              </span>
+              <span class="text-amber-400 font-bold text-[10px]">⭐ ${store.rating || '4.8'}</span>
+            </div>
+            <h5 class="font-bold text-white text-xs leading-tight">${store.shopName}</h5>
+            <p class="text-[10px] text-slate-300">${store.address || 'Sonarpur'}</p>
+            <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-800">
+              <span class="text-emerald-400 font-bold"><i class="fa-solid fa-route"></i> ${store.distanceKm || '0.8'} km</span>
+              <span><i class="fa-solid fa-clock"></i> ${store.timing || 'Open'}</span>
+            </div>
+          </div>
+        `;
+
+        const marker = L.marker([store.lat, store.lng], { icon: storeIcon })
+          .addTo(marketMapInstance)
+          .bindPopup(popupContent);
+
+        marker.on('click', () => {
+          selectStoreOnMap(store, false);
+        });
+
+        marketMapMarkers.push(marker);
+        store._leafletMarker = marker;
+
+        if (normTarget && (store.shopName || '').toLowerCase().includes(normTarget)) {
+          matchedTargetStore = store;
+        }
+      });
+
+      renderMapStoresCarousel(filtered);
+
+      const toSelect = matchedTargetStore || filtered[0];
+      if (toSelect) {
+        selectStoreOnMap(toSelect, Boolean(matchedTargetStore));
+      }
+    }
+
+    function renderMapStoresCarousel(stores) {
+      const carousel = document.getElementById("mapQuickStoresCarousel");
+      if (!carousel) return;
+
+      if (!stores || stores.length === 0) {
+        carousel.innerHTML = `<span class="text-xs text-slate-500 p-2">No stores matching this filter</span>`;
+        return;
+      }
+
+      carousel.innerHTML = stores.map(s => {
+        const isWh = s.type === 'wholesaler';
+        return `
+          <div onclick="selectStoreOnMapByName('${s.shopName.replace(/'/g, "\\'")}')" id="mapChip-${s.id || s.sellerId}" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 cursor-pointer transition-all flex items-center gap-2 flex-shrink-0 min-w-[190px]">
+            <div class="w-7 h-7 rounded-lg ${isWh ? 'bg-amber-500/20 text-amber-400' : 'bg-emerald-500/20 text-emerald-400'} flex items-center justify-center text-xs flex-shrink-0">
+              <i class="fa-solid ${isWh ? 'fa-warehouse' : 'fa-store'}"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <h5 class="text-xs font-bold text-white truncate">${s.shopName}</h5>
+              <div class="flex items-center gap-1.5 text-[10px] text-slate-400">
+                <span class="text-rose-400 font-bold">${s.distanceKm || '0.8'} km</span>
+                <span>•</span>
+                <span class="truncate">${isWh ? 'Wholesale' : 'Retail'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function selectStoreOnMapByName(shopName) {
+      const store = marketMapStoresData.find(s => (s.shopName || '').toLowerCase() === shopName.toLowerCase());
+      if (store) {
+        selectStoreOnMap(store, true);
+      }
+    }
+
+    function selectStoreOnMap(store, shouldPan = true) {
+      selectedMapStore = store;
+      if (!store) return;
+
+      if (marketMapInstance && shouldPan && store.lat && store.lng) {
+        marketMapInstance.setView([store.lat, store.lng], 16, { animate: true });
+        if (store._leafletMarker) {
+          store._leafletMarker.openPopup();
+        }
+      }
+
+      document.querySelectorAll('#mapQuickStoresCarousel > div').forEach(c => {
+        c.classList.remove('border-emerald-500', 'bg-slate-800/90');
+      });
+      const activeChip = document.getElementById(`mapChip-${store.id || store.sellerId}`);
+      if (activeChip) {
+        activeChip.classList.add('border-emerald-500', 'bg-slate-800/90');
+        activeChip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+
+      const nameEl = document.getElementById("mapCardStoreName");
+      const addrEl = document.getElementById("mapCardStoreAddress");
+      const typeBadge = document.getElementById("mapCardStoreTypeBadge");
+      const ratingBadge = document.getElementById("mapCardRatingBadge");
+      const distEl = document.getElementById("mapCardDistanceText");
+      const dirLink = document.getElementById("mapCardDirectionsLink");
+
+      if (nameEl) nameEl.textContent = store.shopName;
+      if (addrEl) addrEl.textContent = `${store.address || 'Sonarpur Market'} • Open: ${store.timing || '6:00 AM - 9:00 PM'}`;
+      if (typeBadge) {
+        const isWh = store.type === 'wholesaler';
+        typeBadge.textContent = store.badge || (isWh ? 'Wholesale Mandi Hub' : 'Verified Retail Stall');
+        typeBadge.className = isWh
+          ? "px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30"
+          : "px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+      }
+      if (ratingBadge) ratingBadge.innerHTML = `<i class="fa-solid fa-star text-[9px]"></i> ${store.rating || '4.8'}`;
+      if (distEl) distEl.innerHTML = `<i class="fa-solid fa-route text-rose-400"></i> ${store.distanceKm || '0.8'} km • ~${store.deliveryTime || '15 mins'}`;
+      if (dirLink) {
+        dirLink.href = store.googleMapsUrl || `https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`;
+      }
+    }
+
+    function recenterMarketMap() {
+      if (!marketMapInstance) return;
+      marketMapInstance.setView([marketCustomerLocation.lat, marketCustomerLocation.lng], 14, { animate: true });
+    }
+
+    function viewStoreProductsFromMap() {
+      if (!selectedMapStore) return;
+      closeMarketMapModal();
+      switchCustomerPage('home');
+
+      const searchInput = document.getElementById("marketSearchInput");
+      if (searchInput) {
+        searchInput.value = selectedMapStore.shopName;
+        handleMarketSearch(selectedMapStore.shopName);
+      }
+      showToast(`📍 ${selectedMapStore.shopName} এর পণ্যসমূহ দেখাচ্ছে`, "success");
+    }
+
+    function openSelectedFavoriteShopOnMap() {
+      const select = document.getElementById("voiceListFavoriteShopSelect");
+      if (!select) return;
+      const opt = select.options[select.selectedIndex];
+      const shopName = opt ? (opt.getAttribute("data-shop-name") || opt.text) : "Ratan Fresh & Grocery (Stall #14)";
+      openStoreOnMap(shopName, 'retail');
     }
 
     // ==============================================

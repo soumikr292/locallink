@@ -178,6 +178,19 @@ async function getBazaarStories(req, res, next) {
   }
 }
 
+async function getStoresMap(req, res, next) {
+  try {
+    const { locality } = req.query;
+    const mapData = await customerService.getNearbyStoresMap(locality);
+    return res.status(200).json({
+      success: true,
+      data: mapData
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   loginCustomer,
   registerCustomer,
@@ -191,5 +204,6 @@ module.exports = {
   trackOrder,
   addReview,
   parsePaperList,
-  getBazaarStories
+  getBazaarStories,
+  getStoresMap
 };

@@ -1504,6 +1504,318 @@ async function getBazaarStories() {
   ];
 }
 
+// 10. Nearby Retail Stores & Wholesalers Map Directory
+async function getNearbyStoresMap(customerLocality = "Rajpur") {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+
+    let dbSellers = [];
+    try {
+      dbSellers = await conn.query(`
+        SELECT 
+          sp.seller_id,
+          sp.shop_name,
+          sp.shop_address,
+          sp.city,
+          sp.pincode,
+          sp.business_category,
+          sp.shop_logo,
+          sp.business_phone,
+          u.name as owner_name,
+          u.role,
+          COUNT(p.product_id) as product_count
+        FROM seller_profiles sp
+        LEFT JOIN users u ON sp.seller_id = u.user_id
+        LEFT JOIN products p ON sp.seller_id = p.seller_id AND p.status = 'active'
+        GROUP BY sp.seller_id, sp.shop_name, sp.shop_address, sp.city, sp.pincode, sp.business_category, sp.shop_logo, sp.business_phone, u.name, u.role
+      `);
+    } catch (err) {
+      console.warn("Could not query seller profiles for map:", err.message);
+    }
+
+    const knownLocations = {
+      "ratan fresh & grocery (stall #14)": {
+        lat: 22.4412,
+        lng: 88.3982,
+        type: "retail",
+        category: "Fresh Vegetables & Kirana",
+        timing: "6:00 AM - 9:30 PM",
+        rating: 4.8,
+        reviewsCount: 142,
+        badge: "Verified Retail Stall"
+      },
+      "mondal fish corner (stall #07)": {
+        lat: 22.4438,
+        lng: 88.4065,
+        type: "retail",
+        category: "Live Fish & Country Seafood",
+        timing: "5:30 AM - 1:00 PM",
+        rating: 4.9,
+        reviewsCount: 218,
+        badge: "Fish Mandi Partner"
+      },
+      "ghosh sweets & dairy products": {
+        lat: 22.4632,
+        lng: 88.3882,
+        type: "retail",
+        category: "Pure Milk, Nolen Gur Sweets & Curd",
+        timing: "6:30 AM - 10:00 PM",
+        rating: 4.7,
+        reviewsCount: 96,
+        badge: "Dairy & Confectionery"
+      },
+      "sonarpur mandi wholesale supply": {
+        lat: 22.4385,
+        lng: 88.4118,
+        type: "wholesaler",
+        category: "B2B Mandi Grains, Potato Sacks & Oil Tins",
+        timing: "4:00 AM - 6:00 PM",
+        rating: 4.9,
+        reviewsCount: 340,
+        badge: "APMC Licensed Mandi Hub"
+      },
+      "test seller's daily stall": {
+        lat: 22.4422,
+        lng: 88.4030,
+        type: "retail",
+        category: "Daily Essentials & Spices",
+        timing: "7:00 AM - 9:00 PM",
+        rating: 4.6,
+        reviewsCount: 54,
+        badge: "Neighborhood Bazaar"
+      }
+    };
+
+    const supplementalHubs = [
+      {
+        id: "hub-ws-1",
+        sellerId: 56,
+        name: "Sonarpur Mandi Wholesale Supply",
+        shopName: "Sonarpur Mandi Wholesale Supply",
+        type: "wholesaler",
+        category: "B2B Mandi Grains, Potato Sacks & Oil Tins",
+        address: "Mandi Gate #2, Sonarpur Wholesale Yard",
+        city: "Sonarpur",
+        pincode: "700150",
+        phone: "+91 73195 78723",
+        lat: 22.4385,
+        lng: 88.4118,
+        rating: 4.9,
+        reviewsCount: 340,
+        timing: "4:00 AM - 6:00 PM",
+        badge: "APMC Licensed Wholesaler",
+        productCount: 8,
+        specialties: ["Minikit Rice Bags (25kg)", "Nashik Onion Sacks", "Jyoti Potato 50kg Bags", "Mustard Oil Tins"]
+      },
+      {
+        id: "hub-ws-2",
+        sellerId: 101,
+        name: "Burdwan Paddy & Rice B2B Godown",
+        shopName: "Burdwan Paddy & Rice B2B Godown",
+        type: "wholesaler",
+        category: "Direct Mill Wholesale Rice, Dal & Grains",
+        address: "Godown Bay #4, Sonarpur Mandi Yard East",
+        city: "Sonarpur",
+        pincode: "700150",
+        phone: "+91 94330 11223",
+        lat: 22.4360,
+        lng: 88.4145,
+        rating: 4.8,
+        reviewsCount: 190,
+        timing: "5:00 AM - 5:00 PM",
+        badge: "B2B Grain Stockist",
+        productCount: 15,
+        specialties: ["Swarna Rice Sacks", "Minikit Premium", "Gobindabhog Rice", "Masoor Dal Bags"]
+      },
+      {
+        id: "hub-ws-3",
+        sellerId: 102,
+        name: "Hooghly Cold Storage & Potato Trading Depot",
+        shopName: "Hooghly Cold Storage & Potato Trading Depot",
+        type: "wholesaler",
+        category: "Cold Storage Potatoes, Onions & Garlic Lots",
+        address: "Champahati-Sonarpur Connector Road, Yard 3",
+        city: "Sonarpur",
+        pincode: "700150",
+        phone: "+91 98311 44556",
+        lat: 22.4315,
+        lng: 88.4210,
+        rating: 4.9,
+        reviewsCount: 275,
+        timing: "4:30 AM - 4:00 PM",
+        badge: "Cold Storage Yard",
+        productCount: 12,
+        specialties: ["Jyoti Grade A Potato Sacks", "Nashik Red Onion Lots", "Bandel Country Garlic"]
+      },
+      {
+        id: "hub-ret-1",
+        sellerId: 3,
+        name: "Ratan Fresh & Grocery (Stall #14)",
+        shopName: "Ratan Fresh & Grocery (Stall #14)",
+        type: "retail",
+        category: "Fresh Vegetables, Spices & Daily Groceries",
+        address: "Stall #14, Rajpur Sonarpur Main Bazaar",
+        city: "Rajpur Sonarpur",
+        pincode: "700149",
+        phone: "+91 98765 43210",
+        lat: 22.4412,
+        lng: 88.3982,
+        rating: 4.8,
+        reviewsCount: 142,
+        timing: "6:00 AM - 9:30 PM",
+        badge: "Verified Retail Stall",
+        productCount: 14,
+        specialties: ["Country Potatoes", "Mustard Oil", "Fresh Vegetables", "Chakki Atta"]
+      },
+      {
+        id: "hub-ret-2",
+        sellerId: 10,
+        name: "Mondal Fish Corner (Stall #07)",
+        shopName: "Mondal Fish Corner (Stall #07)",
+        type: "retail",
+        category: "Live Fish & Country Seafood",
+        address: "Stall #07, Sonarpur Station Daily Fish Market",
+        city: "Sonarpur",
+        pincode: "700150",
+        phone: "+91 98765 43213",
+        lat: 22.4438,
+        lng: 88.4065,
+        rating: 4.9,
+        reviewsCount: 218,
+        timing: "5:30 AM - 1:00 PM",
+        badge: "Fish Mandi Partner",
+        productCount: 4,
+        specialties: ["Live Rohu & Katla", "Sundarban Golda Prawns", "Fresh Ilish", "Desi Pabda"]
+      },
+      {
+        id: "hub-ret-3",
+        sellerId: 37,
+        name: "Ghosh Sweets & Dairy Products",
+        shopName: "Ghosh Sweets & Dairy Products",
+        type: "retail",
+        category: "Pure Milk, Sweets, Curd & Bakery",
+        address: "12 Mahamayatala Main Road, Garia",
+        city: "Garia",
+        pincode: "700084",
+        phone: "+91 99533 16700",
+        lat: 22.4632,
+        lng: 88.3882,
+        rating: 4.7,
+        reviewsCount: 96,
+        timing: "6:30 AM - 10:00 PM",
+        badge: "Dairy & Confectionery",
+        productCount: 5,
+        specialties: ["Traditional Nolen Gur Sandesh", "Pure Cow Milk", "Fresh Paneer", "Mishti Doi"]
+      },
+      {
+        id: "hub-ret-4",
+        sellerId: 103,
+        name: "Maa Tara Daily Vegetable & Country Produce",
+        shopName: "Maa Tara Daily Vegetable & Country Produce",
+        type: "retail",
+        category: "Farm-Fresh Local Vegetables & Herbs",
+        address: "Stall #22, Rajpur Sabji Mandi",
+        city: "Rajpur",
+        pincode: "700149",
+        phone: "+91 97488 22334",
+        lat: 22.4405,
+        lng: 88.3995,
+        rating: 4.7,
+        reviewsCount: 88,
+        timing: "6:00 AM - 12:30 PM",
+        badge: "Daily Green Stall",
+        productCount: 18,
+        specialties: ["Palak Shaak", "Desi Cauliflower", "Fresh Coriander", "Green Chillies"]
+      },
+      {
+        id: "hub-ret-5",
+        sellerId: 104,
+        name: "Sonarpur Chowmatha Pharmacy & Essentials",
+        shopName: "Sonarpur Chowmatha Pharmacy & Essentials",
+        type: "retail",
+        category: "Health & Daily FMCG Essentials",
+        address: "Sonarpur Chowmatha Market Complex",
+        city: "Sonarpur",
+        pincode: "700150",
+        phone: "+91 98302 77665",
+        lat: 22.4422,
+        lng: 88.4035,
+        rating: 4.6,
+        reviewsCount: 110,
+        timing: "8:00 AM - 10:30 PM",
+        badge: "Daily Essentials",
+        productCount: 22,
+        specialties: ["Baby Care", "FMCG Soaps & Detergents", "OTC Health Supplies"]
+      }
+    ];
+
+    const storesMap = new Map();
+    supplementalHubs.forEach(s => storesMap.set(s.shopName.toLowerCase(), s));
+
+    if (dbSellers && dbSellers.length > 0) {
+      dbSellers.forEach(row => {
+        const key = (row.shop_name || "").toLowerCase().trim();
+        const existing = storesMap.get(key);
+        const known = knownLocations[key] || {};
+        const isWholesaler = row.role === 'wholesaler' || (row.business_category || '').toLowerCase().includes('wholesale') || key.includes('wholesale') || key.includes('mandi');
+
+        const merged = {
+          id: existing ? existing.id : `db-${row.seller_id}`,
+          sellerId: Number(row.seller_id),
+          name: row.shop_name,
+          shopName: row.shop_name,
+          type: existing ? existing.type : (isWholesaler ? "wholesaler" : "retail"),
+          category: row.business_category || (existing ? existing.category : "Daily Essentials"),
+          address: row.shop_address || (existing ? existing.address : "Sonarpur Market"),
+          city: row.city || "Rajpur Sonarpur",
+          pincode: row.pincode || "700150",
+          phone: row.business_phone || (existing ? existing.phone : "+91 98765 43210"),
+          lat: existing ? existing.lat : (known.lat || 22.4410 + (Number(row.seller_id) % 5) * 0.002),
+          lng: existing ? existing.lng : (known.lng || 88.3990 + (Number(row.seller_id) % 5) * 0.002),
+          rating: existing ? existing.rating : (known.rating || 4.7),
+          reviewsCount: existing ? existing.reviewsCount : (known.reviewsCount || 60),
+          timing: existing ? existing.timing : "7:00 AM - 9:00 PM",
+          badge: existing ? existing.badge : (isWholesaler ? "Wholesale Mandi" : "Verified Retailer"),
+          productCount: Number(row.product_count) || (existing ? existing.productCount : 10),
+          specialties: existing ? existing.specialties : ["Daily Groceries", "Fresh Stock"]
+        };
+        storesMap.set(key, merged);
+      });
+    }
+
+    const stores = Array.from(storesMap.values());
+
+    const customerLocation = {
+      locality: customerLocality || "Rajpur",
+      lat: (customerLocality || "").toLowerCase().includes("sonarpur") ? 22.4430 : (customerLocality || "").toLowerCase().includes("garia") ? 22.4630 : 22.4410,
+      lng: (customerLocality || "").toLowerCase().includes("sonarpur") ? 88.4060 : (customerLocality || "").toLowerCase().includes("garia") ? 88.3880 : 88.3980
+    };
+
+    stores.forEach(s => {
+      const prox = calculateMarketplaceProximity(customerLocality, s.address, s.city);
+      s.distanceKm = prox.distanceKm;
+      s.deliveryTime = prox.deliveryTime;
+      s.isNearby = prox.isNearby;
+      s.googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}`;
+    });
+
+    stores.sort((a, b) => a.distanceKm - b.distanceKm);
+
+    return {
+      customerLocation,
+      stores,
+      counts: {
+        all: stores.length,
+        retail: stores.filter(s => s.type === "retail").length,
+        wholesaler: stores.filter(s => s.type === "wholesaler").length
+      }
+    };
+  } finally {
+    if (conn) conn.release();
+  }
+}
+
 module.exports = {
   authenticateCustomer,
   registerCustomer,
@@ -1517,5 +1829,6 @@ module.exports = {
   getOrderTrackingData,
   submitProductReview,
   parsePaperList,
-  getBazaarStories
+  getBazaarStories,
+  getNearbyStoresMap
 };

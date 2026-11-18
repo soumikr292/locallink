@@ -12,7 +12,8 @@ const {
   trackOrder,
   addReview,
   parsePaperList,
-  getBazaarStories
+  getBazaarStories,
+  getStoresMap
 } = require("../controllers/customerController");
 const { authenticateToken, requireCustomer } = require("../middleware/authMiddleware");
 
@@ -25,6 +26,7 @@ router.post("/auth/register", registerCustomer);
 // Public Marketplace Browsing, Price Compare, AI Bargain, Paper List & Live Stories
 router.get("/products", listProducts);
 router.get("/compare", comparePrices);
+router.get("/stores-map", getStoresMap);
 router.post("/bargain", bargainChat);
 router.post("/parse-list", parsePaperList);
 router.get("/bazaar-stories", getBazaarStories);
