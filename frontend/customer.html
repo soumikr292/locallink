@@ -3656,25 +3656,34 @@
       }
 
       for (const item of currentAIBucketItems) {
+        const itemPrice = Number(item.price || item.localBasePrice || 50);
         const matched = currentProducts.find(p => p.name.toLowerCase().includes(item.name.toLowerCase())) || {
           id: Date.now() + Math.floor(Math.random() * 1000),
           name: item.name,
-          price: item.price || 50,
+          price: itemPrice,
+          unitPrice: itemPrice,
           description: "Fresh local market selection",
           imageUrl: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=100",
           shopName: "Verified Local Stalls Hub"
         };
 
-        const existingCartItem = cart.find(c => c.productId === matched.id || c.name === matched.name);
+        const finalPrice = Number(matched.price || matched.unitPrice || itemPrice);
+        const qty = Math.max(1, Math.round(Number(item.qty) || 1));
+
+        const existingCartItem = cart.find(c => c.productId === matched.id || c.name.toLowerCase() === matched.name.toLowerCase());
         if (existingCartItem) {
-          existingCartItem.quantity += item.qty;
+          existingCartItem.quantity += qty;
+          if (!existingCartItem.unitPrice) existingCartItem.unitPrice = finalPrice;
+          if (!existingCartItem.price) existingCartItem.price = finalPrice;
         } else {
           cart.push({
             productId: matched.id,
             name: matched.name,
-            price: Number(matched.price),
-            quantity: Math.max(1, Math.round(item.qty)),
-            imageUrl: matched.imageUrl,
+            price: finalPrice,
+            unitPrice: finalPrice,
+            agreedPrice: finalPrice,
+            quantity: qty,
+            imageUrl: matched.imageUrl || "https://images.unsplash.com/photo-1542838132-92c53300491e?w=100",
             shopName: matched.shopName || "Neighborhood Market Hub"
           });
         }
@@ -4194,7 +4203,9 @@
       }
 
       const itemsHtml = cart.map((item, index) => {
-        const itemTotal = item.unitPrice * item.quantity;
+        const itemUnitPrice = Number(item.unitPrice || item.price || item.agreedPrice || 0);
+        const itemQty = Math.max(1, Number(item.quantity || 1));
+        const itemTotal = itemUnitPrice * itemQty;
         subtotal += itemTotal;
 
         return `
