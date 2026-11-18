@@ -372,6 +372,42 @@
   <!-- JAVASCRIPT LOGIC & API CONTROLLER              -->
   <!-- ============================================== -->
   <script>
+    // Guard against accidental back navigation into login page
+    function checkActiveSession() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isExplicitLogout = urlParams.get("logout") === "true";
+      if (!isExplicitLogout) {
+        const wholesalerToken = localStorage.getItem("locallinkWholesalerToken");
+        const sellerToken = localStorage.getItem("locallinkSellerToken");
+        const adminToken = localStorage.getItem("locallinkToken");
+        const customerToken = localStorage.getItem("locallinkCustomerToken");
+
+        if (wholesalerToken) {
+          window.location.replace("wholesaler.html");
+          return true;
+        } else if (sellerToken) {
+          window.location.replace("seller.html");
+          return true;
+        } else if (adminToken) {
+          window.location.replace("admin.html");
+          return true;
+        } else if (customerToken) {
+          window.location.replace("customer.html");
+          return true;
+        }
+      }
+      return false;
+    }
+
+    window.navigateLoginBack = function() {
+      // If user presses back on the login screen, return to the customer marketplace as guest
+      window.location.replace("customer.html");
+      return true;
+    };
+
+    window.addEventListener("DOMContentLoaded", checkActiveSession);
+    window.addEventListener("pageshow", checkActiveSession);
+
     // Dynamic API Base resolution via LocalLinkApp bridge
     const getApiBase = () => {
       if (window.LocalLinkApp && typeof window.LocalLinkApp.getApiBase === "function") {
@@ -525,7 +561,7 @@
         btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Entering ${authData.roleLabel}...`;
 
         setTimeout(() => {
-          window.location.href = authData.redirectUrl || "customer.html";
+          window.location.replace(authData.redirectUrl || "customer.html");
         }, 650);
 
       } catch (err) {
@@ -594,7 +630,7 @@
         btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Launching Dashboard...`;
 
         setTimeout(() => {
-          window.location.href = authData.redirectUrl || "customer.html";
+          window.location.replace(authData.redirectUrl || "customer.html");
         }, 750);
 
       } catch (err) {

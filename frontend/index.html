@@ -35,7 +35,23 @@
                 bd.classList.add("hidden");
             }
         }
-        function switchTab(tabId) {
+        let adminTabHistory = ['dashboard'];
+        let currentAdminTabId = 'dashboard';
+
+        function switchTab(tabId, isBack = false) {
+            if (!tabId) tabId = 'dashboard';
+            if (!isBack && tabId !== currentAdminTabId) {
+                if (adminTabHistory[adminTabHistory.length - 1] !== tabId) {
+                    adminTabHistory.push(tabId);
+                }
+                try {
+                    if (window.history && window.history.pushState) {
+                        window.history.pushState({ tabId, type: 'admin-tab' }, '', '#' + tabId);
+                    }
+                } catch (_) {}
+            }
+            currentAdminTabId = tabId;
+
             toggleAdminSidebar(false);
             const tabs = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => tab.classList.add('hidden'));
@@ -91,6 +107,47 @@
                 activeLink.classList.remove('text-slate-400', 'hover:bg-slate-900', 'hover:text-slate-200');
             }
         }
+
+        window.navigateAdminBack = function() {
+            const sidebar = document.getElementById("adminSidebar");
+            if (sidebar && !sidebar.classList.contains("-translate-x-full")) {
+                toggleAdminSidebar(false);
+                return true;
+            }
+            const openModals = Array.from(document.querySelectorAll(".fixed.inset-0")).filter(
+                (el) => !el.classList.contains("hidden") && el.id !== "llRoleSwitcherModal"
+            );
+            if (openModals.length > 0) {
+                openModals[openModals.length - 1].classList.add("hidden");
+                return true;
+            }
+            if (adminTabHistory.length > 1) {
+                adminTabHistory.pop();
+                const prev = adminTabHistory[adminTabHistory.length - 1] || 'dashboard';
+                switchTab(prev, true);
+                return true;
+            }
+            if (currentAdminTabId !== 'dashboard') {
+                adminTabHistory = ['dashboard'];
+                switchTab('dashboard', true);
+                return true;
+            }
+            return false;
+        };
+
+        window.addEventListener("popstate", (e) => {
+            if (e.state && e.state.tabId) {
+                switchTab(e.state.tabId, true);
+            } else {
+                window.navigateAdminBack();
+            }
+        });
+
+        try {
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState({ tabId: 'dashboard', type: 'admin-tab' }, '', '#dashboard');
+            }
+        } catch (_) {}
 function showCatalogModule(module) {
     if (module === 'products') {
         switchTab('catalog-products');

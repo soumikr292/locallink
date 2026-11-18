@@ -2852,8 +2852,28 @@
       if (activeBadge) activeBadge.textContent = currentCustomerLocality;
     }
 
-    // Switch Page View
-    function switchCustomerPage(pageId) {
+    // In-App Content Navigation History
+    let customerPageHistory = ['home'];
+    let currentCustomerPageId = 'home';
+
+    // Switch Page View with History Tracking
+    function switchCustomerPage(pageId, isBack = false) {
+      if (!pageId) pageId = 'home';
+
+      // Record in internal history stack if navigating forward
+      if (!isBack && pageId !== currentCustomerPageId) {
+        if (customerPageHistory[customerPageHistory.length - 1] !== pageId) {
+          customerPageHistory.push(pageId);
+        }
+        try {
+          if (window.history && window.history.pushState) {
+            window.history.pushState({ pageId, type: 'locallink-customer-page' }, '', '#' + pageId);
+          }
+        } catch (_) {}
+      }
+
+      currentCustomerPageId = pageId;
+
       const pages = document.querySelectorAll('.customer-page');
       pages.forEach(p => p.classList.add('hidden'));
 
@@ -2894,6 +2914,84 @@
       else if (pageId === 'ai-bucket') loadAIBucketView();
       updateFloatingCartBar();
     }
+
+    // Customer In-App Content Back Navigation
+    window.navigateCustomerBack = function() {
+      // 1. Close open Tailwind modals
+      const openModals = Array.from(document.querySelectorAll(".fixed.inset-0")).filter(
+        (el) => !el.classList.contains("hidden") && el.style.display !== "none" && el.id !== "llRoleSwitcherModal"
+      );
+      if (openModals.length > 0) {
+        const topModal = openModals[openModals.length - 1];
+        topModal.classList.add("hidden");
+        if (topModal.id === "voiceShoppingListModal" && typeof closeVoiceShoppingListModal === "function") closeVoiceShoppingListModal();
+        else if (topModal.id === "voiceSearchModal" && typeof closeVoiceSearchModal === "function") closeVoiceSearchModal();
+        else if (topModal.id === "customerAuthModal" && typeof closeCustomerAuthModal === "function") closeCustomerAuthModal();
+        else if (topModal.id === "addressChangeModal" && typeof closeAddressModal === "function") closeAddressModal();
+        else if (topModal.id === "paperListModal" && typeof closePaperListModal === "function") closePaperListModal();
+        else if (topModal.id === "reviewModal" && typeof closeReviewModal === "function") closeReviewModal();
+        else if (topModal.id === "liveTrackingModal" && typeof closeTrackingModal === "function") closeTrackingModal();
+        return true;
+      }
+
+      // 2. Close three-dot menu dropdown if open
+      const threeDot = document.getElementById("customerThreeDotMenu");
+      if (threeDot && !threeDot.classList.contains("hidden")) {
+        closeThreeDotMenu();
+        return true;
+      }
+
+      // 3. Close live search dropdowns if open
+      const searchDropdown = document.getElementById("marketSearchDropdown");
+      const mobileSearchDropdown = document.getElementById("mobileMarketSearchDropdown");
+      const aiBucketDropdown = document.getElementById("aiBucketSuggestionsDropdown");
+      if ((searchDropdown && !searchDropdown.classList.contains("hidden")) ||
+          (mobileSearchDropdown && !mobileSearchDropdown.classList.contains("hidden")) ||
+          (aiBucketDropdown && !aiBucketDropdown.classList.contains("hidden"))) {
+        hideSearchDropdowns();
+        if (aiBucketDropdown) aiBucketDropdown.classList.add("hidden");
+        return true;
+      }
+
+      // 4. If search is active on home page, clear it back to full product list
+      const searchInput = document.getElementById("marketSearchInput");
+      const mobileSearchInput = document.getElementById("mobileMarketSearchInput");
+      if (currentCustomerPageId === 'home' && ((searchInput && searchInput.value.trim()) || (mobileSearchInput && mobileSearchInput.value.trim()))) {
+        clearMarketSearch();
+        return true;
+      }
+
+      // 5. Navigate back to previous page in history
+      if (customerPageHistory.length > 1) {
+        customerPageHistory.pop(); // remove current page
+        const prevPage = customerPageHistory[customerPageHistory.length - 1] || 'home';
+        switchCustomerPage(prevPage, true);
+        return true;
+      }
+
+      // 6. If not on 'home', return to 'home'
+      if (currentCustomerPageId !== 'home') {
+        customerPageHistory = ['home'];
+        switchCustomerPage('home', true);
+        return true;
+      }
+
+      return false; // at root home, nothing more to go back to inside customer
+    };
+
+    window.addEventListener("popstate", (e) => {
+      if (e.state && e.state.pageId) {
+        switchCustomerPage(e.state.pageId, true);
+      } else {
+        window.navigateCustomerBack();
+      }
+    });
+
+    try {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState({ pageId: 'home', type: 'locallink-customer-page' }, '', '#home');
+      }
+    } catch (_) {}
 
     // ==============================================
     // 1. PRODUCTS & CATALOG (LOCAL STORE PROXIMITY)
@@ -5576,7 +5674,7 @@
         sessionStorage.removeItem("locallinkCustomerToken");
         sessionStorage.removeItem("locallinkCustomerUser");
         currentCustomerUser = null;
-        window.location.href = "unified-login.html";
+        window.location.replace("unified-login.html?logout=true");
       }
     }
 

@@ -451,6 +451,126 @@
     }
   }
 
+  // Unified App Back Navigation Handler
+  // Ensures pressing the Android back button or browser back navigates to PREVIOUS CONTENT,
+  // closes open overlays/modals/search, and NEVER dumps the user on the login screen!
+  let lastBackPress = 0;
+
+  function handleUnifiedBackPress() {
+    // 1. Close Role Switcher if open
+    const rsModal = document.getElementById("llRoleSwitcherModal");
+    if (rsModal && rsModal.style.display === "flex") {
+      closeRoleSwitcher();
+      return true;
+    }
+
+    // 2. Close mobile navigation drawers / sidebars
+    const wholesalerSidebar = document.getElementById("wholesalerSidebar");
+    if (wholesalerSidebar && !wholesalerSidebar.classList.contains("-translate-x-full")) {
+      if (typeof window.toggleWholesaleSidebar === "function") window.toggleWholesaleSidebar(false);
+      else wholesalerSidebar.classList.add("-translate-x-full");
+      const backdrop = document.getElementById("wholesalerBackdrop");
+      if (backdrop) backdrop.classList.add("hidden");
+      return true;
+    }
+
+    const sellerSidebar = document.getElementById("sellerSidebar");
+    if (sellerSidebar && !sellerSidebar.classList.contains("-translate-x-full")) {
+      if (typeof window.toggleSellerSidebar === "function") window.toggleSellerSidebar(false);
+      else sellerSidebar.classList.add("-translate-x-full");
+      return true;
+    }
+
+    const adminSidebar = document.getElementById("adminSidebar");
+    if (adminSidebar && !adminSidebar.classList.contains("-translate-x-full")) {
+      if (typeof window.toggleAdminSidebar === "function") window.toggleAdminSidebar(false);
+      else adminSidebar.classList.add("-translate-x-full");
+      return true;
+    }
+
+    // 3. Close open header / three-dot menus
+    const threeDotWholesale = document.getElementById("wholesaleHeaderMenu");
+    if (threeDotWholesale && !threeDotWholesale.classList.contains("hidden")) {
+      if (typeof window.toggleHeaderMenu === "function") window.toggleHeaderMenu(false);
+      else threeDotWholesale.classList.add("hidden");
+      return true;
+    }
+
+    const threeDotCustomer = document.getElementById("customerThreeDotMenu");
+    if (threeDotCustomer && !threeDotCustomer.classList.contains("hidden")) {
+      if (typeof window.closeThreeDotMenu === "function") window.closeThreeDotMenu();
+      else threeDotCustomer.classList.add("hidden");
+      return true;
+    }
+
+    // 4. Close search dropdowns or live search suggestions
+    const aiBucketDropdown = document.getElementById("aiBucketSuggestionsDropdown");
+    if (aiBucketDropdown && !aiBucketDropdown.classList.contains("hidden")) {
+      aiBucketDropdown.classList.add("hidden");
+      return true;
+    }
+
+    const marketDropdown = document.getElementById("marketSearchDropdown");
+    const mobileMarketDropdown = document.getElementById("mobileMarketSearchDropdown");
+    if ((marketDropdown && !marketDropdown.classList.contains("hidden")) || 
+        (mobileMarketDropdown && !mobileMarketDropdown.classList.contains("hidden"))) {
+      if (typeof window.hideSearchDropdowns === "function") window.hideSearchDropdowns();
+      return true;
+    }
+
+    // 5. Close any open Tailwind modals (.fixed.inset-0:not(.hidden))
+    const openModals = Array.from(document.querySelectorAll(".fixed.inset-0")).filter((el) => {
+      if (el.classList.contains("hidden") || el.style.display === "none") return false;
+      if (el.id === "llRoleSwitcherModal" || el.id === "wholesalerBackdrop" || el.id === "wholesaleHeaderMenuBackdrop") return false;
+      return true;
+    });
+
+    if (openModals.length > 0) {
+      const topModal = openModals[openModals.length - 1];
+      topModal.classList.add("hidden");
+      if (topModal.id === "voiceShoppingListModal" && typeof window.closeVoiceShoppingListModal === "function") window.closeVoiceShoppingListModal();
+      else if (topModal.id === "voiceSearchModal" && typeof window.closeVoiceSearchModal === "function") window.closeVoiceSearchModal();
+      else if (topModal.id === "customerAuthModal" && typeof window.closeCustomerAuthModal === "function") window.closeCustomerAuthModal();
+      else if (topModal.id === "addressChangeModal" && typeof window.closeAddressModal === "function") window.closeAddressModal();
+      else if (topModal.id === "paperListModal" && typeof window.closePaperListModal === "function") window.closePaperListModal();
+      else if (topModal.id === "addLotModal" && typeof window.closeAddLotModal === "function") window.closeAddLotModal();
+      return true;
+    }
+
+    // 6. Login Page Back Navigation: Return to Customer Marketplace as Guest
+    if (typeof window.navigateLoginBack === "function") {
+      const handled = window.navigateLoginBack();
+      if (handled) return true;
+    }
+
+    // 7. In-Page Content Navigation: Customer Portal
+    if (typeof window.navigateCustomerBack === "function") {
+      const handled = window.navigateCustomerBack();
+      if (handled) return true;
+    }
+
+    // 8. In-Page Content Navigation: Wholesaler Portal
+    if (typeof window.navigateWholesalerBack === "function") {
+      const handled = window.navigateWholesalerBack();
+      if (handled) return true;
+    }
+
+    // 9. In-Page Content Navigation: Seller Portal
+    if (typeof window.navigateSellerBack === "function") {
+      const handled = window.navigateSellerBack();
+      if (handled) return true;
+    }
+
+    // 10. In-Page Content Navigation: Admin Portal
+    if (typeof window.navigateAdminBack === "function") {
+      const handled = window.navigateAdminBack();
+      if (handled) return true;
+    }
+
+    // Root content reached; do not dump user onto login page!
+    return false;
+  }
+
   // Native Capacitor Lifecycle Integration
   function initNativeCapacitor() {
     try {
@@ -470,29 +590,11 @@
       }
 
       if (plugins.App && typeof plugins.App.addListener === "function") {
-        let lastBackPress = 0;
-        plugins.App.addListener("backButton", ({ canGoBack }) => {
-          // 1. Close Role Switcher if open
-          const rsModal = document.getElementById("llRoleSwitcherModal");
-          if (rsModal && rsModal.style.display === "flex") {
-            closeRoleSwitcher();
-            return;
-          }
+        plugins.App.addListener("backButton", () => {
+          const handled = handleUnifiedBackPress();
+          if (handled) return;
 
-          // 2. Close any open Tailwind modal (.fixed.inset-0:not(.hidden))
-          const openModals = Array.from(document.querySelectorAll(".fixed.inset-0")).filter(
-            (el) => !el.classList.contains("hidden") && el.id !== "llRoleSwitcherModal"
-          );
-          if (openModals.length > 0) {
-            openModals.forEach((m) => m.classList.add("hidden"));
-            return;
-          }
-
-          if (canGoBack && window.history.length > 1) {
-            window.history.back();
-            return;
-          }
-
+          // User is at root view: confirm before exiting app cleanly
           const now = Date.now();
           if (now - lastBackPress < 2000) {
             plugins.App.exitApp();
@@ -504,6 +606,13 @@
           }
         });
       }
+
+      // Also listen to popstate to guard mobile browsers & swipe gestures
+      window.addEventListener("popstate", (e) => {
+        // If an in-app state with pageId or tabId is handled by page script, it took effect.
+        // Otherwise handle any open overlays or sub-views:
+        handleUnifiedBackPress();
+      });
 
       if (plugins.Network && typeof plugins.Network.addListener === "function") {
         plugins.Network.addListener("networkStatusChange", (status) => {

@@ -1589,9 +1589,6 @@
 
       const icon = document.getElementById("themeToggleIcon");
       if (icon) icon.className = isLight ? "fa-solid fa-sun text-amber-500" : "fa-solid fa-moon text-amber-400";
-
-      const quickIcon = document.getElementById("headerThemeQuickIcon");
-      if (quickIcon) quickIcon.className = isLight ? "fa-solid fa-sun text-amber-500 text-sm" : "fa-solid fa-moon text-amber-400 text-sm";
     }
 
     // Close header menu on click outside
@@ -1605,8 +1602,24 @@
       }
     });
 
-    // Tab Navigation
-    function switchWholesaleTab(tabId) {
+    // Tab Navigation with In-App History
+    let wholesaleTabHistory = ['dashboard'];
+    let currentWholesaleTabId = 'dashboard';
+
+    function switchWholesaleTab(tabId, isBack = false) {
+      if (!tabId) tabId = 'dashboard';
+      if (!isBack && tabId !== currentWholesaleTabId) {
+        if (wholesaleTabHistory[wholesaleTabHistory.length - 1] !== tabId) {
+          wholesaleTabHistory.push(tabId);
+        }
+        try {
+          if (window.history && window.history.pushState) {
+            window.history.pushState({ tabId, type: 'wholesaler-tab' }, '', '#' + tabId);
+          }
+        } catch (_) {}
+      }
+      currentWholesaleTabId = tabId;
+
       // Hide all views
       document.querySelectorAll(".wholesale-view").forEach(v => v.classList.add("hidden"));
       
@@ -1647,6 +1660,63 @@
       toggleWholesaleSidebar(false);
       toggleHeaderMenu(false);
     }
+
+    // Wholesaler In-App Content Back Navigation
+    window.navigateWholesalerBack = function() {
+      // 1. Sidebar drawer
+      const sidebar = document.getElementById("wholesalerSidebar");
+      if (sidebar && !sidebar.classList.contains("-translate-x-full")) {
+        toggleWholesaleSidebar(false);
+        return true;
+      }
+
+      // 2. 3-dot dropdown menu
+      const menu = document.getElementById("wholesaleHeaderMenu");
+      if (menu && !menu.classList.contains("hidden")) {
+        toggleHeaderMenu(false);
+        return true;
+      }
+
+      // 3. Modals
+      const openModals = Array.from(document.querySelectorAll(".fixed.inset-0")).filter(
+        (el) => !el.classList.contains("hidden") && el.id !== "wholesalerBackdrop" && el.id !== "wholesaleHeaderMenuBackdrop"
+      );
+      if (openModals.length > 0) {
+        openModals[openModals.length - 1].classList.add("hidden");
+        return true;
+      }
+
+      // 4. Tab history
+      if (wholesaleTabHistory.length > 1) {
+        wholesaleTabHistory.pop();
+        const prev = wholesaleTabHistory[wholesaleTabHistory.length - 1] || 'dashboard';
+        switchWholesaleTab(prev, true);
+        return true;
+      }
+
+      // 5. If not on dashboard, return to dashboard
+      if (currentWholesaleTabId !== 'dashboard') {
+        wholesaleTabHistory = ['dashboard'];
+        switchWholesaleTab('dashboard', true);
+        return true;
+      }
+
+      return false;
+    };
+
+    window.addEventListener("popstate", (e) => {
+      if (e.state && e.state.tabId) {
+        switchWholesaleTab(e.state.tabId, true);
+      } else {
+        window.navigateWholesalerBack();
+      }
+    });
+
+    try {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState({ tabId: 'dashboard', type: 'wholesaler-tab' }, '', '#dashboard');
+      }
+    } catch (_) {}
 
     // Load All Data from Backend APIs
     async function loadWholesaleData() {
@@ -2865,7 +2935,7 @@
       localStorage.removeItem("locallinkWholesalerUser");
       localStorage.removeItem("locallinkSellerToken");
       sessionStorage.clear();
-      window.location.href = "unified-login.html";
+      window.location.replace("unified-login.html?logout=true");
     }
 
     function refreshWholesaleData() {

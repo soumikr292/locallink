@@ -1634,8 +1634,24 @@
       }
     }
 
-    // Tab Switching
-    function switchTab(tabId) {
+    // Tab Navigation with In-App History
+    let sellerTabHistory = ['dashboard'];
+    let currentSellerTabId = 'dashboard';
+
+    function switchTab(tabId, isBack = false) {
+      if (!tabId) tabId = 'dashboard';
+      if (!isBack && tabId !== currentSellerTabId) {
+        if (sellerTabHistory[sellerTabHistory.length - 1] !== tabId) {
+          sellerTabHistory.push(tabId);
+        }
+        try {
+          if (window.history && window.history.pushState) {
+            window.history.pushState({ tabId, type: 'seller-tab' }, '', '#' + tabId);
+          }
+        } catch (_) {}
+      }
+      currentSellerTabId = tabId;
+
       toggleSellerSidebar(false);
       const tabs = document.querySelectorAll('.tab-content');
       tabs.forEach(tab => tab.classList.add('hidden'));
@@ -1669,6 +1685,48 @@
       else if (tabId === 'reviews') loadSellerReviews();
       else if (tabId === 'settings') loadStoreSettings();
     }
+
+    // Seller In-App Content Back Navigation
+    window.navigateSellerBack = function() {
+      const sidebar = document.getElementById("sellerSidebar");
+      if (sidebar && !sidebar.classList.contains("-translate-x-full")) {
+        toggleSellerSidebar(false);
+        return true;
+      }
+      const openModals = Array.from(document.querySelectorAll(".fixed.inset-0")).filter(
+        (el) => !el.classList.contains("hidden") && el.id !== "llRoleSwitcherModal"
+      );
+      if (openModals.length > 0) {
+        openModals[openModals.length - 1].classList.add("hidden");
+        return true;
+      }
+      if (sellerTabHistory.length > 1) {
+        sellerTabHistory.pop();
+        const prev = sellerTabHistory[sellerTabHistory.length - 1] || 'dashboard';
+        switchTab(prev, true);
+        return true;
+      }
+      if (currentSellerTabId !== 'dashboard') {
+        sellerTabHistory = ['dashboard'];
+        switchTab('dashboard', true);
+        return true;
+      }
+      return false;
+    };
+
+    window.addEventListener("popstate", (e) => {
+      if (e.state && e.state.tabId) {
+        switchTab(e.state.tabId, true);
+      } else {
+        window.navigateSellerBack();
+      }
+    });
+
+    try {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState({ tabId: 'dashboard', type: 'seller-tab' }, '', '#dashboard');
+      }
+    } catch (_) {}
 
     // ==============================================
     // INITIALIZATION ON LOAD
@@ -1730,7 +1788,7 @@
         removeStoredToken();
         showToast("Logged out successfully");
         setTimeout(() => {
-          window.location.href = "unified-login.html";
+          window.location.replace("unified-login.html?logout=true");
         }, 500);
       }
     }
