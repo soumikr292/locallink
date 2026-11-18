@@ -314,6 +314,10 @@
         <button onclick="switchCustomerPage('compare')" id="nav-btn-compare" class="hidden xl:flex px-3 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 rounded-xl items-center gap-1.5 transition-all" title="Price Comparison">
           <i class="fa-solid fa-scale-balanced"></i> <span data-i18n="nav_compare">Compare</span>
         </button>
+        <button onclick="switchCustomerPage('ai-bucket')" id="nav-btn-ai-bucket" class="hidden lg:flex px-3 py-2 bg-gradient-to-r from-amber-500/20 via-emerald-500/15 to-sky-500/20 hover:from-amber-500/30 hover:to-emerald-500/30 text-amber-300 border border-amber-500/40 rounded-xl items-center gap-1.5 transition-all shadow-sm" title="AI Bucket: Compare with Zepto, Blinkit, JioMart, Swiggy, Amazon & More">
+          <i class="fa-solid fa-basket-shopping text-amber-400"></i> <span data-i18n="nav_ai_bucket">AI Bucket</span>
+          <span class="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-amber-400 text-slate-950">9 Apps</span>
+        </button>
         <button onclick="switchCustomerPage('bargain')" id="nav-btn-bargain" class="hidden 2xl:flex px-3 py-2 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 rounded-xl items-center gap-1.5 transition-all" title="AI Bargain Agent">
           <i class="fa-solid fa-robot"></i> <span data-i18n="nav_bargain">AI Bargain</span>
         </button>
@@ -643,9 +647,31 @@
             </h3>
             <p class="text-xs text-slate-400 mt-0.5" data-i18n="compare_header_desc">Compare live rates across all verified neighborhood stalls before buying.</p>
           </div>
-          <button onclick="switchCustomerPage('home')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center gap-1">
-            <i class="fa-solid fa-house"></i> <span data-i18n="nav_home">Home</span>
-          </button>
+          <div class="flex items-center gap-2">
+            <button onclick="switchCustomerPage('ai-bucket')" class="px-3 py-1.5 bg-gradient-to-r from-amber-500/20 to-emerald-500/20 hover:from-amber-500/30 hover:to-emerald-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-sm transition-all" title="Compare with Zepto, Blinkit & Swiggy">
+              <i class="fa-solid fa-basket-shopping text-amber-400"></i> AI Bucket
+            </button>
+            <button onclick="switchCustomerPage('home')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center gap-1">
+              <i class="fa-solid fa-house"></i> <span data-i18n="nav_home">Home</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- AI Bucket Multi-Platform Promo Banner -->
+        <div onclick="switchCustomerPage('ai-bucket')" class="p-3.5 bg-gradient-to-r from-amber-500/15 via-emerald-500/10 to-sky-500/15 border border-amber-500/30 rounded-2xl flex items-center justify-between gap-3 cursor-pointer hover:border-amber-500/60 transition-all shadow-sm group">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-lg flex-shrink-0 group-hover:scale-105 transition-transform">
+              <i class="fa-solid fa-basket-shopping"></i>
+            </div>
+            <div class="min-w-0">
+              <span class="text-[10px] font-black uppercase tracking-wider text-amber-400 block">Compare Beyond Stalls</span>
+              <p class="font-bold text-white text-xs truncate">Compare this with Zepto, Blinkit, JioMart, Swiggy, Amazon & MemoCash</p>
+              <span class="text-[10px] text-emerald-400">See how much you save on dark-store fees & product markups →</span>
+            </div>
+          </div>
+          <span class="px-3 py-1.5 bg-amber-500 text-slate-950 font-black text-xs rounded-xl shadow-md whitespace-nowrap flex-shrink-0 group-hover:bg-amber-400 transition-colors">
+            Open AI Bucket
+          </span>
         </div>
 
         <!-- Search Bar & Instant Filter Chips -->
@@ -674,6 +700,186 @@
         <div id="compareCardsContainer" class="space-y-3 text-xs">
           <div class="p-6 text-center text-slate-500">Loading store price comparisons...</div>
         </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- 🧺 AI MULTI-PLATFORM BUCKET INTELLIGENCE PAGE  -->
+    <!-- ============================================== -->
+    <div id="page-ai-bucket" class="customer-page hidden space-y-6 max-w-5xl mx-auto">
+      <div class="bg-gradient-to-br from-slate-900 via-slate-900/95 to-slate-950 border border-slate-800 rounded-3xl p-5 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        <!-- Glow Accents -->
+        <div class="absolute -top-24 -right-24 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Header -->
+        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800/80 pb-5">
+          <div class="space-y-1">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/20 via-emerald-500/20 to-sky-500/20 border border-amber-500/40 text-amber-300 text-[11px] font-black uppercase tracking-wider shadow-sm">
+              <i class="fa-solid fa-sparkles text-amber-400 animate-pulse"></i>
+              <span>Multi-Platform E-Commerce Intelligence</span>
+            </div>
+            <h3 class="font-black text-xl sm:text-2xl text-white tracking-tight flex items-center gap-2.5">
+              <i class="fa-solid fa-basket-shopping text-amber-400"></i>
+              <span data-i18n="ai_bucket_header_title">AI Smart Bucket & Price Radar</span>
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed" data-i18n="ai_bucket_header_desc">
+              Real-time AI price & fee audit across <b>Zepto, Blinkit, JioMart, Flipkart Minutes, Swiggy Instamart, Amazon Fresh, Amazon Grocery, MemoCash & LocalLink</b>.
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2 self-stretch sm:self-auto">
+            <button onclick="switchCustomerPage('home')" class="px-3.5 py-2 bg-slate-800/90 hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-sm transition-all">
+              <i class="fa-solid fa-house text-emerald-400"></i> <span data-i18n="nav_home">Home</span>
+            </button>
+            <button onclick="orderAIBucketWithLocalLink()" id="btnHeaderOrderBucket" class="flex-1 sm:flex-none px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all">
+              <i class="fa-solid fa-bag-shopping"></i> <span data-i18n="ai_bucket_order_btn">Order via LocalLink</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- AI Savings Banner Card -->
+        <div id="aiBucketSavingsBanner" class="p-4 sm:p-5 bg-gradient-to-r from-emerald-950/80 via-slate-900 to-slate-950 border border-emerald-500/40 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-lg shadow-emerald-950/40">
+          <div class="flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-2xl flex-shrink-0">
+              <i class="fa-solid fa-piggy-bank animate-bounce"></i>
+            </div>
+            <div>
+              <div class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                AI Verified Price Advantage
+              </div>
+              <h4 id="aiBucketSavingsHeadline" class="text-base sm:text-lg font-black text-white">Save up to ₹142 (24%) with LocalLink AI Bucket!</h4>
+              <p id="aiBucketSavingsSub" class="text-xs text-slate-400 mt-0.5">
+                Zero dark-store markups • ₹0 hidden handling & surge fees • 15-20 min neighborhood delivery or free pickup.
+              </p>
+            </div>
+          </div>
+          <!-- Delivery Mode Switcher inside AI Bucket -->
+          <div class="flex items-center gap-1 bg-slate-950 p-1.5 rounded-xl border border-slate-800 self-stretch sm:self-auto text-xs font-bold">
+            <button type="button" onclick="setAIBucketFulfillment('delivery')" id="btnAIBucketFulfillDelivery" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-slate-950 font-black shadow transition-all">
+              🛵 Home Delivery
+            </button>
+            <button type="button" onclick="setAIBucketFulfillment('pickup')" id="btnAIBucketFulfillPickup" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all">
+              🛍️ Self Pickup (Save ₹20)
+            </button>
+          </div>
+        </div>
+
+        <!-- Smart Preset Baskets Selection -->
+        <div class="space-y-2">
+          <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Smart AI Preset Baskets:
+          </label>
+          <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar" id="aiBucketPresetChips">
+            <button onclick="loadAIBucketBenchmark('daily_kitchen_essentials')" class="px-3.5 py-2 bg-slate-950 hover:bg-slate-800 border border-slate-700/80 text-white font-bold rounded-xl whitespace-nowrap shadow-sm flex items-center gap-2 transition-all">
+              <span>🥕 Daily Kitchen & Veggies</span>
+            </button>
+            <button onclick="loadAIBucketBenchmark('sunday_fish_feast')" class="px-3.5 py-2 bg-slate-950 hover:bg-slate-800 border border-slate-700/80 text-white font-bold rounded-xl whitespace-nowrap shadow-sm flex items-center gap-2 transition-all">
+              <span>🐟 Sunday Fish & Feast</span>
+            </button>
+            <button onclick="loadAIBucketBenchmark('monthly_family_ration')" class="px-3.5 py-2 bg-slate-950 hover:bg-slate-800 border border-slate-700/80 text-white font-bold rounded-xl whitespace-nowrap shadow-sm flex items-center gap-2 transition-all">
+              <span>🌾 Monthly Grocery Ration</span>
+            </button>
+            <button onclick="loadAIBucketFromCart()" class="px-3.5 py-2 bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-500/40 text-emerald-300 font-bold rounded-xl whitespace-nowrap shadow-sm flex items-center gap-2 transition-all">
+              <i class="fa-solid fa-cart-arrow-down text-emerald-400"></i>
+              <span>Compare My Current Cart</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom Item Voice & Text Quick Input -->
+        <div class="relative flex items-center">
+          <i class="fa-solid fa-plus absolute left-4 text-slate-500 text-sm"></i>
+          <input type="text" id="aiBucketCustomInput" onkeydown="if(event.key==='Enter')handleAIBucketCustomInput()" placeholder="Type or speak items to compare (e.g. 2kg potato, 1L mustard oil, 500g paneer, 1kg dal)..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-11 pr-32 py-3 text-white text-xs sm:text-sm placeholder-slate-500 focus:outline-none focus:border-amber-500 shadow-inner">
+          <button type="button" onclick="startAIBucketVoiceInput()" id="btnAIBucketVoice" class="absolute right-24 w-8 h-8 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all shadow" title="Speak items in English, বাংলা, हिन्दी">
+            <i class="fa-solid fa-microphone text-emerald-400 hover:text-white"></i>
+          </button>
+          <button type="button" onclick="handleAIBucketCustomInput()" class="absolute right-2 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs rounded-xl shadow transition-all">
+            Compare
+          </button>
+        </div>
+
+        <!-- Current Bucket Items Chips Bar -->
+        <div class="space-y-1.5">
+          <div class="flex justify-between items-center text-[11px] text-slate-400">
+            <span class="font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-list-check text-sky-400"></i> Items in this AI Bucket (<span id="aiBucketItemsCount">0</span>):
+            </span>
+            <button onclick="clearAIBucketItems()" class="text-rose-400 hover:underline text-[10px]">Clear All</button>
+          </div>
+          <div id="aiBucketItemsChipsContainer" class="p-3 bg-slate-950/80 border border-slate-800/90 rounded-2xl flex items-center gap-2 overflow-x-auto no-scrollbar text-xs">
+            <span class="text-slate-500 italic">No items in bucket yet. Click any preset above or type/speak items.</span>
+          </div>
+        </div>
+
+        <!-- Multi-Platform Side-by-Side Comparison Grid -->
+        <div class="space-y-3">
+          <div class="flex justify-between items-center">
+            <h4 class="font-black text-sm text-white flex items-center gap-2">
+              <i class="fa-solid fa-chart-simple text-sky-400"></i>
+              <span>Live Price & Delivery Radar (All 9 Platforms)</span>
+            </h4>
+            <span class="text-[11px] text-slate-400">Live AI Estimation</span>
+          </div>
+
+          <div id="aiBucketPlatformsCardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            <!-- Dynamically populated platform comparison cards -->
+          </div>
+        </div>
+
+        <!-- Hidden Charges & Fee Breakdown Table -->
+        <div class="space-y-3 pt-4 border-t border-slate-800">
+          <div class="flex justify-between items-center">
+            <h4 class="font-black text-sm text-white flex items-center gap-2">
+              <i class="fa-solid fa-receipt text-amber-400"></i>
+              <span>Platform Fee & Hidden Charges Transparency Audit</span>
+            </h4>
+            <span class="text-[10px] text-slate-400 uppercase tracking-wider">No Hidden Fees with LocalLink</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950">
+            <table class="w-full text-left text-xs text-slate-300 divide-y divide-slate-800">
+              <thead class="bg-slate-900 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                <tr>
+                  <th class="py-3 px-3.5">Platform</th>
+                  <th class="py-3 px-3 text-right">Items Subtotal</th>
+                  <th class="py-3 px-3 text-right">Handling Fee</th>
+                  <th class="py-3 px-3 text-right">Surge / Platform Fee</th>
+                  <th class="py-3 px-3 text-right">Delivery Fee</th>
+                  <th class="py-3 px-3.5 text-right font-black text-white">Grand Total</th>
+                  <th class="py-3 px-3.5 text-center">Delivery ETA</th>
+                </tr>
+              </thead>
+              <tbody id="aiBucketFeesTableBody" class="divide-y divide-slate-850">
+                <!-- Dynamically populated table rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Why LocalLink is Cheaper Explainer Callout -->
+        <div class="p-4 bg-slate-950 border border-slate-800/90 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center gap-3.5 text-xs text-slate-300">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-lg flex-shrink-0">
+            <i class="fa-solid fa-lightbulb"></i>
+          </div>
+          <div class="flex-1">
+            <span class="font-bold text-white block mb-0.5">Why does LocalLink cost less than Zepto, Blinkit & Swiggy?</span>
+            Quick-commerce apps operate heavy dark-store real estate and packaging hubs, charging 12%–16% marked up product prices, plus ₹7–₹10 handling fees and frequent weather surge charges. LocalLink connects you directly to neighborhood grocery & mandi merchants within 500 meters, saving you money while keeping money in your local community!
+          </div>
+        </div>
+
+        <!-- Bottom 1-Click Order Button -->
+        <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div class="text-xs text-slate-400">
+            Ready to save? Tap below to dispatch this entire bucket to your nearest verified shopkeeper.
+          </div>
+          <button type="button" onclick="orderAIBucketWithLocalLink()" class="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-sm rounded-2xl flex items-center justify-center gap-2 shadow-xl shadow-emerald-500/20 active:scale-95 transition-all">
+            <i class="fa-solid fa-basket-shopping text-base"></i>
+            <span id="btnOrderBucketBottomText">1-Click Order AI Bucket via LocalLink</span>
+          </button>
+        </div>
+
       </div>
     </div>
 
@@ -2401,13 +2607,13 @@
       <i class="fa-solid fa-house text-sm"></i>
       <span data-i18n="mob_nav_home">Home</span>
     </button>
+    <button onclick="switchCustomerPage('ai-bucket')" id="mob-nav-ai-bucket" class="mob-nav-btn py-2.5 flex flex-col items-center justify-center gap-1 text-amber-400 transition-colors">
+      <i class="fa-solid fa-basket-shopping text-sm animate-pulse"></i>
+      <span data-i18n="mob_nav_ai_bucket">AI Bucket</span>
+    </button>
     <button onclick="switchCustomerPage('compare')" id="mob-nav-compare" class="mob-nav-btn py-2.5 flex flex-col items-center justify-center gap-1 text-slate-400 transition-colors">
       <i class="fa-solid fa-scale-balanced text-sm"></i>
       <span data-i18n="mob_nav_compare">Compare</span>
-    </button>
-    <button onclick="switchCustomerPage('bargain')" id="mob-nav-bargain" class="mob-nav-btn py-2.5 flex flex-col items-center justify-center gap-1 text-slate-400 transition-colors">
-      <i class="fa-solid fa-robot text-sm"></i>
-      <span data-i18n="mob_nav_bargain">Bargain</span>
     </button>
     <button onclick="switchCustomerPage('cart')" id="mob-nav-cart" class="mob-nav-btn py-2.5 flex flex-col items-center justify-center gap-1 text-slate-400 relative transition-colors">
       <i class="fa-solid fa-cart-shopping text-sm"></i>
@@ -2645,13 +2851,13 @@
       }
 
       // Highlight active header button (Desktop + Mobile Bottom Bar)
-      const navButtons = ['home', 'compare', 'bargain', 'cart', 'orders'];
+      const navButtons = ['home', 'compare', 'ai-bucket', 'bargain', 'cart', 'orders'];
       navButtons.forEach(btn => {
         const el = document.getElementById('nav-btn-' + btn);
         if (el) {
           if (btn === pageId) {
             el.classList.add('bg-emerald-600', 'text-white');
-            el.classList.remove('bg-slate-900', 'text-slate-200', 'bg-blue-600/20', 'bg-purple-600/20');
+            el.classList.remove('bg-slate-900', 'text-slate-200', 'bg-blue-600/20', 'bg-purple-600/20', 'bg-gradient-to-r');
           } else {
             el.classList.remove('bg-emerald-600');
           }
@@ -2673,6 +2879,7 @@
       if (pageId === 'cart') renderCart();
       else if (pageId === 'orders') loadCustomerOrders();
       else if (pageId === 'compare') loadCompareItems();
+      else if (pageId === 'ai-bucket') loadAIBucketView();
       updateFloatingCartBar();
     }
 
@@ -2766,9 +2973,14 @@
                   <span class="text-[10px] text-slate-500 block">${stallPriceLabel}</span>
                   <span class="text-base font-black text-emerald-400">₹ ${p.price}</span>
                 </div>
-                <button onclick="startCompareForItem('${p.name.replace(/'/g, "\\'")}')" class="text-[10px] text-sky-400 hover:underline flex items-center gap-1 font-bold">
-                  <i class="fa-solid fa-scale-balanced"></i> ${compareLabel}
-                </button>
+                <div class="flex items-center gap-2">
+                  <button onclick="startCompareForItem('${p.name.replace(/'/g, "\\'")}')" class="text-[10px] text-sky-400 hover:underline flex items-center gap-1 font-bold" title="Compare across local stalls">
+                    <i class="fa-solid fa-scale-balanced"></i> ${compareLabel}
+                  </button>
+                  <button onclick="addProductToAIBucket(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price})" class="text-[10px] text-amber-400 hover:underline flex items-center gap-1 font-bold" title="Compare in AI Bucket (Zepto, Blinkit & Swiggy)">
+                    <i class="fa-solid fa-basket-shopping"></i> + Bucket
+                  </button>
+                </div>
               </div>
 
               <div class="grid grid-cols-2 gap-2 items-center">
@@ -3109,6 +3321,369 @@
       const input = document.getElementById("compareSearchInput");
       if (input) input.value = itemName;
       loadCompareItems(itemName);
+    }
+
+    // ==============================================
+    // 🧺 AI MULTI-PLATFORM BUCKET CONTROLLER
+    // ==============================================
+    let currentAIBucketItems = [];
+    let currentAIBucketFulfillment = "delivery"; // 'delivery' | 'pickup'
+    let currentAIBucketCalculation = null;
+
+    async function loadAIBucketView() {
+      if (!currentAIBucketItems || currentAIBucketItems.length === 0) {
+        await loadAIBucketBenchmark('daily_kitchen_essentials');
+      } else {
+        await calculateAndRenderAIBucket();
+      }
+    }
+
+    async function loadAIBucketBenchmark(benchmarkId) {
+      try {
+        const res = await apiRequest("/api/ai-bucket/benchmarks");
+        if (res && res.success && Array.isArray(res.data.benchmarks)) {
+          const found = res.data.benchmarks.find(b => b.id === benchmarkId) || res.data.benchmarks[0];
+          if (found && Array.isArray(found.items)) {
+            currentAIBucketItems = found.items.map(it => ({
+              name: it.name,
+              qty: it.qty,
+              unit: it.unit,
+              price: it.localBasePrice
+            }));
+            await calculateAndRenderAIBucket();
+            showToast(`Loaded "${found.name}" into AI Bucket!`, "info");
+          }
+        }
+      } catch (err) {
+        console.warn("Could not load benchmark:", err);
+      }
+    }
+
+    async function loadAIBucketFromCart() {
+      if (!cart || cart.length === 0) {
+        showToast("Your cart is currently empty! Add items from home or choose an AI preset.", "info");
+        return;
+      }
+      currentAIBucketItems = cart.map(item => ({
+        name: item.name,
+        qty: item.quantity,
+        unit: "unit",
+        price: item.price
+      }));
+      await calculateAndRenderAIBucket();
+      showToast(`Loaded ${cart.length} items from your cart into AI Bucket!`, "success");
+    }
+
+    function setAIBucketFulfillment(type) {
+      currentAIBucketFulfillment = type;
+      const btnDel = document.getElementById("btnAIBucketFulfillDelivery");
+      const btnPic = document.getElementById("btnAIBucketFulfillPickup");
+      if (btnDel && btnPic) {
+        if (type === "pickup") {
+          btnPic.className = "px-3 py-1.5 rounded-lg bg-emerald-600 text-slate-950 font-black shadow transition-all";
+          btnDel.className = "px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all";
+        } else {
+          btnDel.className = "px-3 py-1.5 rounded-lg bg-emerald-600 text-slate-950 font-black shadow transition-all";
+          btnPic.className = "px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all";
+        }
+      }
+      calculateAndRenderAIBucket();
+    }
+
+    async function calculateAndRenderAIBucket() {
+      const grid = document.getElementById("aiBucketPlatformsCardsGrid");
+      const feesTable = document.getElementById("aiBucketFeesTableBody");
+      const chipsContainer = document.getElementById("aiBucketItemsChipsContainer");
+      const countEl = document.getElementById("aiBucketItemsCount");
+
+      if (countEl) countEl.textContent = currentAIBucketItems.length;
+
+      // Render Item Chips
+      if (chipsContainer) {
+        if (currentAIBucketItems.length === 0) {
+          chipsContainer.innerHTML = `<span class="text-slate-500 italic">No items in bucket yet. Click any preset above or type/speak items.</span>`;
+        } else {
+          chipsContainer.innerHTML = currentAIBucketItems.map((item, idx) => `
+            <div class="px-2.5 py-1 bg-slate-900 border border-slate-700/80 rounded-xl flex items-center gap-2 flex-shrink-0 text-white font-bold text-xs shadow-sm">
+              <span>${item.qty} ${item.unit !== 'unit' ? item.unit : ''} ${item.name}</span>
+              <button onclick="removeAIBucketItem(${idx})" class="w-4 h-4 rounded-full bg-slate-800 hover:bg-rose-600 text-slate-400 hover:text-white flex items-center justify-center text-[9px] transition-all" title="Remove item">✕</button>
+            </div>
+          `).join("");
+        }
+      }
+
+      if (currentAIBucketItems.length === 0) {
+        if (grid) grid.innerHTML = `<div class="p-8 text-center text-slate-500 col-span-full">Your AI Bucket is empty. Choose a preset or type items to compare.</div>`;
+        return;
+      }
+
+      try {
+        const res = await apiRequest("/api/ai-bucket/calculate", {
+          method: "POST",
+          body: JSON.stringify({
+            items: currentAIBucketItems,
+            options: { fulfillmentType: currentAIBucketFulfillment }
+          })
+        });
+
+        if (!res || !res.success) return;
+        currentAIBucketCalculation = res.data;
+        const data = res.data;
+
+        // Update Savings Headline
+        const headlineEl = document.getElementById("aiBucketSavingsHeadline");
+        if (headlineEl && data.savingsAnalysis) {
+          let text = data.savingsAnalysis.headline;
+          if (currentAppLanguage === "bn" && data.savingsAnalysis.headline_bn) text = data.savingsAnalysis.headline_bn;
+          else if (currentAppLanguage === "hi" && data.savingsAnalysis.headline_hi) text = data.savingsAnalysis.headline_hi;
+          headlineEl.textContent = text;
+        }
+
+        // Render Platform Cards Grid
+        if (grid && data.platforms) {
+          const platforms = Object.values(data.platforms);
+          const localPlatform = data.platforms.locallink || platforms[0];
+
+          grid.innerHTML = platforms.map(p => {
+            const isLocal = p.platformId === "locallink";
+            const diff = p.grandTotal - localPlatform.grandTotal;
+
+            return `
+              <div class="p-4 sm:p-5 rounded-2xl border transition-all ${isLocal ? 'bg-gradient-to-b from-emerald-950/70 via-slate-900 to-slate-950 border-emerald-500/60 shadow-xl shadow-emerald-950/40 ring-1 ring-emerald-500/30' : 'bg-slate-950/90 border-slate-800 hover:border-slate-700'} flex flex-col justify-between gap-3 relative overflow-hidden">
+                ${isLocal ? `
+                  <div class="absolute top-0 right-0 bg-gradient-to-l from-emerald-500 to-teal-400 text-slate-950 text-[9px] font-black uppercase px-3 py-0.5 rounded-bl-xl tracking-wider shadow">
+                    ⭐ LOWEST TOTAL COST
+                  </div>
+                ` : ''}
+
+                <div class="space-y-2">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 rounded-xl ${p.logoBg} flex items-center justify-center text-base flex-shrink-0 shadow">
+                      <i class="${p.logoIcon}"></i>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <h4 class="font-black text-sm text-white truncate">${p.platformName}</h4>
+                        <span class="px-1.5 py-0.2 rounded text-[9px] font-bold ${p.badgeClass}">${p.badge}</span>
+                      </div>
+                      <p class="text-[10px] text-slate-400 truncate">${p.subtitle}</p>
+                    </div>
+                  </div>
+
+                  <div class="text-[11px] text-slate-300 font-medium flex items-center gap-1.5">
+                    <i class="fa-solid fa-clock text-slate-500 text-xs"></i>
+                    <span>ETA: <b>${p.deliverySpeed}</b></span>
+                  </div>
+                </div>
+
+                <div class="pt-3 border-t border-slate-800/80 space-y-2">
+                  <div class="flex justify-between items-baseline">
+                    <span class="text-xs text-slate-400">Total Bucket Cost:</span>
+                    <span class="text-lg font-black ${isLocal ? 'text-emerald-400' : 'text-slate-100'}">₹ ${p.grandTotal}</span>
+                  </div>
+
+                  <div class="text-[11px] flex justify-between items-center text-slate-400">
+                    <span>Items Subtotal:</span>
+                    <span class="font-bold text-slate-300">₹ ${p.itemsSubtotal}</span>
+                  </div>
+
+                  <div class="text-[11px] flex justify-between items-center text-slate-400">
+                    <span>Platform & Handling:</span>
+                    <span class="font-bold ${p.totalHiddenFees > 0 ? 'text-rose-400' : 'text-slate-400'}">₹ ${p.totalHiddenFees}</span>
+                  </div>
+
+                  <div class="text-[11px] flex justify-between items-center text-slate-400">
+                    <span>Delivery Charge:</span>
+                    <span class="font-bold text-slate-300">${p.deliveryFee === 0 ? '<span class="text-emerald-400">FREE</span>' : `₹ ${p.deliveryFee}`}</span>
+                  </div>
+
+                  ${!isLocal ? `
+                    <div class="pt-2 border-t border-slate-900 flex justify-between items-center text-xs">
+                      <span class="text-slate-500">Difference vs Local:</span>
+                      <span class="font-black text-rose-400">+ ₹ ${diff} more</span>
+                    </div>
+                  ` : `
+                    <div class="pt-2 border-t border-emerald-950 flex justify-between items-center text-xs">
+                      <span class="text-emerald-400/80">Support Local Kiranas:</span>
+                      <span class="font-black text-emerald-400">₹0 Dark Store Markup</span>
+                    </div>
+                  `}
+                </div>
+              </div>
+            `;
+          }).join("");
+        }
+
+        // Render Fees Transparency Table
+        if (feesTable && data.platforms) {
+          const platforms = Object.values(data.platforms);
+          feesTable.innerHTML = platforms.map(p => {
+            const isLocal = p.platformId === "locallink";
+            return `
+              <tr class="${isLocal ? 'bg-emerald-950/20 font-bold' : 'hover:bg-slate-900/40'} transition-colors">
+                <td class="py-2.5 px-3.5 flex items-center gap-2">
+                  <div class="w-5 h-5 rounded-lg ${p.logoBg} flex items-center justify-center text-[10px] flex-shrink-0">
+                    <i class="${p.logoIcon}"></i>
+                  </div>
+                  <span class="${isLocal ? 'text-emerald-300 font-black' : 'text-slate-200'}">${p.platformName}</span>
+                </td>
+                <td class="py-2.5 px-3 text-right">₹ ${p.itemsSubtotal}</td>
+                <td class="py-2.5 px-3 text-right ${p.handlingFee > 0 ? 'text-amber-400' : 'text-slate-500'}">₹ ${p.handlingFee}</td>
+                <td class="py-2.5 px-3 text-right ${p.surgeFee > 0 || p.platformFee > 0 ? 'text-rose-400' : 'text-slate-500'}">₹ ${p.surgeFee + p.platformFee + p.smallCartFee}</td>
+                <td class="py-2.5 px-3 text-right">${p.deliveryFee === 0 ? '<span class="text-emerald-400 font-bold">₹0</span>' : `₹ ${p.deliveryFee}`}</td>
+                <td class="py-2.5 px-3.5 text-right font-black ${isLocal ? 'text-emerald-400 text-sm' : 'text-white'}">₹ ${p.grandTotal}</td>
+                <td class="py-2.5 px-3.5 text-center text-[11px] text-slate-400">${p.deliverySpeed}</td>
+              </tr>
+            `;
+          }).join("");
+        }
+
+        // Update Bottom Button
+        const btnText = document.getElementById("btnOrderBucketBottomText");
+        if (btnText && localPlatform) {
+          btnText.textContent = `1-Click Order AI Bucket via LocalLink (₹ ${localPlatform.grandTotal})`;
+        }
+
+      } catch (err) {
+        console.error("AI Bucket calculation error:", err);
+      }
+    }
+
+    function addProductToAIBucket(productId, productName, price) {
+      const existing = currentAIBucketItems.find(it => it.name.toLowerCase() === productName.toLowerCase());
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        currentAIBucketItems.push({
+          name: productName,
+          qty: 1,
+          unit: "unit",
+          price: Number(price)
+        });
+      }
+      showToast(`Added "${productName}" to AI Bucket! Click "AI Bucket" to compare prices across Zepto, Blinkit & Swiggy.`, "success");
+      const page = document.getElementById("page-ai-bucket");
+      if (page && !page.classList.contains("hidden")) {
+        calculateAndRenderAIBucket();
+      }
+    }
+
+    function removeAIBucketItem(index) {
+      if (index >= 0 && index < currentAIBucketItems.length) {
+        currentAIBucketItems.splice(index, 1);
+        calculateAndRenderAIBucket();
+      }
+    }
+
+    function clearAIBucketItems() {
+      currentAIBucketItems = [];
+      calculateAndRenderAIBucket();
+    }
+
+    async function handleAIBucketCustomInput() {
+      const input = document.getElementById("aiBucketCustomInput");
+      if (!input) return;
+      const val = input.value.trim();
+      if (!val) return;
+
+      try {
+        showToast("AI analyzing items and fetching live market rates...", "info");
+        const res = await apiRequest("/api/ai-bucket/quick-parse", {
+          method: "POST",
+          body: JSON.stringify({
+            text: val,
+            options: { fulfillmentType: currentAIBucketFulfillment }
+          })
+        });
+
+        if (res && res.success && res.data && Array.isArray(res.data.items)) {
+          currentAIBucketItems = res.data.items.map(it => ({
+            name: it.name,
+            qty: it.qty,
+            unit: it.unit,
+            price: it.basePrice
+          }));
+          input.value = "";
+          await calculateAndRenderAIBucket();
+          showToast("AI Bucket updated successfully!", "success");
+        }
+      } catch (e) {
+        showToast("Could not parse items. Please try again.", "error");
+      }
+    }
+
+    function startAIBucketVoiceInput() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        showToast("Voice recognition not supported in this browser. Please type items.", "info");
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      const langMap = { en: "en-IN", bn: "bn-IN", hi: "hi-IN" };
+      recognition.lang = langMap[currentAppLanguage] || "en-IN";
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      const btn = document.getElementById("btnAIBucketVoice");
+      if (btn) btn.classList.add("bg-rose-600", "animate-ping");
+
+      showToast("Listening... Speak your items (e.g. 2kg aloo, 1L tel, paneer)...", "info");
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        const input = document.getElementById("aiBucketCustomInput");
+        if (input) input.value = transcript;
+        showToast(`Heard: "${transcript}"`, "success");
+        handleAIBucketCustomInput();
+      };
+
+      recognition.onerror = () => {
+        showToast("Could not recognize voice. Please type items instead.", "error");
+      };
+
+      recognition.onend = () => {
+        if (btn) btn.classList.remove("bg-rose-600", "animate-ping");
+      };
+
+      recognition.start();
+    }
+
+    async function orderAIBucketWithLocalLink() {
+      if (!currentAIBucketItems || currentAIBucketItems.length === 0) {
+        showToast("Your AI Bucket is empty! Add items first.", "error");
+        return;
+      }
+
+      for (const item of currentAIBucketItems) {
+        const matched = currentProducts.find(p => p.name.toLowerCase().includes(item.name.toLowerCase())) || {
+          id: Date.now() + Math.floor(Math.random() * 1000),
+          name: item.name,
+          price: item.price || 50,
+          description: "Fresh local market selection",
+          imageUrl: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=100",
+          shopName: "Verified Local Stalls Hub"
+        };
+
+        const existingCartItem = cart.find(c => c.productId === matched.id || c.name === matched.name);
+        if (existingCartItem) {
+          existingCartItem.quantity += item.qty;
+        } else {
+          cart.push({
+            productId: matched.id,
+            name: matched.name,
+            price: Number(matched.price),
+            quantity: Math.max(1, Math.round(item.qty)),
+            imageUrl: matched.imageUrl,
+            shopName: matched.shopName || "Neighborhood Market Hub"
+          });
+        }
+      }
+
+      saveCart();
+      updateCartCount();
+      switchCustomerPage('cart');
+      showToast("🎉 AI Bucket transferred to your cart! You are saving up to 24% by buying local.", "success");
     }
 
     // ==============================================
@@ -5058,7 +5633,12 @@
         story_default_caption: "Fresh live Rohu & Katla fish arrived from Canning at 6 AM! Limited morning stock.",
         story_default_time: "Today 6:15 AM",
         story_live_badge: "LIVE",
-        story_default_price: "₹240 - ₹320 / kg"
+        story_default_price: "₹240 - ₹320 / kg",
+        nav_ai_bucket: "AI Bucket",
+        mob_nav_ai_bucket: "AI Bucket",
+        ai_bucket_header_title: "AI Smart Bucket & Price Radar",
+        ai_bucket_header_desc: "Live cross-platform price intelligence comparing neighborhood kirana & mandi rates against 8 quick-commerce and e-commerce dark stores with transparent breakdown of hidden handling, platform, surge & delivery fees.",
+        ai_bucket_order_btn: "Order via LocalLink"
       },
       bn: {
         app_brand_sub: "লোকাল মার্কেট অ্যাপ",
@@ -5255,7 +5835,12 @@
         story_default_caption: "সকাল ৬টায় ক্যানিং থেকে এলো তাজা জ্যান্ত রুই ও কাতলা মাছ! সীমিত স্টক।",
         story_default_time: "আজ সকাল ৬:১৫",
         story_live_badge: "লাইভ",
-        story_default_price: "₹২৪০ - ₹৩২০ / কেজি"
+        story_default_price: "₹২৪০ - ₹৩২০ / কেজি",
+        nav_ai_bucket: "এআই বাকেট",
+        mob_nav_ai_bucket: "এআই বাকেট",
+        ai_bucket_header_title: "এআই স্মার্ট বাকেট ও দর তুলনা",
+        ai_bucket_header_desc: "জেপ্টো, ব্লিনকিট, সুইগি, জিওমার্ট, অ্যামাজন ও অন্যান্য প্ল্যাটফর্মের সাথে পাড়ার দোকান ও মণ্ডির আসল দরের তুলনা — লুকানো চার্জ ছাড়াই সেরা সঞ্চয়।",
+        ai_bucket_order_btn: "লোকাল-লিংকে অর্ডার করুন"
       },
       hi: {
         app_brand_sub: "लोकल मार्केट ऐप",
@@ -5452,7 +6037,12 @@
         story_default_caption: "सुबह 6 बजे कैनिंग से ताज़ा रोहू और कतला मछली आई! सीमित स्टॉक।",
         story_default_time: "आज सुबह 6:15",
         story_live_badge: "लाइव",
-        story_default_price: "₹240 - ₹320 / किलो"
+        story_default_price: "₹240 - ₹320 / किलो",
+        nav_ai_bucket: "एआई बास्केट",
+        mob_nav_ai_bucket: "एआई बास्केट",
+        ai_bucket_header_title: "एआई स्मार्ट बास्केट व रेट तुलना",
+        ai_bucket_header_desc: "ज़ेप्टो, ब्लिंकिट, स्विगी, जियोमार्ट, अमेज़न और अन्य प्लेटफॉर्म्स से मोहल्ले की किराना और मंडी के दामों की लाइव तुलना — बिना छुपे चार्ज के भारी बचत।",
+        ai_bucket_order_btn: "लोकल-लिंक से ऑर्डर करें"
       }
     };
 

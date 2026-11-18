@@ -55,6 +55,7 @@ const ttsRoutes = require("./routes/ttsRoutes");
 const sttRoutes = require("./routes/sttRoutes");
 const unifiedAuthRoutes = require("./routes/unifiedAuthRoutes");
 const wholesalerRoutes = require("./routes/wholesalerRoutes");
+const aiBucketRoutes = require("./routes/aiBucketRoutes");
 
 const { errorHandler } = require("./middleware/errorMiddleware");
 
@@ -255,6 +256,8 @@ app.use("/api/seller/reports", sellerReportRoutes);
 // Customer & Rider Endpoints
 // ===============================
 app.use("/api/customer", customerRoutes);
+app.use("/api/ai-bucket", aiBucketRoutes);
+app.use("/api/customer/ai-bucket", aiBucketRoutes);
 app.use("/api/rider", riderRoutes);
 app.use("/api/tts", ttsRoutes);
 app.use("/api/stt", sttRoutes);
