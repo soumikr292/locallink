@@ -191,6 +191,19 @@ async function getStoresMap(req, res, next) {
   }
 }
 
+async function getStoreInventory(req, res, next) {
+  try {
+    const { id } = req.params;
+    const result = await customerService.getStoreInventory(id);
+    return res.status(200).json({
+      success: true,
+      data: result
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   loginCustomer,
   registerCustomer,
@@ -205,5 +218,6 @@ module.exports = {
   addReview,
   parsePaperList,
   getBazaarStories,
-  getStoresMap
+  getStoresMap,
+  getStoreInventory
 };

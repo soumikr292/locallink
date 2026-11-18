@@ -13,7 +13,8 @@ const {
   addReview,
   parsePaperList,
   getBazaarStories,
-  getStoresMap
+  getStoresMap,
+  getStoreInventory
 } = require("../controllers/customerController");
 const { authenticateToken, requireCustomer } = require("../middleware/authMiddleware");
 
@@ -23,10 +24,11 @@ const router = express.Router();
 router.post("/auth/login", loginCustomer);
 router.post("/auth/register", registerCustomer);
 
-// Public Marketplace Browsing, Price Compare, AI Bargain, Paper List & Live Stories
+// Public Marketplace Browsing, Price Compare, AI Bargain, Paper List, Stores Map & Store Inventory
 router.get("/products", listProducts);
 router.get("/compare", comparePrices);
 router.get("/stores-map", getStoresMap);
+router.get("/stores/:id", getStoreInventory);
 router.post("/bargain", bargainChat);
 router.post("/parse-list", parsePaperList);
 router.get("/bazaar-stories", getBazaarStories);

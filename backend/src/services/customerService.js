@@ -1816,6 +1816,338 @@ async function getNearbyStoresMap(customerLocality = "Rajpur") {
   }
 }
 
+// 11. Store & Wholesaler Detail with Complete Owner Information & Store-Specific Inventory
+async function getStoreInventory(identifier) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+
+    let seller = null;
+    let sellerId = null;
+
+    const numId = parseInt(identifier, 10);
+    const isNumeric = !isNaN(numId) && String(numId) === String(identifier).trim();
+
+    if (isNumeric) {
+      const rows = await conn.query(`
+        SELECT sp.*, u.name as owner_name, u.phone as owner_phone, u.email as owner_email, u.role as user_role
+        FROM seller_profiles sp
+        LEFT JOIN users u ON sp.seller_id = u.user_id
+        WHERE sp.seller_id = ?
+        LIMIT 1
+      `, [numId]);
+      if (rows && rows.length > 0) {
+        seller = rows[0];
+        sellerId = Number(seller.seller_id);
+      }
+    }
+
+    if (!seller) {
+      const cleanIdent = String(identifier || "").trim().toLowerCase();
+      const rows = await conn.query(`
+        SELECT sp.*, u.name as owner_name, u.phone as owner_phone, u.email as owner_email, u.role as user_role
+        FROM seller_profiles sp
+        LEFT JOIN users u ON sp.seller_id = u.user_id
+        WHERE LOWER(sp.shop_name) LIKE ? OR LOWER(sp.shop_slug) LIKE ?
+        LIMIT 1
+      `, [`%${cleanIdent}%`, `%${cleanIdent}%`]);
+      if (rows && rows.length > 0) {
+        seller = rows[0];
+        sellerId = Number(seller.seller_id);
+      }
+    }
+
+    const knownStoresMeta = {
+      3: {
+        id: "hub-ret-1",
+        sellerId: 3,
+        ownerName: "Ratan Ghosh",
+        roleTitle: "Proprietor & Master Kirana Merchant",
+        phone: "+91 98765 43210",
+        whatsapp: "+919876543210",
+        gstin: "19AABCG1234F1Z5",
+        license: "FSSAI-12822003000841",
+        experienceYears: 18,
+        rating: 4.8,
+        reviewsCount: 142,
+        timing: "6:00 AM - 9:30 PM",
+        badge: "Verified Retail Stall",
+        bio: "Serving Rajpur Sonarpur main bazaar since 2006. Specializes in morning farm fresh local vegetables, cold-pressed yellow mustard oil, chakki atta and daily kirana ration items directly sourced from local farmers.",
+        avatar: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=80",
+        banner: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200&auto=format&fit=crop&q=80",
+        lat: 22.4412,
+        lng: 88.3982,
+        hubName: "Rajpur Sonarpur Main Bazaar, Stall #14",
+        city: "Rajpur Sonarpur",
+        pincode: "700149",
+        category: "Fresh Vegetables, Spices & Daily Groceries",
+        type: "retail"
+      },
+      10: {
+        id: "hub-ret-2",
+        sellerId: 10,
+        ownerName: "Sanjib Mondal",
+        roleTitle: "Fish Merchant & Sundarban Dock Partner",
+        phone: "+91 98765 43213",
+        whatsapp: "+919876543213",
+        gstin: "19MNDL7812F2Z1",
+        license: "FSSAI-12821004000192",
+        experienceYears: 14,
+        rating: 4.9,
+        reviewsCount: 218,
+        timing: "5:30 AM - 1:00 PM",
+        badge: "Fish Mandi Partner",
+        bio: "Direct dockside collection of sweetwater live Katla, Rohu, Desi Pabda, and Sundarban Golda Prawns brought to Sonarpur fish market on fresh crushed ice by 5:30 AM every morning.",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80",
+        banner: "https://images.unsplash.com/photo-1534483509719-3feaee7c30da?w=1200&auto=format&fit=crop&q=80",
+        lat: 22.4438,
+        lng: 88.4065,
+        hubName: "Sonarpur Station Daily Fish Market, Stall #07",
+        city: "Sonarpur",
+        pincode: "700150",
+        category: "Live Fish & Country Seafood",
+        type: "retail"
+      },
+      37: {
+        id: "hub-ret-3",
+        sellerId: 37,
+        ownerName: "Subrata Ghosh",
+        roleTitle: "Master Confectioner & Dairy Owner",
+        phone: "+91 99533 16700",
+        whatsapp: "+919953316700",
+        gstin: "19GHSH9021K1Z8",
+        license: "FSSAI-12823002000572",
+        experienceYears: 22,
+        rating: 4.7,
+        reviewsCount: 96,
+        timing: "6:30 AM - 10:00 PM",
+        badge: "Dairy & Confectionery",
+        bio: "Specializing in authentic Bengal Nolen Gur Sandesh, freshly baked earthen pot Mishti Doi, pure cow milk, and soft Malai Paneer prepared daily with zero artificial preservatives.",
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80",
+        banner: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=1200&auto=format&fit=crop&q=80",
+        lat: 22.4632,
+        lng: 88.3882,
+        hubName: "12 Mahamayatala Main Road, Garia",
+        city: "Garia",
+        pincode: "700084",
+        category: "Pure Milk, Sweets, Curd & Bakery",
+        type: "retail"
+      },
+      56: {
+        id: "hub-ws-1",
+        sellerId: 56,
+        ownerName: "Bikash Agarwal & Sons",
+        roleTitle: "APMC Licensed Mandi Wholesaler & Stockist",
+        phone: "+91 73195 78723",
+        whatsapp: "+917319578723",
+        gstin: "19AAACL7891B1Z2",
+        license: "APMC-WB-2024-9842",
+        experienceYears: 28,
+        rating: 4.9,
+        reviewsCount: 340,
+        timing: "4:00 AM - 6:00 PM",
+        badge: "APMC Licensed Mandi Hub",
+        bio: "Primary agricultural commodity distributor operating across South 24 Parganas. Supplying high-turnover Minikit rice sacks, Nashik red onion lots, Jyoti potatoes and edible oils to regional Kiranas and direct bulk households.",
+        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80",
+        banner: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1200&auto=format&fit=crop&q=80",
+        lat: 22.4385,
+        lng: 88.4118,
+        hubName: "Mandi Gate #2, Sonarpur Wholesale Yard",
+        city: "Sonarpur",
+        pincode: "700150",
+        category: "B2B Mandi Grains, Potato Sacks & Oil Tins",
+        type: "wholesaler"
+      },
+      57: {
+        id: "hub-ret-57",
+        sellerId: 57,
+        ownerName: "Tapan Kumar Das",
+        roleTitle: "Neighborhood Stall Proprietor",
+        phone: "+91 98765 43219",
+        whatsapp: "+919876543219",
+        gstin: "19DAS9812E1Z3",
+        license: "FSSAI-12822005001190",
+        experienceYears: 8,
+        rating: 4.6,
+        reviewsCount: 54,
+        timing: "7:00 AM - 9:00 PM",
+        badge: "Neighborhood Bazaar",
+        bio: "Handpicked daily fresh produce, whole spices, pulses and essentials at fair bazaar prices with prompt stall pickup and neighborhood doorstep drop.",
+        avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&auto=format&fit=crop&q=80",
+        banner: "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=1200&auto=format&fit=crop&q=80",
+        lat: 22.4422,
+        lng: 88.4030,
+        hubName: "Sonarpur Daily Bazaar",
+        city: "Sonarpur",
+        pincode: "700150",
+        category: "Daily Essentials & Spices",
+        type: "retail"
+      }
+    };
+
+    const hubMap = {
+      "hub-ws-1": 56,
+      "hub-ws-2": 101,
+      "hub-ws-3": 102,
+      "hub-ret-1": 3,
+      "hub-ret-2": 10,
+      "hub-ret-3": 37,
+      "hub-ret-4": 103,
+      "hub-ret-5": 104
+    };
+
+    let targetKey = sellerId || hubMap[identifier] || identifier;
+    let meta = knownStoresMeta[targetKey] || {};
+
+    if (!seller && hubMap[identifier]) {
+      const mappedSellerId = hubMap[identifier];
+      if (knownStoresMeta[mappedSellerId]) {
+        meta = knownStoresMeta[mappedSellerId];
+        sellerId = mappedSellerId;
+      }
+    }
+
+    const isWholesaler = (seller && (seller.user_role === 'wholesaler' || (seller.business_category || '').toLowerCase().includes('wholesale'))) ||
+                         (meta.type === 'wholesaler') ||
+                         String(identifier).includes('ws') ||
+                         String(seller ? seller.shop_name : '').toLowerCase().includes('mandi') ||
+                         String(seller ? seller.shop_name : '').toLowerCase().includes('wholesale');
+
+    const shopName = seller ? seller.shop_name : (meta.shopName || meta.hubName || "LocalLink Market Stall");
+    const ownerName = meta.ownerName || (seller ? seller.owner_name : "Store Proprietor");
+    const ownerPhone = meta.phone || (seller ? (seller.business_phone || seller.owner_phone) : "+91 98765 43210");
+    const shopAddress = seller ? seller.shop_address : (meta.hubName || meta.address || "Sonarpur Bazaar");
+    const city = seller ? seller.city : (meta.city || "Sonarpur");
+    const pincode = seller ? seller.pincode : (meta.pincode || "700150");
+    const category = seller ? seller.business_category : (meta.category || (isWholesaler ? "B2B Agricultural Mandi" : "Daily Groceries"));
+
+    let rawProducts = [];
+    if (sellerId) {
+      try {
+        rawProducts = await conn.query(`
+          SELECT 
+            p.product_id,
+            p.seller_id,
+            p.name,
+            p.slug,
+            p.description,
+            p.sku,
+            p.price,
+            p.discount_price,
+            p.stock_quantity,
+            p.brand,
+            p.category_id,
+            p.image_url,
+            p.status,
+            COALESCE(c.name, 'General') as category_name
+          FROM products p
+          LEFT JOIN categories c ON p.category_id = c.category_id
+          WHERE p.seller_id = ? AND p.status = 'active'
+          ORDER BY p.product_id ASC
+        `, [sellerId]);
+      } catch (err) {
+        console.warn("Could not query store products:", err.message);
+      }
+    }
+
+    let rawLots = [];
+    if (isWholesaler && sellerId) {
+      try {
+        rawLots = await conn.query(`
+          SELECT *
+          FROM wholesale_lots
+          WHERE wholesaler_id = ? AND status = 'active'
+          ORDER BY lot_id ASC
+        `, [sellerId]);
+      } catch (err) {
+        console.warn("Could not query wholesale lots:", err.message);
+      }
+    }
+
+    const products = rawProducts.map(p => ({
+      productId: Number(p.product_id),
+      sellerId: Number(p.seller_id),
+      name: p.name,
+      slug: p.slug,
+      description: p.description,
+      sku: p.sku,
+      price: parseFloat(p.price || 0),
+      discountPrice: p.discount_price ? parseFloat(p.discount_price) : null,
+      stockQuantity: Number(p.stock_quantity || 0),
+      brand: p.brand || (seller ? seller.shop_name : "Fresh Local"),
+      category: p.category_name,
+      imageUrl: p.image_url || "https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80",
+      status: p.status
+    }));
+
+    const lots = rawLots.map(l => ({
+      lotId: Number(l.lot_id),
+      wholesalerId: Number(l.wholesaler_id),
+      commodityName: l.commodity_name,
+      variety: l.variety,
+      category: l.category,
+      grade: l.grade,
+      totalStockQtl: parseFloat(l.total_stock_qtl || 0),
+      bagsCount: Number(l.bags_count || 0),
+      bagWeightKg: parseFloat(l.bag_weight_kg || 50),
+      moqBags: Number(l.moq_bags || 1),
+      tier1Qty: Number(l.tier1_qty || 1),
+      tier1Rate: parseFloat(l.tier1_rate || 0),
+      tier2Qty: Number(l.tier2_qty || 0),
+      tier2Rate: parseFloat(l.tier2_rate || 0),
+      tier3Qty: Number(l.tier3_qty || 0),
+      tier3Rate: parseFloat(l.tier3_rate || 0),
+      godownBay: l.godown_bay,
+      harvestOrigin: l.harvest_origin,
+      arrivalDate: l.arrival_date,
+      imageUrl: l.image_url,
+      status: l.status
+    }));
+
+    return {
+      store: {
+        id: meta.id || `seller-${sellerId || identifier}`,
+        sellerId: sellerId || Number(identifier) || null,
+        shopName: shopName,
+        type: isWholesaler ? "wholesaler" : "retail",
+        category: category,
+        badge: meta.badge || (isWholesaler ? "APMC Licensed Mandi Hub" : "Verified Retail Stall"),
+        address: shopAddress,
+        city: city,
+        pincode: pincode,
+        phone: ownerPhone,
+        lat: meta.lat || 22.4412,
+        lng: meta.lng || 88.3982,
+        rating: meta.rating || 4.8,
+        reviewsCount: meta.reviewsCount || 120,
+        timing: meta.timing || "6:00 AM - 9:00 PM",
+        googleMapsUrl: `https://www.google.com/maps/dir/?api=1&destination=${meta.lat || 22.4412},${meta.lng || 88.3982}`,
+        owner: {
+          name: ownerName,
+          role: meta.roleTitle || (isWholesaler ? "APMC Licensed Mandi Wholesaler & Stockist" : "Proprietor & Master Kirana Merchant"),
+          phone: ownerPhone,
+          whatsapp: meta.whatsapp || ownerPhone.replace(/[^\d+]/g, ""),
+          gstin: (seller && seller.gstin) || meta.gstin || "19AABCG1234F1Z5",
+          license: (seller && seller.mandi_license) || meta.license || (isWholesaler ? "APMC-WB-2024-9842" : "FSSAI-12822003000841"),
+          experienceYears: meta.experienceYears || 15,
+          bio: meta.bio || (seller ? seller.shop_description : "Trusted neighborhood market partner providing fresh produce and commodities."),
+          avatar: meta.avatar || "https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=80",
+          banner: (seller && seller.shop_banner) || meta.banner || "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200&auto=format&fit=crop&q=80"
+        }
+      },
+      products,
+      lots,
+      summary: {
+        totalProducts: products.length,
+        totalLots: lots.length,
+        isWholesaler: isWholesaler
+      }
+    };
+  } finally {
+    if (conn) conn.release();
+  }
+}
+
 module.exports = {
   authenticateCustomer,
   registerCustomer,
@@ -1830,5 +2162,6 @@ module.exports = {
   submitProductReview,
   parsePaperList,
   getBazaarStories,
-  getNearbyStoresMap
+  getNearbyStoresMap,
+  getStoreInventory
 };

@@ -1124,7 +1124,231 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- 🏪 6. DEDICATED SELLER / WHOLESALER INVENTORY & OWNER PROFILE PAGE -->
+    <!-- ============================================== -->
+    <div id="page-store-inventory" class="customer-page hidden space-y-6 max-w-5xl mx-auto">
+      
+      <!-- Top Action & Navigation Bar -->
+      <div class="flex items-center justify-between gap-3 bg-slate-900/90 border border-slate-800 rounded-2xl p-3 backdrop-blur-md">
+        <button type="button" onclick="navigateBackFromStoreInventory()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs flex items-center gap-2 transition-all shadow-sm active:scale-95">
+          <i class="fa-solid fa-arrow-left text-emerald-400"></i>
+          <span id="storeInventoryBackBtnText">Back to Map</span>
+        </button>
+
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="openMarketMapModal(currentStoreInventoryData ? currentStoreInventoryData.store.shopName : null)" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-400 border border-slate-700 font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm">
+            <i class="fa-solid fa-map-location-dot"></i>
+            <span class="hidden sm:inline">View on Map</span>
+          </button>
+          <button type="button" onclick="shareStoreInventory()" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 flex items-center justify-center text-xs transition-all shadow-sm" title="Share Store">
+            <i class="fa-solid fa-share-nodes"></i>
+          </button>
+        </div>
       </div>
+
+      <!-- Store & Owner Hero Card -->
+      <div class="relative bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+        <!-- Banner Image with Gradient -->
+        <div class="h-32 sm:h-44 w-full relative bg-slate-950 overflow-hidden">
+          <img id="storeHeroBanner" src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200&auto=format&fit=crop&q=80" alt="Store Banner" class="w-full h-full object-cover opacity-60">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
+          
+          <!-- Type Badge & Live Status inside Banner -->
+          <div class="absolute top-3 left-3 sm:top-4 sm:left-4 flex items-center gap-2 flex-wrap">
+            <span id="storeHeroTypeBadge" class="px-3 py-1 rounded-full text-xs font-black bg-emerald-500 text-slate-950 shadow-lg flex items-center gap-1.5">
+              <i class="fa-solid fa-store"></i> Verified Retail Stall
+            </span>
+            <span id="storeHeroStatusBadge" class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-950/80 backdrop-blur-md text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5 shadow">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Open Now
+            </span>
+          </div>
+
+          <!-- Distance & Directions Button on Banner Top Right -->
+          <div class="absolute top-3 right-3 sm:top-4 sm:right-4">
+            <a id="storeHeroDirectionsLink" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-slate-950/80 backdrop-blur-md border border-slate-700 text-sky-400 hover:text-white text-xs font-bold flex items-center gap-1.5 shadow transition-all">
+              <i class="fa-solid fa-diamond-turn-right"></i>
+              <span id="storeHeroDistanceText">0.6 km</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Store Profile Content & Owner Information Block -->
+        <div class="p-4 sm:p-6 -mt-12 sm:-mt-14 relative z-10 space-y-5">
+          <!-- Header Info: Avatar, Shop Name, Category -->
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div class="flex items-end gap-3 sm:gap-4">
+              <!-- Store Avatar / Logo -->
+              <div class="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-800 border-4 border-slate-900 overflow-hidden shadow-2xl flex-shrink-0">
+                <img id="storeHeroAvatar" src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=80" alt="Store Owner" class="w-full h-full object-cover">
+                <div class="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center text-[10px] font-bold border-2 border-slate-900 shadow">
+                  <i class="fa-solid fa-check"></i>
+                </div>
+              </div>
+
+              <!-- Shop Name & Basic Ratings -->
+              <div class="min-w-0 pb-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h2 id="storeHeroShopName" class="text-lg sm:text-2xl font-black text-white tracking-tight leading-tight">
+                    Ratan Fresh & Grocery (Stall #14)
+                  </h2>
+                </div>
+                <p id="storeHeroCategory" class="text-xs text-amber-400 font-bold mt-0.5">
+                  Fresh Vegetables, Spices & Daily Groceries
+                </p>
+                <div class="flex items-center gap-2 text-xs text-slate-400 mt-1 flex-wrap">
+                  <span id="storeHeroRating" class="text-amber-400 font-black flex items-center gap-1">
+                    <i class="fa-solid fa-star text-xs"></i> 4.8
+                  </span>
+                  <span>•</span>
+                  <span id="storeHeroReviewsCount" class="text-slate-400 font-bold">142 reviews</span>
+                  <span>•</span>
+                  <span id="storeHeroTimings" class="text-slate-300"><i class="fa-regular fa-clock text-emerald-400"></i> 6:00 AM - 9:30 PM</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Direct Contact CTAs (Call & WhatsApp) -->
+            <div class="flex items-center gap-2 flex-wrap">
+              <a id="storeOwnerCallBtn" href="tel:+919876543210" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 active:scale-95 transition-all">
+                <i class="fa-solid fa-phone"></i>
+                <span>Call Stall</span>
+              </a>
+              <a id="storeOwnerWhatsAppBtn" href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 font-bold text-xs flex items-center justify-center gap-2 shadow active:scale-95 transition-all">
+                <i class="fa-brands fa-whatsapp text-sm"></i>
+                <span>WhatsApp</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Store Stall Address Strip -->
+          <div class="p-3 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-start gap-2.5 text-xs">
+            <i class="fa-solid fa-location-dot text-rose-400 mt-0.5 flex-shrink-0 text-sm"></i>
+            <div class="flex-1 min-w-0">
+              <p id="storeHeroAddress" class="text-slate-200 font-semibold leading-relaxed">
+                Stall #14, Rajpur Sonarpur Main Bazaar, South 24 Parganas, PIN: 700149
+              </p>
+              <p class="text-[11px] text-slate-500 mt-0.5">
+                Stall pickup available • Hyperlocal 15-minute doorstep delivery powered by LocalLink Riders
+              </p>
+            </div>
+          </div>
+
+          <!-- ==================================================== -->
+          <!-- 👤 STORE OWNER PROFILE & CREDENTIALS CARD            -->
+          <!-- ==================================================== -->
+          <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-amber-500/20 space-y-3.5 shadow-xl">
+            <div class="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs">
+                  <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <h4 class="font-black text-white text-xs sm:text-sm tracking-wide uppercase">
+                  Store Owner Information & Credentials
+                </h4>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                <i class="fa-solid fa-shield-halved text-[9px]"></i> Verified Merchant
+              </span>
+            </div>
+
+            <!-- Owner Bio & Credentials Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+              <!-- Left: Owner Identity & Story -->
+              <div class="md:col-span-2 space-y-2">
+                <div class="flex items-center gap-2.5">
+                  <div>
+                    <h5 id="storeOwnerName" class="text-sm font-black text-white">Ratan Ghosh</h5>
+                    <p id="storeOwnerRole" class="text-[11px] text-amber-400 font-bold">Proprietor & Master Kirana Merchant</p>
+                  </div>
+                  <span id="storeOwnerExpBadge" class="ml-auto px-2 py-0.5 rounded-lg text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                    18+ Yrs in Bazaar
+                  </span>
+                </div>
+                <p id="storeOwnerBio" class="text-xs text-slate-300 leading-relaxed italic bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/60">
+                  "Serving Rajpur Sonarpur market since 2006 with fresh local vegetables, cold-pressed mustard oil and daily kirana ration items directly sourced from morning farm auctions."
+                </p>
+              </div>
+
+              <!-- Right: Formal Mandi/Govt Licenses & Tax ID -->
+              <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-2 font-mono text-[11px]">
+                <div>
+                  <span class="text-[10px] uppercase text-slate-500 block font-sans font-bold">GSTIN Number</span>
+                  <span id="storeOwnerGSTIN" class="text-emerald-400 font-bold tracking-wider">19AABCG1234F1Z5</span>
+                </div>
+                <div>
+                  <span class="text-[10px] uppercase text-slate-500 block font-sans font-bold">Market / FSSAI License</span>
+                  <span id="storeOwnerLicense" class="text-amber-300 font-bold tracking-wider">FSSAI-12822003000841</span>
+                </div>
+                <div class="pt-1 border-t border-slate-800 flex items-center justify-between text-[10px] text-slate-400 font-sans">
+                  <span>Merchant Trust Score</span>
+                  <span class="text-emerald-400 font-bold">99.2% Positive</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- 📦 STORE-SPECIFIC INVENTORY & PRODUCTS SECTION -->
+      <!-- ============================================== -->
+      <div class="space-y-4">
+        <!-- Section Header, In-Store Search & Category Filters -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-xl">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div>
+              <h3 class="font-black text-white text-base flex items-center gap-2">
+                <i id="storeInventorySectionIcon" class="fa-solid fa-basket-shopping text-emerald-400"></i>
+                <span id="storeInventorySectionTitle">Store Inventory & Live Products</span>
+                <span id="storeInventoryCountBadge" class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  11 Items
+                </span>
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">
+                Browse and buy directly from this store's verified live stock.
+              </p>
+            </div>
+
+            <!-- In-Store Search Bar -->
+            <div class="relative sm:w-64">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs pointer-events-none"></i>
+              <input type="text" id="storeInventorySearchInput" oninput="filterStoreInventoryItems(this.value)" placeholder="Search inside this store..." class="w-full bg-slate-950 border border-slate-800 text-white placeholder-slate-500 text-xs rounded-xl pl-8 pr-3 py-2 outline-none focus:border-emerald-500 transition-all">
+            </div>
+          </div>
+
+          <!-- Category Filter Chips -->
+          <div id="storeInventoryCategoryChips" class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Retail Products Grid Container -->
+        <div id="storeProductsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Wholesale Mandi Lots Grid Container (For Wholesalers) -->
+        <div id="storeWholesaleLotsContainer" class="hidden space-y-3">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Empty State Container -->
+        <div id="storeInventoryEmptyState" class="hidden p-12 text-center bg-slate-900 border border-slate-800 rounded-3xl space-y-3">
+          <div class="w-14 h-14 rounded-2xl bg-slate-800 text-slate-500 flex items-center justify-center mx-auto text-2xl">
+            <i class="fa-solid fa-box-open"></i>
+          </div>
+          <h4 class="font-bold text-white text-sm">No items found matching your search</h4>
+          <p class="text-xs text-slate-400 max-w-sm mx-auto">Try typing another product name or reset category filter to see all store products.</p>
+          <button type="button" onclick="resetStoreInventoryFilters()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-bold border border-slate-700 transition-all">
+            Reset Filters
+          </button>
+        </div>
+      </div>
+
     </div>
 
   </main>
@@ -1212,8 +1436,8 @@
           </div>
           <!-- Action Buttons -->
           <div class="flex items-center gap-2 flex-shrink-0">
-            <button type="button" id="mapCardViewProductsBtn" onclick="viewStoreProductsFromMap()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow transition-all">
-              <i class="fa-solid fa-basket-shopping"></i> <span>View Products</span>
+            <button type="button" id="mapCardViewShopBtn" onclick="openStoreInventoryFromMap()" class="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-emerald-600/30 active:scale-95 transition-all">
+              <i id="mapCardViewShopIcon" class="fa-solid fa-store"></i> <span id="mapCardViewShopText">View Shop Inventory</span>
             </button>
             <a id="mapCardDirectionsLink" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-sky-400 hover:text-white font-bold rounded-xl text-xs flex items-center gap-1.5 border border-slate-700 shadow transition-all">
               <i class="fa-solid fa-diamond-turn-right text-sky-400"></i> <span>Directions</span>
@@ -5809,7 +6033,7 @@
         });
 
         const popupContent = `
-          <div class="p-2.5 text-xs space-y-1.5 min-w-[210px] bg-slate-900 rounded-xl text-white">
+          <div class="p-2.5 text-xs space-y-1.5 min-w-[220px] bg-slate-900 rounded-xl text-white">
             <div class="flex items-center justify-between gap-2">
               <span class="px-2 py-0.5 rounded text-[9px] font-bold ${isWholesaler ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'}">
                 ${store.badge || (isWholesaler ? 'Wholesale Mandi' : 'Verified Stall')}
@@ -5822,6 +6046,10 @@
               <span class="text-emerald-400 font-bold"><i class="fa-solid fa-route"></i> ${store.distanceKm || '0.8'} km</span>
               <span><i class="fa-solid fa-clock"></i> ${store.timing || 'Open'}</span>
             </div>
+            <button type="button" onclick="openStoreInventoryPage('${store.sellerId || store.id}', '${(store.shopName || '').replace(/'/g, "\\'")}')" class="w-full mt-2 py-1.5 px-2 bg-gradient-to-r ${isWholesaler ? 'from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950' : 'from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white'} rounded-lg font-black text-[11px] flex items-center justify-center gap-1.5 shadow active:scale-95 transition-all">
+              <i class="fa-solid ${isWholesaler ? 'fa-warehouse' : 'fa-store'}"></i>
+              <span>${isWholesaler ? 'View Wholesaler Mandi' : 'View Shop Inventory'}</span>
+            </button>
           </div>
         `;
 
@@ -5926,6 +6154,18 @@
       if (dirLink) {
         dirLink.href = store.googleMapsUrl || `https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`;
       }
+
+      const viewShopBtn = document.getElementById("mapCardViewShopBtn");
+      const viewShopText = document.getElementById("mapCardViewShopText");
+      const viewShopIcon = document.getElementById("mapCardViewShopIcon");
+      if (viewShopBtn && viewShopText && viewShopIcon) {
+        const isWh = store.type === 'wholesaler';
+        viewShopText.textContent = isWh ? 'View Wholesaler Mandi' : 'View Shop Inventory';
+        viewShopIcon.className = isWh ? 'fa-solid fa-warehouse' : 'fa-solid fa-store';
+        viewShopBtn.className = isWh
+          ? "px-3.5 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-amber-500/25 active:scale-95 transition-all"
+          : "px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-emerald-600/25 active:scale-95 transition-all";
+      }
     }
 
     function recenterMarketMap() {
@@ -5934,16 +6174,7 @@
     }
 
     function viewStoreProductsFromMap() {
-      if (!selectedMapStore) return;
-      closeMarketMapModal();
-      switchCustomerPage('home');
-
-      const searchInput = document.getElementById("marketSearchInput");
-      if (searchInput) {
-        searchInput.value = selectedMapStore.shopName;
-        handleMarketSearch(selectedMapStore.shopName);
-      }
-      showToast(`📍 ${selectedMapStore.shopName} এর পণ্যসমূহ দেখাচ্ছে`, "success");
+      openStoreInventoryFromMap();
     }
 
     function openSelectedFavoriteShopOnMap() {
@@ -5955,8 +6186,407 @@
     }
 
     // ==============================================
-    // 7. REVIEW & ADDRESS HELPERS
+    // 6C. STORE INVENTORY & STORE OWNER DETAIL PAGE
     // ==============================================
+    let currentStoreInventoryData = null;
+    let storeInventoryActiveCategory = 'all';
+    let storeInventoryOpenedFromMap = false;
+
+    async function openStoreInventoryPage(sellerIdOrName, fallbackShopName = '') {
+      const mapModal = document.getElementById("marketMapModal");
+      storeInventoryOpenedFromMap = mapModal && !mapModal.classList.contains("hidden");
+      closeMarketMapModal();
+      
+      const backText = document.getElementById("storeInventoryBackBtnText");
+      if (backText) backText.textContent = storeInventoryOpenedFromMap ? "Back to Map" : "Back to Marketplace";
+
+      switchCustomerPage('store-inventory');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      const grid = document.getElementById("storeProductsGrid");
+      if (grid) {
+        grid.innerHTML = `
+          <div class="col-span-2 md:col-span-3 lg:col-span-4 p-12 text-center text-slate-400 space-y-3">
+            <i class="fa-solid fa-spinner fa-spin text-3xl text-emerald-400"></i>
+            <p class="text-xs font-bold">Loading store inventory & owner profile...</p>
+          </div>
+        `;
+      }
+      const lotsContainer = document.getElementById("storeWholesaleLotsContainer");
+      if (lotsContainer) lotsContainer.classList.add("hidden");
+
+      try {
+        const res = await apiRequest(`/api/customer/stores/${encodeURIComponent(sellerIdOrName)}`);
+        if (res && res.success && res.data) {
+          currentStoreInventoryData = res.data;
+          renderStoreInventory(res.data);
+        } else {
+          throw new Error(res ? res.message : "Store inventory not found");
+        }
+      } catch (err) {
+        console.error("Error loading store inventory:", err);
+        showToast("Could not load store details: " + err.message, "error");
+        if (grid) {
+          grid.innerHTML = `
+            <div class="col-span-2 md:col-span-3 lg:col-span-4 p-8 text-center text-rose-400 space-y-2 bg-slate-900 border border-slate-800 rounded-2xl">
+              <i class="fa-solid fa-circle-exclamation text-2xl"></i>
+              <p class="text-xs font-bold">Failed to load inventory for ${fallbackShopName || 'this store'}.</p>
+              <button type="button" onclick="navigateBackFromStoreInventory()" class="px-3 py-1.5 rounded-xl bg-slate-800 text-white text-xs font-bold border border-slate-700">Go Back</button>
+            </div>
+          `;
+        }
+      }
+    }
+
+    function openStoreInventoryFromMap() {
+      if (!selectedMapStore) return;
+      openStoreInventoryPage(selectedMapStore.sellerId || selectedMapStore.id, selectedMapStore.shopName);
+    }
+
+    function navigateBackFromStoreInventory() {
+      if (storeInventoryOpenedFromMap) {
+        switchCustomerPage('home', true);
+        openMarketMapModal(currentStoreInventoryData ? currentStoreInventoryData.store.shopName : null);
+      } else {
+        if (!window.navigateCustomerBack()) {
+          switchCustomerPage('home', true);
+        }
+      }
+    }
+
+    function shareStoreInventory() {
+      if (!currentStoreInventoryData) return;
+      const s = currentStoreInventoryData.store;
+      const shareText = `Check out ${s.shopName} (Owner: ${s.owner.name}) on LocalLink! Hyperlocal store products & fresh mandi rates: ${window.location.origin}/customer.html#store-inventory`;
+      if (navigator.share) {
+        navigator.share({ title: s.shopName, text: shareText, url: window.location.href }).catch(() => {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareText);
+        showToast("📋 Store link copied to clipboard!", "success");
+      }
+    }
+
+    function renderStoreInventory(data) {
+      if (!data || !data.store) return;
+      const s = data.store;
+      const o = s.owner || {};
+      const isWh = s.type === 'wholesaler';
+
+      // 1. Hero Cover & Avatar
+      const bannerEl = document.getElementById("storeHeroBanner");
+      if (bannerEl) bannerEl.src = o.banner || s.shopBanner || "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200&auto=format&fit=crop&q=80";
+
+      const avatarEl = document.getElementById("storeHeroAvatar");
+      if (avatarEl) avatarEl.src = o.avatar || s.shopLogo || "https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=80";
+
+      // 2. Badges & Header
+      const typeBadge = document.getElementById("storeHeroTypeBadge");
+      if (typeBadge) {
+        typeBadge.innerHTML = `<i class="fa-solid ${isWh ? 'fa-warehouse' : 'fa-store'}"></i> ${s.badge || (isWh ? 'APMC Licensed Mandi Hub' : 'Verified Retail Stall')}`;
+        typeBadge.className = isWh
+          ? "px-3 py-1 rounded-full text-xs font-black bg-amber-400 text-slate-950 shadow-lg flex items-center gap-1.5"
+          : "px-3 py-1 rounded-full text-xs font-black bg-emerald-500 text-slate-950 shadow-lg flex items-center gap-1.5";
+      }
+
+      const shopNameEl = document.getElementById("storeHeroShopName");
+      if (shopNameEl) shopNameEl.textContent = s.shopName;
+
+      const catEl = document.getElementById("storeHeroCategory");
+      if (catEl) catEl.textContent = s.category;
+
+      const ratingEl = document.getElementById("storeHeroRating");
+      if (ratingEl) ratingEl.innerHTML = `<i class="fa-solid fa-star text-xs"></i> ${s.rating || '4.8'}`;
+
+      const revEl = document.getElementById("storeHeroReviewsCount");
+      if (revEl) revEl.textContent = `${s.reviewsCount || '120'} verified reviews`;
+
+      const timEl = document.getElementById("storeHeroTimings");
+      if (timEl) timEl.innerHTML = `<i class="fa-regular fa-clock text-emerald-400"></i> ${s.timing || '6:00 AM - 9:00 PM'}`;
+
+      const addrEl = document.getElementById("storeHeroAddress");
+      if (addrEl) addrEl.textContent = `${s.address}, ${s.city} (PIN: ${s.pincode})`;
+
+      const distEl = document.getElementById("storeHeroDistanceText");
+      if (distEl) distEl.textContent = s.distanceKm ? `${s.distanceKm} km` : '0.6 km';
+
+      const dirLink = document.getElementById("storeHeroDirectionsLink");
+      if (dirLink) dirLink.href = s.googleMapsUrl || `https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}`;
+
+      // 3. Direct Contact CTAs
+      const callBtn = document.getElementById("storeOwnerCallBtn");
+      if (callBtn) {
+        callBtn.href = `tel:${o.phone || s.phone || '+919876543210'}`;
+        const span = callBtn.querySelector("span");
+        if (span) span.textContent = isWh ? "Call Mandi Godown" : "Call Stall";
+      }
+
+      const waBtn = document.getElementById("storeOwnerWhatsAppBtn");
+      if (waBtn) {
+        const cleanPhone = (o.whatsapp || o.phone || s.phone || '').replace(/[^\d]/g, '');
+        waBtn.href = `https://wa.me/${cleanPhone.startsWith('91') ? cleanPhone : '91' + cleanPhone}?text=${encodeURIComponent(`Hello ${o.name}, I found your stall "${s.shopName}" on LocalLink. I would like to inquire about your products.`)}`;
+      }
+
+      // 4. Store Owner Profile Box
+      const ownerNameEl = document.getElementById("storeOwnerName");
+      if (ownerNameEl) ownerNameEl.textContent = o.name || 'Store Proprietor';
+
+      const ownerRoleEl = document.getElementById("storeOwnerRole");
+      if (ownerRoleEl) ownerRoleEl.textContent = o.role || (isWh ? 'APMC Licensed Mandi Wholesaler' : 'Proprietor & Master Kirana Merchant');
+
+      const ownerExpEl = document.getElementById("storeOwnerExpBadge");
+      if (ownerExpEl) ownerExpEl.textContent = `${o.experienceYears || 15}+ Yrs in Market`;
+
+      const ownerBioEl = document.getElementById("storeOwnerBio");
+      if (ownerBioEl) ownerBioEl.textContent = `"${o.bio || 'Serving local consumers with farm-fresh produce and guaranteed honest weights.'}"`;
+
+      const gstinEl = document.getElementById("storeOwnerGSTIN");
+      if (gstinEl) gstinEl.textContent = o.gstin || '19AABCG1234F1Z5';
+
+      const licEl = document.getElementById("storeOwnerLicense");
+      if (licEl) licEl.textContent = o.license || o.mandiLicense || (isWh ? 'APMC-WB-2024-9842' : 'FSSAI-12822003000841');
+
+      // 5. Section Titles & Badges
+      const secTitle = document.getElementById("storeInventorySectionTitle");
+      const secIcon = document.getElementById("storeInventorySectionIcon");
+      const countBadge = document.getElementById("storeInventoryCountBadge");
+      const totalItems = (data.products ? data.products.length : 0) + (data.lots ? data.lots.length : 0);
+
+      if (secTitle) secTitle.textContent = isWh ? "Wholesale Mandi Lots & Godown Commodities" : "Store Inventory & Live Products";
+      if (secIcon) secIcon.className = isWh ? "fa-solid fa-warehouse text-amber-400" : "fa-solid fa-basket-shopping text-emerald-400";
+      if (countBadge) countBadge.textContent = `${totalItems} Items`;
+
+      // 6. Build Category Chips
+      storeInventoryActiveCategory = 'all';
+      buildStoreCategoryChips(data.products || [], data.lots || []);
+
+      // 7. Render Items
+      renderStoreInventoryFilteredItems();
+    }
+
+    function buildStoreCategoryChips(products, lots) {
+      const container = document.getElementById("storeInventoryCategoryChips");
+      if (!container) return;
+
+      const categories = new Set();
+      (products || []).forEach(p => { if (p.category) categories.add(p.category); });
+      (lots || []).forEach(l => { if (l.category) categories.add(l.category); });
+
+      let html = `
+        <button type="button" onclick="filterStoreInventoryByCategory('all')" id="storeCatChip-all" class="px-3 py-1.5 rounded-xl font-bold bg-emerald-600 text-white shadow transition-all whitespace-nowrap">
+          All (${products.length + lots.length})
+        </button>
+      `;
+
+      categories.forEach(cat => {
+        html += `
+          <button type="button" onclick="filterStoreInventoryByCategory('${cat.replace(/'/g, "\\'")}')" id="storeCatChip-${cat.replace(/\s+/g, '-')}" class="px-3 py-1.5 rounded-xl font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all whitespace-nowrap">
+            ${cat}
+          </button>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function filterStoreInventoryByCategory(cat) {
+      storeInventoryActiveCategory = cat || 'all';
+
+      document.querySelectorAll('#storeInventoryCategoryChips > button').forEach(b => {
+        b.className = "px-3 py-1.5 rounded-xl font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all whitespace-nowrap";
+      });
+      const activeBtn = cat === 'all' 
+        ? document.getElementById('storeCatChip-all') 
+        : document.getElementById(`storeCatChip-${cat.replace(/\s+/g, '-')}`);
+      if (activeBtn) {
+        activeBtn.className = "px-3 py-1.5 rounded-xl font-bold bg-emerald-600 text-white shadow transition-all whitespace-nowrap";
+      }
+
+      renderStoreInventoryFilteredItems();
+    }
+
+    function filterStoreInventoryItems(query) {
+      renderStoreInventoryFilteredItems(query);
+    }
+
+    function resetStoreInventoryFilters() {
+      const input = document.getElementById("storeInventorySearchInput");
+      if (input) input.value = "";
+      filterStoreInventoryByCategory('all');
+    }
+
+    function renderStoreInventoryFilteredItems(searchQuery = '') {
+      if (!currentStoreInventoryData) return;
+      const q = (searchQuery || document.getElementById("storeInventorySearchInput")?.value || "").trim().toLowerCase();
+      const cat = storeInventoryActiveCategory;
+
+      const grid = document.getElementById("storeProductsGrid");
+      const lotsContainer = document.getElementById("storeWholesaleLotsContainer");
+      const emptyState = document.getElementById("storeInventoryEmptyState");
+
+      let filteredProds = currentStoreInventoryData.products || [];
+      if (cat !== 'all') {
+        filteredProds = filteredProds.filter(p => p.category === cat);
+      }
+      if (q) {
+        filteredProds = filteredProds.filter(p => 
+          (p.name || '').toLowerCase().includes(q) ||
+          (p.description || '').toLowerCase().includes(q) ||
+          (p.brand || '').toLowerCase().includes(q) ||
+          (p.category || '').toLowerCase().includes(q)
+        );
+      }
+
+      let filteredLots = currentStoreInventoryData.lots || [];
+      if (cat !== 'all') {
+        filteredLots = filteredLots.filter(l => l.category === cat);
+      }
+      if (q) {
+        filteredLots = filteredLots.filter(l => 
+          (l.commodityName || '').toLowerCase().includes(q) ||
+          (l.variety || '').toLowerCase().includes(q) ||
+          (l.grade || '').toLowerCase().includes(q) ||
+          (l.harvestOrigin || '').toLowerCase().includes(q) ||
+          (l.godownBay || '').toLowerCase().includes(q)
+        );
+      }
+
+      const totalVisible = filteredProds.length + filteredLots.length;
+      if (totalVisible === 0) {
+        if (grid) grid.innerHTML = "";
+        if (lotsContainer) lotsContainer.classList.add("hidden");
+        if (emptyState) emptyState.classList.remove("hidden");
+        return;
+      }
+
+      if (emptyState) emptyState.classList.add("hidden");
+
+      // Render Wholesale Lots if any
+      if (filteredLots.length > 0) {
+        lotsContainer.classList.remove("hidden");
+        lotsContainer.innerHTML = filteredLots.map(l => {
+          return `
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-900 border border-amber-500/30 shadow-xl space-y-3">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-slate-950">
+                    LOT #${l.lotId}
+                  </span>
+                  <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-800 text-amber-300 border border-slate-700">
+                    ${l.grade || 'Grade A'}
+                  </span>
+                  <span class="text-xs text-slate-400 font-mono">
+                    <i class="fa-solid fa-warehouse text-amber-400"></i> ${l.godownBay || 'Sonarpur Central Godown'}
+                  </span>
+                </div>
+                <div class="text-right">
+                  <span class="text-xs text-emerald-400 font-bold"><i class="fa-solid fa-boxes-stacked"></i> ${l.bagsCount} Bags available (${l.totalStockQtl} Qtl)</span>
+                </div>
+              </div>
+
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-slate-800 overflow-hidden border border-slate-700 flex-shrink-0">
+                    <img src="${l.imageUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200&auto=format&fit=crop&q=80'}" alt="${l.commodityName}" class="w-full h-full object-cover">
+                  </div>
+                  <div class="min-w-0">
+                    <h4 class="text-sm sm:text-base font-black text-white">${l.commodityName}</h4>
+                    <p class="text-xs text-amber-400 font-bold">${l.variety} • Origin: ${l.harvestOrigin || 'Bengal Farmlands'}</p>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Bag Weight: <strong>${l.bagWeightKg} kg</strong> • Minimum Order (MOQ): <strong class="text-white">${l.moqBags} Bags</strong></p>
+                  </div>
+                </div>
+
+                <!-- 3-Tier Rates Table -->
+                <div class="grid grid-cols-3 gap-1.5 p-2 bg-slate-950 rounded-xl border border-slate-800 text-center font-mono flex-shrink-0">
+                  <div class="p-1.5 rounded-lg bg-slate-900/80">
+                    <span class="text-[9px] uppercase text-slate-500 block font-sans">Tier 1 (${l.tier1Qty}+)</span>
+                    <span class="text-xs font-black text-amber-300">₹${l.tier1Rate}</span>
+                  </div>
+                  <div class="p-1.5 rounded-lg bg-slate-900/80">
+                    <span class="text-[9px] uppercase text-slate-500 block font-sans">Tier 2 (${l.tier2Qty}+)</span>
+                    <span class="text-xs font-black text-emerald-400">₹${l.tier2Rate}</span>
+                  </div>
+                  <div class="p-1.5 rounded-lg bg-slate-900/80">
+                    <span class="text-[9px] uppercase text-slate-500 block font-sans">Tier 3 (${l.tier3Qty}+)</span>
+                    <span class="text-xs font-black text-sky-400">₹${l.tier3Rate}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Wholesale CTA Buttons -->
+              <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-800/80 flex-wrap">
+                <a href="https://wa.me/917319578723?text=${encodeURIComponent(`Hello, I want to book wholesale Mandi Lot #${l.lotId} (${l.commodityName}, MOQ ${l.moqBags} bags) from Sonarpur Mandi.`)}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow active:scale-95 transition-all">
+                  <i class="fa-brands fa-whatsapp text-sm"></i>
+                  <span>Inquire / Book Lot</span>
+                </a>
+              </div>
+            </div>
+          `;
+        }).join("");
+      } else {
+        lotsContainer.classList.add("hidden");
+      }
+
+      // Render Retail Products Grid
+      if (filteredProds.length > 0) {
+        grid.innerHTML = filteredProds.map(p => {
+          const discountPercent = p.discountPrice && p.discountPrice < p.price 
+            ? Math.round(((p.price - p.discountPrice) / p.price) * 100) 
+            : 0;
+          const displayPrice = p.discountPrice || p.price;
+          const regularPrice = p.price;
+
+          return `
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:border-emerald-500/50 transition-all flex flex-col group shadow-lg">
+              <div class="relative h-32 sm:h-40 bg-slate-950 overflow-hidden">
+                <img src="${p.imageUrl}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                ${discountPercent > 0 ? `
+                  <span class="absolute top-2 left-2 px-2 py-0.5 rounded-lg bg-rose-500 text-white text-[10px] font-black shadow">
+                    ${discountPercent}% OFF
+                  </span>
+                ` : ''}
+                <span class="absolute top-2 right-2 px-2 py-0.5 rounded-lg bg-slate-950/80 backdrop-blur-md text-amber-300 text-[10px] font-bold border border-slate-800">
+                  <i class="fa-solid fa-star text-[9px] text-amber-400"></i> 4.8
+                </span>
+              </div>
+
+              <div class="p-3 sm:p-4 flex-1 flex flex-col justify-between space-y-2">
+                <div>
+                  <span class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider block truncate">${p.category}</span>
+                  <h4 class="font-bold text-white text-xs sm:text-sm line-clamp-2 mt-0.5">${p.name}</h4>
+                  <p class="text-[10px] text-slate-400 line-clamp-1 mt-0.5">${p.description || ''}</p>
+                </div>
+
+                <div class="pt-1 border-t border-slate-800">
+                  <div class="flex items-baseline gap-1.5 flex-wrap">
+                    <span class="text-sm sm:text-base font-black text-emerald-400">₹${displayPrice}</span>
+                    ${discountPercent > 0 ? `
+                      <span class="text-[11px] text-slate-500 line-through">₹${regularPrice}</span>
+                    ` : ''}
+                  </div>
+
+                  <div class="flex items-center gap-1.5 mt-2">
+                    <button type="button" onclick="addToCart(${p.productId})" class="flex-1 py-1.5 px-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1 shadow-md shadow-emerald-600/20 active:scale-95 transition-all" title="Add to Cart">
+                      <i class="fa-solid fa-cart-plus text-[11px]"></i>
+                      <span>Add</span>
+                    </button>
+                    <button type="button" onclick="openBargainForProduct(${p.productId}, '${p.name.replace(/'/g, "\\'")}', ${displayPrice})" class="w-8 h-8 rounded-xl bg-purple-600/20 hover:bg-purple-600/40 text-purple-300 border border-purple-500/30 flex items-center justify-center text-xs transition-all active:scale-95 shadow-sm" title="AI Bargain for ${p.name}">
+                      <i class="fa-solid fa-robot"></i>
+                    </button>
+                    <button type="button" onclick="addToAIBucket('${p.name.replace(/'/g, "\\'")}', ${displayPrice})" class="w-8 h-8 rounded-xl bg-amber-500/20 hover:bg-amber-500/40 text-amber-300 border border-amber-500/30 flex items-center justify-center text-xs transition-all active:scale-95 shadow-sm" title="Add to AI Bucket Compare">
+                      <i class="fa-solid fa-basket-shopping"></i>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          `;
+        }).join("");
+      } else if (filteredLots.length === 0) {
+        grid.innerHTML = "";
+      }
+    }
     function openReviewModal(productId, orderId) {
       document.getElementById("revProductId").value = productId;
       document.getElementById("revOrderId").value = orderId;
