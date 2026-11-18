@@ -271,6 +271,63 @@ const BENCHMARK_BASKETS = [
   }
 ];
 
+const MULTILINGUAL_SYNONYMS = {
+  "আলু": "Potato",
+  "aloo": "Potato",
+  "alu": "Potato",
+  "পেঁয়াজ": "Onion",
+  "পিয়াজ": "Onion",
+  "pyaz": "Onion",
+  "pyaaj": "Onion",
+  "টমেটো": "Tomato",
+  "tamatar": "Tomato",
+  "সর্ষের তেল": "Mustard Oil",
+  "সরিষার তেল": "Mustard Oil",
+  "তেল": "Mustard Oil",
+  "sarson": "Mustard Oil",
+  "tel": "Oil",
+  "oil": "Oil",
+  "দুধ": "Cow Milk",
+  "dudh": "Cow Milk",
+  "doodh": "Cow Milk",
+  "milk": "Milk",
+  "পনির": "Paneer",
+  "paneer": "Paneer",
+  "মাছ": "Katla Fish",
+  "রুই": "Fish",
+  "কাতলা": "Katla Fish",
+  "ইলিশ": "Fish",
+  "mach": "Fish",
+  "maach": "Fish",
+  "fish": "Fish",
+  "চাল": "Rice",
+  "ভাত": "Rice",
+  "chawal": "Rice",
+  "rice": "Rice",
+  "ডাল": "Dal",
+  "মসুর ডাল": "Masoor Dal",
+  "মুগ ডাল": "Dal",
+  "daal": "Dal",
+  "dal": "Dal",
+  "ডিম": "Egg",
+  "anda": "Egg",
+  "egg": "Egg",
+  "আটা": "Atta",
+  "ময়দা": "Flour",
+  "aata": "Atta",
+  "atta": "Atta",
+  "চিনি": "Sugar",
+  "chini": "Sugar",
+  "sugar": "Sugar",
+  "নুন": "Salt",
+  "লবণ": "Salt",
+  "namak": "Salt",
+  "salt": "Salt",
+  "চা": "Tea",
+  "chai": "Tea",
+  "tea": "Tea"
+};
+
 /**
  * Returns full platform configs
  */
@@ -301,11 +358,19 @@ async function calculateBucket(itemsInput, options = {}) {
       // If price is not provided or zero, query from local database
       if (!basePrice || basePrice <= 0) {
         try {
+          let searchKeyword = name.toLowerCase().trim();
+          for (const [k, v] of Object.entries(MULTILINGUAL_SYNONYMS)) {
+            if (searchKeyword.includes(k.toLowerCase())) {
+              searchKeyword = v;
+              break;
+            }
+          }
+
           const rows = await conn.query(
             `SELECT name, price, discount_price FROM products 
-             WHERE status = 'active' AND (name LIKE ? OR description LIKE ?) 
+             WHERE status = 'active' AND (name LIKE ? OR description LIKE ? OR name LIKE ?) 
              ORDER BY price ASC LIMIT 1`,
-            [`%${name}%`, `%${name}%`]
+            [`%${searchKeyword}%`, `%${searchKeyword}%`, `%${name}%`]
           );
           if (rows && rows.length > 0) {
             const matchedName = String(rows[0].name || "").toLowerCase();
@@ -318,7 +383,16 @@ async function calculateBucket(itemsInput, options = {}) {
               qty = 1;
             }
           } else {
-            basePrice = 40; // Fallback sensible default
+            // Intelligent sensible defaults for staple items
+            if (searchKeyword.includes("Potato")) basePrice = 25;
+            else if (searchKeyword.includes("Onion")) basePrice = 38;
+            else if (searchKeyword.includes("Oil")) basePrice = 155;
+            else if (searchKeyword.includes("Milk")) basePrice = 68;
+            else if (searchKeyword.includes("Paneer")) basePrice = 170;
+            else if (searchKeyword.includes("Fish")) basePrice = 300;
+            else if (searchKeyword.includes("Rice")) basePrice = 65;
+            else if (searchKeyword.includes("Dal")) basePrice = 88;
+            else basePrice = 40;
           }
         } catch (_) {
           basePrice = 40;

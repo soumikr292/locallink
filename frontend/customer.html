@@ -766,38 +766,45 @@
           </div>
         </div>
 
-        <!-- Smart Preset Baskets Selection -->
+        <!-- Smart Source Selection: User Cart vs Presets -->
         <div class="space-y-2">
-          <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Smart AI Preset Baskets:
-          </label>
+          <div class="flex justify-between items-center">
+            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Compare Source:
+            </label>
+            <span id="aiBucketActiveSourceBadge" class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 shadow-sm">
+              🛒 Comparing Your Active Cart
+            </span>
+          </div>
           <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar" id="aiBucketPresetChips">
-            <button onclick="loadAIBucketBenchmark('daily_kitchen_essentials')" class="px-3.5 py-2 bg-slate-950 hover:bg-slate-800 border border-slate-700/80 text-white font-bold rounded-xl whitespace-nowrap shadow-sm flex items-center gap-2 transition-all">
-              <span>🥕 Daily Kitchen & Veggies</span>
-            </button>
-            <button onclick="loadAIBucketBenchmark('sunday_fish_feast')" class="px-3.5 py-2 bg-slate-950 hover:bg-slate-800 border border-slate-700/80 text-white font-bold rounded-xl whitespace-nowrap shadow-sm flex items-center gap-2 transition-all">
-              <span>🐟 Sunday Fish & Feast</span>
-            </button>
-            <button onclick="loadAIBucketBenchmark('monthly_family_ration')" class="px-3.5 py-2 bg-slate-950 hover:bg-slate-800 border border-slate-700/80 text-white font-bold rounded-xl whitespace-nowrap shadow-sm flex items-center gap-2 transition-all">
-              <span>🌾 Monthly Grocery Ration</span>
-            </button>
-            <button onclick="loadAIBucketFromCart()" class="px-3.5 py-2 bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-500/40 text-emerald-300 font-bold rounded-xl whitespace-nowrap shadow-sm flex items-center gap-2 transition-all">
-              <i class="fa-solid fa-cart-arrow-down text-emerald-400"></i>
-              <span>Compare My Current Cart</span>
-            </button>
+            <!-- Rendered by renderAIBucketTabs() -->
           </div>
         </div>
 
-        <!-- Custom Item Voice & Text Quick Input -->
-        <div class="relative flex items-center">
-          <i class="fa-solid fa-plus absolute left-4 text-slate-500 text-sm"></i>
-          <input type="text" id="aiBucketCustomInput" onkeydown="if(event.key==='Enter')handleAIBucketCustomInput()" placeholder="Type or speak items to compare (e.g. 2kg potato, 1L mustard oil, 500g paneer, 1kg dal)..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-11 pr-32 py-3 text-white text-xs sm:text-sm placeholder-slate-500 focus:outline-none focus:border-amber-500 shadow-inner">
-          <button type="button" onclick="startAIBucketVoiceInput()" id="btnAIBucketVoice" class="absolute right-24 w-8 h-8 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all shadow" title="Speak items in English, বাংলা, हिन्दी">
-            <i class="fa-solid fa-microphone text-emerald-400 hover:text-white"></i>
-          </button>
-          <button type="button" onclick="handleAIBucketCustomInput()" class="absolute right-2 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs rounded-xl shadow transition-all">
-            Compare
-          </button>
+        <!-- Custom Item Voice & Text Quick Input with Autocomplete -->
+        <div class="relative space-y-1">
+          <div class="relative flex items-center">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-500 text-sm"></i>
+            <input type="text" id="aiBucketCustomInput" 
+              oninput="handleAIBucketInputAutocomplete(this.value)"
+              onkeydown="if(event.key==='Enter')handleAIBucketCustomInput(false)" 
+              placeholder="Search product or speak items (e.g. potato, 1L oil, 500g paneer, ১ কেজি আলু)..." 
+              class="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-11 pr-44 py-3 text-white text-xs sm:text-sm placeholder-slate-500 focus:outline-none focus:border-amber-500 shadow-inner">
+            
+            <button type="button" onclick="startAIBucketVoiceInput()" id="btnAIBucketVoice" class="absolute right-32 w-8 h-8 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all shadow" title="Voice Search (English, বাংলা, हिन्दी)">
+              <i class="fa-solid fa-microphone text-emerald-400 hover:text-white"></i>
+            </button>
+            <button type="button" onclick="handleAIBucketCustomInput(true)" class="absolute right-16 px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-xs rounded-xl shadow transition-all" title="Add searched items to current comparison">
+              + Add
+            </button>
+            <button type="button" onclick="handleAIBucketCustomInput(false)" class="absolute right-2 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs rounded-xl shadow transition-all" title="Compare this search across all 9 apps">
+              Compare
+            </button>
+          </div>
+
+          <!-- Live Autocomplete Suggestions Dropdown -->
+          <div id="aiBucketSuggestionsDropdown" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-slate-900/98 backdrop-blur-2xl border border-slate-700 rounded-2xl shadow-2xl p-2 z-50 divide-y divide-slate-800 text-xs">
+          </div>
         </div>
 
         <!-- Current Bucket Items Chips Bar -->
@@ -2287,6 +2294,11 @@
           <span id="btnVoiceListAddToCartText" data-i18n="voice_list_add_to_cart">Add All Items to Cart</span>
         </button>
 
+        <button type="button" onclick="compareVoiceListInAIBucket()" class="w-full py-2.5 bg-gradient-to-r from-amber-500/20 via-emerald-500/15 to-sky-500/20 hover:from-amber-500/30 hover:to-emerald-500/30 text-amber-300 border border-amber-500/40 font-bold rounded-2xl text-xs flex items-center justify-center gap-2 transition-all shadow-sm">
+          <i class="fa-solid fa-basket-shopping text-amber-400"></i>
+          <span>⚡ Compare This Voice List in AI Bucket (9 Apps)</span>
+        </button>
+
         <div class="grid grid-cols-2 gap-2">
           <button type="button" onclick="shareVoiceListToWhatsApp()" class="py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all">
             <i class="fa-brands fa-whatsapp text-emerald-400"></i>
@@ -3141,6 +3153,16 @@
         `;
       }).join("");
 
+      const compareBanner = `
+        <div onclick="compareSearchQueryInAIBucket('${q.replace(/'/g, "\\'")}')" class="p-2 sm:p-2.5 bg-gradient-to-r from-amber-500/20 via-orange-500/10 to-slate-900 border-b border-amber-500/30 cursor-pointer flex items-center justify-between gap-2 hover:bg-amber-500/30 transition-all text-xs">
+          <div class="flex items-center gap-2 text-amber-300 font-bold truncate">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-400 flex-shrink-0"></i>
+            <span class="truncate">Compare "<b>${q}</b>" across 9 Apps (Zepto, Blinkit...)</span>
+          </div>
+          <span class="px-2 py-0.5 rounded-lg bg-amber-500 text-slate-950 font-black text-[10px] flex-shrink-0">AI Bucket ➔</span>
+        </div>
+      `;
+
       const footerHtml = `
         <div class="p-2 bg-slate-950/80 text-center text-[10px] sm:text-xs text-slate-400 flex items-center justify-between px-3">
           <span>Found ${currentProducts.length} matching item(s)</span>
@@ -3148,7 +3170,7 @@
         </div>
       `;
 
-      const fullHtml = itemsHtml + footerHtml;
+      const fullHtml = compareBanner + itemsHtml + footerHtml;
       if (desktopDropdown) {
         desktopDropdown.innerHTML = fullHtml;
         desktopDropdown.classList.remove("hidden");
@@ -3329,16 +3351,113 @@
     let currentAIBucketItems = [];
     let currentAIBucketFulfillment = "delivery"; // 'delivery' | 'pickup'
     let currentAIBucketCalculation = null;
+    let currentAIBucketSource = "cart"; // 'cart' | 'preset' | 'search' | 'voice'
+    let currentAIBucketPresetId = "daily_kitchen_essentials";
 
-    async function loadAIBucketView() {
-      if (!currentAIBucketItems || currentAIBucketItems.length === 0) {
-        await loadAIBucketBenchmark('daily_kitchen_essentials');
+    async function loadAIBucketView(forcedSource) {
+      if (forcedSource) {
+        currentAIBucketSource = forcedSource;
+      } else if (cart && cart.length > 0) {
+        currentAIBucketSource = "cart";
+      } else if (!currentAIBucketItems || currentAIBucketItems.length === 0) {
+        currentAIBucketSource = "preset";
+      }
+
+      renderAIBucketTabs();
+
+      if (currentAIBucketSource === "cart") {
+        await loadAIBucketFromCart(true);
+      } else if (currentAIBucketSource === "preset") {
+        await loadAIBucketBenchmark(currentAIBucketPresetId || 'daily_kitchen_essentials', true);
       } else {
         await calculateAndRenderAIBucket();
       }
     }
 
-    async function loadAIBucketBenchmark(benchmarkId) {
+    function renderAIBucketTabs() {
+      const container = document.getElementById("aiBucketPresetChips");
+      if (!container) return;
+
+      const cartCount = cart ? cart.length : 0;
+      const isCartActive = currentAIBucketSource === "cart";
+
+      const presets = [
+        { id: "daily_kitchen_essentials", label: "🥕 Daily Kitchen & Veggies" },
+        { id: "sunday_fish_feast", label: "🐟 Sunday Fish & Feast" },
+        { id: "monthly_family_ration", label: "🌾 Monthly Grocery Ration" }
+      ];
+
+      const activeBadge = document.getElementById("aiBucketActiveSourceBadge");
+      if (activeBadge) {
+        if (isCartActive) {
+          activeBadge.className = "text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 shadow-sm";
+          activeBadge.innerHTML = `🛒 Active Cart (${cartCount} items)`;
+        } else if (currentAIBucketSource === "preset") {
+          activeBadge.className = "text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/50 shadow-sm";
+          activeBadge.innerHTML = `✨ Smart Preset Bucket`;
+        } else if (currentAIBucketSource === "voice") {
+          activeBadge.className = "text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/50 shadow-sm";
+          activeBadge.innerHTML = `🎙️ Voice Comparison`;
+        } else {
+          activeBadge.className = "text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-sm";
+          activeBadge.innerHTML = `🔍 Custom Search Bucket`;
+        }
+      }
+
+      let html = `
+        <button type="button" onclick="loadAIBucketFromCart()" 
+          class="px-3.5 py-2 ${isCartActive ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black shadow-lg shadow-emerald-900/40 ring-1 ring-emerald-400' : 'bg-slate-950 hover:bg-slate-850 text-slate-300 border border-slate-700/80'} rounded-xl whitespace-nowrap flex items-center gap-2 transition-all flex-shrink-0">
+          <i class="fa-solid fa-cart-shopping ${isCartActive ? 'text-white' : 'text-emerald-400'}"></i>
+          <span>My Current Cart (${cartCount})</span>
+        </button>
+      `;
+
+      for (const p of presets) {
+        const isActive = currentAIBucketSource === "preset" && currentAIBucketPresetId === p.id;
+        html += `
+          <button type="button" onclick="loadAIBucketBenchmark('${p.id}')" 
+            class="px-3.5 py-2 ${isActive ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black shadow-lg shadow-amber-500/20' : 'bg-slate-950 hover:bg-slate-850 text-slate-300 border border-slate-700/80'} rounded-xl whitespace-nowrap flex items-center gap-2 transition-all flex-shrink-0">
+            <span>${p.label}</span>
+          </button>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    async function loadAIBucketFromCart(silent = false) {
+      if (!cart || cart.length === 0) {
+        currentAIBucketSource = "preset";
+        renderAIBucketTabs();
+        if (!silent) showToast("Your cart is empty! Switched to Daily Essentials preset.", "info");
+        await loadAIBucketBenchmark('daily_kitchen_essentials', silent);
+        return;
+      }
+
+      currentAIBucketSource = "cart";
+      renderAIBucketTabs();
+
+      currentAIBucketItems = cart.map(item => {
+        const itemPrice = Number(item.unitPrice || item.price || item.agreedPrice || 40);
+        return {
+          name: item.name,
+          qty: Number(item.quantity || 1),
+          unit: "unit",
+          price: itemPrice
+        };
+      });
+
+      await calculateAndRenderAIBucket();
+      if (!silent) {
+        showToast(`🛒 Comparing ${cart.length} cart items across all 9 platforms!`, "success");
+      }
+    }
+
+    async function loadAIBucketBenchmark(benchmarkId, silent = false) {
+      currentAIBucketSource = "preset";
+      currentAIBucketPresetId = benchmarkId;
+      renderAIBucketTabs();
+
       try {
         const res = await apiRequest("/api/ai-bucket/benchmarks");
         if (res && res.success && Array.isArray(res.data.benchmarks)) {
@@ -3351,27 +3470,12 @@
               price: it.localBasePrice
             }));
             await calculateAndRenderAIBucket();
-            showToast(`Loaded "${found.name}" into AI Bucket!`, "info");
+            if (!silent) showToast(`Loaded "${found.name}" into AI Bucket!`, "info");
           }
         }
       } catch (err) {
         console.warn("Could not load benchmark:", err);
       }
-    }
-
-    async function loadAIBucketFromCart() {
-      if (!cart || cart.length === 0) {
-        showToast("Your cart is currently empty! Add items from home or choose an AI preset.", "info");
-        return;
-      }
-      currentAIBucketItems = cart.map(item => ({
-        name: item.name,
-        qty: item.quantity,
-        unit: "unit",
-        price: item.price
-      }));
-      await calculateAndRenderAIBucket();
-      showToast(`Loaded ${cart.length} items from your cart into AI Bucket!`, "success");
     }
 
     function setAIBucketFulfillment(type) {
@@ -3398,14 +3502,19 @@
 
       if (countEl) countEl.textContent = currentAIBucketItems.length;
 
-      // Render Item Chips
+      // Render Item Chips with +/- quantity controls
       if (chipsContainer) {
         if (currentAIBucketItems.length === 0) {
           chipsContainer.innerHTML = `<span class="text-slate-500 italic">No items in bucket yet. Click any preset above or type/speak items.</span>`;
         } else {
           chipsContainer.innerHTML = currentAIBucketItems.map((item, idx) => `
-            <div class="px-2.5 py-1 bg-slate-900 border border-slate-700/80 rounded-xl flex items-center gap-2 flex-shrink-0 text-white font-bold text-xs shadow-sm">
-              <span>${item.qty} ${item.unit !== 'unit' ? item.unit : ''} ${item.name}</span>
+            <div class="px-2.5 py-1.5 bg-slate-900 border border-slate-700/80 rounded-xl flex items-center gap-2 flex-shrink-0 text-white font-bold text-xs shadow-sm">
+              <span class="max-w-[140px] truncate" title="${item.name}">${item.name}</span>
+              <div class="flex items-center gap-1 bg-slate-950 px-1.5 py-0.5 rounded-lg border border-slate-800 text-[11px] font-mono">
+                <button type="button" onclick="changeAIBucketItemQty(${idx}, -1)" class="text-slate-400 hover:text-white px-1 leading-none font-black">-</button>
+                <span class="text-amber-400 font-bold">${item.qty} ${item.unit !== 'unit' ? item.unit : ''}</span>
+                <button type="button" onclick="changeAIBucketItemQty(${idx}, 1)" class="text-slate-400 hover:text-white px-1 leading-none font-black">+</button>
+              </div>
               <button onclick="removeAIBucketItem(${idx})" class="w-4 h-4 rounded-full bg-slate-800 hover:bg-rose-600 text-slate-400 hover:text-white flex items-center justify-center text-[9px] transition-all" title="Remove item">✕</button>
             </div>
           `).join("");
@@ -3413,7 +3522,7 @@
       }
 
       if (currentAIBucketItems.length === 0) {
-        if (grid) grid.innerHTML = `<div class="p-8 text-center text-slate-500 col-span-full">Your AI Bucket is empty. Choose a preset or type items to compare.</div>`;
+        if (grid) grid.innerHTML = `<div class="p-8 text-center text-slate-500 col-span-full">Your AI Bucket is empty. Choose a preset or type/speak items to compare.</div>`;
         return;
       }
 
@@ -3446,7 +3555,7 @@
         if (grid && platforms.length > 0) {
           grid.innerHTML = platforms.map(p => {
             const isLocal = p.platformId === "locallink";
-            const diff = p.grandTotal - localPlatform.grandTotal;
+            const diff = localPlatform ? (p.grandTotal - localPlatform.grandTotal) : 0;
 
             return `
               <div class="p-4 sm:p-5 rounded-2xl border transition-all ${isLocal ? 'bg-gradient-to-b from-emerald-950/70 via-slate-900 to-slate-950 border-emerald-500/60 shadow-xl shadow-emerald-950/40 ring-1 ring-emerald-500/30' : 'bg-slate-950/90 border-slate-800 hover:border-slate-700'} flex flex-col justify-between gap-3 relative overflow-hidden">
@@ -3541,7 +3650,11 @@
         // Update Bottom Button
         const btnText = document.getElementById("btnOrderBucketBottomText");
         if (btnText && localPlatform) {
-          btnText.textContent = `1-Click Order AI Bucket via LocalLink (₹ ${localPlatform.grandTotal})`;
+          if (currentAIBucketSource === "cart") {
+            btnText.textContent = `Proceed to Express Checkout (₹ ${localPlatform.grandTotal})`;
+          } else {
+            btnText.textContent = `1-Click Order AI Bucket via LocalLink (₹ ${localPlatform.grandTotal})`;
+          }
         }
 
       } catch (err) {
@@ -3549,7 +3662,19 @@
       }
     }
 
+    function changeAIBucketItemQty(index, delta) {
+      if (index >= 0 && index < currentAIBucketItems.length) {
+        currentAIBucketItems[index].qty = Math.max(0, Number((currentAIBucketItems[index].qty + delta).toFixed(2)));
+        if (currentAIBucketItems[index].qty <= 0) {
+          currentAIBucketItems.splice(index, 1);
+        }
+        calculateAndRenderAIBucket();
+      }
+    }
+
     function addProductToAIBucket(productId, productName, price) {
+      currentAIBucketSource = "search";
+      renderAIBucketTabs();
       const existing = currentAIBucketItems.find(it => it.name.toLowerCase() === productName.toLowerCase());
       if (existing) {
         existing.qty += 1;
@@ -3580,7 +3705,86 @@
       calculateAndRenderAIBucket();
     }
 
-    async function handleAIBucketCustomInput() {
+    function handleAIBucketInputAutocomplete(query) {
+      const dropdown = document.getElementById("aiBucketSuggestionsDropdown");
+      if (!dropdown) return;
+      const q = (query || "").trim().toLowerCase();
+      if (!q || q.length < 2) {
+        dropdown.classList.add("hidden");
+        return;
+      }
+
+      const matches = (currentProducts || []).filter(p => 
+        (p.name && p.name.toLowerCase().includes(q)) || 
+        (p.category && p.category.toLowerCase().includes(q))
+      ).slice(0, 5);
+
+      if (matches.length === 0) {
+        dropdown.innerHTML = `
+          <div class="p-2.5 text-slate-400 flex items-center justify-between">
+            <span>Compare "<b>${query}</b>" across 9 platforms</span>
+            <button type="button" onclick="handleAIBucketCustomInput(false)" class="px-2 py-1 bg-amber-500 text-slate-950 font-bold rounded-lg text-[11px]">Compare</button>
+          </div>
+        `;
+        dropdown.classList.remove("hidden");
+        return;
+      }
+
+      dropdown.innerHTML = matches.map(m => `
+        <div class="p-2 hover:bg-slate-800/80 rounded-xl flex items-center justify-between gap-2 transition-all">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0"></span>
+            <span class="font-bold text-white truncate">${m.name}</span>
+            <span class="text-amber-400 font-mono text-[11px]">₹${m.price}</span>
+          </div>
+          <div class="flex items-center gap-1.5 flex-shrink-0">
+            <button type="button" onclick="selectAIBucketSuggestion('${m.name.replace(/'/g, "\\'")}', ${m.price}, true)" class="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-lg text-[10px]">+ Add</button>
+            <button type="button" onclick="selectAIBucketSuggestion('${m.name.replace(/'/g, "\\'")}', ${m.price}, false)" class="px-2.5 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black rounded-lg text-[10px]">Compare</button>
+          </div>
+        </div>
+      `).join("");
+      dropdown.classList.remove("hidden");
+    }
+
+    function selectAIBucketSuggestion(name, price, append = false) {
+      hideAIBucketSuggestions();
+      const input = document.getElementById("aiBucketCustomInput");
+      if (input) input.value = "";
+
+      currentAIBucketSource = "search";
+      renderAIBucketTabs();
+
+      if (!append) {
+        currentAIBucketItems = [{
+          name: name,
+          qty: 1,
+          unit: "unit",
+          price: Number(price || 40)
+        }];
+      } else {
+        const existing = currentAIBucketItems.find(it => it.name.toLowerCase() === name.toLowerCase());
+        if (existing) {
+          existing.qty += 1;
+        } else {
+          currentAIBucketItems.push({
+            name: name,
+            qty: 1,
+            unit: "unit",
+            price: Number(price || 40)
+          });
+        }
+      }
+      calculateAndRenderAIBucket();
+      showToast(`Selected "${name}" for AI comparison!`, "success");
+    }
+
+    function hideAIBucketSuggestions() {
+      const dropdown = document.getElementById("aiBucketSuggestionsDropdown");
+      if (dropdown) dropdown.classList.add("hidden");
+    }
+
+    async function handleAIBucketCustomInput(append = false) {
+      hideAIBucketSuggestions();
       const input = document.getElementById("aiBucketCustomInput");
       if (!input) return;
       const val = input.value.trim();
@@ -3597,15 +3801,32 @@
         });
 
         if (res && res.success && res.data && Array.isArray(res.data.items)) {
-          currentAIBucketItems = res.data.items.map(it => ({
+          const newItems = res.data.items.map(it => ({
             name: it.name,
             qty: it.qty,
             unit: it.unit,
             price: it.basePrice
           }));
+
+          currentAIBucketSource = "search";
+          renderAIBucketTabs();
+
+          if (append) {
+            for (const nit of newItems) {
+              const existing = currentAIBucketItems.find(e => e.name.toLowerCase() === nit.name.toLowerCase());
+              if (existing) {
+                existing.qty += nit.qty;
+              } else {
+                currentAIBucketItems.push(nit);
+              }
+            }
+          } else {
+            currentAIBucketItems = newItems;
+          }
+
           input.value = "";
           await calculateAndRenderAIBucket();
-          showToast("AI Bucket updated successfully!", "success");
+          showToast(`AI Bucket comparing ${currentAIBucketItems.length} items across 9 platforms!`, "success");
         }
       } catch (e) {
         showToast("Could not parse items. Please try again.", "error");
@@ -3613,6 +3834,12 @@
     }
 
     function startAIBucketVoiceInput() {
+      currentVoiceTarget = "ai-bucket";
+      if (typeof openVoiceShoppingModal === "function") {
+        openVoiceShoppingModal();
+        return;
+      }
+
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
         showToast("Voice recognition not supported in this browser. Please type items.", "info");
@@ -3628,14 +3855,15 @@
       const btn = document.getElementById("btnAIBucketVoice");
       if (btn) btn.classList.add("bg-rose-600", "animate-ping");
 
-      showToast("Listening... Speak your items (e.g. 2kg aloo, 1L tel, paneer)...", "info");
+      showToast("Listening... Speak your items (e.g. 2kg aloo, 1L tel, ১ কেজি আলু)...", "info");
 
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         const input = document.getElementById("aiBucketCustomInput");
         if (input) input.value = transcript;
         showToast(`Heard: "${transcript}"`, "success");
-        handleAIBucketCustomInput();
+        currentAIBucketSource = "voice";
+        handleAIBucketCustomInput(false);
       };
 
       recognition.onerror = () => {
@@ -3649,9 +3877,24 @@
       recognition.start();
     }
 
+    function compareSearchQueryInAIBucket(query) {
+      if (!query || !query.trim()) return;
+      switchCustomerPage('ai-bucket');
+      const input = document.getElementById("aiBucketCustomInput");
+      if (input) input.value = query.trim();
+      currentAIBucketSource = "search";
+      handleAIBucketCustomInput(false);
+    }
+
     async function orderAIBucketWithLocalLink() {
       if (!currentAIBucketItems || currentAIBucketItems.length === 0) {
         showToast("Your AI Bucket is empty! Add items first.", "error");
+        return;
+      }
+
+      if (currentAIBucketSource === "cart" && cart && cart.length > 0) {
+        switchCustomerPage('cart');
+        showToast("Proceeding to checkout with your active cart!", "success");
         return;
       }
 
@@ -4082,6 +4325,12 @@
       localStorage.setItem("locallinkCart", JSON.stringify(cart));
       updateCartBadge();
       updateFloatingCartBar();
+
+      // If user is currently in AI Bucket and viewing their cart, live auto-sync!
+      const aiPage = document.getElementById("page-ai-bucket");
+      if (aiPage && !aiPage.classList.contains("hidden") && currentAIBucketSource === "cart") {
+        loadAIBucketFromCart(true);
+      }
     }
 
     function updateCartBadge() {
@@ -7003,6 +7252,30 @@
       if (modal) modal.classList.add("hidden");
     }
 
+    function compareVoiceListInAIBucket() {
+      if (!activeVoiceGroceryList || activeVoiceGroceryList.length === 0) {
+        showToast("Grocery list is empty!", "info");
+        return;
+      }
+      currentAIBucketItems = activeVoiceGroceryList.map(it => {
+        let qty = Number(it.qty || 1);
+        let unit = it.unit || "unit";
+        let price = Number(it.price || it.unitPrice || 50);
+        return {
+          name: it.name,
+          qty,
+          unit,
+          price
+        };
+      });
+      currentAIBucketSource = "voice";
+      closeVoiceShoppingListModal();
+      switchCustomerPage('ai-bucket');
+      renderAIBucketTabs();
+      calculateAndRenderAIBucket();
+      showToast(`⚡ Comparing your ${activeVoiceGroceryList.length} voice items across all 9 platforms!`, "success");
+    }
+
     // Render Voice List rows with checkboxes, quantity adjuster, and Remove Product button
     function renderVoiceGroceryListRows() {
       const container = document.getElementById("voiceListItemsContainer");
@@ -7880,6 +8153,16 @@
 
       closeVoiceSearchModal();
       if (!query) return;
+
+      if (currentVoiceTarget === "ai-bucket") {
+        currentVoiceTarget = "general";
+        switchCustomerPage('ai-bucket');
+        const input = document.getElementById("aiBucketCustomInput");
+        if (input) input.value = query;
+        handleAIBucketCustomInput(false);
+        showToast(`🎙️ Comparing "${query}" in AI Bucket across 9 platforms!`, "success");
+        return;
+      }
 
       query = normalizePhoneticCorruptions(query);
 
