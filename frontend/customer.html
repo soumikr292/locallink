@@ -3439,11 +3439,11 @@
           headlineEl.textContent = text;
         }
 
-        // Render Platform Cards Grid
-        if (grid && data.platforms) {
-          const platforms = Object.values(data.platforms);
-          const localPlatform = data.platforms.locallink || platforms[0];
+        // Platform Reference & Cards Grid
+        const platforms = data.platforms ? Object.values(data.platforms) : [];
+        const localPlatform = data.platforms ? (data.platforms.locallink || platforms[0]) : null;
 
+        if (grid && platforms.length > 0) {
           grid.innerHTML = platforms.map(p => {
             const isLocal = p.platformId === "locallink";
             const diff = p.grandTotal - localPlatform.grandTotal;
@@ -3680,8 +3680,10 @@
         }
       }
 
-      saveCart();
-      updateCartCount();
+      saveCartToStorage();
+      updateCartBadge();
+      updateFloatingCartBar();
+      refreshAllProductAddControls();
       switchCustomerPage('cart');
       showToast("🎉 AI Bucket transferred to your cart! You are saving up to 24% by buying local.", "success");
     }
