@@ -338,31 +338,47 @@
           <span id="groceryListCountBadge" class="min-w-4 h-4 px-1 bg-emerald-500 text-slate-950 rounded-full text-[9px] font-black flex items-center justify-center">0</span>
         </button>
 
-        <!-- Customer Account & Profile Button -->
-        <button onclick="openCustomerProfileModal()" id="customerProfileNavBtn" class="flex items-center gap-1.5 pl-1 pr-2 py-1 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/40 rounded-xl text-slate-200 transition-all" title="View Profile & Account Details">
-          <img id="navCustomerAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Avatar" class="w-7 h-7 rounded-lg object-cover border border-emerald-500/60">
-          <span id="navCustomerNameText" class="text-[11px] font-bold hidden sm:inline truncate max-w-[75px]">Tanvir</span>
+        <!-- Optional Desktop Sign In Button for Guests (Before 3-dot) -->
+        <button onclick="openCustomerAuthModal()" id="customerLoginNavBtn" class="hidden sm:flex px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs items-center gap-1.5 shadow-lg flex-shrink-0">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> <span data-i18n="nav_signin">Sign In</span>
         </button>
 
         <!-- Three-Dot Click Backdrop Overlay -->
         <div id="customerThreeDotBackdrop" onclick="closeThreeDotMenu()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[999] hidden"></div>
 
-        <!-- Three-Dot Menu (Profile, Theme, Language, Role Switcher, Signout) -->
-        <div class="relative z-[1001]" id="threeDotMenuContainer">
+        <!-- Three-Dot Menu (Profile, Theme, Language, Role Switcher, Signout) - ALWAYS ON FAR RIGHT -->
+        <div class="relative z-[1001] flex-shrink-0" id="threeDotMenuContainer">
           <button type="button" id="btnHeaderThreeDot" onclick="toggleThreeDotMenu(event)" class="w-8 h-8 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/50 flex items-center justify-center text-slate-300 hover:text-white transition-all shadow-sm" title="Settings, Language & Appearance">
             <i class="fa-solid fa-ellipsis-vertical text-sm"></i>
           </button>
 
           <!-- Three-Dot Dropdown Menu -->
           <div id="headerThreeDotMenu" class="hidden absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-24px)] bg-slate-950/98 backdrop-blur-2xl border border-slate-700/90 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.85)] p-3.5 z-[1002] space-y-2 text-xs">
-            <!-- Profile shortcut -->
-            <button type="button" onclick="openCustomerProfileModal(); closeThreeDotMenu();" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 transition-colors font-bold text-left">
-              <i class="fa-solid fa-user text-emerald-400 w-4 text-center"></i>
-              <div class="flex-1">
-                <span class="block text-white" data-i18n="menu_profile">My Profile & Account</span>
-                <span class="text-[10px] text-slate-400 font-normal" data-i18n="menu_profile_sub">Personal info, address & stats</span>
+            <!-- Profile Section inside 3-Dot Menu -->
+            <div id="threeDotProfileSection" class="pb-2 border-b border-slate-800/80">
+              <!-- Logged-in Customer Profile Card -->
+              <div id="customerProfileNavBtn" onclick="openCustomerProfileModal(); closeThreeDotMenu();" class="flex items-center gap-3 p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/40 cursor-pointer transition-all group" title="View Profile & Account Details">
+                <img id="navCustomerAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Avatar" class="w-10 h-10 rounded-xl object-cover border-2 border-emerald-500/60 flex-shrink-0 shadow">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center justify-between">
+                    <span id="navCustomerNameText" class="text-xs font-bold text-white truncate block">Tanvir</span>
+                    <span class="text-[9px] px-1.5 py-0.2 rounded-md bg-emerald-500/15 text-emerald-400 font-bold border border-emerald-500/30">Profile</span>
+                  </div>
+                  <span id="navCustomerSubText" class="text-[10px] text-slate-400 truncate block mt-0.5">Manage personal info & addresses →</span>
+                </div>
               </div>
-            </button>
+
+              <!-- Guest Card (Click to Sign In / Register) -->
+              <div id="threeDotGuestLoginBtn" onclick="openCustomerAuthModal(); closeThreeDotMenu();" class="hidden flex items-center gap-3 p-2.5 rounded-xl bg-gradient-to-r from-emerald-950/50 to-slate-900 hover:from-emerald-900/50 border border-emerald-500/30 cursor-pointer transition-all group" title="Sign In or Register">
+                <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center text-base flex-shrink-0 shadow">
+                  <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <span class="text-xs font-bold text-white block">Sign In / Register</span>
+                  <span class="text-[10px] text-emerald-400 font-semibold block mt-0.5">Access orders, cart & addresses →</span>
+                </div>
+              </div>
+            </div>
 
             <!-- My Grocery List shortcut -->
             <button type="button" onclick="openVoiceShoppingListModal(); closeThreeDotMenu();" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 transition-colors font-bold text-left">
@@ -442,17 +458,13 @@
 
             <div class="border-t border-slate-800/80 my-1"></div>
 
-            <!-- Sign Out button -->
-            <button type="button" onclick="handleCustomerLogout(); closeThreeDotMenu();" class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-rose-400 hover:bg-rose-950/40 font-bold text-left transition-colors">
+            <!-- Sign Out button (Visible when logged in) -->
+            <button type="button" id="threeDotSignOutBtn" onclick="handleCustomerLogout(); closeThreeDotMenu();" class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-rose-400 hover:bg-rose-950/40 font-bold text-left transition-colors">
               <i class="fa-solid fa-arrow-right-from-bracket w-3.5"></i>
               <span data-i18n="menu_signout">Sign Out</span>
             </button>
           </div>
         </div>
-
-        <button onclick="openCustomerAuthModal()" id="customerLoginNavBtn" class="hidden px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-lg">
-          <i class="fa-solid fa-arrow-right-to-bracket"></i> <span data-i18n="nav_signin">Sign In</span>
-        </button>
       </div>
     </div>
 
@@ -2827,6 +2839,12 @@
       const profileBtn = document.getElementById("customerProfileNavBtn");
       if (profileBtn) profileBtn.classList.remove("hidden");
 
+      const guestCard = document.getElementById("threeDotGuestLoginBtn");
+      if (guestCard) guestCard.classList.add("hidden");
+
+      const signOutBtn = document.getElementById("threeDotSignOutBtn");
+      if (signOutBtn) signOutBtn.classList.remove("hidden");
+
       const loginBtn = document.getElementById("customerLoginNavBtn");
       if (loginBtn) loginBtn.classList.add("hidden");
 
@@ -2838,6 +2856,12 @@
     function updateNavForGuest() {
       const profileBtn = document.getElementById("customerProfileNavBtn");
       if (profileBtn) profileBtn.classList.add("hidden");
+
+      const guestCard = document.getElementById("threeDotGuestLoginBtn");
+      if (guestCard) guestCard.classList.remove("hidden");
+
+      const signOutBtn = document.getElementById("threeDotSignOutBtn");
+      if (signOutBtn) signOutBtn.classList.add("hidden");
 
       const loginBtn = document.getElementById("customerLoginNavBtn");
       if (loginBtn) loginBtn.classList.remove("hidden");

@@ -149,12 +149,6 @@
           <span id="headerListCountBadge" class="px-1.5 py-0.2 bg-slate-950 text-amber-300 rounded-full text-[10px] font-mono font-bold">0</span>
         </button>
 
-        <!-- Seller Profile & Picture Pill (Desktop) -->
-        <button onclick="switchTab('settings')" class="hidden md:flex items-center gap-2 pl-1 pr-2 sm:pr-3 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-xs font-bold text-slate-200 transition-all" title="View Store Profile & Settings">
-          <img id="navSellerAvatarImg" src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="w-7 h-7 rounded-lg object-cover border border-emerald-500/50">
-          <span id="navSellerNameText" class="truncate max-w-[90px]">Ratan Fresh</span>
-        </button>
-
         <!-- Quick Upload Live Morning Photo Button -->
         <button onclick="switchTab('photo-upload')" class="p-2 sm:px-3 sm:py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-emerald-400 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all" title="Upload Live Morning Photo">
           <i class="fa-solid fa-camera"></i>
@@ -169,10 +163,13 @@
 
           <!-- Dropdown Menu -->
           <div id="sellerThreeDotMenu" class="hidden absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-24px)] bg-slate-950/98 backdrop-blur-2xl border border-slate-700/90 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.85)] p-3.5 z-[1002] space-y-2.5 text-xs">
-            <!-- Store Profile Header -->
-            <div class="px-2 py-1 border-b border-slate-800/80 pb-2">
-              <span class="block text-white font-bold text-xs truncate" id="threeDotSellerName">Ratan Fresh & Grocery</span>
-              <span class="text-[10px] text-amber-400 font-mono">Stall #14 • Daily Mandi</span>
+            <!-- Store Profile Header inside 3-dot menu -->
+            <div onclick="switchTab('settings'); closeSellerThreeDotMenu();" class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/40 cursor-pointer transition-all mb-1 group" title="View Store Profile & Settings">
+              <img id="navSellerAvatarImg" src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="w-9 h-9 rounded-xl object-cover border border-emerald-500/50 flex-shrink-0">
+              <div class="min-w-0 flex-1">
+                <span class="block text-white font-bold text-xs truncate" id="threeDotSellerName">Ratan Fresh & Grocery</span>
+                <span class="text-[10px] text-emerald-400 font-semibold block mt-0.5">Store Profile & Settings →</span>
+              </div>
             </div>
 
             <!-- Language Setting inside 3-dot menu -->
